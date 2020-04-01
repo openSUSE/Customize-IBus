@@ -1,5 +1,5 @@
 {
-  "description": "Tweaker of IBus for font and ascii mode auto-switch",
+  "description": "Tweaker of IBus for font and ascii mode auto-switch(xdotool is required)",
   "settings-schema": "org.gnome.shell.extensions.ibus-tweaker",
   "gettext-domain": "ibus-tweaker",
   "name": "IBus Tweaker",
