@@ -28,7 +28,6 @@ cp -r 'ibus-tweaker@tuberry.github.com' ~/.local/share/gnome-shell/extensions/
 ## 卸载
 ```
 gio trash ~/.local/share/gnome-shell/extensions/ibus-tweaker@tuberry.github.com
-
 ```
 ## 说明
 1. 基于窗口切换，所以不是在所有输入的地方都有用，比如overview的搜索，Alt+F2的输入框，(暂时没有找到解决办法)；
