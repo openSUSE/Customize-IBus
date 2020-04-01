@@ -1,0 +1,12 @@
+{
+  "description": "Tweaker of IBus for font and ascii mode auto-switch",
+  "settings-schema": "org.gnome.shell.extensions.ibus-tweaker",
+  "gettext-domain": "ibus-tweaker",
+  "name": "IBus Tweaker",
+  "shell-version": [
+    "3.36"
+  ],
+  "url": "https://github.com/tuberry/ibus-tweaker",
+  "uuid": "ibus-tweaker@tuberry.github.com",
+  "version": 1
+}

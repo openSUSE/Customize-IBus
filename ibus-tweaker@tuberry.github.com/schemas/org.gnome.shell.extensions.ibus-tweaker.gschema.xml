@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.ibus-tweaker" path="/org/gnome/shell/extensions/ibus-tweaker/">
+    <key type="b" name="activities">
+        <default>false</default>
+        <summary>activities</summary>
+    </key>
+    <key type="b" name="my-custom-font">
+        <default>true</default>
+        <summary>my custom font</summary>
+    </key>
+    <key type="b" name="enable-auto-switch">
+        <default>true</default>
+        <summary>enable auto switch</summary>
+    </key>
+    <key type="s" name="ascii-on-list">
+        <default>"Gnome-shell"</default>
+        <summary>ascii mode on list</summary>
+    </key>
+    <key type="s" name="ascii-off-list">
+        <default>"Gedit"</default>
+        <summary>ascii mode off list</summary>
+    </key>
+    <key type="s" name="ascii-mode">
+        <default>"A#en#英"</default>
+        <summary>ascii mode</summary>
+    </key>
+  </schema>
+</schemalist>
