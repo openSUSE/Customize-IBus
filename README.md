@@ -34,5 +34,5 @@ gio trash ~/.local/share/gnome-shell/extensions/ibus-tweaker@tuberry.github.com
 1. 基于窗口切换，所以不是在所有输入的地方都有用。~~~比如 overview 的搜索，Alt+F2 的输入框(找到临时解决办法)~~~；
 2. 部分窗口没有 set-cursor-location 也无效，~~~比如[drop-down-terminal-x](https://github.com/bigbn/drop-down-terminal-x)(已卸载)~~~；
 3. 依赖 xdotool 按 Shift，更原生态的方法懒得找了，gnome-shell 的底裤实在不想翻了(也没翻到)；
-4. 凑合着用等猴年马月上游支持吧(至少目前进终端不用按Shift了)。
+4. 凑合着用等什么时候上游支持吧(至少目前进终端不用按Shift了)。
 
