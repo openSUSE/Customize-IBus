@@ -71,7 +71,7 @@ class IBusAutoSwitch extends GObject.Object {
         });
         this._enableSwitch = gsettings.get_boolean(Prefs.Fields.AUTOSWITCH);
         this._enableChangedId = gsettings.connect('changed::' + Prefs.Fields.AUTOSWITCH, () => {
-            this._enableSwitch = gsettings.get_string(Prefs.Fields.AUTOSWITCH);
+            this._enableSwitch = gsettings.get_boolean(Prefs.Fields.AUTOSWITCH);
         });
         this._onWindowChangedId = global.display.connect('notify::focus-window', this._onWindowChanged.bind(this));
     }
