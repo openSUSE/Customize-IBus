@@ -5,9 +5,9 @@
         <default>false</default>
         <summary>activities</summary>
     </key>
-    <key type="b" name="my-custom-font">
+    <key type="b" name="enable-hotkey">
         <default>true</default>
-        <summary>my custom font</summary>
+        <summary>enable hotkey</summary>
     </key>
     <key type="b" name="enable-auto-switch">
         <default>true</default>
@@ -24,6 +24,10 @@
     <key type="s" name="ascii-mode">
         <default>"A#en#英"</default>
         <summary>ascii mode</summary>
+    </key>
+    <key type="as" name="run-dialog">
+        <default><![CDATA[['<Super>r']]]></default>
+        <summary>run-dialog</summary>
     </key>
   </schema>
 </schemalist>
