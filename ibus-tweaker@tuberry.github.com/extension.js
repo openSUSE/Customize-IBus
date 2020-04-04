@@ -8,69 +8,55 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const Convenience = ExtensionUtils.getSettings && ExtensionUtils.initTranslations ? ExtensionUtils : Me.imports.convenience;
 const Prefs = Me.imports.prefs;
-
 const gsettings = Convenience.getSettings();
 
 const IBusAutoSwitch = GObject.registerClass(
 class IBusAutoSwitch extends GObject.Object {
     _init() {
         super._init();
+        this._states = {};
+        this._tmpFocusWindow = 'None';
+        this._focusedInput = true;
         this._asciiMode = ['en', 'A', '英'];
     }
 
-    _getCurrentState() {
+    _getInputState() {
         //tmd gnome shell
         let inputList = Main.panel.statusArea['keyboard'].get_child_at_index(0).get_child_at_index(0);
-        let current= inputList.get_children().toString().split(',').findIndex(x => x.indexOf('last-child') > -1);
+        let current = inputList.get_children().toString().split(',').findIndex(x => x.indexOf('last-child') > -1);
 
         return inputList.get_child_at_index(current).toString().split('"')[1];
     }
 
     _onWindowChanged() {
-        if(this._cursorInId)
+        if(this._cursorInId) {
             IBusManager.disconnect(this._cursorInId);
-        this._cursorInId = null;
-
-        let [a, b, c] = this._checkStatus();
-        if(a&!c || b&c)
-            this._cursorInId = IBusManager.connect('set-cursor-location', this._onInputStatus.bind(this));
-    }
-
-    _onOverviewIn() {
-        if(Main._a11ySettings.get_boolean(Main.STICKY_KEYS_ENABLE))
-            return;
-
-        if(this._cursorInId)
-            IBusManager.disconnect(this._cursorInId);
-        this._cursorInId = null;
-
-        let a = this._asciiOnList.split('#').indexOf('overview') > -1;
-        let c = this._asciiMode.indexOf(this._getCurrentState()) > -1;
-        if(a&!c)
-            this._cursorInId = IBusManager.connect('set-cursor-location', this._onInputStatus.bind(this));
-    }
-
-    _toggleKeyBindings(enable) {
-        if(enable) {
-            let ModeType = Shell.hasOwnProperty('ActionMode') ? Shell.ActionMode : Shell.KeyBindingMode;
-            Main.wm.addKeybinding(Prefs.Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, ModeType.ALL, () => {
-                Main.openRunDialog();
-                let c = this._asciiMode.indexOf(this._getCurrentState()) > -1;
-                if(!c) Util.spawnCommandLine('xdotool key shift');
-            });
+            this._focusedInput = false;
+            this._cursorInId = null;
         } else {
-            Main.wm.removeKeybinding(Prefs.Fields.SHORTCUT);
+            this._focusedInput = true;
         }
+
+        if(this._checkStatus())
+            this._cursorInId = IBusManager.connect('set-cursor-location', this._onInputStatus.bind(this));
     }
 
     _checkStatus() {
         let fw = global.display.get_focus_window();
         if(!fw || !this._enableSwitch)
-            return [false, false, false];
-        let wm = fw.wm_class;
-        let ci = this._getCurrentState();
+            return false;
 
-        return [this._asciiOnList.split('#').indexOf(wm) > -1, this._asciiOffList.split('#').indexOf(wm) > -1, this._asciiMode.indexOf(ci) > -1]
+        let tmpInputSourceState = this._asciiMode.indexOf(this._getInputState()) > -1;
+        let lastFocusWindow = this._tmpFocusWindow;
+        if(this._focusedInput)
+            this._states[lastFocusWindow] = tmpInputSourceState;
+        this._tmpFocusWindow = fw.wm_class;
+
+        if(this._states[fw.wm_class] === undefined)
+            this._states[fw.wm_class] = tmpInputSourceState;
+
+        this._focusedInput = false;
+        return tmpInputSourceState^this._states[fw.wm_class];
     }
 
     _onInputStatus() {
@@ -81,18 +67,43 @@ class IBusAutoSwitch extends GObject.Object {
         this._cursorInId = null;
     }
 
+    _onOverviewIn() {
+        if(this._cursorInId)
+            IBusManager.disconnect(this._cursorInId);
+        this._cursorInId = null;
+
+        let a = this._asciiOnList.split('#').indexOf('overview') > -1;
+        let c = this._asciiMode.indexOf(this._getInputState()) > -1;
+        if(a&!c)
+            this._cursorInId = IBusManager.connect('set-cursor-location', this._onInputStatus.bind(this));
+    }
+
+    _toggleKeyBindings(enable) {
+        if(enable) {
+            let ModeType = Shell.hasOwnProperty('ActionMode') ? Shell.ActionMode : Shell.KeyBindingMode;
+            Main.wm.addKeybinding(Prefs.Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, ModeType.ALL, () => {
+                Main.openRunDialog();
+                let c = this._asciiMode.indexOf(this._getInputState()) > -1;
+                if(!c) Util.spawnCommandLine('xdotool key shift');
+            });
+        } else {
+            Main.wm.removeKeybinding(Prefs.Fields.SHORTCUT);
+        }
+    }
+
     _fetchSettings() {
         this._asciiOnList = gsettings.get_string(Prefs.Fields.ASCIIONLIST);
         this._asciiOffList = gsettings.get_string(Prefs.Fields.ASCIIOFFLIST);
         this._enableSwitch = gsettings.get_boolean(Prefs.Fields.AUTOSWITCH);
         this._shortcut = gsettings.get_boolean(Prefs.Fields.ENABLEHOTKEY);
+        this._asciiOnList.split('#').forEach(x => this._states[x] = true);
+        this._asciiOffList.split('#').forEach(x => this._states[x] = false);
     }
 
     enable() {
         this._fetchSettings();
         if(this._shortcut)
             this._toggleKeyBindings(true);
-        // this._onSettingChangedId = gsettings.connect('changed', this._fetchSettings.bind(this));
         this._onSettingChangedId = gsettings.connect('changed',() => {
             let tmpshortcut = gsettings.get_boolean(Prefs.Fields.ENABLEHOTKEY);
             if(tmpshortcut != this._shortcut)
@@ -100,7 +111,7 @@ class IBusAutoSwitch extends GObject.Object {
             this._fetchSettings();
         });
         this._onWindowChangedId = global.display.connect('notify::focus-window', this._onWindowChanged.bind(this));
-        this._overviewInId = global.display.connect('overlay-key',this._onOverviewIn.bind(this));
+        this._overviewInId = Main.overview.connect('showing', this._onOverviewIn.bind(this));
     }
 
     disable() {
@@ -111,7 +122,7 @@ class IBusAutoSwitch extends GObject.Object {
         if(this._onSettingChangedId)
             gsettings.disconnect(this._onSettingChangedId), this._onSettingChangedId = null;
         if(this._overviewInId)
-            global.disconnect(this._overviewInId), this._overviewInId = null;
+            Main.overview.disconnect(this._overviewInId);
         if(this._shortcut)
             Main.wm.removeKeybinding(Prefs.Fields.SHORTCUT);
     }
