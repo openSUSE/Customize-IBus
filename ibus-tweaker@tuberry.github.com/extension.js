@@ -5,10 +5,10 @@ const Main = imports.ui.main;
 const Util = imports.misc.util;
 const IBusManager = imports.misc.ibusManager.getIBusManager();
 const ExtensionUtils = imports.misc.extensionUtils;
+
 const Me = ExtensionUtils.getCurrentExtension();
-const Convenience = ExtensionUtils.getSettings && ExtensionUtils.initTranslations ? ExtensionUtils : Me.imports.convenience;
 const Prefs = Me.imports.prefs;
-const gsettings = Convenience.getSettings();
+const gsettings = ExtensionUtils.getSettings();
 
 const IBusAutoSwitch = GObject.registerClass(
 class IBusAutoSwitch extends GObject.Object {
@@ -122,7 +122,7 @@ class IBusAutoSwitch extends GObject.Object {
         if(this._onSettingChangedId)
             gsettings.disconnect(this._onSettingChangedId), this._onSettingChangedId = null;
         if(this._overviewInId)
-            Main.overview.disconnect(this._overviewInId);
+            Main.overview.disconnect(this._overviewInId), this._overviewInId = null;
         if(this._shortcut)
             Main.wm.removeKeybinding(Prefs.Fields.SHORTCUT);
     }

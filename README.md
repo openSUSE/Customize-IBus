@@ -2,8 +2,12 @@
 Tweaker of ibus for font and ascii mode auto-switch (remember input source status for windows with a top-down method, xdotool is required).
 
 ## 安装
-```shell
+### 依赖
+```
 sudo pacman -S xdotool
+```
+从 [E.G.O](https://extensions.gnome.org/extension/2820/ibus-tweaker/) 安装，或者手动：
+```shell
 git clone https://github.com/tuberry/ibus-tweaker.git
 cd ./ibus-tweaker
 cp -r 'ibus-tweaker@tuberry.github.com' ~/.local/share/gnome-shell/extensions/
@@ -29,6 +33,7 @@ Run dialog 是 Alt+F2 调的命令框不是窗口，只好再设一个设快捷�
 ## 卸载
 ```
 gio trash ~/.local/share/gnome-shell/extensions/ibus-tweaker@tuberry.github.com
+sudo pacman -Rs xdotool
 ```
 ## 说明
 1. 基于窗口切换，不是在所有输入的地方都有用；

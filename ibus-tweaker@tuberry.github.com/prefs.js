@@ -5,10 +5,9 @@ const {Gio, Gtk, GObject} = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
-const Convenience = ExtensionUtils.getSettings && ExtensionUtils.initTranslations ? ExtensionUtils : Me.imports.convenience;
 const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 
-const gsettings = Convenience.getSettings();
+const gsettings = ExtensionUtils.getSettings();
 const ibusGsettings = new Gio.Settings({ schema_id: 'org.freedesktop.ibus.panel' });
 
 const Fields = {
@@ -26,7 +25,7 @@ function buildPrefsWidget() {
 }
 
 function init() {
-    Convenience.initTranslations();
+    ExtensionUtils.initTranslations();
 }
 
 const IBusTweaker = GObject.registerClass(
