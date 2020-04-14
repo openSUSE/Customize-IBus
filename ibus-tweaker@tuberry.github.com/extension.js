@@ -1,14 +1,12 @@
 // vim:fdm=syntax
 // by tuberry@github
-const { Shell, Meta,  Gio, IBus, Pango, St, GObject } = imports.gi;
+const { Shell, Meta, Gio, IBus, Clutter, Pango, St, GObject, Atspi, Gdk } = imports.gi;
 const Main = imports.ui.main;
-const Util = imports.misc.util;
 const IBusManager = imports.misc.ibusManager.getIBusManager();
 const ExtensionUtils = imports.misc.extensionUtils;
-
+const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
 const Prefs = Me.imports.prefs;
-const gsettings = ExtensionUtils.getSettings();
 
 const IBusAutoSwitch = GObject.registerClass(
 class IBusAutoSwitch extends GObject.Object {
@@ -60,8 +58,11 @@ class IBusAutoSwitch extends GObject.Object {
     }
 
     _onInputStatus() {
-        //xdotool is required
-        Util.spawnCommandLine('xdotool key shift');
+        Atspi.generate_keyboard_event(
+            Gdk.keyval_from_name('Shift_L'),
+            null,
+            Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
+        );
         if(this._cursorInId)
             IBusManager.disconnect(this._cursorInId);
         this._cursorInId = null;
@@ -84,7 +85,12 @@ class IBusAutoSwitch extends GObject.Object {
             Main.wm.addKeybinding(Prefs.Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, ModeType.ALL, () => {
                 Main.openRunDialog();
                 let c = this._asciiMode.indexOf(this._getInputState()) > -1;
-                if(!c) Util.spawnCommandLine('xdotool key shift');
+
+                if(!c) Atspi.generate_keyboard_event(
+                    Gdk.keyval_from_name('Shift_L'),
+                    null,
+                    Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
+                );
             });
         } else {
             Main.wm.removeKeybinding(Prefs.Fields.SHORTCUT);
