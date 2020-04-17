@@ -37,4 +37,4 @@ gio trash ~/.local/share/gnome-shell/extensions/ibus-tweaker@tuberry.github.com
 1. 基于窗口切换，不是在所有输入的地方都有用；
 2. 凑合着用等什么时候上游支持吧。
  
- [EGO]:(https://extensions.gnome.org/extension/2820/ibus-tweaker/) 
+[EGO]:https://extensions.gnome.org/extension/2820/ibus-tweaker/
