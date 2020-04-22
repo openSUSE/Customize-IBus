@@ -1,23 +1,23 @@
 // vim:fdm=syntax
 // by:tuberry@github
 //
-const {Gio, Gtk, GObject} = imports.gi;
+const { Gio, Gtk, GObject } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 
 const gsettings = ExtensionUtils.getSettings();
 const ibusGsettings = new Gio.Settings({ schema_id: 'org.freedesktop.ibus.panel' });
 
-const Fields = {
+var Fields = {
     ENABLEHOTKEY: 'enable-hotkey',
-    AUTOSWITCH: 'enable-auto-switch',
-    ASCIIONLIST: 'ascii-on-list',
+    AUTOSWITCH:   'enable-auto-switch',
+    ASCIIONLIST:  'ascii-on-list',
     ASCIIOFFLIST: 'ascii-off-list',
-    ASCIIMODE: 'ascii-mode',
-    ACTIVITIES: 'activities',
-    SHORTCUT: 'run-dialog',
+    ASCIIMODE:    'ascii-mode',
+    ACTIVITIES:   'activities',
+    SHORTCUT:     'run-dialog',
 };
 
 function buildPrefsWidget() {
@@ -143,7 +143,6 @@ class IBusTweaker extends Gtk.Grid {
             }
         });
 
-        // let column = new Gtk.TreeViewColumn({title: _("Key")});
         let column = new Gtk.TreeViewColumn({});
         column.pack_start(accelerator, false);
         column.add_attribute(accelerator, 'accel-mods', 0);

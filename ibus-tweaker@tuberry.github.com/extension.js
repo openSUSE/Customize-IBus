@@ -21,7 +21,7 @@ class IBusAutoSwitch extends GObject.Object {
     _getInputState() {
         //tmd gnome shell
         let inputList = Main.panel.statusArea['keyboard'].get_child_at_index(0).get_child_at_index(0);
-        let current = inputList.get_children().toString().split(',').findIndex(x => x.indexOf('last-child') > -1);
+        let current = inputList.get_children().toString().split(',').findIndex(x => x.includes('last-child'));
 
         return inputList.get_child_at_index(current).toString().split('"')[1];
     }
@@ -44,7 +44,7 @@ class IBusAutoSwitch extends GObject.Object {
         if(!fw || !this._enableSwitch)
             return false;
 
-        let tmpInputSourceState = this._asciiMode.indexOf(this._getInputState()) > -1;
+        let tmpInputSourceState = this._asciiMode.includes(this._getInputState());
         let lastFocusWindow = this._tmpFocusWindow;
         if(this._focusedInput)
             this._states[lastFocusWindow] = tmpInputSourceState;
@@ -73,8 +73,8 @@ class IBusAutoSwitch extends GObject.Object {
             IBusManager.disconnect(this._cursorInId);
         this._cursorInId = null;
 
-        let a = this._asciiOnList.split('#').indexOf('overview') > -1;
-        let c = this._asciiMode.indexOf(this._getInputState()) > -1;
+        let a = this._asciiOnList.includes('overview');
+        let c = this._asciiMode.includes(this._getInputState());
         if(a&!c)
             this._cursorInId = IBusManager.connect('set-cursor-location', this._onInputStatus.bind(this));
     }
@@ -84,7 +84,7 @@ class IBusAutoSwitch extends GObject.Object {
             let ModeType = Shell.hasOwnProperty('ActionMode') ? Shell.ActionMode : Shell.KeyBindingMode;
             Main.wm.addKeybinding(Prefs.Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, ModeType.ALL, () => {
                 Main.openRunDialog();
-                let c = this._asciiMode.indexOf(this._getInputState()) > -1;
+                let c = this._asciiMode.includes(this._getInputState());
 
                 if(!c) Atspi.generate_keyboard_event(
                     Gdk.keyval_from_name('Shift_L'),
@@ -143,6 +143,8 @@ class IBusFontSetting extends GObject.Object {
     }
 
     _onFontChanged() {
+        if (!this._settings.get_boolean('use-custom-font'))
+            return;
         let font;
         let fontDesc = Pango.FontDescription.from_string(this._settings.get_string('custom-font'));
         let fontTran = (a, b, c, d) => 'font-family: %s; font-size: %s; font-weight: %d; font-style: %s;'.format(a, b, c, d);
@@ -158,8 +160,7 @@ class IBusFontSetting extends GObject.Object {
     enable() {
         this._useCustomFontId = this._settings.connect('changed::use-custom-font', this._onFontChanged.bind(this));
         this._customFontId = this._settings.connect('changed::custom-font', this._onFontChanged.bind(this));
-        if (this._settings.get_boolean('use-custom-font'))
-            this._onFontChanged();
+        this._onFontChanged();
     }
 
     disable() {
