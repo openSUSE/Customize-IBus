@@ -18,29 +18,29 @@ cp -r './ibus-tweaker/ibus-tweaker@tuberry.github.com' ~/.local/share/gnome-shel
 
 ![ibus-tweaker](https://user-images.githubusercontent.com/17917040/80307808-01cee280-87fe-11ea-9f44-267bd7a8805f.png)
 
-1. ASCII mode auto switch
+### ASCII mode auto switch
 
-> Fill the blanks with `wmclass` in `looking glass` for initializing switch
+Fill the blanks with `wmclass` in `looking glass` for initializing switch
 
->![ascii](https://user-images.githubusercontent.com/17917040/80308786-70626f00-8803-11ea-8bbc-13d49efe4b4a.png)
+![ascii](https://user-images.githubusercontent.com/17917040/80308786-70626f00-8803-11ea-8bbc-13d49efe4b4a.png)
 
-2. Candidates font
-> Support font style and non-standard font weight
+### Candidates font
+Support font style and non-standard font weight
 
->![font](https://user-images.githubusercontent.com/17917040/80307919-ba952180-87fe-11ea-80dd-661ac9e9a9b8.png)
+![font](https://user-images.githubusercontent.com/17917040/80307919-ba952180-87fe-11ea-80dd-661ac9e9a9b8.png)
 
-3. Candidates orientation (sun-pinyin and luna-pinyin)
->Some Chinese IMEs with IBus support do not support the orientation setting of IBus. Aha funny.
+### Candidates orientation
+Some Chinese IMEs with IBus support do not support the orientation setting of IBus. Aha funny.
 
->![luna](https://user-images.githubusercontent.com/17917040/80308136-c46b5480-87ff-11ea-8084-90fa04b132c9.png)
+![luna](https://user-images.githubusercontent.com/17917040/80308136-c46b5480-87ff-11ea-8084-90fa04b132c9.png)
 
-4. MS style theme
->I like the theme of Microsoft default IME. The theme contains 7 variants with different colors of my Vim colorscheme
+### MS style theme
+I like the theme of Microsoft default IME. The theme contains 7 variants with different colors of my Vim colorscheme
 
->![purple](https://user-images.githubusercontent.com/17917040/80308280-a6eaba80-8800-11ea-8b9a-c393dfdcdd44.png)
+![purple](https://user-images.githubusercontent.com/17917040/80308280-a6eaba80-8800-11ea-8b9a-c393dfdcdd44.png)
 
-5. Hide Activities
->It's for my personal use and migrated from [hide-activities-button](https://extensions.gnome.org/extension/1128/hide-activities-button/)
+### Hide Activities
+It's for my personal use and migrated from [hide-activities-button](https://extensions.gnome.org/extension/1128/hide-activities-button/)
 
 ## Acknowledgements
 
