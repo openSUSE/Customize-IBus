@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-22 21:53+0800\n"
+"POT-Creation-Date: 2020-04-26 05:21+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,30 +17,70 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: prefs.js:54
-msgid "ascii mode on"
+#: prefs.js:48
+msgid "Red"
 msgstr ""
 
-#: prefs.js:55
-msgid "ascii mode off"
+#: prefs.js:48
+msgid "Green"
 msgstr ""
 
-#: prefs.js:78
-msgid "Auto switch ascii mode"
+#: prefs.js:48
+msgid "Orange"
 msgstr ""
 
-#: prefs.js:82
-msgid "Enable short cut"
+#: prefs.js:48
+msgid "Blue"
 msgstr ""
 
-#: prefs.js:83
+#: prefs.js:48
+msgid "Purple"
+msgstr ""
+
+#: prefs.js:48
+msgid "Turquoise"
+msgstr ""
+
+#: prefs.js:48
+msgid "Grey"
+msgstr ""
+
+#: prefs.js:67
+msgid "Vertical"
+msgstr ""
+
+#: prefs.js:67
+msgid "Horizontal"
+msgstr ""
+
+#: prefs.js:68
+msgid "ascii mode off when initializing"
+msgstr ""
+
+#: prefs.js:69
+msgid "ascii mode on when initializing"
+msgstr ""
+
+#: prefs.js:74
+msgid "Hide Activities"
+msgstr ""
+
+#: prefs.js:75
 msgid "Run dialog"
 msgstr ""
 
-#: prefs.js:85
-msgid "IBus candidate font"
+#: prefs.js:76
+msgid "MS IME theme"
 msgstr ""
 
-#: prefs.js:86
-msgid "Hide Activities"
+#: prefs.js:77
+msgid "Candidates orientation"
+msgstr ""
+
+#: prefs.js:78
+msgid "Use custom font"
+msgstr ""
+
+#: prefs.js:79
+msgid "Auto switch ASCII mode"
 msgstr ""

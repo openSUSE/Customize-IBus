@@ -11,13 +11,19 @@ const gsettings = ExtensionUtils.getSettings();
 const ibusGsettings = new Gio.Settings({ schema_id: 'org.freedesktop.ibus.panel' });
 
 var Fields = {
-    ENABLEHOTKEY: 'enable-hotkey',
-    AUTOSWITCH:   'enable-auto-switch',
-    ASCIIONLIST:  'ascii-on-list',
-    ASCIIOFFLIST: 'ascii-off-list',
-    ASCIIMODE:    'ascii-mode',
-    ACTIVITIES:   'activities',
-    SHORTCUT:     'run-dialog',
+    ACTIVITIES:    'activities',
+    ASCIIMODE:     'ascii-mode',
+    SHORTCUT:      'run-dialog',
+    CUSTOMFONT:    'custom-font',
+    ASCIIONLIST:   'ascii-on-list',
+    ENABLEHOTKEY:  'enable-hotkey',
+    ASCIIOFFLIST:  'ascii-off-list',
+    MSTHEMECOLOUR: 'ms-theme-color',
+    ENABLEMSTHEME: 'enable-ms-theme',
+    USECUSTOMFONT: 'use-custom-font',
+    AUTOSWITCH:    'enable-auto-switch',
+    ENABLEORIEN:   'enable-orientation',
+    ORIENTATION:   'candidate-orientation',
 };
 
 function buildPrefsWidget() {
@@ -35,10 +41,11 @@ class IBusTweaker extends Gtk.Grid {
             margin: 10,
             row_spacing: 12,
             column_spacing: 18,
-            column_homogeneous: false,
             row_homogeneous: false,
+            column_homogeneous: false,
         });
 
+        this._palatte = [_('Red'), _('Green'), _('Orange'), _('Blue'), _('Purple'), _('Turquoise'), _('Grey')];
         this._bulidWidget();
         this._bulidUI();
         this._bindValues();
@@ -47,76 +54,118 @@ class IBusTweaker extends Gtk.Grid {
     }
 
     _bulidWidget() {
-        this._feild_activities = new Gtk.Switch();
-        this._feild_enable_shortcut = new Gtk.Switch();
-        this._feild_enable_ascii = new Gtk.Switch();
+        this._field_activities      = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ACTIVITIES) });
+        this._field_enable_ascii    = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.AUTOSWITCH) });
+        this._field_enable_orien    = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEORIEN) });
+        this._field_enable_hotkey   = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEHOTKEY) });
+        this._field_enable_ms_theme = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEMSTHEME) });
+        this._field_use_custom_font = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.USECUSTOMFONT) });
+        this._field_custom_font     = new Gtk.FontButton({ font_name: gsettings.get_string(Fields.CUSTOMFONT) });
 
-        this._feild_ascii_on = this._entryMaker('Gnome-shell', _('ascii mode on'));
-        this._feild_ascii_off = this._entryMaker('Gedit', _('ascii mode off'));
-
-        let fontName = ibusGsettings.get_boolean('use-custom-font') ? ibusGsettings.get_string('custom-font') : "Sans 16";
-        this._feild_font_button = new Gtk.FontButton({ font_name: fontName });
-        this._feild_font_button.connect('font-set', (widget) => {
-            ibusGsettings.set_boolean('use-custom-font', true);
-            ibusGsettings.set_string('custom-font', widget.font_name);
-        });
-
-        this._feild_run_dialog = this._shortCutMaker(Fields.SHORTCUT);
-
-        this._feild_enable_shortcut.connect('notify::active', widget => {
-            this._feild_run_dialog.set_sensitive(widget.active);
-        });
-        this._feild_enable_ascii.connect('notify::active', widget => {
-            this._feild_ascii_on.set_sensitive(widget.active);
-            this._feild_ascii_off.set_sensitive(widget.active);
-        });
+        this._field_theme_color = this._comboMaker(this._palatte);
+        this._field_run_dialog  = this._shortCutMaker(Fields.SHORTCUT);
+        this._field_orientation = this._comboMaker([_('Vertical'), _('Horizontal')])
+        this._field_ascii_off   = this._entryMaker('Gedit', _('ascii mode off when initializing'));
+        this._field_ascii_on    = this._entryMaker('Gnome-shell', _('ascii mode on when initializing'));
     }
 
     _bulidUI() {
         this._row = 0;
-        const hseparator = () => new Gtk.HSeparator({margin_bottom: 5, margin_top: 5});
-        this._addRow(this._feild_enable_ascii, this._labelMaker(_('Auto switch ascii mode')));
-        this._addRow(this._feild_ascii_on, null);
-        this._addRow(this._feild_ascii_off, null);
-        this._addRow(hseparator(), null);
-        this._addRow(this._feild_enable_shortcut, this._labelMaker(_('Enable short cut')));
-        this._addRow(this._feild_run_dialog, this._labelMaker(_('Run dialog')));
-        this._addRow(hseparator(), null);
-        this._addRow(this._feild_font_button, this._labelMaker(_('IBus candidate font')));
-        this._addRow(this._feild_activities, this._labelMaker(_('Hide Activities')));
+        this.attach(this._rowMaker(this._field_activities,      this._labelMaker(_('Hide Activities')),        null),                    0, this._row++, 1, 1);
+        this.attach(this._rowMaker(this._field_enable_hotkey,   this._labelMaker(_('Run dialog')),             this._field_run_dialog),  0, this._row++, 1, 1);
+        this.attach(this._rowMaker(this._field_enable_ms_theme, this._labelMaker(_('MS IME theme')),           this._field_theme_color), 0, this._row++, 1, 1);
+        this.attach(this._rowMaker(this._field_enable_orien,    this._labelMaker(_('Candidates orientation')), this._field_orientation), 0, this._row++, 1, 1);
+        this.attach(this._rowMaker(this._field_use_custom_font, this._labelMaker(_('Use custom font')),        this._field_custom_font), 0, this._row++, 1, 1);
+        this.attach(this._rowMaker(this._field_enable_ascii,    this._labelMaker(_('Auto switch ASCII mode')), null),                    0, this._row++, 1, 1);
+        this.attach(this._field_ascii_on, 0, this._row++, 1, 1);
+        this.attach(this._field_ascii_off, 0, this._row++, 1, 1);
     }
 
     _syncStatus() {
-        this._feild_run_dialog.set_sensitive(this._feild_enable_shortcut.get_state());
-        this._feild_ascii_on.set_sensitive(this._feild_enable_ascii.get_state());
-        this._feild_ascii_off.set_sensitive(this._feild_enable_ascii.get_state());
+        this._field_enable_hotkey.connect('notify::active', widget => {
+            this._field_run_dialog.set_sensitive(widget.active);
+        });
+        this._field_enable_ascii.connect('notify::active', widget => {
+            this._field_ascii_on.set_sensitive(widget.active);
+            this._field_ascii_off.set_sensitive(widget.active);
+        });
+        this._field_enable_orien.connect('notify::active', widget => {
+            this._field_orientation.set_sensitive(widget.active);
+        });
+        this._field_use_custom_font.connect('notify::active', widget => {
+            this._field_custom_font.set_sensitive(widget.active);
+            ibusGsettings.set_boolean('use-custom-font', widget.active);
+        });
+        this._field_enable_ms_theme.connect('notify::active', widget => {
+            this._field_theme_color.set_sensitive(widget.active);
+        });
+        this._field_custom_font.connect('font-set', widget => {
+            ibusGsettings.set_string('custom-font', widget.font_name);
+            gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
+        });
+
+        this._field_ascii_on.set_sensitive(this._field_enable_ascii.active);
+        this._field_ascii_off.set_sensitive(this._field_enable_ascii.active);
+        this._field_orientation.set_sensitive(this._field_enable_orien.active);
+        this._field_run_dialog.set_sensitive(this._field_enable_hotkey.active);
+        this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
+        this._field_theme_color.set_sensitive(this._field_enable_ms_theme.active);
     }
 
     _bindValues() {
-        gsettings.bind(Fields.ACTIVITIES,   this._feild_activities,      'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ENABLEHOTKEY, this._feild_enable_shortcut, 'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.AUTOSWITCH,   this._feild_enable_ascii,    'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ASCIIONLIST,  this._feild_ascii_on,        'text',   Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ASCIIOFFLIST, this._feild_ascii_off,       'text',   Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ACTIVITIES,    this._field_activities,      'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ASCIIOFFLIST,  this._field_ascii_off,       'text',   Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ASCIIONLIST,   this._field_ascii_on,        'text',   Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.AUTOSWITCH,    this._field_enable_ascii,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEHOTKEY,  this._field_enable_hotkey,   'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEORIEN,   this._field_enable_orien,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ORIENTATION,   this._field_orientation,     'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.USECUSTOMFONT, this._field_use_custom_font, 'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEMSTHEME, this._field_enable_ms_theme, 'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MSTHEMECOLOUR, this._field_theme_color,     'active', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _entryMaker(x, y) {
         return new Gtk.Entry({
             hexpand: true,
             placeholder_text: x,
-            secondary_icon_name: "dialog-information-symbolic",
+            secondary_icon_sensitive: true,
             secondary_icon_tooltip_text: y,
             secondary_icon_activatable: true,
-            secondary_icon_sensitive: true
+            secondary_icon_name: "dialog-information-symbolic",
         });
+    }
+
+    _rowMaker(x, y, z) {
+        let hbox = new Gtk.HBox({ hexpand: true });
+        if(z === null) {
+            hbox.pack_start(x, false, false, 10);
+            hbox.pack_end(y, true, true, 10);
+        } else {
+            hbox.pack_start(x, false, false, 10);
+            hbox.pack_start(y, true, true, 10);
+            hbox.pack_end(z, false, false, 10);
+        }
+        return hbox;
     }
 
     _labelMaker(x) {
         return new Gtk.Label({
             label: x,
             hexpand: true,
-            halign: Gtk.Align.START
+            halign: Gtk.Align.START,
         });
+    }
+
+    _comboMaker(ops) {
+        let l = new Gtk.ListStore();
+        l.set_column_types([GObject.TYPE_STRING]);
+        ops.map(name => ({name})).forEach((p,i) => l.set(l.append(),[0],[p.name]));
+        let c = new Gtk.ComboBox({model: l});
+        let r = new Gtk.CellRendererText();
+        c.pack_start(r, false);
+        c.add_attribute(r, "text", 0);
+        return c;
     }
 
     _shortCutMaker(hotkey) {
@@ -150,22 +199,6 @@ class IBusTweaker extends Gtk.Grid {
         treeView.append_column(column);
 
         return treeView;
-    }
-
-    _addRow(input, label) {
-        let widget = input;
-        if (input instanceof Gtk.Switch) {
-            widget = new Gtk.HBox();
-            widget.pack_end(input, false, false, 0);
-        }
-        if (label) {
-            this.attach(label, 0, this._row, 1, 1);
-            this.attach(widget, 1, this._row, 1, 1);
-        }
-        else {
-            this.attach(widget, 0, this._row, 2, 1);
-        }
-        this._row++;
     }
 });
 
