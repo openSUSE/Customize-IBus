@@ -48,8 +48,7 @@ It's for my personal use and migrated from [hide-activities-button](https://exte
 2. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
 
 ## Note
-1. If you love this extension, please star me and recommend it to your friends;
-2. Please thumb up or comment on the upstream [issue](https://github.com/ibus/ibus/issues/1679) for native support, thanks in advance.
+1. If you love this extension, please thumb up or comment on the upstream [issue](https://github.com/ibus/ibus/issues/1679) for native support, thanks in advance.
 
 [EGO]:https://extensions.gnome.org/extension/2820/ibus-tweaker/
 [license]:https://img.shields.io/badge/license-GPLv3-green.svg
