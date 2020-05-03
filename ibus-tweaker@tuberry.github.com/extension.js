@@ -306,7 +306,7 @@ class Extensions extends GObject.Object{
                 x._active = !x._active;
             });
         });
-        IBusManager.restartDaemon();
+        IBusManager._spawn(['-rd']);
     }
 
     disable() {
