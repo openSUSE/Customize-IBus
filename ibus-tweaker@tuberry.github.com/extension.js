@@ -26,6 +26,7 @@ class IBusAutoSwitch extends GObject.Object {
 
     _getInputState() {
         let inputList = Main.panel.statusArea['keyboard'].get_child_at_index(0).get_child_at_index(0);
+        if(inputList.length === 1) IBusManager._spawn(['-rd']);
         let current = inputList.get_children().toString().split(',').findIndex(x => x.includes('last-child'));
 
         return inputList.get_child_at_index(current).toString().split('"')[1];
@@ -306,7 +307,6 @@ class Extensions extends GObject.Object{
                 x._active = !x._active;
             });
         });
-        IBusManager._spawn(['-rd']);
     }
 
     disable() {
