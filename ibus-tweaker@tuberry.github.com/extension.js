@@ -141,7 +141,7 @@ class IBusFontSetting extends GObject.Object {
     }
 
     _onFontChanged() {
-        let temp = 'font-weight: %d; font-family: %s; font-size: %d%s; font-style: %s;';
+        let temp = 'font-weight: %d; font-family: "%s"; font-size: %d%s; font-style: %s;';
         let desc = Pango.FontDescription.from_string(gsettings.get_string(Fields.CUSTOMFONT));
         let get_weight = () => { try { return desc.get_weight(); } catch(e) { return parseInt(e.message); } }; //fix Pango.Weight enumeration exception (eg: 290) in some fonts
         CandidatePopup.set_style(temp.format(
