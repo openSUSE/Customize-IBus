@@ -60,10 +60,6 @@ msgstr "首次启动切中文"
 msgid "ascii mode on when initializing"
 msgstr "首次启动切英文"
 
-#: prefs.js:74
-msgid "Hide Activities"
-msgstr "去活动按钮"
-
 #: prefs.js:75
 msgid "Run dialog"
 msgstr "运行命令框"
@@ -83,3 +79,15 @@ msgstr "自定义字体"
 #: prefs.js:79
 msgid "Auto switch ASCII mode"
 msgstr "中英文切换"
+
+msgid "IBus"
+msgstr "输入法"
+
+msgid "Others"
+msgstr "杂项"
+
+msgid "Hide Activities"
+msgstr "隐藏活动按钮"
+
+msgid "Hide minimized in AltTab"
+msgstr "隐藏最小化窗口(AltTab)"

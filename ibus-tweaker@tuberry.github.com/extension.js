@@ -2,6 +2,7 @@
 // by tuberry@github
 
 const Main = imports.ui.main;
+const AltTab = imports.ui.altTab;
 const BoxPointer = imports.ui.boxpointer;
 const { Shell, Meta, IBus, Clutter, Pango, St, GObject, Atspi, Gdk } = imports.gi;
 
@@ -290,15 +291,35 @@ class ActivitiesHide extends GObject.Object{
     }
 });
 
+const MinimizedHide = GObject.registerClass(
+class MinimizedHide extends GObject.Object{
+    _init() {
+        super._init();
+    }
+
+    enable() {
+        this._getWindows = AltTab.getWindows;
+        AltTab.getWindows = workspace => {
+            const windows = this._getWindows(workspace);
+            return windows.filter((w, i, a) => !w.minimized);
+        };
+    }
+
+    disable() {
+        AltTab.getWindows = this._getWindows;
+        this._getWindows = null;
+    }
+});
+
 const Extensions = GObject.registerClass(
 class Extensions extends GObject.Object{
     _init() {
         super._init();
-        this._feilds = [Fields.AUTOSWITCH, Fields.USECUSTOMFONT, Fields.ENABLEORIEN, Fields.ENABLEMSTHEME, Fields.ACTIVITIES];
+        this._feilds = [Fields.AUTOSWITCH, Fields.USECUSTOMFONT, Fields.ENABLEORIEN, Fields.ENABLEMSTHEME, Fields.ACTIVITIES, Fields.MINIMIZED];
     }
 
     enable() {
-        this._extensions = [new IBusAutoSwitch(), new IBusFontSetting(), new IBusOrientation(), new IBusThemeManager(), new ActivitiesHide()];
+        this._extensions = [new IBusAutoSwitch(), new IBusFontSetting(), new IBusOrientation(), new IBusThemeManager(), new ActivitiesHide(), new MinimizedHide()];
         this._extensions.forEach((x,i) => {
             x._active = gsettings.get_boolean(this._feilds[i]);
             if(x._active) x.enable();

@@ -18,6 +18,7 @@ var Fields = {
     ASCIIONLIST:   'ascii-on-list',
     ENABLEHOTKEY:  'enable-hotkey',
     ASCIIOFFLIST:  'ascii-off-list',
+    MINIMIZED:     'hide-minimized',
     MSTHEMECOLOUR: 'ms-theme-color',
     ENABLEMSTHEME: 'enable-ms-theme',
     USECUSTOMFONT: 'use-custom-font',
@@ -35,14 +36,10 @@ function init() {
 }
 
 const IBusTweaker = GObject.registerClass(
-class IBusTweaker extends Gtk.Grid {
+class IBusTweaker extends Gtk.ScrolledWindow {
     _init() {
         super._init({
-            margin: 10,
-            row_spacing: 12,
-            column_spacing: 18,
-            row_homogeneous: false,
-            column_homogeneous: false,
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
         });
 
         this._palatte = [_('Red'), _('Green'), _('Orange'), _('Blue'), _('Purple'), _('Turquoise'), _('Grey')];
@@ -56,11 +53,12 @@ class IBusTweaker extends Gtk.Grid {
     _bulidWidget() {
         this._field_activities      = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ACTIVITIES) });
         this._field_enable_ascii    = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.AUTOSWITCH) });
+        this._field_minimized       = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ACTIVITIES) });
+        this._field_custom_font     = new Gtk.FontButton({ font_name: gsettings.get_string(Fields.CUSTOMFONT) });
         this._field_enable_orien    = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEORIEN) });
         this._field_enable_hotkey   = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEHOTKEY) });
         this._field_enable_ms_theme = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEMSTHEME) });
         this._field_use_custom_font = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.USECUSTOMFONT) });
-        this._field_custom_font     = new Gtk.FontButton({ font_name: gsettings.get_string(Fields.CUSTOMFONT) });
 
         this._field_theme_color = this._comboMaker(this._palatte);
         this._field_run_dialog  = this._shortCutMaker(Fields.SHORTCUT);
@@ -70,15 +68,24 @@ class IBusTweaker extends Gtk.Grid {
     }
 
     _bulidUI() {
-        this._row = 0;
-        this.attach(this._rowMaker(this._field_activities,      this._labelMaker(_('Hide Activities')),        null),                    0, this._row++, 1, 1);
-        this.attach(this._rowMaker(this._field_enable_hotkey,   this._labelMaker(_('Run dialog')),             this._field_run_dialog),  0, this._row++, 1, 1);
-        this.attach(this._rowMaker(this._field_enable_ms_theme, this._labelMaker(_('MS IME theme')),           this._field_theme_color), 0, this._row++, 1, 1);
-        this.attach(this._rowMaker(this._field_enable_orien,    this._labelMaker(_('Candidates orientation')), this._field_orientation), 0, this._row++, 1, 1);
-        this.attach(this._rowMaker(this._field_use_custom_font, this._labelMaker(_('Use custom font')),        this._field_custom_font), 0, this._row++, 1, 1);
-        this.attach(this._rowMaker(this._field_enable_ascii,    this._labelMaker(_('Auto switch ASCII mode')), null),                    0, this._row++, 1, 1);
-        this.attach(this._field_ascii_on, 0, this._row++, 1, 1);
-        this.attach(this._field_ascii_off, 0, this._row++, 1, 1);
+        this._box = new Gtk.Box({
+            margin_left: 30,
+            margin_right: 30,
+            orientation: Gtk.Orientation.VERTICAL,
+        });
+        this.add(this._box);
+        this._ibus = this._listFrameMaker(_('IBus'));
+        this._ibus._add(this._field_enable_hotkey,   _('Run dialog'),               this._field_run_dialog);
+        this._ibus._add(this._field_enable_ms_theme, _('MS IME theme'),             this._field_theme_color);
+        this._ibus._add(this._field_enable_orien,    _('Candidates orientation'),   this._field_orientation);
+        this._ibus._add(this._field_use_custom_font, _('Use custom font'),          this._field_custom_font);
+        this._ibus._add(this._field_enable_ascii,    _('Auto switch ASCII mode'));
+        this._ibus._add(this._field_ascii_on);
+        this._ibus._add(this._field_ascii_off);
+
+        this._others = this._listFrameMaker(_('Others'));
+        this._others._add(this._field_activities,      _('Hide Activities'));
+        this._others._add(this._field_minimized,       _('Hide minimized in AltTab'));
     }
 
     _syncStatus() {
@@ -114,6 +121,7 @@ class IBusTweaker extends Gtk.Grid {
 
     _bindValues() {
         gsettings.bind(Fields.ACTIVITIES,    this._field_activities,      'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MINIMIZED,     this._field_minimized,       'active', Gio.SettingsBindFlags.DEFAULT);
         gsettings.bind(Fields.ASCIIOFFLIST,  this._field_ascii_off,       'text',   Gio.SettingsBindFlags.DEFAULT);
         gsettings.bind(Fields.ASCIIONLIST,   this._field_ascii_on,        'text',   Gio.SettingsBindFlags.DEFAULT);
         gsettings.bind(Fields.AUTOSWITCH,    this._field_enable_ascii,    'active', Gio.SettingsBindFlags.DEFAULT);
@@ -125,6 +133,45 @@ class IBusTweaker extends Gtk.Grid {
         gsettings.bind(Fields.MSTHEMECOLOUR, this._field_theme_color,     'active', Gio.SettingsBindFlags.DEFAULT);
     }
 
+    _listFrameMaker(lbl) {
+        let frame = new Gtk.Frame({
+            label_yalign: 1,
+        });
+        frame.set_label_widget(new Gtk.Label({
+            use_markup: true,
+            margin_top: 30,
+            label: "<b><big>" + lbl + "</big></b>",
+        }));
+        this._box.add(frame);
+
+        frame.grid = new Gtk.Grid({
+            margin: 10,
+            hexpand: true,
+            row_spacing: 12,
+            column_spacing: 18,
+            row_homogeneous: false,
+            column_homogeneous: false,
+        });
+
+        frame.grid._row = 0;
+        frame.add(frame.grid);
+        frame._add = (x, y, z) => {
+            const hbox = new Gtk.Box();
+            if(z) {
+                hbox.pack_start(x, false, false, 4);
+                hbox.pack_start(this._labelMaker(y), true, true, 0);
+                hbox.pack_start(z, false, false, 4);
+            } else if(y) {
+                hbox.pack_start(x, false, false, 4);
+                hbox.pack_start(this._labelMaker(y), true, true, 4);
+            } else {
+                hbox.pack_start(x, true, true, 4);
+            }
+            frame.grid.attach(hbox, 0, frame.grid._row++, 1, 1);
+        }
+        return frame;
+    }
+
     _entryMaker(x, y) {
         return new Gtk.Entry({
             hexpand: true,
@@ -134,19 +181,6 @@ class IBusTweaker extends Gtk.Grid {
             secondary_icon_activatable: true,
             secondary_icon_name: "dialog-information-symbolic",
         });
-    }
-
-    _rowMaker(x, y, z) {
-        let hbox = new Gtk.HBox({ hexpand: true });
-        if(z === null) {
-            hbox.pack_start(x, false, false, 10);
-            hbox.pack_end(y, true, true, 10);
-        } else {
-            hbox.pack_start(x, false, false, 10);
-            hbox.pack_start(y, true, true, 10);
-            hbox.pack_end(z, false, false, 10);
-        }
-        return hbox;
     }
 
     _labelMaker(x) {

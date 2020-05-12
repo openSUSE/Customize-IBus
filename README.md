@@ -1,5 +1,5 @@
 # ibus-tweaker
-Tweaker of ibus for font and ascii mode auto-switch (remember input source status for windows with a top-down method).
+Tweaker of ibus for orientation, theme, font and ascii mode auto-switch.
 > 狙公赋芧曰：“朝三而暮四”。众狙皆怒。曰：“然则朝四而暮三”。众狙皆悦。 —— *《庄子·齐物论》*<br>
 [![license]](/LICENSE)
 
@@ -20,7 +20,7 @@ cp -r './ibus-tweaker/ibus-tweaker@tuberry.github.com' ~/.local/share/gnome-shel
 
 ### ASCII mode auto switch
 
-Fill the blanks with `wmclass` in `looking glass` for initializing switch
+Fill the blanks with `wmclass` in `looking glass` for initializing status
 
 ![ascii](https://user-images.githubusercontent.com/17917040/80308786-70626f00-8803-11ea-8bbc-13d49efe4b4a.png)
 
@@ -39,13 +39,19 @@ I like the theme of Microsoft default IME. The theme contains 7 variants with di
 
 ![purple](https://user-images.githubusercontent.com/17917040/80308280-a6eaba80-8800-11ea-8b9a-c393dfdcdd44.png)
 
-### Hide Activities
-It's for my personal use and migrated from [hide-activities-button](https://extensions.gnome.org/extension/1128/hide-activities-button/)
+### Others
+Here are some functions from other extensions for my personal use:
+#### Hide Activities
+From [hide-activities-button](https://extensions.gnome.org/extension/1128/hide-activities-button/).
+
+#### Hide Minimized in AltTab
+From [hide minimized](https://extensions.gnome.org/extension/2639/hide-minimized/). I only want to hide minimized windows in AltTab.
 
 ## Acknowledgements
 
 1. [hide-activities-button](https://extensions.gnome.org/extension/1128/hide-activities-button/)
 2. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
+3. [hide-minimized](https://extensions.gnome.org/extension/2639/hide-minimized/)
 
 ## Note
 1. If you love this extension, please thumb up or comment on the upstream [issue](https://github.com/ibus/ibus/issues/1679) for native support, thanks in advance.

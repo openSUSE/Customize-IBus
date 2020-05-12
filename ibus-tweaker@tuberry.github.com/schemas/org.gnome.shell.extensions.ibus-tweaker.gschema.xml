@@ -5,6 +5,10 @@
         <default>false</default>
         <summary>activities</summary>
     </key>
+    <key type="b" name="hide-minimized">
+        <default>false</default>
+        <summary>hide minimized in AltTab</summary>
+    </key>
     <key type="b" name="enable-hotkey">
         <default>true</default>
         <summary>enable hotkey</summary>
