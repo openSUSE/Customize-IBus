@@ -21,7 +21,7 @@ class IBusAutoSwitch extends GObject.Object {
         super._init();
         this._states = {};
         this._tmpFocusWindow = '';
-        this._focusedInput = true;
+        this._focusedInput = false;
         this._asciiMode = ['en', 'EN', 'A', '英'];
     }
 
@@ -48,8 +48,7 @@ class IBusAutoSwitch extends GObject.Object {
 
     _checkStatus() {
         let fw = global.display.get_focus_window();
-        if(!fw || !this._enableSwitch)
-            return false;
+        if(!fw) return false;
 
         let tmpInputSourceState = this._asciiMode.includes(this._getInputState());
         let lastFocusWindow = this._tmpFocusWindow;
@@ -93,10 +92,9 @@ class IBusAutoSwitch extends GObject.Object {
     }
 
     _fetchSettings() {
+        this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY);
         this._asciiOnList = gsettings.get_string(Fields.ASCIIONLIST);
         this._asciiOffList = gsettings.get_string(Fields.ASCIIOFFLIST);
-        this._enableSwitch = gsettings.get_boolean(Fields.AUTOSWITCH);
-        this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY);
         this._asciiOnList.split('#').forEach(x => this._states[x] = true);
         this._asciiOffList.split('#').forEach(x => this._states[x] = false);
         if(this._shortcut) this._toggleKeybindings(true);
@@ -104,8 +102,10 @@ class IBusAutoSwitch extends GObject.Object {
 
     enable() {
         this._fetchSettings();
-        this._keybindingId = gsettings.connect(`changed::${Fields.ENABLEHOTKEY}`, () => this._toggleKeybindings(gsettings.get_boolean(Fields.ENABLEHOTKEY)));
-        this._keybindingChangedId = gsettings.connect(`changed::${Fields.SHORTCUT}`, () => this._toggleKeybindings(true));
+        this._shortcutId = gsettings.connect(`changed::${Fields.ENABLEHOTKEY}`, () => {
+            this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY);
+            this._toggleKeybindings(this._shortcut);
+        });
         this._asciiOnListId = gsettings.connect(`changed::${Fields.ASCIIONLIST}`, () => {
             this._asciiOnList = gsettings.get_string(Fields.ASCIIONLIST);
             this._asciiOnList.split('#').forEach(x => this._states[x] = true);
@@ -124,10 +124,8 @@ class IBusAutoSwitch extends GObject.Object {
             global.display.disconnect(this._onWindowChangedId), this._onWindowChangedId = null;
         if(this._cursorInId)
             IBusManager.disconnect(this._cursorInId), this._cursorInId = null;
-        if(this._keybindingId)
-            gsettings.disconnect(this._keybindingId), this._keybindingId = null;
-        if(this._keybindingChangedId)
-            gsettings.disconnect(this._keybindingChangedId), this._keybindingChangedId = null;
+        if(this._shortcutId)
+            gsettings.disconnect(this._shortcutId), this._shortcutId = null;
         if(this._asciiOnListId)
             gsettings.disconnect(this._asciiOnListId), this._asciiOnListId = null;
         if(this._asciiOffListId)
@@ -142,10 +140,9 @@ class IBusFontSetting extends GObject.Object {
     }
 
     _onFontChanged() {
-        let temp = 'font-weight: %d; font-family: "%s"; font-size: %d%s; font-style: %s;';
         let desc = Pango.FontDescription.from_string(gsettings.get_string(Fields.CUSTOMFONT));
         let get_weight = () => { try { return desc.get_weight(); } catch(e) { return parseInt(e.message); } }; //fix Pango.Weight enumeration exception (eg: 290) in some fonts
-        CandidatePopup.set_style(temp.format(
+        CandidatePopup.set_style('font-weight: %d; font-family: "%s"; font-size: %d%s; font-style: %s;'.format(
             get_weight(),
             desc.get_family(),
             desc.get_size() / Pango.SCALE,
@@ -279,15 +276,14 @@ const ActivitiesHide = GObject.registerClass(
 class ActivitiesHide extends GObject.Object{
     _init() {
         super._init();
-        this._activities = Main.panel.statusArea['activities'];
     }
 
     enable() {
-        this._activities.container.hide();
+        Main.panel.statusArea['activities'].hide();
     }
 
     disable() {
-        this._activities.container.show();
+        Main.panel.statusArea['activities'].show();
     }
 });
 
@@ -299,15 +295,12 @@ class MinimizedHide extends GObject.Object{
 
     enable() {
         this._getWindows = AltTab.getWindows;
-        AltTab.getWindows = workspace => {
-            const windows = this._getWindows(workspace);
-            return windows.filter((w, i, a) => !w.minimized);
-        };
+        AltTab.getWindows = x => this._getWindows(x).filter((w, i, a) => !w.minimized);
     }
 
     disable() {
         AltTab.getWindows = this._getWindows;
-        this._getWindows = null;
+        delete this._getWindows;
     }
 });
 
