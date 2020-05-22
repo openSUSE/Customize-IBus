@@ -1,12 +1,15 @@
 // vim:fdm=syntax
 // by tuberry@github
+'use strict';
 
 const Main = imports.ui.main;
 const AltTab = imports.ui.altTab;
-const BoxPointer = imports.ui.boxpointer;
-const { Shell, Meta, IBus, Clutter, Pango, St, GObject, Atspi, Gdk } = imports.gi;
+const { Shell, Meta, IBus, Pango, St, GObject } = imports.gi;
 
-const IBusManager = imports.misc.ibusManager.getIBusManager();
+const InputMethod = Main.inputMethod;
+const Keyboard = Main.panel.statusArea['keyboard'];
+const InputSourceManager = Keyboard._inputSourceManager;
+const IBusManager = InputSourceManager._ibusManager;
 const CandidatePopup = IBusManager._candidatePopup;
 const CandidateArea = CandidatePopup._candidateArea;
 
@@ -14,64 +17,29 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
 const Fields = Me.imports.prefs.Fields;
+const asciiModes = ['en', 'A', '英'];
+const INPUTMODE = 'InputMode';
 
 const IBusAutoSwitch = GObject.registerClass(
 class IBusAutoSwitch extends GObject.Object {
     _init() {
         super._init();
         this._states = {};
-        this._tmpFocusWindow = '';
-        this._focusedInput = false;
-        this._asciiMode = ['en', 'EN', 'A', '英'];
     }
 
     _getInputState() {
-        let inputList = Main.panel.statusArea['keyboard'].get_child_at_index(0).get_child_at_index(0);
-        if(inputList.length === 1) IBusManager._spawn(['-rd']);
-        let current = inputList.get_children().toString().split(',').findIndex(x => x.includes('last-child'));
-
-        return inputList.get_child_at_index(current).toString().split('"')[1];
-    }
-
-    _onWindowChanged() {
-        if(this._cursorInId) {
-            IBusManager.disconnect(this._cursorInId);
-            this._focusedInput = false;
-            this._cursorInId = null;
-        } else {
-            this._focusedInput = true;
-        }
-
-        if(this._checkStatus())
-            this._cursorInId = IBusManager.connect('set-cursor-location', this._onInputStatus.bind(this));
+        return asciiModes.includes(Keyboard._indicatorLabels[InputSourceManager._currentSource.index].get_text());
     }
 
     _checkStatus() {
-        let fw = global.display.get_focus_window();
-        if(!fw) return false;
+        let state = this._getInputState();
+        this._states[this._tmpWindow] = state;
 
-        let tmpInputSourceState = this._asciiMode.includes(this._getInputState());
-        let lastFocusWindow = this._tmpFocusWindow;
-        if(this._focusedInput)
-            this._states[lastFocusWindow] = tmpInputSourceState;
-        this._tmpFocusWindow = fw.wm_class;
+        let win = InputSourceManager._getCurrentWindow();
+        if(!win) return false;
+        this._tmpWindow = win.wm_class;
 
-        if(this._states[fw.wm_class] === undefined)
-            this._states[fw.wm_class] = tmpInputSourceState;
-
-        this._focusedInput = false;
-        return tmpInputSourceState^this._states[fw.wm_class];
-    }
-
-    _onInputStatus() {
-        Atspi.generate_keyboard_event(
-            Gdk.keyval_from_name('Shift_L'),
-            null,
-            Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
-        );
-        if(this._cursorInId)
-            IBusManager.disconnect(this._cursorInId);
-        this._cursorInId = null;
+        return state^this._states[this._tmpWindow];
     }
 
     _toggleKeybindings(tog) {
@@ -79,57 +47,51 @@ class IBusAutoSwitch extends GObject.Object {
             let ModeType = Shell.hasOwnProperty('ActionMode') ? Shell.ActionMode : Shell.KeyBindingMode;
             Main.wm.addKeybinding(Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, ModeType.ALL, () => {
                 Main.openRunDialog();
-                if(!this._asciiMode.includes(this._getInputState()))
-                    Atspi.generate_keyboard_event(
-                        Gdk.keyval_from_name('Shift_L'),
-                        null,
-                        Atspi.KeySynthType.PRESSRELEASE | Atspi.KeySynthType.SYM
-                    );
+                if(!this._getInputState()) IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
             });
         } else {
             Main.wm.removeKeybinding(Fields.SHORTCUT);
         }
     }
 
-    _fetchSettings() {
-        this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY);
-        this._asciiOnList = gsettings.get_string(Fields.ASCIIONLIST);
-        this._asciiOffList = gsettings.get_string(Fields.ASCIIOFFLIST);
-        this._asciiOnList.split('#').forEach(x => this._states[x] = true);
-        this._asciiOffList.split('#').forEach(x => this._states[x] = false);
-        if(this._shortcut) this._toggleKeybindings(true);
+    _onWindowChanged() {
+        if(this._checkStatus()) IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
     }
 
     enable() {
-        this._fetchSettings();
+        gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states[x] = true);
+        gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states[x] = false);
+        if(gsettings.get_boolean(Fields.ENABLEHOTKEY)) this._toggleKeybindings(true);
+
+        this._overviewHiddenId = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
+        this._overviewShowingId = Main.overview.connect('showing', this._onWindowChanged.bind(this));
+        this._onWindowChangedId = global.display.connect('notify::focus-window',  this._onWindowChanged.bind(this));
         this._shortcutId = gsettings.connect(`changed::${Fields.ENABLEHOTKEY}`, () => {
-            this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY);
-            this._toggleKeybindings(this._shortcut);
+            this._toggleKeybindings(gsettings.get_boolean(Fields.ENABLEHOTKEY));
         });
         this._asciiOnListId = gsettings.connect(`changed::${Fields.ASCIIONLIST}`, () => {
-            this._asciiOnList = gsettings.get_string(Fields.ASCIIONLIST);
-            this._asciiOnList.split('#').forEach(x => this._states[x] = true);
+            gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states[x] = true);
         });
         this._asciiOffListId = gsettings.connect(`changed::${Fields.ASCIIOFFLIST}`, () => {
-            this._asciiOffList = gsettings.get_string(Fields.ASCIIOFFLIST);
-            this._asciiOffList.split('#').forEach(x => this._states[x] = true);
+            gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states[x] = false);
         });
-        this._onWindowChangedId = global.display.connect('notify::focus-window', this._onWindowChanged.bind(this));
     }
 
     disable() {
-        if(this._shortcut)
+        if(gsettings.get_boolean(Fields.ENABLEHOTKEY))
             Main.wm.removeKeybinding(Fields.SHORTCUT);
-        if(this._onWindowChangedId)
-            global.display.disconnect(this._onWindowChangedId), this._onWindowChangedId = null;
-        if(this._cursorInId)
-            IBusManager.disconnect(this._cursorInId), this._cursorInId = null;
         if(this._shortcutId)
-            gsettings.disconnect(this._shortcutId), this._shortcutId = null;
+            gsettings.disconnect(this._shortcutId), this._shortcutId = 0;
         if(this._asciiOnListId)
-            gsettings.disconnect(this._asciiOnListId), this._asciiOnListId = null;
+            gsettings.disconnect(this._asciiOnListId), this._asciiOnListId = 0;
         if(this._asciiOffListId)
-            gsettings.disconnect(this._asciiOffListId), this._asciiOffListId = null;
+            gsettings.disconnect(this._asciiOffListId), this._asciiOffListId = 0;
+        if(this._onWindowChangedId)
+            global.display.disconnect(this._onWindowChangedId), this._onWindowChangedId = 0;
+        if(this._overviewShowingId)
+            Main.overview.disconnect(this._overviewShowingId), this._overviewShowingId = 0;
+        if(this._overviewHiddenId)
+            Main.overview.disconnect(this._overviewHiddenId), this._overviewHiddenId = 0;
     }
 });
 
@@ -256,7 +218,7 @@ class IBusThemeManager extends GObject.Object {
 
     _onThemeChanged() {
         let color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-        let func = x => x.split('candidate').join('ibus-tweaker-' + color + '-candidate');
+        let func = x => x.replace(/candidate/g, 'ibus-tweaker-' + color + '-candidate');
         this._addStyleClass(this._popup, CandidatePopup, func);
     }
 
@@ -308,15 +270,15 @@ const Extensions = GObject.registerClass(
 class Extensions extends GObject.Object{
     _init() {
         super._init();
-        this._feilds = [Fields.AUTOSWITCH, Fields.USECUSTOMFONT, Fields.ENABLEORIEN, Fields.ENABLEMSTHEME, Fields.ACTIVITIES, Fields.MINIMIZED];
     }
 
     enable() {
+        let feilds = [Fields.AUTOSWITCH, Fields.USECUSTOMFONT, Fields.ENABLEORIEN, Fields.ENABLEMSTHEME, Fields.ACTIVITIES, Fields.MINIMIZED];
         this._extensions = [new IBusAutoSwitch(), new IBusFontSetting(), new IBusOrientation(), new IBusThemeManager(), new ActivitiesHide(), new MinimizedHide()];
         this._extensions.forEach((x,i) => {
-            x._active = gsettings.get_boolean(this._feilds[i]);
+            x._active = gsettings.get_boolean(feilds[i]);
             if(x._active) x.enable();
-            x._activeId = gsettings.connect(`changed::${this._feilds[i]}`, () => {
+            x._activeId = gsettings.connect(`changed::${feilds[i]}`, () => {
                 x._active ? x.disable() : x.enable();
                 x._active = !x._active;
             });
