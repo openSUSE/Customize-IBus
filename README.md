@@ -30,7 +30,7 @@ Support font style and non-standard font weight
 ![font](https://user-images.githubusercontent.com/17917040/80307919-ba952180-87fe-11ea-80dd-661ac9e9a9b8.png)
 
 ### Candidates orientation
-Some Chinese IMEs with IBus support do not support the orientation setting of IBus. Aha funny.
+Some Chinese IMEs with IBus support do not support the orientation setting of IBus.
 
 ![luna](https://user-images.githubusercontent.com/17917040/80308136-c46b5480-87ff-11ea-8084-90fa04b132c9.png)
 
