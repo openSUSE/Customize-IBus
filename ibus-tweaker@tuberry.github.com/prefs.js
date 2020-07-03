@@ -69,8 +69,7 @@ class IBusTweaker extends Gtk.ScrolledWindow {
 
     _bulidUI() {
         this._box = new Gtk.Box({
-            margin_left: 30,
-            margin_right: 30,
+            margin: 30,
             orientation: Gtk.Orientation.VERTICAL,
         });
         this.add(this._box);

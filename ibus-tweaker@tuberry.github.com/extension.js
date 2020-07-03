@@ -107,10 +107,15 @@ class IBusFontSetting extends GObject.Object {
         CandidatePopup.set_style('font-weight: %d; font-family: "%s"; font-size: %d%s; font-style: %s;'.format(
             get_weight(),
             desc.get_family(),
-            desc.get_size() / Pango.SCALE,
+            (desc.get_size() / Pango.SCALE) - 3,
             desc.get_size_is_absolute() ? 'px' : 'pt',
             Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
         ));
+        CandidateArea._candidateBoxes.forEach(x => { x._candidateLabel.set_style('font-size: %d%s;'.format(
+                desc.get_size() / Pango.SCALE,
+                desc.get_size_is_absolute() ? 'px' : 'pt'
+            ));
+        })
     }
 
     enable() {
@@ -129,7 +134,7 @@ const IBusOrientation = GObject.registerClass(
 class IBusOrientation extends GObject.Object {
     _init() {
         super._init();
-        // some Chinese IME (ibus-rime or ibus-sunpinyin) do not obey the orientation setting of IBus
+        // some Chinese IME (ibus-rime or ibus-sunpinyin) do not respect the orientation setting of IBus
     }
 
     _originalSetOrientation(orientation) {
@@ -218,7 +223,7 @@ class IBusThemeManager extends GObject.Object {
 
     _onThemeChanged() {
         let color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-        let func = x => x.replace(/candidate/g, 'ibus-tweaker-' + color + '-candidate');
+        let func = x => x.replace(/candidate/g, `ibus-tweaker-${color}-candidate`);
         this._addStyleClass(this._popup, CandidatePopup, func);
     }
 
