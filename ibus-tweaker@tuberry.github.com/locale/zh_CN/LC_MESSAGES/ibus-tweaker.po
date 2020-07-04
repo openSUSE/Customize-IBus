@@ -1,46 +1,46 @@
 # Chinese translations for PACKAGE package.
 # Copyright (C) 2020 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# tuberry <tuberry@example.com>, 2020.
+# tubery <tuberry@example.com>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-26 05:21+0800\n"
-"PO-Revision-Date: 2020-04-26 05:21+0800\n"
-"Last-Translator: tuberry <tuberry@example.com>\n"
+"POT-Creation-Date: 2020-07-04 12:10+0800\n"
+"PO-Revision-Date: 2020-07-04 12:11+0800\n"
+"Last-Translator: tubery <tuberry@example.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: prefs.js:48
+#: prefs.js:46
 msgid "Red"
 msgstr "玫瑰红"
 
-#: prefs.js:48
+#: prefs.js:46
 msgid "Green"
 msgstr "薄荷绿"
 
-#: prefs.js:48
+#: prefs.js:46
 msgid "Orange"
 msgstr "热带橙"
 
-#: prefs.js:48
+#: prefs.js:46
 msgid "Blue"
 msgstr "科技蓝"
 
-#: prefs.js:48
+#: prefs.js:46
 msgid "Purple"
 msgstr "木槿紫"
 
-#: prefs.js:48
+#: prefs.js:46
 msgid "Turquoise"
 msgstr "水鸭青"
 
-#: prefs.js:48
+#: prefs.js:46
 msgid "Grey"
 msgstr "混沌灰"
 
@@ -60,34 +60,42 @@ msgstr "首次启动切中文"
 msgid "ascii mode on when initializing"
 msgstr "首次启动切英文"
 
-#: prefs.js:75
-msgid "Run dialog"
-msgstr "运行命令框"
-
-#: prefs.js:76
-msgid "MS IME theme"
-msgstr "仿微软主题"
-
-#: prefs.js:77
-msgid "Candidates orientation"
-msgstr "候选框方向"
-
 #: prefs.js:78
-msgid "Use custom font"
-msgstr "自定义字体"
-
-#: prefs.js:79
-msgid "Auto switch ASCII mode"
-msgstr "中英文切换"
-
 msgid "IBus"
 msgstr "输入法"
 
+#: prefs.js:79
+msgid "Night mode"
+msgstr "夜间模式"
+
+#: prefs.js:80
+msgid "Run dialog"
+msgstr "运行命令框"
+
+#: prefs.js:81
+msgid "MS IME theme"
+msgstr "仿微软主题"
+
+#: prefs.js:82
+msgid "Candidates orientation"
+msgstr "候选框方向"
+
+#: prefs.js:83
+msgid "Use custom font"
+msgstr "自定义字体"
+
+#: prefs.js:84
+msgid "Auto switch ASCII mode"
+msgstr "中英文切换"
+
+#: prefs.js:88
 msgid "Others"
 msgstr "杂项"
 
+#: prefs.js:89
 msgid "Hide Activities"
 msgstr "隐藏活动按钮"
 
+#: prefs.js:90
 msgid "Hide minimized in AltTab"
 msgstr "隐藏最小化窗口(AltTab)"

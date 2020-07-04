@@ -20,6 +20,8 @@ const Fields = Me.imports.prefs.Fields;
 const asciiModes = ['en', 'A', '英'];
 const INPUTMODE = 'InputMode';
 
+const LightProxy = Main.panel.statusArea['aggregateMenu']._nightLight._proxy;
+
 const IBusAutoSwitch = GObject.registerClass(
 class IBusAutoSwitch extends GObject.Object {
     _init() {
@@ -102,19 +104,22 @@ class IBusFontSetting extends GObject.Object {
     }
 
     _onFontChanged() {
+        let offset = 3; // the fonts-size difference between index and candidate
         let desc = Pango.FontDescription.from_string(gsettings.get_string(Fields.CUSTOMFONT));
         let get_weight = () => { try { return desc.get_weight(); } catch(e) { return parseInt(e.message); } }; //fix Pango.Weight enumeration exception (eg: 290) in some fonts
         CandidatePopup.set_style('font-weight: %d; font-family: "%s"; font-size: %d%s; font-style: %s;'.format(
             get_weight(),
             desc.get_family(),
-            (desc.get_size() / Pango.SCALE) - 3,
+            (desc.get_size() / Pango.SCALE) - offset,
             desc.get_size_is_absolute() ? 'px' : 'pt',
             Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
         ));
-        CandidateArea._candidateBoxes.forEach(x => { x._candidateLabel.set_style('font-size: %d%s;'.format(
+        CandidateArea._candidateBoxes.forEach(x => {
+            x._candidateLabel.set_style('font-size: %d%s;'.format(
                 desc.get_size() / Pango.SCALE,
                 desc.get_size_is_absolute() ? 'px' : 'pt'
             ));
+            x._indexLabel.set_style('padding: %dpx 4px 0 0;'.format(offset * 2));
         })
     }
 
@@ -127,6 +132,10 @@ class IBusFontSetting extends GObject.Object {
         if (this._customFontId)
             gsettings.disconnect(this._customFontId), this._customFontId = 0;
         CandidatePopup.set_style('');
+        CandidateArea._candidateBoxes.forEach(x => {
+            x._candidateLabel.set_style('');
+            x._indexLabel.set_style('');
+        })
     }
 });
 
@@ -222,19 +231,72 @@ class IBusThemeManager extends GObject.Object {
     }
 
     _onThemeChanged() {
-        let color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-        let func = x => x.replace(/candidate/g, `ibus-tweaker-${color}-candidate`);
-        this._addStyleClass(this._popup, CandidatePopup, func);
+        if(this._night && LightProxy.NightLightActive) {
+            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
+            this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
+            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.remove_style_class_name(this._color);
+            this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
+            CandidatePopup.add_style_class_name(this._color);
+        }
+    }
+
+    _onNightChanged() {
+        this._night = !this._night;
+        if(!LightProxy.NightLightActive) return;
+        if(this._night) {
+            CandidatePopup.remove_style_class_name(this._color);
+            CandidatePopup.add_style_class_name('night');
+            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.remove_style_class_name('night');
+            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.add_style_class_name(this._color);
+        }
+    }
+
+    _onProxyChanged() {
+        if(!this._night) return;
+        if(LightProxy.NightLightActive) {
+            CandidatePopup.remove_style_class_name(this._color);
+            CandidatePopup.add_style_class_name('night');
+            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.remove_style_class_name('night');
+            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.add_style_class_name(this._color);
+        }
     }
 
     enable() {
-        this._onThemeChanged();
+        this._addStyleClass(this._popup, CandidatePopup,  x => x.replace(/candidate/g, `ibus-tweaker-candidate`));
+        this._night = gsettings.get_boolean(Fields.MSTHEMENIGHT);
+        this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
+        if(this._night && LightProxy.NightLightActive) {
+            CandidatePopup.add_style_class_name('night');
+            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.add_style_class_name(this._color);
+        }
+        this._nightChanhedId = gsettings.connect(`changed::${Fields.MSTHEMENIGHT}`, this._onNightChanged.bind(this));
         this._themeChangedId = gsettings.connect(`changed::${Fields.MSTHEMECOLOUR}`, this._onThemeChanged.bind(this));
+        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
     }
 
     disable() {
+        if(this._nightChanhedId)
+            gsettings.disconnect(this._nightChanhedId), this._nightChanhedId = 0;
         if(this._themeChangedId)
             gsettings.disconnect(this._themeChangedId), this._themeChangedId = 0;
+        if(this._proxyChangedId)
+            LightProxy.disconnect(this._proxyChangedId), this._proxyChangedId = 0;
+        if(LightProxy.NightLightActive) {
+            CandidatePopup.remove_style_class_name('night');
+            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.remove_style_class_name(this._color);
+        }
         this._addStyleClass(this._popup, CandidatePopup, x => x);
     }
 });

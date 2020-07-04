@@ -16,7 +16,7 @@ cp -r './ibus-tweaker/ibus-tweaker@tuberry.github.com' ~/.local/share/gnome-shel
 
 ## Features
 
-![ibus-tweaker](https://user-images.githubusercontent.com/17917040/80307808-01cee280-87fe-11ea-9f44-267bd7a8805f.png)
+![ibus-tweaker](https://user-images.githubusercontent.com/17917040/86506643-e1299700-be03-11ea-88e8-5f3818fdf23b.png)
 
 ### ASCII mode auto switch
 
@@ -27,25 +27,26 @@ Fill the blanks with `wmclass` in `looking glass` for initializing status
 ### Candidates font
 Support font style and non-standard font weight
 
-![font](https://user-images.githubusercontent.com/17917040/80307919-ba952180-87fe-11ea-80dd-661ac9e9a9b8.png)
+![font](https://user-images.githubusercontent.com/17917040/86506736-e76c4300-be04-11ea-866a-216b558bca93.png)
 
 ### Candidates orientation
-Some Chinese IMEs with IBus support do not support the orientation setting of IBus.
+Some IMEs do not respect the orientation setting of IBus.
 
-![luna](https://user-images.githubusercontent.com/17917040/80308136-c46b5480-87ff-11ea-8084-90fa04b132c9.png)
+![lua](https://user-images.githubusercontent.com/17917040/86506816-9a3ca100-be05-11ea-8db7-f9b0f02b29d8.png)
 
 ### MS style theme
-I like the theme of Microsoft default IME. The theme contains 7 variants with different colors of my Vim colorscheme
+The theme, imitating the theme of Microsoft default IME, contains 7*2 (night mode) variants  in different colors of my Vim colorscheme.
+Actually, they aren't well-designed so you are welcome to make a pr after playing with the `skin.py` script.
 
-![purple](https://user-images.githubusercontent.com/17917040/80308280-a6eaba80-8800-11ea-8b9a-c393dfdcdd44.png)
+![purple](https://user-images.githubusercontent.com/17917040/86507017-5e0a4000-be07-11ea-92e2-ad5dc0c285f0.png)
 
 ### Others
-Here are some functions from other extensions for my personal use:
+Here are some functions from other extensions for personal use:
 #### Hide Activities
 From [hide-activities-button](https://extensions.gnome.org/extension/1128/hide-activities-button/).
 
 #### Hide Minimized in AltTab
-From [hide minimized](https://extensions.gnome.org/extension/2639/hide-minimized/). I only want to hide minimized windows in AltTab.
+From [hide minimized](https://extensions.gnome.org/extension/2639/hide-minimized/).
 
 ## Acknowledgements
 

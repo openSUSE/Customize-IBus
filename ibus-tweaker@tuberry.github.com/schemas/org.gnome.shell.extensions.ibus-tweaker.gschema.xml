@@ -25,6 +25,10 @@
         <default>false</default>
         <summary>enable MS theme</summary>
     </key>
+    <key type="b" name="enable-night-mode">
+        <default>false</default>
+        <summary>enable night mode autoswitch</summary>
+    </key>
     <key type="u" name="candidate-orientation">
         <default>0</default>
         <summary>candidate orientation</summary>
