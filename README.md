@@ -35,10 +35,14 @@ Some IMEs do not respect the orientation setting of IBus.
 ![lua](https://user-images.githubusercontent.com/17917040/86506816-9a3ca100-be05-11ea-8db7-f9b0f02b29d8.png)
 
 ### MS style theme
-The theme, imitating the theme of Microsoft default IME, contains 7*2 (night mode) variants  in different colors of my Vim colorscheme.
+The theme, imitating Microsoft default IME, contains 7*2 (night mode) variants in different colors of my Vim colorscheme.
 Actually, they aren't well-designed so you are welcome to make a pr after playing with the `skin.py` script.
 
 ![purple](https://user-images.githubusercontent.com/17917040/86507017-5e0a4000-be07-11ea-92e2-ad5dc0c285f0.png)
+
+By the way, you could have a better experience using `single-line` mode. see this [patch](https://github.com/rime/ibus-rime/pull/102) or [ibus-libpinyin-1.11.92](https://github.com/libpinyin/ibus-libpinyin/releases/tag/1.11.92) for details.
+
+![compact](https://user-images.githubusercontent.com/17917040/86770514-62db2800-c083-11ea-966c-481546d01c12.png)
 
 ### Others
 Here are some functions from other extensions for personal use:
