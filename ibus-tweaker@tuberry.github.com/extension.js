@@ -26,7 +26,8 @@ const IBusAutoSwitch = GObject.registerClass(
 class IBusAutoSwitch extends GObject.Object {
     _init() {
         super._init();
-        this._states = {};
+        this._states = null;
+        this._tmpWindow = '';
     }
 
     _getInputState() {
@@ -35,13 +36,13 @@ class IBusAutoSwitch extends GObject.Object {
 
     _checkStatus() {
         let state = this._getInputState();
-        this._states[this._tmpWindow] = state;
+        this._states.set(this._tmpWindow, state);
 
         let win = InputSourceManager._getCurrentWindow();
         if(!win) return false;
         this._tmpWindow = win.wm_class;
 
-        return state^this._states[this._tmpWindow];
+        return state^this._states.get(this._tmpWindow);
     }
 
     _toggleKeybindings(tog) {
@@ -57,12 +58,14 @@ class IBusAutoSwitch extends GObject.Object {
     }
 
     _onWindowChanged() {
-        if(this._checkStatus()) IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+        if(this._checkStatus() && IBusManager._panelService)
+            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
     }
 
     enable() {
-        gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states[x] = true);
-        gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states[x] = false);
+        this._states = new Map();
+        gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x, true));
+        gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x, false));
         if(gsettings.get_boolean(Fields.ENABLEHOTKEY)) this._toggleKeybindings(true);
 
         this._overviewHiddenId = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
@@ -72,14 +75,15 @@ class IBusAutoSwitch extends GObject.Object {
             this._toggleKeybindings(gsettings.get_boolean(Fields.ENABLEHOTKEY));
         });
         this._asciiOnListId = gsettings.connect(`changed::${Fields.ASCIIONLIST}`, () => {
-            gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states[x] = true);
+            gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x, true));
         });
         this._asciiOffListId = gsettings.connect(`changed::${Fields.ASCIIOFFLIST}`, () => {
-            gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states[x] = false);
+            gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x, false));
         });
     }
 
     disable() {
+        this._states = null;
         if(gsettings.get_boolean(Fields.ENABLEHOTKEY))
             Main.wm.removeKeybinding(Fields.SHORTCUT);
         if(this._shortcutId)
@@ -107,18 +111,14 @@ class IBusFontSetting extends GObject.Object {
         let offset = 3; // the fonts-size difference between index and candidate
         let desc = Pango.FontDescription.from_string(gsettings.get_string(Fields.CUSTOMFONT));
         let get_weight = () => { try { return desc.get_weight(); } catch(e) { return parseInt(e.message); } }; //fix Pango.Weight enumeration exception (eg: 290) in some fonts
-        CandidatePopup.set_style('font-weight: %d; font-family: "%s"; font-size: %d%s; font-style: %s;'.format(
+        CandidatePopup.set_style('font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
             get_weight(),
             desc.get_family(),
             (desc.get_size() / Pango.SCALE) - offset,
-            desc.get_size_is_absolute() ? 'px' : 'pt',
             Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
         ));
         CandidateArea._candidateBoxes.forEach(x => {
-            x._candidateLabel.set_style('font-size: %d%s;'.format(
-                desc.get_size() / Pango.SCALE,
-                desc.get_size_is_absolute() ? 'px' : 'pt'
-            ));
+            x._candidateLabel.set_style('font-size: %dpt;'.format(desc.get_size() / Pango.SCALE));
             x._indexLabel.set_style('padding: %dpx 4px 0 0;'.format(offset * 2));
         })
     }
@@ -143,7 +143,6 @@ const IBusOrientation = GObject.registerClass(
 class IBusOrientation extends GObject.Object {
     _init() {
         super._init();
-        // some Chinese IME (ibus-rime or ibus-sunpinyin) do not respect the orientation setting of IBus
     }
 
     _originalSetOrientation(orientation) {
