@@ -37,7 +37,7 @@
 }
 
 .ibus-tweaker-candidate-popup-boxpointer {
-    -arrow-border-radius: 0;
+    -arrow-border-radius: 10px;
     -arrow-rise: 5px;
 }
 
@@ -47,7 +47,7 @@
 
 
 .ibus-tweaker-candidate-popup-content {
-    color: rgba(0, 0, 0, 0.9);
+    color: rgba(0, 0, 0, 0.95);
     background-color: rgba(255, 255, 255, 1);
 }
 
@@ -56,11 +56,11 @@
 }
 
 .ibus-tweaker-candidate-box .ibus-tweaker-candidate-index {
-    color: rgba(0, 0, 0, 0.6);
+    color: rgba(0, 0, 0, 0.5);
 }
 
 .night .ibus-tweaker-candidate-popup-content {
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.95);
     background-color: rgba(56, 56, 56, 1);
 }
 
@@ -69,7 +69,7 @@
 }
 
 .night .ibus-tweaker-candidate-box .ibus-tweaker-candidate-index {
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /*
@@ -82,15 +82,15 @@
  */
 .red .ibus-tweaker-candidate-popup-content,
 .red .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(252, 142, 158, 0.9);
+    border-color: rgba(252, 142, 158, 0.95);
 }
 
 .red .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(252, 142, 158, 0.6);
+    background-color: rgba(252, 142, 158, 0.5);
 }
 
 .red .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(252, 142, 158, 0.9);
+    background-color: rgba(252, 142, 158, 0.95);
 }
 
 /*
@@ -98,15 +98,15 @@
  */
 .night-red .ibus-tweaker-candidate-popup-content,
 .night-red .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(222, 49, 99, 0.9);
+    border-color: rgba(222, 49, 99, 0.95);
 }
 
 .night-red .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(222, 49, 99, 0.6);
+    background-color: rgba(222, 49, 99, 0.5);
 }
 
 .night-red .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(222, 49, 99, 0.9);
+    background-color: rgba(222, 49, 99, 0.95);
 }
 
 
@@ -115,31 +115,31 @@
  */
 .green .ibus-tweaker-candidate-popup-content,
 .green .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(132, 237, 117, 0.9);
+    border-color: rgba(132, 237, 117, 0.95);
 }
 
 .green .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(132, 237, 117, 0.6);
+    background-color: rgba(132, 237, 117, 0.5);
 }
 
 .green .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(132, 237, 117, 0.9);
+    background-color: rgba(132, 237, 117, 0.95);
 }
 
 /*
- *  #20B51A
+ *  #20A51A
  */
 .night-green .ibus-tweaker-candidate-popup-content,
 .night-green .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(32, 181, 26, 0.9);
+    border-color: rgba(32, 165, 26, 0.95);
 }
 
 .night-green .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(32, 181, 26, 0.6);
+    background-color: rgba(32, 165, 26, 0.5);
 }
 
 .night-green .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(32, 181, 26, 0.9);
+    background-color: rgba(32, 165, 26, 0.95);
 }
 
 
@@ -148,48 +148,48 @@
  */
 .orange .ibus-tweaker-candidate-popup-content,
 .orange .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(250, 152, 106, 0.9);
+    border-color: rgba(250, 152, 106, 0.95);
 }
 
 .orange .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(250, 152, 106, 0.6);
+    background-color: rgba(250, 152, 106, 0.5);
 }
 
 .orange .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(250, 152, 106, 0.9);
+    background-color: rgba(250, 152, 106, 0.95);
 }
 
 /*
- *  #E17339
+ *  #D35019
  */
 .night-orange .ibus-tweaker-candidate-popup-content,
 .night-orange .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(225, 115, 57, 0.9);
+    border-color: rgba(211, 80, 25, 0.95);
 }
 
 .night-orange .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(225, 115, 57, 0.6);
+    background-color: rgba(211, 80, 25, 0.5);
 }
 
 .night-orange .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(225, 115, 57, 0.9);
+    background-color: rgba(211, 80, 25, 0.95);
 }
 
 
 /*
- *  #68B8FC
+ *  #58B8FC
  */
 .blue .ibus-tweaker-candidate-popup-content,
 .blue .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(104, 184, 252, 0.9);
+    border-color: rgba(88, 184, 252, 0.95);
 }
 
 .blue .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(104, 184, 252, 0.6);
+    background-color: rgba(88, 184, 252, 0.5);
 }
 
 .blue .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(104, 184, 252, 0.9);
+    background-color: rgba(88, 184, 252, 0.95);
 }
 
 /*
@@ -197,15 +197,15 @@
  */
 .night-blue .ibus-tweaker-candidate-popup-content,
 .night-blue .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(18, 120, 212, 0.9);
+    border-color: rgba(18, 120, 212, 0.95);
 }
 
 .night-blue .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(18, 120, 212, 0.6);
+    background-color: rgba(18, 120, 212, 0.5);
 }
 
 .night-blue .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(18, 120, 212, 0.9);
+    background-color: rgba(18, 120, 212, 0.95);
 }
 
 
@@ -214,31 +214,31 @@
  */
 .purple .ibus-tweaker-candidate-popup-content,
 .purple .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(234, 146, 226, 0.9);
+    border-color: rgba(234, 146, 226, 0.95);
 }
 
 .purple .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(234, 146, 226, 0.6);
+    background-color: rgba(234, 146, 226, 0.5);
 }
 
 .purple .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(234, 146, 226, 0.9);
+    background-color: rgba(234, 146, 226, 0.95);
 }
 
 /*
- *  #A951B4
+ *  #A941B4
  */
 .night-purple .ibus-tweaker-candidate-popup-content,
 .night-purple .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(169, 81, 180, 0.9);
+    border-color: rgba(169, 65, 180, 0.95);
 }
 
 .night-purple .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(169, 81, 180, 0.6);
+    background-color: rgba(169, 65, 180, 0.5);
 }
 
 .night-purple .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(169, 81, 180, 0.9);
+    background-color: rgba(169, 65, 180, 0.95);
 }
 
 
@@ -247,15 +247,15 @@
  */
 .turquoise .ibus-tweaker-candidate-popup-content,
 .turquoise .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(94, 210, 215, 0.9);
+    border-color: rgba(94, 210, 215, 0.95);
 }
 
 .turquoise .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(94, 210, 215, 0.6);
+    background-color: rgba(94, 210, 215, 0.5);
 }
 
 .turquoise .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(94, 210, 215, 0.9);
+    background-color: rgba(94, 210, 215, 0.95);
 }
 
 /*
@@ -263,32 +263,32 @@
  */
 .night-turquoise .ibus-tweaker-candidate-popup-content,
 .night-turquoise .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(18, 143, 147, 0.9);
+    border-color: rgba(18, 143, 147, 0.95);
 }
 
 .night-turquoise .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(18, 143, 147, 0.6);
+    background-color: rgba(18, 143, 147, 0.5);
 }
 
 .night-turquoise .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(18, 143, 147, 0.9);
+    background-color: rgba(18, 143, 147, 0.95);
 }
 
 
 /*
- *  #BCBAB9
+ *  #CCCCCC
  */
 .grey .ibus-tweaker-candidate-popup-content,
 .grey .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(188, 186, 185, 0.9);
+    border-color: rgba(204, 204, 204, 0.95);
 }
 
 .grey .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(188, 186, 185, 0.6);
+    background-color: rgba(204, 204, 204, 0.5);
 }
 
 .grey .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(188, 186, 185, 0.9);
+    background-color: rgba(204, 204, 204, 0.95);
 }
 
 /*
@@ -296,14 +296,14 @@
  */
 .night-grey .ibus-tweaker-candidate-popup-content,
 .night-grey .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(102, 102, 102, 0.9);
+    border-color: rgba(102, 102, 102, 0.95);
 }
 
 .night-grey .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(102, 102, 102, 0.6);
+    background-color: rgba(102, 102, 102, 0.5);
 }
 
 .night-grey .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(102, 102, 102, 0.9);
+    background-color: rgba(102, 102, 102, 0.95);
 }
 
