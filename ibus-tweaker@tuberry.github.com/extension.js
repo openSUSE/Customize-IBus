@@ -6,7 +6,6 @@ const Main = imports.ui.main;
 const AltTab = imports.ui.altTab;
 const { Shell, Meta, IBus, Pango, St, GObject } = imports.gi;
 
-const InputMethod = Main.inputMethod;
 const Keyboard = Main.panel.statusArea['keyboard'];
 const InputSourceManager = Keyboard._inputSourceManager;
 const IBusManager = InputSourceManager._ibusManager;
