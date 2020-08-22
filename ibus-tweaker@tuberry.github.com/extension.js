@@ -452,6 +452,7 @@ class Extensions extends GObject.Object{
             if(x._active) x.disable();
             if(x._activeId) gsettings.disconnect(x._activeId), x._activeId = 0;
         });
+        this._extensions = null;
     }
 });
 
