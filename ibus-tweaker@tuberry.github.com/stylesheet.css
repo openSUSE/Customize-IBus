@@ -37,6 +37,7 @@
 }
 
 .ibus-tweaker-candidate-popup-boxpointer {
+    -arrow-background-color: transparent;
     -arrow-border-radius: 12px;
     -arrow-rise: 5px;
 }

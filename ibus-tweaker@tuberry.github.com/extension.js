@@ -3,10 +3,12 @@
 'use strict';
 
 const Main = imports.ui.main;
+const Panel = imports.ui.panel;
+const PanelMenu = imports.ui.panelMenu;
 const AltTab = imports.ui.altTab;
-const { Shell, Meta, IBus, Pango, St, GObject } = imports.gi;
+const { Shell, Clutter, Gio, GLib, Meta, IBus, Pango, St, GObject } = imports.gi;
 
-const Keyboard = Main.panel.statusArea['keyboard'];
+const Keyboard = Main.panel.statusArea.keyboard;
 const InputSourceManager = Keyboard._inputSourceManager;
 const IBusManager = InputSourceManager._ibusManager;
 const CandidatePopup = IBusManager._candidatePopup;
@@ -29,27 +31,26 @@ class IBusAutoSwitch extends GObject.Object {
         this._tmpWindow = '';
     }
 
-    _getInputState() {
+    get _state() {
         return asciiModes.includes(Keyboard._indicatorLabels[InputSourceManager._currentSource.index].get_text());
     }
 
-    _checkStatus() {
-        let state = this._getInputState();
+    get _toggle() {
+        let state = this._state;
         this._states.set(this._tmpWindow, state);
 
         let win = InputSourceManager._getCurrentWindow();
         if(!win) return false;
-        this._tmpWindow = win.wm_class;
+        this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : '';
 
         return state^this._states.get(this._tmpWindow);
     }
 
     _toggleKeybindings(tog) {
         if(tog) {
-            let ModeType = Shell.hasOwnProperty('ActionMode') ? Shell.ActionMode : Shell.KeyBindingMode;
-            Main.wm.addKeybinding(Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, ModeType.ALL, () => {
+            Main.wm.addKeybinding(Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, Shell.ActionMode.ALL, () => {
                 Main.openRunDialog();
-                if(!this._getInputState()) IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+                if(!this._state) IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
             });
         } else {
             Main.wm.removeKeybinding(Fields.SHORTCUT);
@@ -57,14 +58,14 @@ class IBusAutoSwitch extends GObject.Object {
     }
 
     _onWindowChanged() {
-        if(this._checkStatus() && IBusManager._panelService)
+        if(this._toggle && IBusManager._panelService)
             IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
     }
 
     enable() {
         this._states = new Map();
-        gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x, true));
-        gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x, false));
+        gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), true));
+        gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), false));
         if(gsettings.get_boolean(Fields.ENABLEHOTKEY)) this._toggleKeybindings(true);
 
         this._overviewHiddenId = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
@@ -74,10 +75,10 @@ class IBusAutoSwitch extends GObject.Object {
             this._toggleKeybindings(gsettings.get_boolean(Fields.ENABLEHOTKEY));
         });
         this._asciiOnListId = gsettings.connect(`changed::${Fields.ASCIIONLIST}`, () => {
-            gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x, true));
+            gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), true));
         });
         this._asciiOffListId = gsettings.connect(`changed::${Fields.ASCIIOFFLIST}`, () => {
-            gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x, false));
+            gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), false));
         });
     }
 
@@ -331,6 +332,86 @@ class MinimizedHide extends GObject.Object{
     }
 });
 
+const UpdatesIndicator = GObject.registerClass(
+class UpdatesIndicator extends GObject.Object{
+    _init() {
+        super._init();
+    }
+
+    enable() {
+        this._checkUpdates();
+        this._checkUpdatesId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 60 * 60, this._checkUpdates.bind(this));
+    }
+
+    _checkUpdates() {
+        let proc = new Gio.Subprocess({
+            argv: ['/bin/bash', '-c', gsettings.get_string(Fields.CHECKUPDATES)],
+            flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+        });
+        proc.init(null);
+        proc.communicate_utf8_async(null, null, (proc, res) => {
+            try {
+                let [, stdout, stderr] = proc.communicate_utf8_finish(res);
+                if(proc.get_exit_status() == 0 && stdout.trim() != '0') {
+                    this._addButton(stdout.trim());
+                } else {
+                    this._checkUpdated();
+                }
+            } catch(e) {
+                Main.notifyError(Me.metadata.name, e.message);
+            }
+        });
+    }
+
+    _addButton(count) {
+        if(this._button) {
+            this._button.label.set_text(count.toString());
+            return;
+        }
+        this._button = new PanelMenu.Button(null);
+        let box = new St.BoxLayout({
+            vertical: false,
+            style_class: 'panel-status-menu-box'
+        });
+        let icon = new St.Icon({
+            style_class: 'system-status-icon',
+            icon_name: 'software-update-available-symbolic',
+        });
+        this._button.label = new St.Label({
+            y_expand: false,
+            text: count.toString(),
+            y_align: Clutter.ActorAlign.CENTER
+        });
+        box.add_child(icon);
+        box.add_child(this._button.label);
+        this._button.add_child(box);
+        Main.panel.addToStatusArea(Me.metadata.name, this._button);
+
+        let dir = Gio.file_new_for_path(gsettings.get_string(Fields.UPDATESDIR));
+        this._fileMonitor = dir.monitor_directory(Gio.FileMonitorFlags.NONE, null);
+        this._fileChangedId = this._fileMonitor.connect('changed', () => {
+            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 10, () => {
+                this._checkUpdates();
+                return GLib.SOURCE_REMOVE;
+            });
+        });
+    }
+
+    _checkUpdated() {
+        if(this._button) {
+            this._button.destroy();
+            this._button = null;
+        }
+        if(this._fileChangedId) this._fileMonitor.disconnect(this._fileChangedId), this._fileChangedId = 0;
+        this._fileMonitor = null;
+    }
+
+    disable() {
+        if(this._checkUpdatesId) GLib.source_remove(this._checkUpdatesId), this._checkUpdatesId = 0;
+        this._checkUpdated();
+    }
+});
+
 const Extensions = GObject.registerClass(
 class Extensions extends GObject.Object{
     _init() {
@@ -338,8 +419,24 @@ class Extensions extends GObject.Object{
     }
 
     enable() {
-        let feilds = [Fields.AUTOSWITCH, Fields.USECUSTOMFONT, Fields.ENABLEORIEN, Fields.ENABLEMSTHEME, Fields.ACTIVITIES, Fields.MINIMIZED];
-        this._extensions = [new IBusAutoSwitch(), new IBusFontSetting(), new IBusOrientation(), new IBusThemeManager(), new ActivitiesHide(), new MinimizedHide()];
+        let feilds = [
+            Fields.AUTOSWITCH,
+            Fields.USECUSTOMFONT,
+            Fields.ENABLEORIEN,
+            Fields.ENABLEMSTHEME,
+            Fields.ACTIVITIES,
+            Fields.MINIMIZED,
+            Fields.ENABLEUPDATES
+        ];
+        this._extensions = [
+            new IBusAutoSwitch(),
+            new IBusFontSetting(),
+            new IBusOrientation(),
+            new IBusThemeManager(),
+            new ActivitiesHide(),
+            new MinimizedHide(),
+            new UpdatesIndicator()
+        ];
         this._extensions.forEach((x,i) => {
             x._active = gsettings.get_boolean(feilds[i]);
             if(x._active) x.enable();
@@ -355,7 +452,6 @@ class Extensions extends GObject.Object{
             if(x._active) x.disable();
             if(x._activeId) gsettings.disconnect(x._activeId), x._activeId = 0;
         });
-        this._extensions = null;
     }
 });
 
