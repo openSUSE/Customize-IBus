@@ -110,6 +110,7 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         });
         this._field_enable_ms_theme.connect('notify::active', widget => {
             this._field_theme_color.set_sensitive(widget.active);
+            this._field_enable_night.set_sensitive(widget.active);
         });
         this._field_custom_font.connect('font-set', widget => {
             ibusGsettings.set_string('custom-font', widget.font_name);
@@ -122,6 +123,7 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         this._field_run_dialog.set_sensitive(this._field_enable_hotkey.active);
         this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
         this._field_theme_color.set_sensitive(this._field_enable_ms_theme.active);
+        this._field_enable_night.set_sensitive(this._field_enable_ms_theme.active);
     }
 
     _bindValues() {

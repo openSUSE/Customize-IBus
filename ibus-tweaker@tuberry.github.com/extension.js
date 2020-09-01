@@ -21,7 +21,7 @@ const Fields = Me.imports.prefs.Fields;
 const asciiModes = ['en', 'A', '英'];
 const INPUTMODE = 'InputMode';
 
-const LightProxy = Main.panel.statusArea['aggregateMenu']._nightLight._proxy;
+const LightProxy = Main.panel.statusArea.aggregateMenu._nightLight._proxy;
 
 const IBusAutoSwitch = GObject.registerClass(
 class IBusAutoSwitch extends GObject.Object {
@@ -338,11 +338,6 @@ class UpdatesIndicator extends GObject.Object{
         super._init();
     }
 
-    enable() {
-        this._checkUpdates();
-        this._checkUpdatesId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 60 * 60, this._checkUpdates.bind(this));
-    }
-
     _checkUpdates() {
         let proc = new Gio.Subprocess({
             argv: ['/bin/bash', '-c', gsettings.get_string(Fields.CHECKUPDATES)],
@@ -352,23 +347,35 @@ class UpdatesIndicator extends GObject.Object{
         proc.communicate_utf8_async(null, null, (proc, res) => {
             try {
                 let [, stdout, stderr] = proc.communicate_utf8_finish(res);
-                if(proc.get_exit_status() == 0 && stdout.trim() != '0') {
-                    this._addButton(stdout.trim());
-                } else {
-                    this._checkUpdated();
-                }
+                if(proc.get_exit_status() == 0)
+                    this._showUpdates(stdout.trim());
             } catch(e) {
                 Main.notifyError(Me.metadata.name, e.message);
             }
         });
     }
 
-    _addButton(count) {
-        if(this._button) {
+    _showUpdates(count) {
+        if(!this._button) return;
+        if(count == '0') {
+            this._button.hide();
+            this._checkUpdated();
+        } else {
+            let dir = Gio.file_new_for_path(gsettings.get_string(Fields.UPDATESDIR));
+            this._fileMonitor = dir.monitor_directory(Gio.FileMonitorFlags.NONE, null);
+            this._fileChangedId = this._fileMonitor.connect('changed', () => {
+                GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 10, () => {
+                    this._checkUpdates();
+                    return GLib.SOURCE_REMOVE;
+                });
+            });
             this._button.label.set_text(count.toString());
-            return;
+            this._button.show();
         }
-        this._button = new PanelMenu.Button(null);
+    }
+
+    _addButton() {
+        this._button = new PanelMenu.Button(0, 'Updates Indicator', true);
         let box = new St.BoxLayout({
             vertical: false,
             style_class: 'panel-status-menu-box'
@@ -379,36 +386,32 @@ class UpdatesIndicator extends GObject.Object{
         });
         this._button.label = new St.Label({
             y_expand: false,
-            text: count.toString(),
+            text: '0',
             y_align: Clutter.ActorAlign.CENTER
         });
         box.add_child(icon);
         box.add_child(this._button.label);
-        this._button.add_child(box);
-        Main.panel.addToStatusArea(Me.metadata.name, this._button);
-
-        let dir = Gio.file_new_for_path(gsettings.get_string(Fields.UPDATESDIR));
-        this._fileMonitor = dir.monitor_directory(Gio.FileMonitorFlags.NONE, null);
-        this._fileChangedId = this._fileMonitor.connect('changed', () => {
-            GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 10, () => {
-                this._checkUpdates();
-                return GLib.SOURCE_REMOVE;
-            });
-        });
+        this._button.add_actor(box);
+        Main.panel.addToStatusArea(Me.metadata.name, this._button, 5, 'center');
+        this._button.hide();
     }
 
     _checkUpdated() {
-        if(this._button) {
-            this._button.destroy();
-            this._button = null;
-        }
         if(this._fileChangedId) this._fileMonitor.disconnect(this._fileChangedId), this._fileChangedId = 0;
         this._fileMonitor = null;
+    }
+
+    enable() {
+        this._addButton();
+        this._checkUpdates();
+        this._checkUpdatesId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 60 * 60, this._checkUpdates.bind(this));
     }
 
     disable() {
         if(this._checkUpdatesId) GLib.source_remove(this._checkUpdatesId), this._checkUpdatesId = 0;
         this._checkUpdated();
+        this._button.destroy();
+        this._button = null;
     }
 });
 
