@@ -49,8 +49,8 @@ class IBusAutoSwitch extends GObject.Object {
     _toggleKeybindings(tog) {
         if(tog) {
             Main.wm.addKeybinding(Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, Shell.ActionMode.ALL, () => {
-                Main.openRunDialog();
                 if(!this._state) IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+                Main.openRunDialog();
             });
         } else {
             Main.wm.removeKeybinding(Fields.SHORTCUT);
