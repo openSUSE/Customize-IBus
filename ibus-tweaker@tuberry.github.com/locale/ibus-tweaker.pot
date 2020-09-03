@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-07-04 12:10+0800\n"
+"POT-Creation-Date: 2020-09-04 04:55+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,86 +17,106 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: prefs.js:46
+#: prefs.js:51
 msgid "Red"
 msgstr ""
 
-#: prefs.js:46
+#: prefs.js:51
 msgid "Green"
 msgstr ""
 
-#: prefs.js:46
+#: prefs.js:51
 msgid "Orange"
 msgstr ""
 
-#: prefs.js:46
+#: prefs.js:51
 msgid "Blue"
 msgstr ""
 
-#: prefs.js:46
+#: prefs.js:51
 msgid "Purple"
 msgstr ""
 
-#: prefs.js:46
+#: prefs.js:51
 msgid "Turquoise"
 msgstr ""
 
-#: prefs.js:46
+#: prefs.js:51
 msgid "Grey"
 msgstr ""
 
-#: prefs.js:67
+#: prefs.js:72
+msgid "Light"
+msgstr ""
+
+#: prefs.js:72
+msgid "Dark"
+msgstr ""
+
+#: prefs.js:73
 msgid "Vertical"
 msgstr ""
 
-#: prefs.js:67
+#: prefs.js:73
 msgid "Horizontal"
 msgstr ""
 
-#: prefs.js:68
+#: prefs.js:74
+msgid "On"
+msgstr ""
+
+#: prefs.js:74
+msgid "Off"
+msgstr ""
+
+#: prefs.js:74
+msgid "Default"
+msgstr ""
+
+#: prefs.js:75
 msgid "ascii mode off when initializing"
 msgstr ""
 
-#: prefs.js:69
+#: prefs.js:76
 msgid "ascii mode on when initializing"
 msgstr ""
 
-#: prefs.js:78
+#: prefs.js:85
 msgid "IBus"
 msgstr ""
 
-#: prefs.js:79
+#: prefs.js:86
 msgid "Night mode"
 msgstr ""
 
-#: prefs.js:80
+#: prefs.js:87
 msgid "Run dialog"
 msgstr ""
 
-#: prefs.js:81
+#: prefs.js:88
 msgid "MS IME theme"
 msgstr ""
 
-#: prefs.js:82
+#: prefs.js:89
 msgid "Candidates orientation"
 msgstr ""
 
-#: prefs.js:83
+#: prefs.js:90
 msgid "Use custom font"
 msgstr ""
 
-#: prefs.js:84
+#: prefs.js:91
 msgid "Auto switch ASCII mode"
 msgstr ""
 
-#: prefs.js:88
+#: prefs.js:95
 msgid "Others"
 msgstr ""
 
-#: prefs.js:89
+#: prefs.js:96
 msgid "Hide Activities"
 msgstr ""
 
-#: prefs.js:90
+#: prefs.js:97
 msgid "Hide minimized in AltTab"
 msgstr ""

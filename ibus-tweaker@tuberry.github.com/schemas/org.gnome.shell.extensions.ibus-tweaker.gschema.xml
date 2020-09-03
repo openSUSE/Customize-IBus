@@ -33,9 +33,17 @@
         <default>0</default>
         <summary>candidate orientation</summary>
     </key>
+    <key type="u" name="default-variant">
+        <default>0</default>
+        <summary>default color vatiant(light or dark)</summary>
+    </key>
     <key type="u" name="ms-theme-color">
         <default>3</default>
         <summary>MS theme color</summary>
+    </key>
+    <key type="u" name="unkown-ascii-state">
+        <default>2</default>
+        <summary>input state of a new unknown window</summary>
     </key>
     <key type="b" name="enable-auto-switch">
         <default>true</default>

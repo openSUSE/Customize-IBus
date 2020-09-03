@@ -18,6 +18,8 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
 const Fields = Me.imports.prefs.Fields;
+const UNKNOWN = { 'ON': 0, 'OFF': 1, 'DEFAULT': 2 };
+const STYLE = { 'LIGHT': 0, 'DARK': 1 };
 const asciiModes = ['en', 'A', '英'];
 const INPUTMODE = 'InputMode';
 
@@ -42,8 +44,11 @@ class IBusAutoSwitch extends GObject.Object {
         let win = InputSourceManager._getCurrentWindow();
         if(!win) return false;
         this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : '';
-
-        return state^this._states.get(this._tmpWindow);
+        if(!this._states.has(this._tmpWindow)) {
+            return this._unknown == UNKNOWN.DEFAULT ? false : state^(this._unknown == UNKNOWN.ON)
+        } else {
+            return state^this._states.get(this._tmpWindow);
+        }
     }
 
     _toggleKeybindings(tog) {
@@ -64,6 +69,7 @@ class IBusAutoSwitch extends GObject.Object {
 
     enable() {
         this._states = new Map();
+        this._unknown = gsettings.get_uint(Fields.UNKNOWNSTATE);
         gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), true));
         gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), false));
         if(gsettings.get_boolean(Fields.ENABLEHOTKEY)) this._toggleKeybindings(true);
@@ -80,12 +86,17 @@ class IBusAutoSwitch extends GObject.Object {
         this._asciiOffListId = gsettings.connect(`changed::${Fields.ASCIIOFFLIST}`, () => {
             gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), false));
         });
+        this._unknownId = gsettings.connect(`changed::${Fields.UNKNOWNSTATE}`, () => {
+            this._unknown = gsettings.get_uint(Fields.UNKNOWNSTATE);
+        });
     }
 
     disable() {
         this._states = null;
         if(gsettings.get_boolean(Fields.ENABLEHOTKEY))
             Main.wm.removeKeybinding(Fields.SHORTCUT);
+        if(this._unknownId)
+            gsettings.disconnect(this._unknownId), this._unknownId = 0;
         if(this._shortcutId)
             gsettings.disconnect(this._shortcutId), this._shortcutId = 0;
         if(this._asciiOnListId)
@@ -243,8 +254,16 @@ class IBusThemeManager extends GObject.Object {
 
     _onNightChanged() {
         this._night = !this._night;
-        if(!LightProxy.NightLightActive) return;
-        if(this._night) {
+        if(this._night && LightProxy.NightLightActive) {
+            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.DARK);
+        } else {
+            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.LIGHT);
+        }
+    }
+
+    _onStyleChanged() {
+        this._style = gsettings.get_uint(Fields.MSTHEMESTYLE);
+        if(this._style == STYLE.DARK) {
             CandidatePopup.remove_style_class_name(this._color);
             CandidatePopup.add_style_class_name('night');
             CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
@@ -258,29 +277,28 @@ class IBusThemeManager extends GObject.Object {
     _onProxyChanged() {
         if(!this._night) return;
         if(LightProxy.NightLightActive) {
-            CandidatePopup.remove_style_class_name(this._color);
-            CandidatePopup.add_style_class_name('night');
-            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.DARK);
         } else {
-            CandidatePopup.remove_style_class_name('night');
-            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
-            CandidatePopup.add_style_class_name(this._color);
+            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.LIGHT);
         }
     }
 
     enable() {
         this._addStyleClass(this._popup, CandidatePopup,  x => x.replace(/candidate/g, `ibus-tweaker-candidate`));
+        this._style = gsettings.get_uint(Fields.MSTHEMESTYLE);
         this._night = gsettings.get_boolean(Fields.MSTHEMENIGHT);
         this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-        if(this._night && LightProxy.NightLightActive) {
+        this._nightChanhedId = gsettings.connect(`changed::${Fields.MSTHEMENIGHT}`, this._onNightChanged.bind(this));
+        this._themeChangedId = gsettings.connect(`changed::${Fields.MSTHEMECOLOUR}`, this._onThemeChanged.bind(this));
+        this._styleChangedId = gsettings.connect(`changed::${Fields.MSTHEMESTYLE}`, this._onStyleChanged.bind(this));
+        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
+        if((this._night && LightProxy.NightLightActive) ||
+           (!this._night && this._style == STYLE.DARK)) {
             CandidatePopup.add_style_class_name('night');
             CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
         } else {
             CandidatePopup.add_style_class_name(this._color);
         }
-        this._nightChanhedId = gsettings.connect(`changed::${Fields.MSTHEMENIGHT}`, this._onNightChanged.bind(this));
-        this._themeChangedId = gsettings.connect(`changed::${Fields.MSTHEMECOLOUR}`, this._onThemeChanged.bind(this));
-        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
     }
 
     disable() {
@@ -288,9 +306,12 @@ class IBusThemeManager extends GObject.Object {
             gsettings.disconnect(this._nightChanhedId), this._nightChanhedId = 0;
         if(this._themeChangedId)
             gsettings.disconnect(this._themeChangedId), this._themeChangedId = 0;
+        if(this._styleChangedId)
+            gsettings.disconnect(this._styleChangedId), this._styleChangedId = 0;
         if(this._proxyChangedId)
             LightProxy.disconnect(this._proxyChangedId), this._proxyChangedId = 0;
-        if(LightProxy.NightLightActive) {
+        if((this._night && LightProxy.NightLightActive) ||
+           (!this._night && this._style == Style.DARK)) {
             CandidatePopup.remove_style_class_name('night');
             CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
         } else {

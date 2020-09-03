@@ -24,10 +24,12 @@ var Fields = {
     MINIMIZED:     'hide-minimized',
     MSTHEMECOLOUR: 'ms-theme-color',
     ENABLEMSTHEME: 'enable-ms-theme',
+    MSTHEMESTYLE:  'default-variant',
     USECUSTOMFONT: 'use-custom-font',
     MSTHEMENIGHT:  'enable-night-mode',
     AUTOSWITCH:    'enable-auto-switch',
     ENABLEORIEN:   'enable-orientation',
+    UNKNOWNSTATE:  'unkown-ascii-state',
     ORIENTATION:   'candidate-orientation',
 };
 
@@ -65,11 +67,13 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         this._field_enable_ms_theme = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEMSTHEME) });
         this._field_use_custom_font = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.USECUSTOMFONT) });
 
-        this._field_theme_color = this._comboMaker(this._palatte);
-        this._field_run_dialog  = this._shortCutMaker(Fields.SHORTCUT);
-        this._field_orientation = this._comboMaker([_('Vertical'), _('Horizontal')])
-        this._field_ascii_off   = this._entryMaker('Gedit', _('ascii mode off when initializing'));
-        this._field_ascii_on    = this._entryMaker('Gnome-shell', _('ascii mode on when initializing'));
+        this._field_theme_color  = this._comboMaker(this._palatte);
+        this._field_run_dialog   = this._shortCutMaker(Fields.SHORTCUT);
+        this._field_variant      = this._comboMaker([_('Light'), _('Dark')]);
+        this._field_orientation  = this._comboMaker([_('Vertical'), _('Horizontal')]);
+        this._field_unkown_state = this._comboMaker([_('On'), _('Off'), _('Default')]);
+        this._field_ascii_off    = this._entryMaker('Gedit', _('ascii mode off when initializing'));
+        this._field_ascii_on     = this._entryMaker('Gnome-shell', _('ascii mode on when initializing'));
     }
 
     _bulidUI() {
@@ -79,12 +83,12 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         });
         this.add(this._box);
         this._ibus = this._listFrameMaker(_('IBus'));
-        this._ibus._add(this._field_enable_night,    _('Night mode'));
-        this._ibus._add(this._field_enable_hotkey,   _('Run dialog'),               this._field_run_dialog);
-        this._ibus._add(this._field_enable_ms_theme, _('MS IME theme'),             this._field_theme_color);
-        this._ibus._add(this._field_enable_orien,    _('Candidates orientation'),   this._field_orientation);
-        this._ibus._add(this._field_use_custom_font, _('Use custom font'),          this._field_custom_font);
-        this._ibus._add(this._field_enable_ascii,    _('Auto switch ASCII mode'));
+        this._ibus._add(this._field_enable_night,    _('Night mode'),             this._field_variant);
+        this._ibus._add(this._field_enable_hotkey,   _('Run dialog'),             this._field_run_dialog);
+        this._ibus._add(this._field_enable_ms_theme, _('MS IME theme'),           this._field_theme_color);
+        this._ibus._add(this._field_enable_orien,    _('Candidates orientation'), this._field_orientation);
+        this._ibus._add(this._field_use_custom_font, _('Use custom font'),        this._field_custom_font);
+        this._ibus._add(this._field_enable_ascii,    _('Auto switch ASCII mode'), this._field_unkown_state);
         this._ibus._add(this._field_ascii_on);
         this._ibus._add(this._field_ascii_off);
 
@@ -100,9 +104,13 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         this._field_enable_ascii.connect('notify::active', widget => {
             this._field_ascii_on.set_sensitive(widget.active);
             this._field_ascii_off.set_sensitive(widget.active);
+            this._field_unkown_state.set_sensitive(widget.active);
         });
         this._field_enable_orien.connect('notify::active', widget => {
-            this._field_orientation.set_sensitive(widget.active);
+            this._field_orientation.set_sensitive(widget.active );
+        });
+        this._field_enable_night.connect('notify::active', widget => {
+            this._field_variant.set_sensitive(!widget.active & this._field_enable_ms_theme.active);
         });
         this._field_use_custom_font.connect('notify::active', widget => {
             this._field_custom_font.set_sensitive(widget.active);
@@ -111,6 +119,7 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         this._field_enable_ms_theme.connect('notify::active', widget => {
             this._field_theme_color.set_sensitive(widget.active);
             this._field_enable_night.set_sensitive(widget.active);
+            this._field_variant.set_sensitive(widget.active & !this._field_enable_night.active);
         });
         this._field_custom_font.connect('font-set', widget => {
             ibusGsettings.set_string('custom-font', widget.font_name);
@@ -119,26 +128,30 @@ class IBusTweaker extends Gtk.ScrolledWindow {
 
         this._field_ascii_on.set_sensitive(this._field_enable_ascii.active);
         this._field_ascii_off.set_sensitive(this._field_enable_ascii.active);
+        this._field_unkown_state.set_sensitive(this._field_enable_ascii.active);
         this._field_orientation.set_sensitive(this._field_enable_orien.active);
         this._field_run_dialog.set_sensitive(this._field_enable_hotkey.active);
         this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
         this._field_theme_color.set_sensitive(this._field_enable_ms_theme.active);
         this._field_enable_night.set_sensitive(this._field_enable_ms_theme.active);
+        this._field_variant.set_sensitive(!this._field_enable_night.active & this._field_enable_ms_theme.active);
     }
 
     _bindValues() {
-        gsettings.bind(Fields.ACTIVITIES,    this._field_activities,      'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ASCIIOFFLIST,  this._field_ascii_off,       'text',   Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ASCIIONLIST,   this._field_ascii_on,        'text',   Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.AUTOSWITCH,    this._field_enable_ascii,    'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ENABLEHOTKEY,  this._field_enable_hotkey,   'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ENABLEMSTHEME, this._field_enable_ms_theme, 'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ENABLEORIEN,   this._field_enable_orien,    'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.MINIMIZED,     this._field_minimized,       'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.MSTHEMECOLOUR, this._field_theme_color,     'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.MSTHEMENIGHT,  this._field_enable_night,    'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ORIENTATION,   this._field_orientation,     'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.USECUSTOMFONT, this._field_use_custom_font, 'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ACTIVITIES,     this._field_activities,      'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ASCIIOFFLIST,   this._field_ascii_off,       'text',   Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ASCIIONLIST,    this._field_ascii_on,        'text',   Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.AUTOSWITCH,     this._field_enable_ascii,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEHOTKEY,   this._field_enable_hotkey,   'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEMSTHEME,  this._field_enable_ms_theme, 'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEORIEN,    this._field_enable_orien,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MINIMIZED,      this._field_minimized,       'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MSTHEMECOLOUR,  this._field_theme_color,     'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MSTHEMENIGHT,   this._field_enable_night,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MSTHEMESTYLE, this._field_variant,         'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ORIENTATION,    this._field_orientation,     'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.UNKNOWNSTATE,   this._field_unkown_state,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.USECUSTOMFONT,  this._field_use_custom_font, 'active', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _listFrameMaker(lbl) {
