@@ -241,7 +241,7 @@ class IBusThemeManager extends GObject.Object {
     }
 
     _onThemeChanged() {
-        if(this._night && LightProxy.NightLightActive) {
+        if(this._style == STYLE.DARK) {
             CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
             this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
             CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
@@ -288,10 +288,6 @@ class IBusThemeManager extends GObject.Object {
         this._style = gsettings.get_uint(Fields.MSTHEMESTYLE);
         this._night = gsettings.get_boolean(Fields.MSTHEMENIGHT);
         this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-        this._nightChanhedId = gsettings.connect(`changed::${Fields.MSTHEMENIGHT}`, this._onNightChanged.bind(this));
-        this._themeChangedId = gsettings.connect(`changed::${Fields.MSTHEMECOLOUR}`, this._onThemeChanged.bind(this));
-        this._styleChangedId = gsettings.connect(`changed::${Fields.MSTHEMESTYLE}`, this._onStyleChanged.bind(this));
-        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
         if((this._night && LightProxy.NightLightActive) ||
            (!this._night && this._style == STYLE.DARK)) {
             CandidatePopup.add_style_class_name('night');
@@ -299,6 +295,10 @@ class IBusThemeManager extends GObject.Object {
         } else {
             CandidatePopup.add_style_class_name(this._color);
         }
+        this._nightChanhedId = gsettings.connect(`changed::${Fields.MSTHEMENIGHT}`, this._onNightChanged.bind(this));
+        this._themeChangedId = gsettings.connect(`changed::${Fields.MSTHEMECOLOUR}`, this._onThemeChanged.bind(this));
+        this._styleChangedId = gsettings.connect(`changed::${Fields.MSTHEMESTYLE}`, this._onStyleChanged.bind(this));
+        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
     }
 
     disable() {
