@@ -4,13 +4,13 @@
 
 const Main = imports.ui.main;
 const Panel = imports.ui.panel;
-const PanelMenu = imports.ui.panelMenu;
 const AltTab = imports.ui.altTab;
+const PanelMenu = imports.ui.panelMenu;
 const { Shell, Clutter, Gio, GLib, Meta, IBus, Pango, St, GObject } = imports.gi;
 
-const Keyboard = Main.panel.statusArea.keyboard;
-const InputSourceManager = Keyboard._inputSourceManager;
-const IBusManager = InputSourceManager._ibusManager;
+const Keyboard = imports.ui.status.keyboard;
+const InputSourceManager = Keyboard.getInputSourceManager();
+const IBusManager = imports.misc.ibusManager.getIBusManager();
 const CandidatePopup = IBusManager._candidatePopup;
 const CandidateArea = CandidatePopup._candidateArea;
 
@@ -20,7 +20,7 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Fields = Me.imports.prefs.Fields;
 const UNKNOWN = { 'ON': 0, 'OFF': 1, 'DEFAULT': 2 };
 const STYLE = { 'LIGHT': 0, 'DARK': 1 };
-const asciiModes = ['en', 'A', '英'];
+const ASCIIMODES = ['en', 'A', '英'];
 const INPUTMODE = 'InputMode';
 
 const LightProxy = Main.panel.statusArea.aggregateMenu._nightLight._proxy;
@@ -29,12 +29,11 @@ const IBusAutoSwitch = GObject.registerClass(
 class IBusAutoSwitch extends GObject.Object {
     _init() {
         super._init();
-        this._states = null;
-        this._tmpWindow = '';
     }
 
     get _state() {
-        return asciiModes.includes(Keyboard._indicatorLabels[InputSourceManager._currentSource.index].get_text());
+        const labels = Main.panel.statusArea.keyboard._indicatorLabels;
+        return ASCIIMODES.includes(labels[InputSourceManager._currentSource.index].get_text());
     }
 
     get _toggle() {
@@ -51,8 +50,8 @@ class IBusAutoSwitch extends GObject.Object {
         }
     }
 
-    _toggleKeybindings(tog) {
-        if(tog) {
+    set _shortcut(short) {
+        if(short) {
             Main.wm.addKeybinding(Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, Shell.ActionMode.ALL, () => {
                 if(!this._state) IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
                 Main.openRunDialog();
@@ -62,53 +61,61 @@ class IBusAutoSwitch extends GObject.Object {
         }
     }
 
+    set _asciiOn(list) {
+        list.split('#').forEach(x => this._states.set(x.toLowerCase(), true));
+    }
+
+    set _asciiOff(list) {
+        list.split('#').forEach(x => this._states.set(x.toLowerCase(), false));
+    }
+
+    get _unknown() {
+        return gsettings.get_uint(Fields.UNKNOWNSTATE);
+    }
+
     _onWindowChanged() {
-        if(this._toggle && IBusManager._panelService)
+        if(this._toggle && IBusManager._panelService) {
             IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+        } else {
+            //
+        }
+    }
+
+    _fetchSettings() {
+        this._asciiOn = gsettings.get_string(Fields.ASCIIONLIST);
+        this._asciiOff = gsettings.get_string(Fields.ASCIIOFFLIST);
+        this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY);
+    }
+
+    _loadSettings() {
+        this._shortcutId = gsettings.connect(`changed::${Fields.ENABLEHOTKEY}`, () => { this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY); });
+        this._asciiOnListId = gsettings.connect(`changed::${Fields.ASCIIONLIST}`, () => { this._asciiOn = gsettings.get_string(Fields.ASCIIONLIST); });
+        this._asciiOffListId = gsettings.connect(`changed::${Fields.ASCIIOFFLIST}`, () => { this._asciiOff = gsettings.get_string(Fields.ASCIIOFFLIST); });
+
+        this._overviewHiddenID = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
+        this._overviewShowingID = Main.overview.connect('showing', this._onWindowChanged.bind(this));
+        this._onWindowChangedID = global.display.connect('notify::focus-window', this._onWindowChanged.bind(this));
+
     }
 
     enable() {
         this._states = new Map();
-        this._unknown = gsettings.get_uint(Fields.UNKNOWNSTATE);
-        gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), true));
-        gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), false));
-        if(gsettings.get_boolean(Fields.ENABLEHOTKEY)) this._toggleKeybindings(true);
-
-        this._overviewHiddenId = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
-        this._overviewShowingId = Main.overview.connect('showing', this._onWindowChanged.bind(this));
-        this._onWindowChangedId = global.display.connect('notify::focus-window',  this._onWindowChanged.bind(this));
-        this._shortcutId = gsettings.connect(`changed::${Fields.ENABLEHOTKEY}`, () => {
-            this._toggleKeybindings(gsettings.get_boolean(Fields.ENABLEHOTKEY));
-        });
-        this._asciiOnListId = gsettings.connect(`changed::${Fields.ASCIIONLIST}`, () => {
-            gsettings.get_string(Fields.ASCIIONLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), true));
-        });
-        this._asciiOffListId = gsettings.connect(`changed::${Fields.ASCIIOFFLIST}`, () => {
-            gsettings.get_string(Fields.ASCIIOFFLIST).split('#').forEach(x => this._states.set(x.toLowerCase(), false));
-        });
-        this._unknownId = gsettings.connect(`changed::${Fields.UNKNOWNSTATE}`, () => {
-            this._unknown = gsettings.get_uint(Fields.UNKNOWNSTATE);
-        });
+        this._tmpWindow = '';
+        this._fetchSettings();
+        this._loadSettings();
     }
 
     disable() {
         this._states = null;
-        if(gsettings.get_boolean(Fields.ENABLEHOTKEY))
-            Main.wm.removeKeybinding(Fields.SHORTCUT);
-        if(this._unknownId)
-            gsettings.disconnect(this._unknownId), this._unknownId = 0;
-        if(this._shortcutId)
-            gsettings.disconnect(this._shortcutId), this._shortcutId = 0;
-        if(this._asciiOnListId)
-            gsettings.disconnect(this._asciiOnListId), this._asciiOnListId = 0;
-        if(this._asciiOffListId)
-            gsettings.disconnect(this._asciiOffListId), this._asciiOffListId = 0;
-        if(this._onWindowChangedId)
-            global.display.disconnect(this._onWindowChangedId), this._onWindowChangedId = 0;
-        if(this._overviewShowingId)
-            Main.overview.disconnect(this._overviewShowingId), this._overviewShowingId = 0;
-        if(this._overviewHiddenId)
-            Main.overview.disconnect(this._overviewHiddenId), this._overviewHiddenId = 0;
+        this._shortcut = false;
+        for(let x in this)
+            if(RegExp(/^_.+Id$/).test(x)) eval(`if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;`.format(x, x, x));
+        if(this._onWindowChangedID)
+            global.display.disconnect(this._onWindowChangedID), this._onWindowChangedID = 0;
+        if(this._overviewShowingID)
+            Main.overview.disconnect(this._overviewShowingID), this._overviewShowingID = 0;
+        if(this._overviewHiddenID)
+            Main.overview.disconnect(this._overviewHiddenID), this._overviewHiddenID = 0;
     }
 });
 
@@ -146,7 +153,7 @@ class IBusFontSetting extends GObject.Object {
         CandidateArea._candidateBoxes.forEach(x => {
             x._candidateLabel.set_style('');
             x._indexLabel.set_style('');
-        })
+        });
     }
 });
 
@@ -198,6 +205,76 @@ const IBusThemeManager = GObject.registerClass(
 class IBusThemeManager extends GObject.Object {
     _init() {
         super._init();
+    }
+
+    _addStyleClass(src, aim, func) {
+        for(let p in src) {
+            if(typeof(src[p]) === 'object') {
+                if(src[p] instanceof Array) {
+                    src[p].forEach((x,i) => this._addStyleClass(x, aim[p][i], func));
+                } else {
+                    this._addStyleClass(src[p], aim[p], func);
+                }
+            } else {
+                aim.remove_style_class_name(aim[p]);
+                aim.add_style_class_name(func(src[p]));
+            }
+        }
+    }
+
+    _onThemeChanged() {
+        if(this._style == STYLE.DARK) {
+            CandidatePopup.remove_style_class_name(`night-%s`.format(this._prvColor));
+            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.remove_style_class_name(this._prvColor);
+            CandidatePopup.add_style_class_name(this._color);
+        }
+        this._prvColor = this._color;
+    }
+
+    _onNightChanged() {
+        if(this._night && LightProxy.NightLightActive) {
+            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.DARK);
+        } else {
+            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.LIGHT);
+        }
+    }
+
+    _onStyleChanged() {
+        if(this._style == STYLE.DARK) {
+            CandidatePopup.remove_style_class_name(this._color);
+            CandidatePopup.add_style_class_name('night');
+            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.remove_style_class_name('night');
+            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.add_style_class_name(this._color);
+        }
+    }
+
+    get _style() {
+        return gsettings.get_uint(Fields.MSTHEMESTYLE);
+    }
+
+    get _night() {
+        return gsettings.get_boolean(Fields.MSTHEMENIGHT);
+    }
+
+    get _color() {
+        return this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
+    }
+
+    _onProxyChanged() {
+        if(!this._night) return;
+        if(LightProxy.NightLightActive) {
+            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.DARK);
+        } else {
+            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.LIGHT);
+        }
+    }
+
+    _loads() {
         this._popup = {
             style_class: 'candidate-popup-boxpointer',
             _candidateArea: {
@@ -223,71 +300,12 @@ class IBusThemeManager extends GObject.Object {
             _auxText: { style_class: 'candidate-popup-text' }
         }
         this._palatte = ['red', 'green', 'orange', 'blue', 'purple', 'turquoise', 'grey'];
-    }
-
-    _addStyleClass(src, aim, func) {
-        for(let p in src) {
-            if(typeof(src[p]) === 'object') {
-                if(src[p] instanceof Array) {
-                    src[p].forEach((x,i) => this._addStyleClass(x, aim[p][i], func));
-                } else {
-                    this._addStyleClass(src[p], aim[p], func);
-                }
-            } else {
-                aim.remove_style_class_name(aim[p]);
-                aim.add_style_class_name(func(src[p]));
-            }
-        }
-    }
-
-    _onThemeChanged() {
-        if(this._style == STYLE.DARK) {
-            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
-            this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
-        } else {
-            CandidatePopup.remove_style_class_name(this._color);
-            this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-            CandidatePopup.add_style_class_name(this._color);
-        }
-    }
-
-    _onNightChanged() {
-        this._night = !this._night;
-        if(this._night && LightProxy.NightLightActive) {
-            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.DARK);
-        } else {
-            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.LIGHT);
-        }
-    }
-
-    _onStyleChanged() {
-        this._style = gsettings.get_uint(Fields.MSTHEMESTYLE);
-        if(this._style == STYLE.DARK) {
-            CandidatePopup.remove_style_class_name(this._color);
-            CandidatePopup.add_style_class_name('night');
-            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
-        } else {
-            CandidatePopup.remove_style_class_name('night');
-            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
-            CandidatePopup.add_style_class_name(this._color);
-        }
-    }
-
-    _onProxyChanged() {
-        if(!this._night) return;
-        if(LightProxy.NightLightActive) {
-            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.DARK);
-        } else {
-            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.LIGHT);
-        }
+        this._prvColor = this._color;
     }
 
     enable() {
+        this._loads();
         this._addStyleClass(this._popup, CandidatePopup,  x => x.replace(/candidate/g, `ibus-tweaker-candidate`));
-        this._style = gsettings.get_uint(Fields.MSTHEMESTYLE);
-        this._night = gsettings.get_boolean(Fields.MSTHEMENIGHT);
-        this._color = this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
         if((this._night && LightProxy.NightLightActive) ||
            (!this._night && this._style == STYLE.DARK)) {
             CandidatePopup.add_style_class_name('night');
@@ -298,18 +316,14 @@ class IBusThemeManager extends GObject.Object {
         this._nightChanhedId = gsettings.connect(`changed::${Fields.MSTHEMENIGHT}`, this._onNightChanged.bind(this));
         this._themeChangedId = gsettings.connect(`changed::${Fields.MSTHEMECOLOUR}`, this._onThemeChanged.bind(this));
         this._styleChangedId = gsettings.connect(`changed::${Fields.MSTHEMESTYLE}`, this._onStyleChanged.bind(this));
-        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
+        this._proxyChangedID = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
     }
 
     disable() {
-        if(this._nightChanhedId)
-            gsettings.disconnect(this._nightChanhedId), this._nightChanhedId = 0;
-        if(this._themeChangedId)
-            gsettings.disconnect(this._themeChangedId), this._themeChangedId = 0;
-        if(this._styleChangedId)
-            gsettings.disconnect(this._styleChangedId), this._styleChangedId = 0;
-        if(this._proxyChangedId)
-            LightProxy.disconnect(this._proxyChangedId), this._proxyChangedId = 0;
+        for(let x in this)
+            if(RegExp(/^_.+Id$/).test(x)) eval(`if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;`.format(x, x, x));
+        if(this._proxyChangedID)
+            LightProxy.disconnect(this._proxyChangedID), this._proxyChangedID = 0;
         if((this._night && LightProxy.NightLightActive) ||
            (!this._night && this._style == Style.DARK)) {
             CandidatePopup.remove_style_class_name('night');
@@ -318,6 +332,8 @@ class IBusThemeManager extends GObject.Object {
             CandidatePopup.remove_style_class_name(this._color);
         }
         this._addStyleClass(this._popup, CandidatePopup, x => x);
+        this._popup = null;
+        this._palatte = null;
     }
 });
 
@@ -443,7 +459,7 @@ class Extensions extends GObject.Object{
     }
 
     enable() {
-        let feilds = [
+        let fields = [
             Fields.AUTOSWITCH,
             Fields.USECUSTOMFONT,
             Fields.ENABLEORIEN,
@@ -462,19 +478,19 @@ class Extensions extends GObject.Object{
             new UpdatesIndicator()
         ];
         this._extensions.forEach((x,i) => {
-            x._active = gsettings.get_boolean(feilds[i]);
-            if(x._active) x.enable();
-            x._activeId = gsettings.connect(`changed::${feilds[i]}`, () => {
-                x._active ? x.disable() : x.enable();
-                x._active = !x._active;
-            });
+            x._enable = gsettings.get_boolean(fields[i]);
+            if(x._enable) x.enable();
+            x._enableID = gsettings.connect('changed::' + fields[i], () => {
+                x._enable = gsettings.get_boolean(fields[i]);
+                x._enable ? x.enable() : x.disable();
+            }); // NOTE: _*Id will be disconnected in disable()
         });
     }
 
     disable() {
         this._extensions.forEach(x => {
-            if(x._active) x.disable();
-            if(x._activeId) gsettings.disconnect(x._activeId), x._activeId = 0;
+            if(x._enable) x.disable();
+            if(x._enableID) gsettings.disconnect(x._enableID), x._enableID = 0;
         });
         this._extensions = null;
     }

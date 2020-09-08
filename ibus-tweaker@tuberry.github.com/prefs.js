@@ -138,20 +138,20 @@ class IBusTweaker extends Gtk.ScrolledWindow {
     }
 
     _bindValues() {
-        gsettings.bind(Fields.ACTIVITIES,     this._field_activities,      'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ASCIIOFFLIST,   this._field_ascii_off,       'text',   Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ASCIIONLIST,    this._field_ascii_on,        'text',   Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.AUTOSWITCH,     this._field_enable_ascii,    'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ENABLEHOTKEY,   this._field_enable_hotkey,   'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ENABLEMSTHEME,  this._field_enable_ms_theme, 'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ENABLEORIEN,    this._field_enable_orien,    'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.MINIMIZED,      this._field_minimized,       'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.MSTHEMECOLOUR,  this._field_theme_color,     'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.MSTHEMENIGHT,   this._field_enable_night,    'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.MSTHEMESTYLE, this._field_variant,         'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.ORIENTATION,    this._field_orientation,     'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.UNKNOWNSTATE,   this._field_unkown_state,    'active', Gio.SettingsBindFlags.DEFAULT);
-        gsettings.bind(Fields.USECUSTOMFONT,  this._field_use_custom_font, 'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ACTIVITIES,    this._field_activities,      'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ASCIIOFFLIST,  this._field_ascii_off,       'text',   Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ASCIIONLIST,   this._field_ascii_on,        'text',   Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.AUTOSWITCH,    this._field_enable_ascii,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEHOTKEY,  this._field_enable_hotkey,   'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEMSTHEME, this._field_enable_ms_theme, 'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ENABLEORIEN,   this._field_enable_orien,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MINIMIZED,     this._field_minimized,       'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MSTHEMECOLOUR, this._field_theme_color,     'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MSTHEMENIGHT,  this._field_enable_night,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.MSTHEMESTYLE,  this._field_variant,         'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.ORIENTATION,   this._field_orientation,     'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.UNKNOWNSTATE,  this._field_unkown_state,    'active', Gio.SettingsBindFlags.DEFAULT);
+        gsettings.bind(Fields.USECUSTOMFONT, this._field_use_custom_font, 'active', Gio.SettingsBindFlags.DEFAULT);
     }
 
     _listFrameMaker(lbl) {

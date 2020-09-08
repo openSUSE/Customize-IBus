@@ -37,7 +37,7 @@
 }
 
 .ibus-tweaker-candidate-popup-boxpointer {
-    -arroe-background-color: transparent;
+    -arrow-background-color: transparent;
     -arrow-border-radius: 12px;
     -arrow-rise: 5px;
 }
@@ -145,35 +145,35 @@
 
 
 /*
- *  #EBB6AD
+ *  #FFAE99
  */
 .orange .ibus-tweaker-candidate-popup-content,
 .orange .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(235, 182, 173, 1);
+    border-color: rgba(255, 174, 153, 1);
 }
 
 .orange .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(235, 182, 173, 0.6);
+    background-color: rgba(255, 174, 153, 0.6);
 }
 
 .orange .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(235, 182, 173, 1);
+    background-color: rgba(255, 174, 153, 1);
 }
 
 /*
- *  #D35439
+ *  #E94511
  */
 .night-orange .ibus-tweaker-candidate-popup-content,
 .night-orange .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(211, 84, 57, 1);
+    border-color: rgba(233, 69, 17, 1);
 }
 
 .night-orange .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(211, 84, 57, 0.6);
+    background-color: rgba(233, 69, 17, 0.6);
 }
 
 .night-orange .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(211, 84, 57, 1);
+    background-color: rgba(233, 69, 17, 1);
 }
 
 
