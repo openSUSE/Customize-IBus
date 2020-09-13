@@ -1,9 +1,12 @@
 # ibus-tweaker
-Tweaker of ibus for orientation, theme, font and ascii mode auto-switch.
+Tweaker of ibus in gnome-shell for orientation, theme, font and ascii mode auto-switch.
 > 狙公赋芧曰：“朝三而暮四”。众狙皆怒。曰：“然则朝四而暮三”。众狙皆悦。 —— *《庄子·齐物论》*<br>
 [![license]](/LICENSE)
 
 </br>
+
+![dj](https://user-images.githubusercontent.com/17917040/92872878-0e647800-f439-11ea-9c14-781b4d3191ed.gif)
+
 
 ## Installation
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][EGO]
@@ -11,33 +14,18 @@ Tweaker of ibus for orientation, theme, font and ascii mode auto-switch.
 Or manually:
 ```shell
 git clone https://github.com/tuberry/ibus-tweaker.git
-cp -r './ibus-tweaker/ibus-tweaker@tuberry.github.com' ~/.local/share/gnome-shell/extensions/
+cp -r ./ibus-tweaker/ibus-tweaker@tuberry.github.com ~/.local/share/gnome-shell/extensions/
 ```
 
 ## Features
 
-![ibus-tweaker](https://user-images.githubusercontent.com/17917040/86506643-e1299700-be03-11ea-88e8-5f3818fdf23b.png)
+![ibus-tweaker](https://user-images.githubusercontent.com/17917040/92873390-90ed3780-f439-11ea-9650-d6d8f97677eb.png)
 
 ### ASCII mode auto switch
 
 Fill the blanks with `wmclass` in `looking glass` for initializing status
 
 ![ascii](https://user-images.githubusercontent.com/17917040/80308786-70626f00-8803-11ea-8bbc-13d49efe4b4a.png)
-
-### Candidates font
-Support font style and non-standard font weight
-
-![font](https://user-images.githubusercontent.com/17917040/86506736-e76c4300-be04-11ea-866a-216b558bca93.png)
-
-### Candidates orientation
-Some IMEs do not respect the orientation setting of IBus.
-
-![lua](https://user-images.githubusercontent.com/17917040/86506816-9a3ca100-be05-11ea-8db7-f9b0f02b29d8.png)
-
-### MS style theme
-The theme, imitating Microsoft default IME, contains 7*2 (night mode) variants in different colors of my Vim colorscheme.
-
-![purple](https://user-images.githubusercontent.com/17917040/86507017-5e0a4000-be07-11ea-92e2-ad5dc0c285f0.png)
 
 ### Others
 Here are some functions from other extensions for personal use:
