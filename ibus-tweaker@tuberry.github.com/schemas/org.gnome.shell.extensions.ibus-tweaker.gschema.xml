@@ -25,6 +25,10 @@
         <default>false</default>
         <summary>enable MS theme</summary>
     </key>
+    <key type="b" name="enable-auto-switch">
+        <default>true</default>
+        <summary>enable auto switch</summary>
+    </key>
     <key type="b" name="enable-night-mode">
         <default>false</default>
         <summary>enable night mode autoswitch</summary>
@@ -44,10 +48,6 @@
     <key type="u" name="unkown-ascii-state">
         <default>2</default>
         <summary>input state of a new unknown window</summary>
-    </key>
-    <key type="b" name="enable-auto-switch">
-        <default>true</default>
-        <summary>enable auto switch</summary>
     </key>
     <key type="s" name="ascii-on-list">
         <default>"Gnome-shell"</default>

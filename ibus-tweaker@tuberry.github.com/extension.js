@@ -33,7 +33,7 @@ class IBusAutoSwitch extends GObject.Object {
 
     get _state() {
         const labels = Main.panel.statusArea.keyboard._indicatorLabels;
-        return ASCIIMODES.includes(labels[InputSourceManager._currentSource.index].get_text());
+        return ASCIIMODES.includes(labels[InputSourceManager.currentSource.index].get_text());
     }
 
     get _toggle() {
@@ -95,7 +95,6 @@ class IBusAutoSwitch extends GObject.Object {
         this._overviewHiddenID = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
         this._overviewShowingID = Main.overview.connect('showing', this._onWindowChanged.bind(this));
         this._onWindowChangedID = global.display.connect('notify::focus-window', this._onWindowChanged.bind(this));
-
     }
 
     enable() {
@@ -207,74 +206,7 @@ class IBusThemeManager extends GObject.Object {
         super._init();
     }
 
-    _addStyleClass(src, aim, func) {
-        for(let p in src) {
-            if(typeof(src[p]) === 'object') {
-                if(src[p] instanceof Array) {
-                    src[p].forEach((x,i) => this._addStyleClass(x, aim[p][i], func));
-                } else {
-                    this._addStyleClass(src[p], aim[p], func);
-                }
-            } else {
-                aim.remove_style_class_name(aim[p]);
-                aim.add_style_class_name(func(src[p]));
-            }
-        }
-    }
-
-    _onThemeChanged() {
-        if(this._style == STYLE.DARK) {
-            CandidatePopup.remove_style_class_name(`night-%s`.format(this._prvColor));
-            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
-        } else {
-            CandidatePopup.remove_style_class_name(this._prvColor);
-            CandidatePopup.add_style_class_name(this._color);
-        }
-        this._prvColor = this._color;
-    }
-
-    _onNightChanged() {
-        if(this._night && LightProxy.NightLightActive) {
-            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.DARK);
-        } else {
-            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.LIGHT);
-        }
-    }
-
-    _onStyleChanged() {
-        if(this._style == STYLE.DARK) {
-            CandidatePopup.remove_style_class_name(this._color);
-            CandidatePopup.add_style_class_name('night');
-            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
-        } else {
-            CandidatePopup.remove_style_class_name('night');
-            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
-            CandidatePopup.add_style_class_name(this._color);
-        }
-    }
-
-    get _style() {
-        return gsettings.get_uint(Fields.MSTHEMESTYLE);
-    }
-
-    get _night() {
-        return gsettings.get_boolean(Fields.MSTHEMENIGHT);
-    }
-
-    get _color() {
-        return this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-    }
-
-    _onProxyChanged() {
-        if(!this._night) return;
-        if(LightProxy.NightLightActive) {
-            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.DARK);
-        } else {
-            gsettings.set_uint(Fields.MSTHEMESTYLE, STYLE.LIGHT);
-        }
-    }
-
-    _loads() {
+    _loadSettings() {
         this._popup = {
             style_class: 'candidate-popup-boxpointer',
             _candidateArea: {
@@ -301,18 +233,81 @@ class IBusThemeManager extends GObject.Object {
         }
         this._palatte = ['red', 'green', 'orange', 'blue', 'purple', 'turquoise', 'grey'];
         this._prvColor = this._color;
-    }
-
-    enable() {
-        this._loads();
         this._addStyleClass(this._popup, CandidatePopup,  x => x.replace(/candidate/g, `ibus-tweaker-candidate`));
-        if((this._night && LightProxy.NightLightActive) ||
-           (!this._night && this._style == STYLE.DARK)) {
+        this._style = ((this._night && LightProxy.NightLightActive) || (!this._night && this._style == STYLE.DARK)) ? STYLE.DARK : STYLE.LIGHT;
+        if(this._style == STYLE.DARK) {
             CandidatePopup.add_style_class_name('night');
             CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
         } else {
             CandidatePopup.add_style_class_name(this._color);
         }
+    }
+
+    _addStyleClass(src, aim, func) {
+        for(let p in src) {
+            if(typeof(src[p]) === 'object') {
+                if(src[p] instanceof Array) {
+                    src[p].forEach((x,i) => this._addStyleClass(x, aim[p][i], func));
+                } else {
+                    this._addStyleClass(src[p], aim[p], func);
+                }
+            } else {
+                aim.remove_style_class_name(aim[p]);
+                aim.add_style_class_name(func(src[p]));
+            }
+        }
+    }
+
+    get _style() {
+        return gsettings.get_uint(Fields.MSTHEMESTYLE);
+    }
+
+    get _night() {
+        return gsettings.get_boolean(Fields.MSTHEMENIGHT);
+    }
+
+    get _color() {
+        return this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
+    }
+
+    set _style(style) {
+        gsettings.set_uint(Fields.MSTHEMESTYLE, style);
+    }
+
+    _onProxyChanged() {
+        if(!this._night) return;
+        this._style = LightProxy.NightLightActive ? STYLE.DARK : STYLE.LIGHT;
+    }
+
+    _onThemeChanged() {
+        if(this._style == STYLE.DARK) {
+            CandidatePopup.remove_style_class_name(`night-%s`.format(this._prvColor));
+            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.remove_style_class_name(this._prvColor);
+            CandidatePopup.add_style_class_name(this._color);
+        }
+        this._prvColor = this._color;
+    }
+
+    _onNightChanged() {
+        this._style = this._night && LightProxy.NightLightActive ? STYLE.DARK : STYLE.LIGHT;
+    }
+
+    _onStyleChanged() {
+        if(this._style == STYLE.DARK) {
+            CandidatePopup.remove_style_class_name(this._color);
+            CandidatePopup.add_style_class_name('night');
+            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+        } else {
+            CandidatePopup.remove_style_class_name('night');
+            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.add_style_class_name(this._color);
+        }
+    }
+
+    enable() {
+        this._loadSettings();
         this._nightChanhedId = gsettings.connect(`changed::${Fields.MSTHEMENIGHT}`, this._onNightChanged.bind(this));
         this._themeChangedId = gsettings.connect(`changed::${Fields.MSTHEMECOLOUR}`, this._onThemeChanged.bind(this));
         this._styleChangedId = gsettings.connect(`changed::${Fields.MSTHEMESTYLE}`, this._onStyleChanged.bind(this));
@@ -324,8 +319,7 @@ class IBusThemeManager extends GObject.Object {
             if(RegExp(/^_.+Id$/).test(x)) eval(`if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;`.format(x, x, x));
         if(this._proxyChangedID)
             LightProxy.disconnect(this._proxyChangedID), this._proxyChangedID = 0;
-        if((this._night && LightProxy.NightLightActive) ||
-           (!this._night && this._style == Style.DARK)) {
+        if(this._style == STYLE.DARK) {
             CandidatePopup.remove_style_class_name('night');
             CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
         } else {
@@ -365,7 +359,6 @@ class MinimizedHide extends GObject.Object{
 
     disable() {
         AltTab.getWindows = this._getWindows;
-        delete this._getWindows;
     }
 });
 
