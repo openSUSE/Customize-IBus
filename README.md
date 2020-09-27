@@ -14,7 +14,7 @@ Tweaker of ibus in gnome-shell for orientation, theme, font and ascii mode auto-
 Or manually:
 ```shell
 git clone https://github.com/tuberry/ibus-tweaker.git
-cp -r ./ibus-tweaker/ibus-tweaker@tuberry.github.com ~/.local/share/gnome-shell/extensions/
+cd ibus-tweaker && make install
 ```
 
 ## Features
