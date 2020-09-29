@@ -88,9 +88,9 @@ class IBusAutoSwitch extends GObject.Object {
     }
 
     _loadSettings() {
-        this._shortcutId = gsettings.connect(`changed::${Fields.ENABLEHOTKEY}`, () => { this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY); });
-        this._asciiOnListId = gsettings.connect(`changed::${Fields.ASCIIONLIST}`, () => { this._asciiOn = gsettings.get_string(Fields.ASCIIONLIST); });
-        this._asciiOffListId = gsettings.connect(`changed::${Fields.ASCIIOFFLIST}`, () => { this._asciiOff = gsettings.get_string(Fields.ASCIIOFFLIST); });
+        this._shortcutId = gsettings.connect('changed::' + Fields.ENABLEHOTKEY, () => { this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY); });
+        this._asciiOnListId = gsettings.connect('changed::' + Fields.ASCIIONLIST, () => { this._asciiOn = gsettings.get_string(Fields.ASCIIONLIST); });
+        this._asciiOffListId = gsettings.connect('changed::' + Fields.ASCIIOFFLIST, () => { this._asciiOff = gsettings.get_string(Fields.ASCIIOFFLIST); });
 
         this._overviewHiddenID = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
         this._overviewShowingID = Main.overview.connect('showing', this._onWindowChanged.bind(this));
@@ -108,7 +108,7 @@ class IBusAutoSwitch extends GObject.Object {
         this._states = null;
         this._shortcut = false;
         for(let x in this)
-            if(RegExp(/^_.+Id$/).test(x)) eval(`if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;`.format(x, x, x));
+            if(RegExp(/^_.+Id$/).test(x)) eval('if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;'.format(x, x, x));
         if(this._onWindowChangedID)
             global.display.disconnect(this._onWindowChangedID), this._onWindowChangedID = 0;
         if(this._overviewShowingID)
@@ -142,7 +142,7 @@ class IBusFontSetting extends GObject.Object {
 
     enable() {
         this._onFontChanged();
-        this._customFontId = gsettings.connect(`changed::${Fields.CUSTOMFONT}`, this._onFontChanged.bind(this));
+        this._customFontId = gsettings.connect('changed::' + Fields.CUSTOMFONT, this._onFontChanged.bind(this));
     }
 
     disable() {
@@ -162,41 +162,22 @@ class IBusOrientation extends GObject.Object {
         super._init();
     }
 
-    _originalSetOrientation(orientation) {
-        if (CandidateArea._orientation == orientation)
-            return;
-        CandidateArea._orientation = orientation;
-
-        if (CandidateArea._orientation == IBus.Orientation.HORIZONTAL) {
-            CandidateArea.vertical = false;
-            CandidateArea.remove_style_class_name('vertical');
-            CandidateArea.add_style_class_name('horizontal');
-            CandidateArea._previousButton.child.icon_name = 'go-previous-symbolic';
-            CandidateArea._nextButton.child.icon_name = 'go-next-symbolic';
-        } else {                // VERTICAL || SYSTEM
-            CandidateArea.vertical = true;
-            CandidateArea.add_style_class_name('vertical');
-            CandidateArea.remove_style_class_name('horizontal');
-            CandidateArea._previousButton.child.icon_name = 'go-up-symbolic';
-            CandidateArea._nextButton.child.icon_name = 'go-down-symbolic';
-        }
-    }
-
     _onOrientationChanged() {
         let orientation = gsettings.get_uint(Fields.ORIENTATION) ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL
         this._originalSetOrientation(orientation);
     }
 
     enable() {
+        this._originalSetOrientation = CandidateArea.setOrientation.bind(CandidateArea);
         CandidateArea.setOrientation = () => {};
         this._onOrientationChanged();
-        this._orientationId = gsettings.connect(`changed::${Fields.ORIENTATION}`, this._onOrientationChanged.bind(this));
+        this._orientationId = gsettings.connect('changed::' + Fields.ORIENTATION, this._onOrientationChanged.bind(this));
     }
 
     disable() {
         if (this._orientationId)
             gsettings.disconnect(this._orientationId), this._orientationId = 0;
-        CandidateArea.setOrientation = x => this._originalSetOrientation(x);
+        CandidateArea.setOrientation = this._originalSetOrientation;
     }
 });
 
@@ -233,11 +214,11 @@ class IBusThemeManager extends GObject.Object {
         }
         this._palatte = ['red', 'green', 'orange', 'blue', 'purple', 'turquoise', 'grey'];
         this._prvColor = this._color;
-        this._addStyleClass(this._popup, CandidatePopup,  x => x.replace(/candidate/g, `ibus-tweaker-candidate`));
+        this._addStyleClass(this._popup, CandidatePopup,  x => x.replace(/candidate/g, 'ibus-tweaker-candidate'));
         this._style = ((this._night && LightProxy.NightLightActive) || (!this._night && this._style == STYLE.DARK)) ? STYLE.DARK : STYLE.LIGHT;
         if(this._style == STYLE.DARK) {
             CandidatePopup.add_style_class_name('night');
-            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.add_style_class_name('night-%s'.format(this._color));
         } else {
             CandidatePopup.add_style_class_name(this._color);
         }
@@ -281,8 +262,8 @@ class IBusThemeManager extends GObject.Object {
 
     _onThemeChanged() {
         if(this._style == STYLE.DARK) {
-            CandidatePopup.remove_style_class_name(`night-%s`.format(this._prvColor));
-            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.remove_style_class_name('night-%s'.format(this._prvColor));
+            CandidatePopup.add_style_class_name('night-%s'.format(this._color));
         } else {
             CandidatePopup.remove_style_class_name(this._prvColor);
             CandidatePopup.add_style_class_name(this._color);
@@ -298,30 +279,30 @@ class IBusThemeManager extends GObject.Object {
         if(this._style == STYLE.DARK) {
             CandidatePopup.remove_style_class_name(this._color);
             CandidatePopup.add_style_class_name('night');
-            CandidatePopup.add_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.add_style_class_name('night-%s'.format(this._color));
         } else {
             CandidatePopup.remove_style_class_name('night');
-            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.remove_style_class_name('night-%s'.format(this._color));
             CandidatePopup.add_style_class_name(this._color);
         }
     }
 
     enable() {
         this._loadSettings();
-        this._nightChanhedId = gsettings.connect(`changed::${Fields.MSTHEMENIGHT}`, this._onNightChanged.bind(this));
-        this._themeChangedId = gsettings.connect(`changed::${Fields.MSTHEMECOLOUR}`, this._onThemeChanged.bind(this));
-        this._styleChangedId = gsettings.connect(`changed::${Fields.MSTHEMESTYLE}`, this._onStyleChanged.bind(this));
+        this._nightChanhedId = gsettings.connect('changed::' + Fields.MSTHEMENIGHT, this._onNightChanged.bind(this));
+        this._themeChangedId = gsettings.connect('changed::' + Fields.MSTHEMECOLOUR, this._onThemeChanged.bind(this));
+        this._styleChangedId = gsettings.connect('changed::' + Fields.MSTHEMESTYLE, this._onStyleChanged.bind(this));
         this._proxyChangedID = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
     }
 
     disable() {
         for(let x in this)
-            if(RegExp(/^_.+Id$/).test(x)) eval(`if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;`.format(x, x, x));
+            if(RegExp(/^_.+Id$/).test(x)) eval('if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;'.format(x, x, x));
         if(this._proxyChangedID)
             LightProxy.disconnect(this._proxyChangedID), this._proxyChangedID = 0;
         if(this._style == STYLE.DARK) {
             CandidatePopup.remove_style_class_name('night');
-            CandidatePopup.remove_style_class_name(`night-%s`.format(this._color));
+            CandidatePopup.remove_style_class_name('night-%s'.format(this._color));
         } else {
             CandidatePopup.remove_style_class_name(this._color);
         }
