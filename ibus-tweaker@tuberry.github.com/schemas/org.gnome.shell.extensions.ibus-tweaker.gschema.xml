@@ -5,10 +5,6 @@
         <default>false</default>
         <summary>activities</summary>
     </key>
-    <key type="b" name="hide-minimized">
-        <default>false</default>
-        <summary>hide minimized in AltTab</summary>
-    </key>
     <key type="b" name="enable-hotkey">
         <default>true</default>
         <summary>enable hotkey</summary>
@@ -49,13 +45,13 @@
         <default>2</default>
         <summary>input state of a new unknown window</summary>
     </key>
-    <key type="s" name="ascii-on-list">
-        <default>"Gnome-shell"</default>
-        <summary>ascii mode on list</summary>
+    <key type="as" name="input-on-list">
+        <default>[]</default>
+        <summary>input mode on list</summary>
     </key>
-    <key type="s" name="ascii-off-list">
-        <default>"Gedit"</default>
-        <summary>ascii mode off list</summary>
+    <key type="as" name="input-off-list">
+        <default>[]</default>
+        <summary>input mode off list</summary>
     </key>
     <key type="s" name="ascii-mode">
         <default>"A#en#英"</default>

@@ -37,16 +37,29 @@ class IBusAutoSwitch extends GObject.Object {
     }
 
     get _toggle() {
-        let state = this._state;
-        this._states.set(this._tmpWindow, state);
-
         let win = InputSourceManager._getCurrentWindow();
         if(!win) return false;
-        this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : '';
+
+        let state = this._state;
+        let store = this._states.get(this._tmpWindow);
+        if(state != store)
+            this._setList(this._tmpWindow, state);
+
+        this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : '#unknown';
         if(!this._states.has(this._tmpWindow)) {
-            return this._unknown == UNKNOWN.DEFAULT ? false : state^(this._unknown == UNKNOWN.ON)
+            let unknown = this._unknown == UNKNOWN.DEFAULT ? state : this._unknown == UNKNOWN.ON;
+            this._setList(this._tmpWindow, unknown);
+        }
+
+        return state^this._states.get(this._tmpWindow);
+    }
+
+    _setList(wm_class, state) {
+        this._states.set(wm_class, state);
+        if(state) {
+            gsettings.set_strv(Fields.INPUTONLIST, [...this._states.keys()].filter(key => this._states.get(key)));
         } else {
-            return state^this._states.get(this._tmpWindow);
+            gsettings.set_strv(Fields.INPUTOFFLIST, [...this._states.keys()].filter(key => !this._states.get(key)));
         }
     }
 
@@ -59,14 +72,6 @@ class IBusAutoSwitch extends GObject.Object {
         } else {
             Main.wm.removeKeybinding(Fields.SHORTCUT);
         }
-    }
-
-    set _asciiOn(list) {
-        list.split('#').forEach(x => this._states.set(x.toLowerCase(), true));
-    }
-
-    set _asciiOff(list) {
-        list.split('#').forEach(x => this._states.set(x.toLowerCase(), false));
     }
 
     get _unknown() {
@@ -82,15 +87,13 @@ class IBusAutoSwitch extends GObject.Object {
     }
 
     _fetchSettings() {
-        this._asciiOn = gsettings.get_string(Fields.ASCIIONLIST);
-        this._asciiOff = gsettings.get_string(Fields.ASCIIOFFLIST);
+        gsettings.get_strv(Fields.INPUTONLIST).forEach(x => this._states.set(x, true));
+        gsettings.get_strv(Fields.INPUTOFFLIST).forEach(x => this._states.set(x, false));
         this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY);
     }
 
     _loadSettings() {
         this._shortcutId = gsettings.connect('changed::' + Fields.ENABLEHOTKEY, () => { this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY); });
-        this._asciiOnListId = gsettings.connect('changed::' + Fields.ASCIIONLIST, () => { this._asciiOn = gsettings.get_string(Fields.ASCIIONLIST); });
-        this._asciiOffListId = gsettings.connect('changed::' + Fields.ASCIIOFFLIST, () => { this._asciiOff = gsettings.get_string(Fields.ASCIIOFFLIST); });
 
         this._overviewHiddenID = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
         this._overviewShowingID = Main.overview.connect('showing', this._onWindowChanged.bind(this));
@@ -99,7 +102,7 @@ class IBusAutoSwitch extends GObject.Object {
 
     enable() {
         this._states = new Map();
-        this._tmpWindow = '';
+        this._tmpWindow = '#unknown';
         this._fetchSettings();
         this._loadSettings();
     }
@@ -327,22 +330,6 @@ class ActivitiesHide extends GObject.Object{
     }
 });
 
-const MinimizedHide = GObject.registerClass(
-class MinimizedHide extends GObject.Object{
-    _init() {
-        super._init();
-    }
-
-    enable() {
-        this._getWindows = AltTab.getWindows;
-        AltTab.getWindows = x => this._getWindows(x).filter((w, i, a) => !w.minimized);
-    }
-
-    disable() {
-        AltTab.getWindows = this._getWindows;
-    }
-});
-
 const UpdatesIndicator = GObject.registerClass(
 class UpdatesIndicator extends GObject.Object{
     _init() {
@@ -439,7 +426,6 @@ class Extensions extends GObject.Object{
             Fields.ENABLEORIEN,
             Fields.ENABLEMSTHEME,
             Fields.ACTIVITIES,
-            Fields.MINIMIZED,
             Fields.ENABLEUPDATES
         ];
         this._extensions = [
@@ -448,7 +434,6 @@ class Extensions extends GObject.Object{
             new IBusOrientation(),
             new IBusThemeManager(),
             new ActivitiesHide(),
-            new MinimizedHide(),
             new UpdatesIndicator()
         ];
         this._extensions.forEach((x,i) => {
