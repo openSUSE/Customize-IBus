@@ -19,30 +19,15 @@ cd ibus-tweaker && make install
 
 ## Features
 
-![ibus-tweaker](https://user-images.githubusercontent.com/17917040/92873390-90ed3780-f439-11ea-9650-d6d8f97677eb.png)
-
-### ASCII mode auto switch
-
-Fill the blanks with `wmclass` in `looking glass` for initializing status
-
-![ascii](https://user-images.githubusercontent.com/17917040/80308786-70626f00-8803-11ea-8bbc-13d49efe4b4a.png)
-
-### Others
-Here are some functions from other extensions for personal use:
-#### Hide Activities
-From [hide-activities-button](https://extensions.gnome.org/extension/1128/hide-activities-button/).
-
-#### Hide Minimized in AltTab
-From [hide minimized](https://extensions.gnome.org/extension/2639/hide-minimized/).
+![image](https://user-images.githubusercontent.com/17917040/96619536-e0782a80-1338-11eb-8255-8866a5bb090a.png)
 
 ## Acknowledgements
 
 1. [hide-activities-button](https://extensions.gnome.org/extension/1128/hide-activities-button/)
 2. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
-3. [hide-minimized](https://extensions.gnome.org/extension/2639/hide-minimized/)
 
 ## Note
-1. If you love this extension, please thumb up or comment on the upstream [issue](https://github.com/ibus/ibus/issues/1679) for native support, thanks in advance.
+1. If you like this extension, please thumb up or comment on the upstream [issue](https://github.com/ibus/ibus/issues/1679) for native support, thanks in advance.
 
 [EGO]:https://extensions.gnome.org/extension/2820/ibus-tweaker/
 [license]:https://img.shields.io/badge/license-GPLv3-green.svg
