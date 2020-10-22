@@ -4,7 +4,6 @@
 
 const Main = imports.ui.main;
 const Panel = imports.ui.panel;
-const AltTab = imports.ui.altTab;
 const PanelMenu = imports.ui.panelMenu;
 const { Shell, Clutter, Gio, GLib, Meta, IBus, Pango, St, GObject } = imports.gi;
 
