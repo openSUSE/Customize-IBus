@@ -56,11 +56,8 @@ class IBusAutoSwitch extends GObject.Object {
 
     _setList(wm_class, state) {
         this._states.set(wm_class, state);
-        if(state) {
-            gsettings.set_strv(Fields.INPUTONLIST, [...this._states.keys()].filter(key => this._states.get(key)));
-        } else {
-            gsettings.set_strv(Fields.INPUTOFFLIST, [...this._states.keys()].filter(key => !this._states.get(key)));
-        }
+        gsettings.set_strv(Fields.INPUTONLIST, [...this._states.keys()].filter(key => this._states.get(key)));
+        gsettings.set_strv(Fields.INPUTOFFLIST, [...this._states.keys()].filter(key => !this._states.get(key)));
     }
 
     set _shortcut(short) {
@@ -373,6 +370,7 @@ class UpdatesIndicator extends GObject.Object{
     }
 
     _addButton() {
+        if(Main.panel.statusArea[Me.metadata.uuid]) return;
         this._button = new PanelMenu.Button(0, 'Updates Indicator', true);
         let box = new St.BoxLayout({
             vertical: false,
