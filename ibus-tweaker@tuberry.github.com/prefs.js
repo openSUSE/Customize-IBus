@@ -56,20 +56,20 @@ class IBusTweaker extends Gtk.ScrolledWindow {
     }
 
     _bulidWidget() {
-        this._field_activities      = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ACTIVITIES) });
-        this._field_enable_ascii    = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.AUTOSWITCH) });
-        this._field_custom_font     = new Gtk.FontButton({ font_name: gsettings.get_string(Fields.CUSTOMFONT) });
-        this._field_enable_orien    = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEORIEN) });
-        this._field_enable_hotkey   = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEHOTKEY) });
-        this._field_enable_night    = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.MSTHEMENIGHT) });
-        this._field_enable_ms_theme = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.ENABLEMSTHEME) });
-        this._field_use_custom_font = new Gtk.CheckButton({ active: gsettings.get_boolean(Fields.USECUSTOMFONT) });
+        this._field_enable_hotkey   = this._checkMaker(_('Run dialog'));
+        this._field_enable_night    = this._checkMaker(_('Night mode'));
+        this._field_activities      = this._checkMaker(_('Hide Activities'));
+        this._field_enable_ms_theme = this._checkMaker(_('MS IME theme'));
+        this._field_use_custom_font = this._checkMaker(_('Use custom font'));
+        this._field_enable_ascii    = this._checkMaker(_('Auto switch ASCII mode'));
+        this._field_enable_orien    = this._checkMaker(_('Candidates orientation'));
 
         this._field_theme_color  = this._comboMaker(this._palatte);
         this._field_run_dialog   = this._shortCutMaker(Fields.SHORTCUT);
         this._field_variant      = this._comboMaker([_('Light'), _('Dark')]);
         this._field_orientation  = this._comboMaker([_('Vertical'), _('Horizontal')]);
         this._field_unkown_state = this._comboMaker([_('On'), _('Off'), _('Default')]);
+        this._field_custom_font  = new Gtk.FontButton({ font_name: gsettings.get_string(Fields.CUSTOMFONT) });
     }
 
     _bulidUI() {
@@ -79,15 +79,15 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         });
         this.add(this._box);
         this._ibus = this._listFrameMaker(_('IBus'));
-        this._ibus._add(this._field_enable_night,    _('Night mode'),             this._field_variant);
-        this._ibus._add(this._field_enable_hotkey,   _('Run dialog'),             this._field_run_dialog);
-        this._ibus._add(this._field_enable_ms_theme, _('MS IME theme'),           this._field_theme_color);
-        this._ibus._add(this._field_enable_orien,    _('Candidates orientation'), this._field_orientation);
-        this._ibus._add(this._field_use_custom_font, _('Use custom font'),        this._field_custom_font);
-        this._ibus._add(this._field_enable_ascii,    _('Auto switch ASCII mode'), this._field_unkown_state);
+        this._ibus._add(this._field_enable_night,    this._field_variant);
+        this._ibus._add(this._field_enable_hotkey,   this._field_run_dialog);
+        this._ibus._add(this._field_enable_ms_theme, this._field_theme_color);
+        this._ibus._add(this._field_enable_orien,    this._field_orientation);
+        this._ibus._add(this._field_use_custom_font, this._field_custom_font);
+        this._ibus._add(this._field_enable_ascii,    this._field_unkown_state);
 
-        this._others = this._listFrameMaker(_('Others'));
-        this._others._add(this._field_activities, _('Hide Activities'));
+        this._others = this._listFrameMaker(_('Others'), 30);
+        this._others._add(this._field_activities);
     }
 
     _syncStatus() {
@@ -140,13 +140,13 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         gsettings.bind(Fields.USECUSTOMFONT, this._field_use_custom_font, 'active', Gio.SettingsBindFlags.DEFAULT);
     }
 
-    _listFrameMaker(lbl) {
+    _listFrameMaker(lbl, margin_top) {
         let frame = new Gtk.Frame({
             label_yalign: 1,
         });
         frame.set_label_widget(new Gtk.Label({
             use_markup: true,
-            margin_top: 30,
+            margin_top: margin_top ? margin_top : 0,
             label: "<b><big>" + lbl + "</big></b>",
         }));
         this._box.add(frame);
@@ -162,32 +162,13 @@ class IBusTweaker extends Gtk.ScrolledWindow {
 
         frame.grid._row = 0;
         frame.add(frame.grid);
-        frame._add = (x, y, z) => {
+        frame._add = (x, y) => {
             const hbox = new Gtk.Box();
-            if(z) {
-                hbox.pack_start(x, false, false, 4);
-                hbox.pack_start(this._labelMaker(y), true, true, 0);
-                hbox.pack_start(z, false, false, 4);
-            } else if(y) {
-                hbox.pack_start(x, false, false, 4);
-                hbox.pack_start(this._labelMaker(y), true, true, 4);
-            } else {
-                hbox.pack_start(x, true, true, 4);
-            }
+            hbox.pack_start(x, true, true, 4);
+            if(y) hbox.pack_start(y, false, false, 4);
             frame.grid.attach(hbox, 0, frame.grid._row++, 1, 1);
         }
         return frame;
-    }
-
-    _entryMaker(x, y) {
-        return new Gtk.Entry({
-            hexpand: true,
-            placeholder_text: x,
-            secondary_icon_sensitive: true,
-            secondary_icon_tooltip_text: y,
-            secondary_icon_activatable: true,
-            secondary_icon_name: "dialog-information-symbolic",
-        });
     }
 
     _labelMaker(x) {
@@ -198,11 +179,19 @@ class IBusTweaker extends Gtk.ScrolledWindow {
         });
     }
 
+    _checkMaker(x) {
+        return new Gtk.CheckButton({
+            label: x,
+            hexpand: true,
+            halign: Gtk.Align.START,
+        });
+    }
+
     _comboMaker(ops) {
         let l = new Gtk.ListStore();
         l.set_column_types([GObject.TYPE_STRING]);
-        ops.map(name => ({name})).forEach((p,i) => l.set(l.append(),[0],[p.name]));
-        let c = new Gtk.ComboBox({model: l});
+        ops.forEach(op => l.set(l.append(), [0], [op]));
+        let c = new Gtk.ComboBox({ model: l });
         let r = new Gtk.CellRendererText();
         c.pack_start(r, false);
         c.add_attribute(r, "text", 0);

@@ -332,25 +332,34 @@ class UpdatesIndicator extends GObject.Object{
         super._init();
     }
 
-    _checkUpdates() {
-        let proc = new Gio.Subprocess({
-            argv: ['/bin/bash', '-c', gsettings.get_string(Fields.CHECKUPDATES)],
-            flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
-        });
-        proc.init(null);
-        proc.communicate_utf8_async(null, null, (proc, res) => {
+    _execute(cmd) {
+        return new Promise((resolve, reject) => {
             try {
-                let [, stdout, stderr] = proc.communicate_utf8_finish(res);
-                if(proc.get_exit_status() == 0)
-                    this._showUpdates(stdout.trim());
+                let command = ['/bin/bash', '-c', cmd];
+                let proc = new Gio.Subprocess({
+                    argv: command,
+                    flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
+                });
+                proc.init(null);
+                proc.communicate_utf8_async(null, null, (proc, res) => {
+                    let [, stdout, stderr] = proc.communicate_utf8_finish(res);
+                    proc.get_exit_status() ? reject(stderr.trim()) : resolve(stdout.trim());
+                });
             } catch(e) {
-                Main.notifyError(Me.metadata.name, e.message);
+                reject(e.message);
             }
         });
     }
 
+    _checkUpdates() {
+        this._execute(gsettings.get_string(Fields.CHECKUPDATES)).then(scc => {
+            this._showUpdates(scc);
+        }).catch(err => {
+            Main.notifyError(Me.metadata.name, err);
+        });
+    }
+
     _showUpdates(count) {
-        if(!this._button) return;
         if(count == '0') {
             this._button.hide();
             this._checkUpdated();
@@ -363,7 +372,7 @@ class UpdatesIndicator extends GObject.Object{
                     return GLib.SOURCE_REMOVE;
                 });
             });
-            this._button.label.set_text(count.toString());
+            this._button.label.set_text(count);
             this._button.show();
         }
     }
@@ -376,12 +385,13 @@ class UpdatesIndicator extends GObject.Object{
             style_class: 'panel-status-menu-box'
         });
         let icon = new St.Icon({
+            y_expand: false,
             style_class: 'system-status-icon',
             icon_name: 'software-update-available-symbolic',
         });
         this._button.label = new St.Label({
-            y_expand: false,
             text: '0',
+            y_expand: false,
             y_align: Clutter.ActorAlign.CENTER
         });
         box.add_child(icon);
@@ -439,7 +449,7 @@ class Extensions extends GObject.Object{
             x._enableID = gsettings.connect('changed::' + fields[i], () => {
                 x._enable = gsettings.get_boolean(fields[i]);
                 x._enable ? x.enable() : x.disable();
-            }); // NOTE: _*Id will be disconnected in disable()
+            }); // NOTE: _.*Id will be disconnected in disable()
         });
     }
 
