@@ -30,28 +30,28 @@
         <summary>enable night mode autoswitch</summary>
     </key>
     <key type="u" name="candidate-orientation">
+        <range min="0" max="1"/>
         <default>0</default>
         <summary>candidate orientation</summary>
     </key>
     <key type="u" name="default-variant">
         <default>0</default>
+        <range min="0" max="1"/>
         <summary>default color vatiant(light or dark)</summary>
     </key>
     <key type="u" name="ms-theme-color">
         <default>3</default>
+        <range min="0" max="7"/>
         <summary>MS theme color</summary>
     </key>
     <key type="u" name="unkown-ascii-state">
         <default>2</default>
+        <range min="0" max="2"/>
         <summary>input state of a new unknown window</summary>
     </key>
-    <key type="as" name="input-on-list">
+    <key type="a{sb}" name="input-mode-list">
         <default>[]</default>
-        <summary>input mode on list</summary>
-    </key>
-    <key type="as" name="input-off-list">
-        <default>[]</default>
-        <summary>input mode off list</summary>
+        <summary>input mode list</summary>
     </key>
     <key type="s" name="ascii-mode">
         <default>"A#en#英"</default>

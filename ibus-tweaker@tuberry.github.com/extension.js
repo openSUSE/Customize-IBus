@@ -24,8 +24,12 @@ const INPUTMODE = 'InputMode';
 
 const LightProxy = Main.panel.statusArea.aggregateMenu._nightLight._proxy;
 
-const IBusAutoSwitch = GObject.registerClass(
-class IBusAutoSwitch extends GObject.Object {
+const IBusAutoSwitch = GObject.registerClass({
+    Properties: {
+        'unknown':  GObject.param_spec_uint('unknown', '', '', 0, 2, 2, GObject.ParamFlags.READWRITE),
+        'shortcut':  GObject.param_spec_boolean('shortcut', '', '', false, GObject.ParamFlags.WRITABLE),
+    },
+}, class IBusAutoSwitch extends GObject.Object {
     _init() {
         super._init();
     }
@@ -42,25 +46,19 @@ class IBusAutoSwitch extends GObject.Object {
         let state = this._state;
         let store = this._states.get(this._tmpWindow);
         if(state != store)
-            this._setList(this._tmpWindow, state);
+            this._states.set(this._tmpWindow, state);
 
         this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : '#unknown';
         if(!this._states.has(this._tmpWindow)) {
-            let unknown = this._unknown == UNKNOWN.DEFAULT ? state : this._unknown == UNKNOWN.ON;
-            this._setList(this._tmpWindow, unknown);
+            let unknown = this.unknown == UNKNOWN.DEFAULT ? state : this.unknown == UNKNOWN.ON;
+            this._states.set(this._tmpWindow, unknown);
         }
 
         return state^this._states.get(this._tmpWindow);
     }
 
-    _setList(wm_class, state) {
-        this._states.set(wm_class, state);
-        gsettings.set_strv(Fields.INPUTONLIST, [...this._states.keys()].filter(key => this._states.get(key)));
-        gsettings.set_strv(Fields.INPUTOFFLIST, [...this._states.keys()].filter(key => !this._states.get(key)));
-    }
-
-    set _shortcut(short) {
-        if(short) {
+    set shortcut(shortcut) {
+        if(shortcut) {
             Main.wm.addKeybinding(Fields.SHORTCUT, gsettings, Meta.KeyBindingFlags.NONE, Shell.ActionMode.ALL, () => {
                 if(!this._state) IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
                 Main.openRunDialog();
@@ -68,10 +66,6 @@ class IBusAutoSwitch extends GObject.Object {
         } else {
             Main.wm.removeKeybinding(Fields.SHORTCUT);
         }
-    }
-
-    get _unknown() {
-        return gsettings.get_uint(Fields.UNKNOWNSTATE);
     }
 
     _onWindowChanged() {
@@ -82,32 +76,22 @@ class IBusAutoSwitch extends GObject.Object {
         }
     }
 
-    _fetchSettings() {
-        gsettings.get_strv(Fields.INPUTONLIST).forEach(x => this._states.set(x, true));
-        gsettings.get_strv(Fields.INPUTOFFLIST).forEach(x => this._states.set(x, false));
-        this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY);
+    _bindSettings() {
+        gsettings.bind(Fields.UNKNOWNSTATE, this, 'unknown', Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.ENABLEHOTKEY, this, 'shortcut', Gio.SettingsBindFlags.GET);
+        this._states = new Map(Object.entries(gsettings.get_value(Fields.INPUTLIST).deep_unpack()));
     }
 
-    _loadSettings() {
-        this._shortcutId = gsettings.connect('changed::' + Fields.ENABLEHOTKEY, () => { this._shortcut = gsettings.get_boolean(Fields.ENABLEHOTKEY); });
-
+    enable() {
+        this._bindSettings();
         this._overviewHiddenID = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
         this._overviewShowingID = Main.overview.connect('showing', this._onWindowChanged.bind(this));
         this._onWindowChangedID = global.display.connect('notify::focus-window', this._onWindowChanged.bind(this));
     }
 
-    enable() {
-        this._states = new Map();
-        this._tmpWindow = '#unknown';
-        this._fetchSettings();
-        this._loadSettings();
-    }
-
     disable() {
-        this._states = null;
-        this._shortcut = false;
-        for(let x in this)
-            if(RegExp(/^_.+Id$/).test(x)) eval('if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;'.format(x, x, x));
+        this.shortcut = false;
+        gsettings.set_value(Fields.INPUTLIST, new GLib.Variant('a{sb}', Object.fromEntries(this._states)));
         if(this._onWindowChangedID)
             global.display.disconnect(this._onWindowChangedID), this._onWindowChangedID = 0;
         if(this._overviewShowingID)
@@ -117,16 +101,19 @@ class IBusAutoSwitch extends GObject.Object {
     }
 });
 
-const IBusFontSetting = GObject.registerClass(
-class IBusFontSetting extends GObject.Object {
+const IBusFontSetting = GObject.registerClass({
+    Properties: {
+        'fontname':  GObject.param_spec_string('fontname', '', '', 'Sans 16', GObject.ParamFlags.WRITABLE),
+    },
+}, class IBusFontSetting extends GObject.Object {
     _init() {
         super._init();
     }
 
-    _onFontChanged() {
+    set fontname(fontname) {
         let offset = 3; // the fonts-size difference between index and candidate
-        let desc = Pango.FontDescription.from_string(gsettings.get_string(Fields.CUSTOMFONT));
-        let get_weight = () => { try { return desc.get_weight(); } catch(e) { return parseInt(e.message); } }; //fix Pango.Weight enumeration exception (eg: 290) in some fonts
+        let desc = Pango.FontDescription.from_string(fontname);
+        let get_weight = () => { try { return desc.get_weight(); } catch(e) { return parseInt(e.message); } }; // hack for Pango.Weight enumeration exception (eg: 290) in some fonts
         CandidatePopup.set_style('font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
             get_weight(),
             desc.get_family(),
@@ -140,13 +127,10 @@ class IBusFontSetting extends GObject.Object {
     }
 
     enable() {
-        this._onFontChanged();
-        this._customFontId = gsettings.connect('changed::' + Fields.CUSTOMFONT, this._onFontChanged.bind(this));
+        gsettings.bind(Fields.CUSTOMFONT, this, 'fontname', Gio.SettingsBindFlags.GET);
     }
 
     disable() {
-        if (this._customFontId)
-            gsettings.disconnect(this._customFontId), this._customFontId = 0;
         CandidatePopup.set_style('');
         CandidateArea._candidateBoxes.forEach(x => {
             x._candidateLabel.set_style('');
@@ -155,38 +139,42 @@ class IBusFontSetting extends GObject.Object {
     }
 });
 
-const IBusOrientation = GObject.registerClass(
-class IBusOrientation extends GObject.Object {
+const IBusOrientation = GObject.registerClass({
+    Properties: {
+        'orientation':  GObject.param_spec_uint('orientation', '', '', 0, 1, 1, GObject.ParamFlags.READWRITE),
+    },
+}, class IBusOrientation extends GObject.Object {
     _init() {
         super._init();
     }
 
-    _onOrientationChanged() {
-        let orientation = gsettings.get_uint(Fields.ORIENTATION) ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL
-        this._originalSetOrientation(orientation);
+    set orientation(orientation) {
+        this._originalSetOrientation(gsettings.get_uint(Fields.ORIENTATION) ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL);
     }
 
     enable() {
         this._originalSetOrientation = CandidateArea.setOrientation.bind(CandidateArea);
         CandidateArea.setOrientation = () => {};
-        this._onOrientationChanged();
-        this._orientationId = gsettings.connect('changed::' + Fields.ORIENTATION, this._onOrientationChanged.bind(this));
+        gsettings.bind(Fields.ORIENTATION, this, 'orientation', Gio.SettingsBindFlags.GET);
     }
 
     disable() {
-        if (this._orientationId)
-            gsettings.disconnect(this._orientationId), this._orientationId = 0;
         CandidateArea.setOrientation = this._originalSetOrientation;
     }
 });
 
-const IBusThemeManager = GObject.registerClass(
-class IBusThemeManager extends GObject.Object {
+const IBusThemeManager = GObject.registerClass({
+    Properties: {
+        'night':  GObject.param_spec_boolean('night', '', '', false, GObject.ParamFlags.WRITABLE),
+        'style':  GObject.param_spec_uint('style', '', '', 0, 1, 0, GObject.ParamFlags.READWRITE),
+        'color':  GObject.param_spec_uint('color', '', '', 0, 7, 3, GObject.ParamFlags.READWRITE),
+    },
+}, class IBusThemeManager extends GObject.Object {
     _init() {
         super._init();
     }
 
-    _loadSettings() {
+    _replaceStyle() {
         this._popup = {
             style_class: 'candidate-popup-boxpointer',
             _candidateArea: {
@@ -212,15 +200,10 @@ class IBusThemeManager extends GObject.Object {
             _auxText: { style_class: 'candidate-popup-text' }
         }
         this._palatte = ['red', 'green', 'orange', 'blue', 'purple', 'turquoise', 'grey'];
-        this._prvColor = this._color;
         this._addStyleClass(this._popup, CandidatePopup,  x => x.replace(/candidate/g, 'ibus-tweaker-candidate'));
-        this._style = ((this._night && LightProxy.NightLightActive) || (!this._night && this._style == STYLE.DARK)) ? STYLE.DARK : STYLE.LIGHT;
-        if(this._style == STYLE.DARK) {
-            CandidatePopup.add_style_class_name('night');
-            CandidatePopup.add_style_class_name('night-%s'.format(this._color));
-        } else {
-            CandidatePopup.add_style_class_name(this._color);
-        }
+        this._night = null;
+        this._style = null;
+        this._color = null;
     }
 
     _addStyleClass(src, aim, func) {
@@ -238,67 +221,7 @@ class IBusThemeManager extends GObject.Object {
         }
     }
 
-    get _style() {
-        return gsettings.get_uint(Fields.MSTHEMESTYLE);
-    }
-
-    get _night() {
-        return gsettings.get_boolean(Fields.MSTHEMENIGHT);
-    }
-
-    get _color() {
-        return this._palatte[gsettings.get_uint(Fields.MSTHEMECOLOUR)];
-    }
-
-    set _style(style) {
-        gsettings.set_uint(Fields.MSTHEMESTYLE, style);
-    }
-
-    _onProxyChanged() {
-        if(!this._night) return;
-        this._style = LightProxy.NightLightActive ? STYLE.DARK : STYLE.LIGHT;
-    }
-
-    _onThemeChanged() {
-        if(this._style == STYLE.DARK) {
-            CandidatePopup.remove_style_class_name('night-%s'.format(this._prvColor));
-            CandidatePopup.add_style_class_name('night-%s'.format(this._color));
-        } else {
-            CandidatePopup.remove_style_class_name(this._prvColor);
-            CandidatePopup.add_style_class_name(this._color);
-        }
-        this._prvColor = this._color;
-    }
-
-    _onNightChanged() {
-        this._style = this._night && LightProxy.NightLightActive ? STYLE.DARK : STYLE.LIGHT;
-    }
-
-    _onStyleChanged() {
-        if(this._style == STYLE.DARK) {
-            CandidatePopup.remove_style_class_name(this._color);
-            CandidatePopup.add_style_class_name('night');
-            CandidatePopup.add_style_class_name('night-%s'.format(this._color));
-        } else {
-            CandidatePopup.remove_style_class_name('night');
-            CandidatePopup.remove_style_class_name('night-%s'.format(this._color));
-            CandidatePopup.add_style_class_name(this._color);
-        }
-    }
-
-    enable() {
-        this._loadSettings();
-        this._nightChanhedId = gsettings.connect('changed::' + Fields.MSTHEMENIGHT, this._onNightChanged.bind(this));
-        this._themeChangedId = gsettings.connect('changed::' + Fields.MSTHEMECOLOUR, this._onThemeChanged.bind(this));
-        this._styleChangedId = gsettings.connect('changed::' + Fields.MSTHEMESTYLE, this._onStyleChanged.bind(this));
-        this._proxyChangedID = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
-    }
-
-    disable() {
-        for(let x in this)
-            if(RegExp(/^_.+Id$/).test(x)) eval('if(this.%s) gsettings.disconnect(this.%s), this.%s = 0;'.format(x, x, x));
-        if(this._proxyChangedID)
-            LightProxy.disconnect(this._proxyChangedID), this._proxyChangedID = 0;
+    _restoreStyle() {
         if(this._style == STYLE.DARK) {
             CandidatePopup.remove_style_class_name('night');
             CandidatePopup.remove_style_class_name('night-%s'.format(this._color));
@@ -308,6 +231,68 @@ class IBusThemeManager extends GObject.Object {
         this._addStyleClass(this._popup, CandidatePopup, x => x);
         this._popup = null;
         this._palatte = null;
+    }
+
+    _onProxyChanged() {
+        if(this._night === null || !this._night) return;
+        gsettings.set_uint(Fields.MSTHEMESTYLE, this._night && LightProxy.NightLightActive ? STYLE.DARK : STYLE.LIGHT);
+    }
+
+    set night(night) {
+        this._night = night;
+        gsettings.set_uint(Fields.MSTHEMESTYLE, night && LightProxy.NightLightActive ? STYLE.DARK : STYLE.LIGHT);
+    }
+
+    set color(color) {
+        this._color = this._palatte[color];
+        if(this._style === null || this._style == STYLE.LIGHT) {
+            if(this._prvColor)
+                CandidatePopup.remove_style_class_name(this._prvColor);
+            CandidatePopup.add_style_class_name(this._color);
+        } else {
+            if(this._prvColor)
+                CandidatePopup.remove_style_class_name('night-%s'.format(this._prvColor));
+            CandidatePopup.add_style_class_name('night-%s'.format(this._color));
+        }
+        this._prvColor = this._color;
+    }
+
+    set style(style) {
+        this._style = style;
+        if(this._color === null) {
+            if(style == STYLE.DARK) {
+                CandidatePopup.add_style_class_name('night');
+            } else {
+                CandidatePopup.remove_style_class_name('night');
+            }
+        } else {
+            if(style == STYLE.DARK) {
+                CandidatePopup.remove_style_class_name(this._color);
+                CandidatePopup.add_style_class_name('night');
+                CandidatePopup.add_style_class_name('night-%s'.format(this._color));
+            } else {
+                CandidatePopup.remove_style_class_name('night');
+                CandidatePopup.remove_style_class_name('night-%s'.format(this._color));
+                CandidatePopup.add_style_class_name(this._color);
+            }
+        }
+    }
+
+    _bindSettings() { // order matters
+        gsettings.bind(Fields.MSTHEMENIGHT, this, 'night', Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.MSTHEMESTYLE, this, 'style', Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.MSTHEMECOLOR, this, 'color', Gio.SettingsBindFlags.GET);
+    }
+
+    enable() {
+        this._replaceStyle();
+        this._bindSettings();
+        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
+    }
+
+    disable() {
+        this._restoreStyle();
+        if(this._proxyChangedId) LightProxy.disconnect(this._proxyChangedId), this._proxyChangedId = 0;
     }
 });
 
@@ -326,16 +311,25 @@ class ActivitiesHide extends GObject.Object{
     }
 });
 
-const UpdatesIndicator = GObject.registerClass(
-class UpdatesIndicator extends GObject.Object{
+const UpdatesIndicator = GObject.registerClass({
+    Properties: {
+        'updatescmd':  GObject.param_spec_string('updatescmd', '', '', 'checkupdates', GObject.ParamFlags.READWRITE),
+        'updatesdir':  GObject.param_spec_string('updatesdir', '', '', '/var/lib/pacman/local', GObject.ParamFlags.READWRITE),
+    },
+}, class UpdatesIndicator extends GObject.Object{
     _init() {
         super._init();
+    }
+
+    _bindSettings() {
+        gsettings.bind(Fields.UPDATESDIR, this, 'updatesdir', Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.CHECKUPDATES, this, 'updatescmd', Gio.SettingsBindFlags.GET);
     }
 
     _execute(cmd) {
         return new Promise((resolve, reject) => {
             try {
-                let command = ['/bin/bash', '-c', cmd];
+                let command = ['/bin/bash', '-c', this.updatescmd];
                 let proc = new Gio.Subprocess({
                     argv: command,
                     flags: Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
@@ -364,7 +358,7 @@ class UpdatesIndicator extends GObject.Object{
             this._button.hide();
             this._checkUpdated();
         } else {
-            let dir = Gio.file_new_for_path(gsettings.get_string(Fields.UPDATESDIR));
+            let dir = Gio.file_new_for_path(this.updatesdir);
             this._fileMonitor = dir.monitor_directory(Gio.FileMonitorFlags.NONE, null);
             this._fileChangedId = this._fileMonitor.connect('changed', () => {
                 GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 10, () => {
@@ -377,7 +371,7 @@ class UpdatesIndicator extends GObject.Object{
         }
     }
 
-    _addButton() {
+    _addIndicator() {
         if(Main.panel.statusArea[Me.metadata.uuid]) return;
         this._button = new PanelMenu.Button(0, 'Updates Indicator', true);
         let box = new St.BoxLayout({
@@ -407,7 +401,8 @@ class UpdatesIndicator extends GObject.Object{
     }
 
     enable() {
-        this._addButton();
+        this._bindSettings();
+        this._addIndicator();
         this._checkUpdates();
         this._checkUpdatesId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 60 * 60, this._checkUpdates.bind(this));
     }
@@ -435,30 +430,30 @@ class Extensions extends GObject.Object{
             Fields.ACTIVITIES,
             Fields.ENABLEUPDATES
         ];
-        this._extensions = [
+        this._exts = [
             new IBusAutoSwitch(),
             new IBusFontSetting(),
             new IBusOrientation(),
             new IBusThemeManager(),
             new ActivitiesHide(),
             new UpdatesIndicator()
-        ];
-        this._extensions.forEach((x,i) => {
+        ]
+        this._exts.forEach((x,i) => {
             x._enable = gsettings.get_boolean(fields[i]);
             if(x._enable) x.enable();
-            x._enableID = gsettings.connect('changed::' + fields[i], () => {
+            x._enableId = gsettings.connect('changed::' + fields[i], () => {
                 x._enable = gsettings.get_boolean(fields[i]);
                 x._enable ? x.enable() : x.disable();
-            }); // NOTE: _.*Id will be disconnected in disable()
+            });
         });
     }
 
     disable() {
-        this._extensions.forEach(x => {
+        this._exts.forEach(x => {
             if(x._enable) x.disable();
-            if(x._enableID) gsettings.disconnect(x._enableID), x._enableID = 0;
+            if(x._enableId) gsettings.disconnect(x._enableId), x._enableId = 0;
         });
-        this._extensions = null;
+        this._exts = null;
     }
 });
 
