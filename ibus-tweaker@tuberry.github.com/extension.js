@@ -27,7 +27,7 @@ const LightProxy = Main.panel.statusArea.aggregateMenu._nightLight._proxy;
 const IBusAutoSwitch = GObject.registerClass({
     Properties: {
         'unknown':  GObject.param_spec_uint('unknown', '', '', 0, 2, 2, GObject.ParamFlags.READWRITE),
-        'shortcut':  GObject.param_spec_boolean('shortcut', '', '', false, GObject.ParamFlags.WRITABLE),
+        'shortcut': GObject.param_spec_boolean('shortcut', '', '', false, GObject.ParamFlags.WRITABLE),
     },
 }, class IBusAutoSwitch extends GObject.Object {
     _init() {
@@ -48,7 +48,7 @@ const IBusAutoSwitch = GObject.registerClass({
         if(state != store)
             this._states.set(this._tmpWindow, state);
 
-        this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : '#unknown';
+        this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : '';
         if(!this._states.has(this._tmpWindow)) {
             let unknown = this.unknown == UNKNOWN.DEFAULT ? state : this.unknown == UNKNOWN.ON;
             this._states.set(this._tmpWindow, unknown);
@@ -141,7 +141,7 @@ const IBusFontSetting = GObject.registerClass({
 
 const IBusOrientation = GObject.registerClass({
     Properties: {
-        'orientation':  GObject.param_spec_uint('orientation', '', '', 0, 1, 1, GObject.ParamFlags.READWRITE),
+        'orientation': GObject.param_spec_uint('orientation', '', '', 0, 1, 1, GObject.ParamFlags.READWRITE),
     },
 }, class IBusOrientation extends GObject.Object {
     _init() {
@@ -165,9 +165,9 @@ const IBusOrientation = GObject.registerClass({
 
 const IBusThemeManager = GObject.registerClass({
     Properties: {
-        'night':  GObject.param_spec_boolean('night', '', '', false, GObject.ParamFlags.WRITABLE),
-        'style':  GObject.param_spec_uint('style', '', '', 0, 1, 0, GObject.ParamFlags.READWRITE),
-        'color':  GObject.param_spec_uint('color', '', '', 0, 7, 3, GObject.ParamFlags.READWRITE),
+        'night': GObject.param_spec_boolean('night', '', '', false, GObject.ParamFlags.WRITABLE),
+        'style': GObject.param_spec_uint('style', '', '', 0, 1, 0, GObject.ParamFlags.READWRITE),
+        'color': GObject.param_spec_uint('color', '', '', 0, 7, 3, GObject.ParamFlags.READWRITE),
     },
 }, class IBusThemeManager extends GObject.Object {
     _init() {
@@ -313,8 +313,8 @@ class ActivitiesHide extends GObject.Object{
 
 const UpdatesIndicator = GObject.registerClass({
     Properties: {
-        'updatescmd':  GObject.param_spec_string('updatescmd', '', '', 'checkupdates', GObject.ParamFlags.READWRITE),
-        'updatesdir':  GObject.param_spec_string('updatesdir', '', '', '/var/lib/pacman/local', GObject.ParamFlags.READWRITE),
+        'updatescmd': GObject.param_spec_string('updatescmd', '', '', 'checkupdates', GObject.ParamFlags.READWRITE),
+        'updatesdir': GObject.param_spec_string('updatesdir', '', '', '/var/lib/pacman/local', GObject.ParamFlags.READWRITE),
     },
 }, class UpdatesIndicator extends GObject.Object{
     _init() {
@@ -322,7 +322,7 @@ const UpdatesIndicator = GObject.registerClass({
     }
 
     _bindSettings() {
-        gsettings.bind(Fields.UPDATESDIR, this, 'updatesdir', Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.UPDATESDIR,   this, 'updatesdir', Gio.SettingsBindFlags.GET);
         gsettings.bind(Fields.CHECKUPDATES, this, 'updatescmd', Gio.SettingsBindFlags.GET);
     }
 
