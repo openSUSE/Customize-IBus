@@ -1,5 +1,5 @@
 # ibus-tweaker
-Tweaker of ibus in gnome-shell for orientation, theme, font and ascii mode auto-switch.
+Tweaker of ibus in gnome-shell for orientation, theme, font and input mode auto-switch.
 > 狙公赋芧曰：“朝三而暮四”。众狙皆怒。曰：“然则朝四而暮三”。众狙皆悦。 —— *《庄子·齐物论》*<br>
 [![license]](/LICENSE)
 

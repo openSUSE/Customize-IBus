@@ -32,6 +32,10 @@ const IBusAutoSwitch = GObject.registerClass({
 }, class IBusAutoSwitch extends GObject.Object {
     _init() {
         super._init();
+        this._bindSettings();
+        this._overviewHiddenID = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
+        this._overviewShowingID = Main.overview.connect('showing', this._onWindowChanged.bind(this));
+        this._onWindowChangedID = global.display.connect('notify::focus-window', this._onWindowChanged.bind(this));
     }
 
     get _state() {
@@ -82,14 +86,7 @@ const IBusAutoSwitch = GObject.registerClass({
         this._states = new Map(Object.entries(gsettings.get_value(Fields.INPUTLIST).deep_unpack()));
     }
 
-    enable() {
-        this._bindSettings();
-        this._overviewHiddenID = Main.overview.connect('hidden', this._onWindowChanged.bind(this));
-        this._overviewShowingID = Main.overview.connect('showing', this._onWindowChanged.bind(this));
-        this._onWindowChangedID = global.display.connect('notify::focus-window', this._onWindowChanged.bind(this));
-    }
-
-    disable() {
+    destroy() {
         this.shortcut = false;
         gsettings.set_value(Fields.INPUTLIST, new GLib.Variant('a{sb}', Object.fromEntries(this._states)));
         if(this._onWindowChangedID)
@@ -98,6 +95,7 @@ const IBusAutoSwitch = GObject.registerClass({
             Main.overview.disconnect(this._overviewShowingID), this._overviewShowingID = 0;
         if(this._overviewHiddenID)
             Main.overview.disconnect(this._overviewHiddenID), this._overviewHiddenID = 0;
+        this.run_dispose();
     }
 });
 
@@ -108,6 +106,7 @@ const IBusFontSetting = GObject.registerClass({
 }, class IBusFontSetting extends GObject.Object {
     _init() {
         super._init();
+        gsettings.bind(Fields.CUSTOMFONT, this, 'fontname', Gio.SettingsBindFlags.GET);
     }
 
     set fontname(fontname) {
@@ -126,16 +125,13 @@ const IBusFontSetting = GObject.registerClass({
         })
     }
 
-    enable() {
-        gsettings.bind(Fields.CUSTOMFONT, this, 'fontname', Gio.SettingsBindFlags.GET);
-    }
-
-    disable() {
+    destroy() {
         CandidatePopup.set_style('');
         CandidateArea._candidateBoxes.forEach(x => {
             x._candidateLabel.set_style('');
             x._indexLabel.set_style('');
         });
+        this.run_dispose();
     }
 });
 
@@ -146,20 +142,18 @@ const IBusOrientation = GObject.registerClass({
 }, class IBusOrientation extends GObject.Object {
     _init() {
         super._init();
+        this._originalSetOrientation = CandidateArea.setOrientation.bind(CandidateArea);
+        CandidateArea.setOrientation = () => {};
+        gsettings.bind(Fields.ORIENTATION, this, 'orientation', Gio.SettingsBindFlags.GET);
     }
 
     set orientation(orientation) {
         this._originalSetOrientation(gsettings.get_uint(Fields.ORIENTATION) ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL);
     }
 
-    enable() {
-        this._originalSetOrientation = CandidateArea.setOrientation.bind(CandidateArea);
-        CandidateArea.setOrientation = () => {};
-        gsettings.bind(Fields.ORIENTATION, this, 'orientation', Gio.SettingsBindFlags.GET);
-    }
-
-    disable() {
+    destroy() {
         CandidateArea.setOrientation = this._originalSetOrientation;
+        this.run_dispose();
     }
 });
 
@@ -172,6 +166,9 @@ const IBusThemeManager = GObject.registerClass({
 }, class IBusThemeManager extends GObject.Object {
     _init() {
         super._init();
+        this._replaceStyle();
+        this._bindSettings();
+        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
     }
 
     _replaceStyle() {
@@ -229,8 +226,8 @@ const IBusThemeManager = GObject.registerClass({
             CandidatePopup.remove_style_class_name(this._color);
         }
         this._addStyleClass(this._popup, CandidatePopup, x => x);
-        this._popup = null;
-        this._palatte = null;
+        delete this._popup;
+        delete this._palatte;
     }
 
     _onProxyChanged() {
@@ -284,15 +281,10 @@ const IBusThemeManager = GObject.registerClass({
         gsettings.bind(Fields.MSTHEMECOLOR, this, 'color', Gio.SettingsBindFlags.GET);
     }
 
-    enable() {
-        this._replaceStyle();
-        this._bindSettings();
-        this._proxyChangedId = LightProxy.connect('g-properties-changed', this._onProxyChanged.bind(this));
-    }
-
-    disable() {
+    destroy() {
         this._restoreStyle();
         if(this._proxyChangedId) LightProxy.disconnect(this._proxyChangedId), this._proxyChangedId = 0;
+        this.run_dispose();
     }
 });
 
@@ -300,13 +292,10 @@ const ActivitiesHide = GObject.registerClass(
 class ActivitiesHide extends GObject.Object{
     _init() {
         super._init();
-    }
-
-    enable() {
         Main.panel.statusArea['activities'].hide();
     }
 
-    disable() {
+    destroy() {
         Main.panel.statusArea['activities'].show();
     }
 });
@@ -319,6 +308,10 @@ const UpdatesIndicator = GObject.registerClass({
 }, class UpdatesIndicator extends GObject.Object{
     _init() {
         super._init();
+        this._bindSettings();
+        this._addIndicator();
+        this._checkUpdates();
+        this._checkUpdatesId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 60 * 60, this._checkUpdates.bind(this));
     }
 
     _bindSettings() {
@@ -400,64 +393,132 @@ const UpdatesIndicator = GObject.registerClass({
         this._fileMonitor = null;
     }
 
-    enable() {
-        this._bindSettings();
-        this._addIndicator();
-        this._checkUpdates();
-        this._checkUpdatesId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 60 * 60, this._checkUpdates.bind(this));
-    }
-
-    disable() {
+    destroy() {
         if(this._checkUpdatesId) GLib.source_remove(this._checkUpdatesId), this._checkUpdatesId = 0;
         this._checkUpdated();
         this._button.destroy();
-        this._button = null;
+        delete this._button;
+        this.run_dispose();
     }
 });
 
-const Extensions = GObject.registerClass(
-class Extensions extends GObject.Object{
+const Extensions = GObject.registerClass({
+    Properties: {
+        'font':   GObject.param_spec_boolean('font', 'font', 'font', false, GObject.ParamFlags.WRITABLE),
+        'input':  GObject.param_spec_boolean('input', 'input', 'input', false, GObject.ParamFlags.WRITABLE),
+        'orien':  GObject.param_spec_boolean('orien', 'orien', 'orien', false, GObject.ParamFlags.WRITABLE),
+        'theme':  GObject.param_spec_boolean('theme', 'theme', 'theme', false, GObject.ParamFlags.WRITABLE),
+        'activ':  GObject.param_spec_boolean('activ', 'activ', 'activ', false, GObject.ParamFlags.WRITABLE),
+        'update': GObject.param_spec_boolean('update', 'update', 'update', false, GObject.ParamFlags.WRITABLE),
+    },
+}, class Extensions extends GObject.Object{
     _init() {
         super._init();
+        this._bindSettings();
+    }
+
+    _bindSettings() {
+        gsettings.bind(Fields.AUTOSWITCH,    this, 'input',  Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.USECUSTOMFONT, this, 'font',   Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.ENABLEORIEN,   this, 'orien',  Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.ENABLEMSTHEME, this, 'theme',  Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.ACTIVITIES,    this, 'activ',  Gio.SettingsBindFlags.GET);
+        gsettings.bind(Fields.ENABLEUPDATES, this, 'update', Gio.SettingsBindFlags.GET);
+    }
+
+    set input(input) {
+        if(input) {
+            if(this._input) return;
+            this._input = new IBusAutoSwitch();
+        } else {
+            if(!this._input) return;
+            this._input.destroy();
+            delete this._input;
+        }
+    }
+
+    set font(font) {
+        if(font) {
+            if(this._font) return;
+            this._font = new IBusFontSetting();
+        } else {
+            if(!this._font) return;
+            this._font.destroy();
+            delete this._font;
+        }
+    }
+
+    set orien(orien) {
+        if(orien) {
+            if(this._orien) return;
+            this._orien = new IBusOrientation();
+        } else {
+            if(!this._orien) return;
+            this._orien.destroy();
+            delete this._orien;
+        }
+    }
+
+    set theme(theme) {
+        if(theme) {
+            if(this._theme) return;
+            this._theme = new IBusThemeManager();
+        } else {
+            if(!this._theme) return;
+            this._theme.destroy();
+            delete this._theme;
+        }
+    }
+
+    set activ(activ) {
+        if(activ) {
+            if(this._activ) return;
+            this._activ = new ActivitiesHide();
+        } else {
+            if(!this._activ) return;
+            this._activ.destroy();
+            delete this._activ;
+        }
+    }
+
+    set update(update) {
+        if(update) {
+            if(this._update) return;
+            this._update = new UpdatesIndicator();
+        } else {
+            if(!this._update) return;
+            this._update.destroy();
+            delete this._update;
+        }
+    }
+
+    destroy() {
+        this.font = false;
+        this.input = false;
+        this.orien = false;
+        this.theme = false;
+        this.activ = false;
+        this.update = false;
+        this.run_dispose();
+    }
+});
+
+const Extension = class Extension {
+    constructor() {
+        ExtensionUtils.initTranslations();
     }
 
     enable() {
-        let fields = [
-            Fields.AUTOSWITCH,
-            Fields.USECUSTOMFONT,
-            Fields.ENABLEORIEN,
-            Fields.ENABLEMSTHEME,
-            Fields.ACTIVITIES,
-            Fields.ENABLEUPDATES
-        ];
-        this._exts = [
-            new IBusAutoSwitch(),
-            new IBusFontSetting(),
-            new IBusOrientation(),
-            new IBusThemeManager(),
-            new ActivitiesHide(),
-            new UpdatesIndicator()
-        ]
-        this._exts.forEach((x,i) => {
-            x._enable = gsettings.get_boolean(fields[i]);
-            if(x._enable) x.enable();
-            x._enableId = gsettings.connect('changed::' + fields[i], () => {
-                x._enable = gsettings.get_boolean(fields[i]);
-                x._enable ? x.enable() : x.disable();
-            });
-        });
+        this._ext = new Extensions();
     }
 
     disable() {
-        this._exts.forEach(x => {
-            if(x._enable) x.disable();
-            if(x._enableId) gsettings.disconnect(x._enableId), x._enableId = 0;
-        });
-        this._exts = null;
+        this._ext.destroy();
+        delete this._ext;
     }
-});
+}
 
 function init() {
-    return new Extensions();
+    return new Extension();
 }
 
