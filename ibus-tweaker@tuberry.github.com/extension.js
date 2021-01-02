@@ -95,7 +95,6 @@ const IBusAutoSwitch = GObject.registerClass({
             Main.overview.disconnect(this._overviewShowingID), this._overviewShowingID = 0;
         if(this._overviewHiddenID)
             Main.overview.disconnect(this._overviewHiddenID), this._overviewHiddenID = 0;
-        this.run_dispose();
     }
 });
 
@@ -131,7 +130,6 @@ const IBusFontSetting = GObject.registerClass({
             x._candidateLabel.set_style('');
             x._indexLabel.set_style('');
         });
-        this.run_dispose();
     }
 });
 
@@ -148,12 +146,11 @@ const IBusOrientation = GObject.registerClass({
     }
 
     set orientation(orientation) {
-        this._originalSetOrientation(gsettings.get_uint(Fields.ORIENTATION) ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL);
+        this._originalSetOrientation(orientation ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL);
     }
 
     destroy() {
         CandidateArea.setOrientation = this._originalSetOrientation;
-        this.run_dispose();
     }
 });
 
@@ -284,7 +281,6 @@ const IBusThemeManager = GObject.registerClass({
     destroy() {
         this._restoreStyle();
         if(this._proxyChangedId) LightProxy.disconnect(this._proxyChangedId), this._proxyChangedId = 0;
-        this.run_dispose();
     }
 });
 
@@ -347,9 +343,9 @@ const UpdatesIndicator = GObject.registerClass({
     }
 
     _showUpdates(count) {
+        this._checkUpdated();
         if(count == '0') {
             this._button.hide();
-            this._checkUpdated();
         } else {
             let dir = Gio.file_new_for_path(this.updatesdir);
             this._fileMonitor = dir.monitor_directory(Gio.FileMonitorFlags.NONE, null);
@@ -389,8 +385,9 @@ const UpdatesIndicator = GObject.registerClass({
     }
 
     _checkUpdated() {
+        if(!this._fileMonitor) return;
         if(this._fileChangedId) this._fileMonitor.disconnect(this._fileChangedId), this._fileChangedId = 0;
-        this._fileMonitor = null;
+        delete this._fileMonitor;
     }
 
     destroy() {
@@ -398,7 +395,6 @@ const UpdatesIndicator = GObject.registerClass({
         this._checkUpdated();
         this._button.destroy();
         delete this._button;
-        this.run_dispose();
     }
 });
 
@@ -499,7 +495,6 @@ const Extensions = GObject.registerClass({
         this.theme = false;
         this.activ = false;
         this.update = false;
-        this.run_dispose();
     }
 });
 
