@@ -60,19 +60,6 @@
     color: rgba(0, 0, 0, 0.6);
 }
 
-.night .ibus-tweaker-candidate-popup-content {
-    color: rgba(255, 255, 255, 0.95);
-    background-color: rgba(56, 56, 56, 1);
-}
-
-.night .ibus-tweaker-candidate-box:selected {
-    color: rgba(255, 255, 255, 1);
-}
-
-.night .ibus-tweaker-candidate-box .ibus-tweaker-candidate-index {
-    color: rgba(255, 255, 255, 0.6);
-}
-
 /*
  *   Colors
  */
@@ -94,22 +81,6 @@
     background-color: rgba(252, 142, 159, 0.95);
 }
 
-/*
- *  #DE3163
- */
-.night-red .ibus-tweaker-candidate-popup-content,
-.night-red .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(222, 49, 99, 0.95);
-}
-
-.night-red .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(222, 49, 99, 0.6);
-}
-
-.night-red .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(222, 49, 99, 0.95);
-}
-
 
 /*
  *  #8FF0A4
@@ -125,22 +96,6 @@
 
 .green .ibus-tweaker-candidate-box:selected {
     background-color: rgba(143, 240, 164, 0.95);
-}
-
-/*
- *  #2CA52A
- */
-.night-green .ibus-tweaker-candidate-popup-content,
-.night-green .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(44, 165, 42, 0.95);
-}
-
-.night-green .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(44, 165, 42, 0.6);
-}
-
-.night-green .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(44, 165, 42, 0.95);
 }
 
 
@@ -160,22 +115,6 @@
     background-color: rgba(255, 190, 111, 0.95);
 }
 
-/*
- *  #C64600
- */
-.night-orange .ibus-tweaker-candidate-popup-content,
-.night-orange .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(198, 70, 0, 0.95);
-}
-
-.night-orange .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(198, 70, 0, 0.6);
-}
-
-.night-orange .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(198, 70, 0, 0.95);
-}
-
 
 /*
  *  #99C1F1
@@ -191,22 +130,6 @@
 
 .blue .ibus-tweaker-candidate-box:selected {
     background-color: rgba(153, 193, 241, 0.95);
-}
-
-/*
- *  #1A5FB4
- */
-.night-blue .ibus-tweaker-candidate-popup-content,
-.night-blue .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(26, 95, 180, 0.95);
-}
-
-.night-blue .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(26, 95, 180, 0.6);
-}
-
-.night-blue .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(26, 95, 180, 0.95);
 }
 
 
@@ -226,22 +149,6 @@
     background-color: rgba(220, 138, 221, 0.95);
 }
 
-/*
- *  #613583
- */
-.night-purple .ibus-tweaker-candidate-popup-content,
-.night-purple .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(97, 53, 131, 0.95);
-}
-
-.night-purple .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(97, 53, 131, 0.6);
-}
-
-.night-purple .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(97, 53, 131, 0.95);
-}
-
 
 /*
  *  #ABECED
@@ -259,22 +166,6 @@
     background-color: rgba(171, 236, 237, 0.95);
 }
 
-/*
- *  #128FA3
- */
-.night-turquoise .ibus-tweaker-candidate-popup-content,
-.night-turquoise .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(18, 143, 163, 0.95);
-}
-
-.night-turquoise .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(18, 143, 163, 0.6);
-}
-
-.night-turquoise .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(18, 143, 163, 0.95);
-}
-
 
 /*
  *  #C0BFBC
@@ -290,21 +181,5 @@
 
 .grey .ibus-tweaker-candidate-box:selected {
     background-color: rgba(192, 191, 188, 0.95);
-}
-
-/*
- *  #59575D
- */
-.night-grey .ibus-tweaker-candidate-popup-content,
-.night-grey .ibus-tweaker-candidate-popup-text {
-    border-color: rgba(89, 87, 93, 0.95);
-}
-
-.night-grey .ibus-tweaker-candidate-box:hover {
-    background-color: rgba(89, 87, 93, 0.6);
-}
-
-.night-grey .ibus-tweaker-candidate-box:selected {
-    background-color: rgba(89, 87, 93, 0.95);
 }
 
