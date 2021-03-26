@@ -14,7 +14,7 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/HollowMan6/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/HollowMan6/Customize-IBus/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/HollowMan6/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/HollowMan6/Customize-IBus/context:javascript)
 
-Customize IBus in gnome-shell for orientation, theme, font and input mode auto-switch.
+Customize IBus in gnome-shell for theme.
 
 ![dj](https://user-images.githubusercontent.com/17917040/92872878-0e647800-f439-11ea-9c14-781b4d3191ed.gif)
 
@@ -30,17 +30,26 @@ cd ibus-tweaker && make install VERSION=1
 
 ## Features
 
-![image](img/preference.png)
+<!-- ![image](img/preference.png) -->
+![demo](img/demo.png)
+
+## Realization
+
+When user chooses a theme from the list, this extension will first read the theme CSS file, extract the IBus related style classes (`.candidate-*`), then write it to extension's `stylesheet.css`. Finally restart the GNOME-shell.
+
+### *NOTE:* 
+1. Recommend to use X11. If you change theme under Wayland, all your current work may be lost.
+2. Tested on Fedora 33, GNOME-shell 3.38.
 
 ## To-do
 
-- [X] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus.
-- [ ] Make it reads from the skin files (it can be rime-like color schemes https://github.com/rime-aca/color_schemes) located in the specified folder (e.g. ~/ibus_themes), users can choose a theme from the list.
+<!-- - [X] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus. -->
+- [X] Read from user themes and apply only for ibus.
 
 ## Acknowledgements
 
-1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
-2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
-3. [user-theme](https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/tree/master/extensions/user-theme)
+<!-- 1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
+2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) -->
+1. [user-theme](https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/tree/master/extensions/user-theme)
 
 <!-- [EGO]:https://extensions.gnome.org/extension/2820/ibus-tweaker/ -->
