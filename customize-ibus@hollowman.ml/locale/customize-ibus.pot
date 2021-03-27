@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2021 Hollow Man
-# This file is distributed under the same license as the customize-ibus package.
-# Hollow Man <hollowman@hollowman.ml>, 2021.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Customize Ibus package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: customize-ibus 1\n"
+"Project-Id-Version: Customize Ibus \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-27 16:22+0800\n"
+"POT-Creation-Date: 2021-03-28 00:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,58 +17,58 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:190
+#: extension.js:286
 msgid "loading user theme for IBus:"
 msgstr ""
 
-#: extension.js:200
+#: extension.js:301
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:214
+#: extension.js:332
 msgid "Restarting..."
 msgstr ""
 
-#: prefs.js:63
+#: prefs.js:79
 msgid "Custom IME theme"
 msgstr ""
 
-#: prefs.js:64
+#: prefs.js:80
 msgid "Use custom font"
 msgstr ""
 
-#: prefs.js:65
+#: prefs.js:81
 msgid "Auto switch ASCII mode"
 msgstr ""
 
-#: prefs.js:66
+#: prefs.js:82
 msgid "Candidates orientation"
 msgstr ""
 
-#: prefs.js:68
+#: prefs.js:85
 msgid "Vertical"
 msgstr ""
 
-#: prefs.js:68
+#: prefs.js:86
 msgid "Horizontal"
 msgstr ""
 
-#: prefs.js:69
+#: prefs.js:89
 msgid "On"
 msgstr ""
 
-#: prefs.js:69
+#: prefs.js:90
 msgid "Off"
 msgstr ""
 
-#: prefs.js:69
+#: prefs.js:91
 msgid "Default"
 msgstr ""
 
-#: prefs.js:95
+#: prefs.js:120
 msgid "Customize IBus"
 msgstr ""
 
-#: prefs.js:288
+#: prefs.js:357
 msgid "Follow User Theme"
 msgstr ""
