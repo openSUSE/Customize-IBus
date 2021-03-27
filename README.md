@@ -1,4 +1,4 @@
-# Customize-IBus
+# Customize IBus
 
 [![last-commit](https://img.shields.io/github/last-commit/HollowMan6/Customize-IBus)](https://github.com/HollowMan6/Customize-IBus/graphs/commit-activity)
 
@@ -14,24 +14,22 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/HollowMan6/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/HollowMan6/Customize-IBus/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/HollowMan6/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/HollowMan6/Customize-IBus/context:javascript)
 
-Customize IBus in gnome-shell for theme.
+Customize IBus in gnome-shell for orientation, theme, font and input mode auto-switch.
 
-![dj](https://user-images.githubusercontent.com/17917040/92872878-0e647800-f439-11ea-9c14-781b4d3191ed.gif)
-
+![demo](img/demo.png)
 
 ## Installation
-<!-- [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][EGO]
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][EGO]
 
-Or manually: -->
+Or manually:
 ```shell
 git clone https://github.com/HollowMan6/Customize-IBus.git
-cd ibus-tweaker && make install VERSION=1
+cd ibus-tweaker && make install
 ```
 
 ## Features
 
-<!-- ![image](img/preference.png) -->
-![demo](img/demo.png)
+![image](img/preference.png)
 
 ## Realization
 
@@ -43,13 +41,17 @@ When user chooses a theme from the list, this extension will first read the them
 
 ## To-do
 
-<!-- - [X] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus. -->
+- [X] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus.
 - [X] Read from user themes and apply only for ibus.
+- [X] Merge the two functions.
 
 ## Acknowledgements
 
-<!-- 1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
-2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) -->
-1. [user-theme](https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/tree/master/extensions/user-theme)
+1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
+2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
+3. [user-theme](https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/tree/master/extensions/user-theme)
+4. [shell-restarter](https://github.com/koolskateguy89/gnome-shell-extension-shell-restarter)
 
-<!-- [EGO]:https://extensions.gnome.org/extension/2820/ibus-tweaker/ -->
+*This project is part of the Google Summer of Code 2021 at [OpenSUSE](https://github.com/openSUSE/mentoring/issues/158).*
+
+[EGO]:https://extensions.gnome.org/extension/4112/customize-ibus/

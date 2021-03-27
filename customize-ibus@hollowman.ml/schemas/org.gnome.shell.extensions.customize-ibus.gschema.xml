@@ -1,10 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
   <schema id="org.gnome.shell.extensions.customize-ibus" path="/org/gnome/shell/extensions/customize-ibus/">
+    <key type="b" name="enable-orientation">
+        <default>false</default>
+        <summary>enable orientation</summary>
+    </key>
+    <key type="b" name="use-custom-font">
+        <default>false</default>
+        <summary>use custom font</summary>
+    </key>
+    <key type="b" name="enable-custom-theme">
+        <default>false</default>
+        <summary>enable custom theme</summary>
+    </key>
+    <key type="b" name="enable-auto-switch">
+        <default>true</default>
+        <summary>enable auto switch</summary>
+    </key>
+    <key type="u" name="candidate-orientation">
+        <range min="0" max="1"/>
+        <default>0</default>
+        <summary>candidate orientation</summary>
+    </key>
     <key name="name" type="s">
       <default>""</default>
       <summary>Theme name</summary>
       <description>The name of the theme, to be loaded from ~/.themes/name/gnome-shell</description>
+    </key>
+    <key type="u" name="unkown-ascii-state">
+        <default>2</default>
+        <range min="0" max="2"/>
+        <summary>input state of a new unknown window</summary>
+    </key>
+    <key type="a{sb}" name="input-mode-list">
+        <default>[]</default>
+        <summary>input mode list</summary>
+    </key>
+    <key type="s" name="ascii-mode">
+        <default>"A#en#英"</default>
+        <summary>ascii mode</summary>
+    </key>
+    <key type="s" name="custom-font">
+        <default>"Sans 16"</default>
+        <summary>custom font</summary>
+    </key>
+    <key type="b" name="enable-updates">
+        <default>false</default>
+        <summary>enable updates indicator</summary>
+    </key>
+    <key type="s" name="check-updates">
+        <default>"checkupdates | wc -l"</default>
+        <summary>command to check updates(for the Arch-based)</summary>
+    </key>
+    <key type="s" name="updates-dir">
+        <default>"/var/lib/pacman/local"</default>
+        <summary>updates dir</summary>
     </key>
   </schema>
 </schemalist>

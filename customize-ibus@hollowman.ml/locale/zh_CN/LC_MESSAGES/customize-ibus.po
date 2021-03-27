@@ -1,0 +1,74 @@
+# Chinese translations for customize-ibus package
+# customize-ibus 软件包的简体中文翻译.
+# Copyright (C) 2021 Hollow Man
+# This file is distributed under the same license as the customize-ibus package.
+# Hollow Man <hollowman@hollowman.ml>, 2021.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: customize-ibus 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-03-27 16:22+0800\n"
+"PO-Revision-Date: 2021-03-27 16:22+0800\n"
+"Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
+"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: extension.js:190
+msgid "loading user theme for IBus:"
+msgstr "正在为IBus加载用户主题:"
+
+#: extension.js:200
+msgid "loading default theme for IBus"
+msgstr "正在为IBus加载当前系统主题"
+
+#: extension.js:214
+msgid "Restarting..."
+msgstr "正在重新启动⋯⋯"
+
+#: prefs.js:63
+msgid "Custom IME theme"
+msgstr "自定义主题"
+
+#: prefs.js:64
+msgid "Use custom font"
+msgstr "自定义字体"
+
+#: prefs.js:65
+msgid "Auto switch ASCII mode"
+msgstr "默认中英文"
+
+#: prefs.js:66
+msgid "Candidates orientation"
+msgstr "候选框方向"
+
+#: prefs.js:68
+msgid "Vertical"
+msgstr "竖直"
+
+#: prefs.js:68
+msgid "Horizontal"
+msgstr "水平"
+
+#: prefs.js:69
+msgid "On"
+msgstr "英文"
+
+#: prefs.js:69
+msgid "Off"
+msgstr "中文"
+
+#: prefs.js:69
+msgid "Default"
+msgstr "默认"
+
+#: prefs.js:95
+msgid "Customize IBus"
+msgstr "自定义IBus"
+
+#: prefs.js:288
+msgid "Follow User Theme"
+msgstr "跟随系统主题"

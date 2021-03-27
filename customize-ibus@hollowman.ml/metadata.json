@@ -1,5 +1,5 @@
 {
-  "description": "customize ibus for theme",
+  "description": "customize ibus for orientation, theme, font and ascii mode auto-switch",
   "gettext-domain": "customize-ibus",
   "name": "Customize IBus",
   "settings-schema": "org.gnome.shell.extensions.customize-ibus",
@@ -8,5 +8,5 @@
   ],
   "url": "https://github.com/hollowman6/customize-ibus",
   "uuid": "customize-ibus@hollowman.ml",
-  "version": 1
+  "version": 3
 }
