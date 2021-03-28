@@ -1,8 +1,8 @@
+// -*- mode: js2; indent-tabs-mode: nil; js2-basic-offset: 4 -*-
 // vim:fdm=syntax
-// by:tuberry@github, hollowman6@github
+// by:hollowman6@github tuberry@github
 
-// we use async/await here to not block the mainloop, not to parallelize
-/* eslint-disable no-await-in-loop */
+// we use async/here to not block the mainloop, not to parallelize
 
 "use strict";
 
