@@ -289,11 +289,25 @@ const IBusThemeManager = GObject.registerClass(
         global.log(success);
         var regStr = /.candidate-[\s\S]*?}/gi;
         let matchedContent = ByteArray.toString(contents).match(regStr);
+        regStr = /stage {[\s\S]*?}/gi;
+        let globalColor = ByteArray.toString(contents).match(regStr);
+        regStr = /color:[\s\S]*?;/gi;
+        if (globalColor.length > 0)
+          globalColor = globalColor[0].match(regStr);
         for (var index in matchedContent) {
+          let addedGlobalColor = "}";
+          if (globalColor.length > 0 && matchedContent[index].indexOf(" color:") === -1 &&
+              (matchedContent[index].indexOf(".candidate-box ") != -1 || 
+              matchedContent[index].indexOf(".candidate-popup-content ") != -1)) {
+            addedGlobalColor = "  " + globalColor[0] + "\n" + addedGlobalColor;
+          }
           newFileContent +=
             matchedContent[index].replace(
               /assets\//g,
               stylesheet + "/../assets/"
+            ).replace(
+              /}/g,
+              addedGlobalColor
             ) + "\n";
         }
         this._prevCssStylesheet = stylesheet;
