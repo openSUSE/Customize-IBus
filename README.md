@@ -31,7 +31,7 @@
 
 ```bash
 git clone https://github.com/HollowMan6/Customize-IBus.git
-cd ibus-tweaker && make install
+cd Customize-IBus && make install
 ```
 
 ## 功能
@@ -74,7 +74,7 @@ Or manually:
 
 ```bash
 git clone https://github.com/HollowMan6/Customize-IBus.git
-cd ibus-tweaker && make install
+cd Customize-IBus && make install
 ```
 
 ## Features
