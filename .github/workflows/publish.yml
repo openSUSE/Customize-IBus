@@ -1,0 +1,60 @@
+name: GNOME Extension Pack
+
+on:
+  workflow_dispatch:  # Allow manual triggers
+    inputs:
+      tags:
+        description: 'Tags'
+        required: false
+  push:
+    # Publish `v1.2.3` tags as releases.
+    tags:
+      - v*
+
+env:
+  # Change variable to your extension name.
+  NAME: customize-ibus
+
+jobs:
+  # Pack Extension and Upload
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: Install Dependencies
+        run: sudo apt-get update && sudo apt-get install gettext
+
+      - name: Setup Version
+        run: |
+         if [ ! -z "${{ github.event.inputs.tags }}" ]
+          then
+            version=${{ github.event.inputs.tags }}
+            echo "VERSION=${{ github.event.inputs.tags }}" >> $GITHUB_ENV
+          else
+            version=$(echo '${{ github.ref }}' | sed -e 's,.*/\(.*\),\1,')
+            echo "VERSION=$version" >> $GITHUB_ENV
+         fi
+         num=$(echo $version | sed -e 's/^v//')
+         echo "VERSION_NUM=$num" >> $GITHUB_ENV
+
+      - name: Update Translation
+        run: make potfile VERSION=${{ env.VERSION_NUM }} && make mergepo VERSION=${{ env.VERSION_NUM }}
+
+      - name: Zip Files
+        run: make zip VERSION=${{ env.VERSION_NUM }}
+
+      - name: Upload Zipped Files to release
+        uses: svenstaro/upload-release-action@master
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ env.NAME }}_${{ env.VERSION }}.zip
+          tag: ${{ env.VERSION }}
+          overwrite: true
+
+      - name: Upload Zipped Files to Artifact
+        uses: actions/upload-artifact@master
+        with:
+          name: ${{ env.NAME }}_${{ env.VERSION }}.zip
+          path: ${{ env.NAME }}_${{ env.VERSION }}.zip
