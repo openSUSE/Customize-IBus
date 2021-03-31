@@ -44,7 +44,7 @@ cd Customize-IBus && make install
 
 ### *提示：* 
 1. 推荐使用X11。如果你在Wayland中更改IBus主题，你的当前所有工作都将会丢失，因为Wayland下只支持通过重新登陆来重启GNOME-shell。
-2. 在Fedora 33, GNOME-shell 3.38中通过了测试。
+2. 在Fedora 33和Ubuntu 20.04, GNOME-shell 3.38中通过了测试。
 
 ## 备忘
 
@@ -87,7 +87,7 @@ When user chooses a theme from the list, this extension will first read the them
 
 ### *NOTE:* 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
-2. Tested on Fedora 33, GNOME-shell 3.38.
+2. Tested on Fedora 33 and Ubuntu 20.04, GNOME-shell 3.38.
 
 ## To-do
 
