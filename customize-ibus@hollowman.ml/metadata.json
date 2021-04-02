@@ -3,10 +3,10 @@
   "gettext-domain": "customize-ibus",
   "name": "Customize IBus",
   "settings-schema": "org.gnome.shell.extensions.customize-ibus",
-  "shell-version": ["3.38"],
+  "shell-version": ["40.0"],
   "url": "https://github.com/hollowman6/customize-ibus",
   "original-authors": ["hollowman@hollowman.ml"],
   "uuid": "customize-ibus@hollowman.ml",
   "extension-id": "customize-ibus",
-  "version": 3
+  "version": 4
 }

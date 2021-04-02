@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus \n"
+"Project-Id-Version: Customize Ibus 4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-28 23:01+0800\n"
+"POT-Creation-Date: 2021-04-02 21:44+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,46 +29,46 @@ msgstr ""
 msgid "Restarting..."
 msgstr ""
 
-#: prefs.js:79
+#: prefs.js:78
 msgid "Custom IME theme"
 msgstr ""
 
-#: prefs.js:80
+#: prefs.js:79
 msgid "Use custom font"
 msgstr ""
 
-#: prefs.js:81
+#: prefs.js:80
 msgid "Auto switch ASCII mode"
 msgstr ""
 
-#: prefs.js:82
+#: prefs.js:81
 msgid "Candidates orientation"
 msgstr ""
 
-#: prefs.js:85
+#: prefs.js:84
 msgid "Vertical"
 msgstr ""
 
-#: prefs.js:86
+#: prefs.js:85
 msgid "Horizontal"
 msgstr ""
 
-#: prefs.js:89
+#: prefs.js:88
 msgid "On"
 msgstr ""
 
-#: prefs.js:90
+#: prefs.js:89
 msgid "Off"
 msgstr ""
 
-#: prefs.js:91
+#: prefs.js:90
 msgid "Default"
 msgstr ""
 
-#: prefs.js:120
+#: prefs.js:123
 msgid "Customize IBus"
 msgstr ""
 
-#: prefs.js:353
+#: prefs.js:355
 msgid "Follow User Theme"
 msgstr ""

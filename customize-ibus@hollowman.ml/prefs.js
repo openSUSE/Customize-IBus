@@ -72,7 +72,6 @@ const CustomizeIBus = GObject.registerClass(
       this._bulidUI();
       this._bindValues();
       this._syncStatus();
-      this.show_all();
     }
 
     _bulidWidget() {
@@ -91,27 +90,31 @@ const CustomizeIBus = GObject.registerClass(
         _("Default"),
       ]);
       this._field_custom_font = new Gtk.FontButton({
-        font_name: gsettings.get_string(Fields.CUSTOMFONT),
+        font: gsettings.get_string(Fields.CUSTOMFONT),
       });
     }
 
     _bulidUI() {
       this._box = new Gtk.Box({
-        margin: 30,
+        margin_start: 30,
+        margin_end: 30,
+        margin_top: 30,
+        margin_bottom: 30,
         orientation: Gtk.Orientation.VERTICAL,
       });
-      this.add(this._box);
+      this.set_child(this._box);
       this._field_theme_color = new Gtk.ListBox({
         selection_mode: Gtk.SelectionMode.NONE,
       });
       this._field_theme_color.get_style_context().add_class("frame");
-      this._field_theme_color.set_header_func(this._updateHeader.bind(this));
 
       this._actionGroup = new Gio.SimpleActionGroup();
       this._field_theme_color.insert_action_group("theme", this._actionGroup);
 
       this._settings = ExtensionUtils.getSettings();
       this._actionGroup.add_action(this._settings.create_action("name"));
+
+      this.connect("destroy", () => this._settings.run_dispose());
 
       this._rows = new Map();
       this._addTheme("");
@@ -122,7 +125,7 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus._add(this._field_use_custom_font, this._field_custom_font);
       this._ibus._add(this._field_enable_ascii, this._field_unkown_state);
       this._ibus._add(this._field_enable_custom_theme);
-      this._box.add(this._field_theme_color);
+      this._box.append(this._field_theme_color);
     }
 
     _syncStatus() {
@@ -198,9 +201,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _listFrameMaker(lbl, margin_top) {
-      let frame = new Gtk.Frame({
-        label_yalign: 1,
-      });
+      let frame = new Gtk.Frame();
       frame.set_label_widget(
         new Gtk.Label({
           use_markup: true,
@@ -208,10 +209,13 @@ const CustomizeIBus = GObject.registerClass(
           label: "<b><big>" + lbl + "</big></b>",
         })
       );
-      this._box.add(frame);
+      this._box.append(frame);
 
       frame.grid = new Gtk.Grid({
-        margin: 10,
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
         hexpand: true,
         row_spacing: 12,
         column_spacing: 18,
@@ -220,11 +224,12 @@ const CustomizeIBus = GObject.registerClass(
       });
 
       frame.grid._row = 0;
-      frame.add(frame.grid);
+      frame.set_child(frame.grid);
       frame._add = (x, y) => {
         const hbox = new Gtk.Box();
-        hbox.pack_start(x, true, true, 4);
-        if (y) hbox.pack_start(y, false, false, 4);
+        hbox.set_spacing(4);
+        hbox.append(x);
+        if (y) hbox.append(y);
         frame.grid.attach(hbox, 0, frame.grid._row++, 1, 1);
       };
       return frame;
@@ -293,11 +298,10 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _addTheme(name) {
-      const row = new iBusThemeRow(name);
+      const row = new iBusThemeRow(name, this._settings);
       this._rows.set(name, row);
 
-      this._field_theme_color.add(row);
-      row.show_all();
+      this._field_theme_color.append(row);
     }
 
     async _enumerateDir(dir) {
@@ -328,31 +332,29 @@ const CustomizeIBus = GObject.registerClass(
 
       return fileInfos.map((info) => info.get_name());
     }
-
-    _updateHeader(row, before) {
-      if (!before || row.get_header()) return;
-      row.set_header(new Gtk.Separator());
-    }
   }
 );
 
 const iBusThemeRow = GObject.registerClass(
   class iBusThemeRow extends Gtk.ListBoxRow {
-    _init(name) {
-      this._name = new GLib.Variant("s", name);
-
-      super._init({
-        action_name: "theme.name",
-        action_target: this._name,
-      });
+    _init(name, settings) {
+      this._name = name;
+      this._settings = settings;
 
       const box = new Gtk.Box({
         spacing: 12,
-        margin: 12,
+        margin_start: 12,
+        margin_end: 12,
+        margin_top: 12,
+        margin_bottom: 12,
       });
-      this.add(box);
+      super._init({
+        action_name: "theme.name",
+        action_target: new GLib.Variant("s", name),
+        child: box,
+      });
 
-      box.add(
+      box.append(
         new Gtk.Label({
           label: name || _("Follow User Theme"),
           hexpand: true,
@@ -366,26 +368,23 @@ const iBusThemeRow = GObject.registerClass(
         icon_name: "emblem-ok-symbolic",
         pixel_size: 16,
       });
-      box.add(this._checkmark);
+      box.append(this._checkmark);
 
-      box.show_all();
+      const id = this._settings.connect(
+        "changed::name",
+        this._syncCheckmark.bind(this)
+      );
+      this._syncCheckmark();
 
-      const id = this.connect("parent-set", () => {
-        this.disconnect(id);
-
-        const actionGroup = this.get_action_group("theme");
-        actionGroup.connect(
-          "action-state-changed::name",
-          this._syncCheckmark.bind(this)
-        );
-        this._syncCheckmark();
+      this.connect("destroy", () => {
+        this._settings.disconnect(id);
+        this._settings = null;
       });
     }
 
     _syncCheckmark() {
-      const actionGroup = this.get_action_group("theme");
-      const state = actionGroup.get_action_state("name");
-      this._checkmark.opacity = this._name.equal(state);
+      const visible = this._name === this._settings.get_string("name");
+      this._checkmark.opacity = visible ? 1 : 0;
     }
   }
 );
