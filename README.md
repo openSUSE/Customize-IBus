@@ -44,13 +44,15 @@ cd Customize-IBus && make install
 
 ### *提示：* 
 1. 推荐使用X11。如果你在Wayland中更改IBus主题，你的当前所有工作都将会丢失，因为Wayland下只支持通过重新登陆来重启GNOME-shell。
-2. 在Fedora 33和Ubuntu 20.04, GNOME-shell 3.38中通过了测试。
+2. 在Fedora和Ubuntu，GNOME-shell 3.38(v3)，40.0(v4)中通过了测试。
+3. 对于那些不使用GNOME而是使用如KDE等桌面环境的用户，更改IBus主题最简单的方法请参见[这里](https://github.com/qvshuo/Ibus-custom-theme),从而为IBus指定一个不同的GTK主题。
 
 ## 备忘
 
 - [X] 从[ibus-tweaker](https://github.com/tuberry/ibus-tweaker)中导入，去除与IBus无关功能。
 - [X] 从用户主题中读取IBus相关样式
 - [X] 将相关功能合并在一起。
+- [X] V4: 从GTK3升级到GTK4来适配GNOME40。
 
 ## 致谢
 
@@ -87,13 +89,15 @@ When user chooses a theme from the list, this extension will first read the them
 
 ### *NOTE:* 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
-2. Tested on Fedora 33 and Ubuntu 20.04, GNOME-shell 3.38.
+2. Tested on Fedora and Ubuntu, GNOME-shell 3.38(v3), 40.0(v4).
+3. For users who don't use GNOME but other desktop environments like KDE, the easiest way to change the IBus theme is to act as described in [here](https://github.com/qvshuo/Ibus-custom-theme) to use a different GTK theme for IBus.
 
 ## To-do
 
 - [X] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus.
 - [X] Read from user themes and apply only for ibus.
 - [X] Merge functions related together.
+- [X] V4: Update from GTK3 to GTK4 to adapt for GNOME40.
 
 ## Acknowledgements
 
