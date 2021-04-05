@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus \n"
+"Project-Id-Version: Customize Ibus 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-28 23:01+0800\n"
+"POT-Creation-Date: 2021-04-05 17:10+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,11 +21,11 @@ msgstr ""
 msgid "loading user theme for IBus:"
 msgstr ""
 
-#: extension.js:370
+#: extension.js:374
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:401
+#: extension.js:423
 msgid "Restarting..."
 msgstr ""
 
@@ -69,6 +69,6 @@ msgstr ""
 msgid "Customize IBus"
 msgstr ""
 
-#: prefs.js:353
+#: prefs.js:357
 msgid "Follow User Theme"
 msgstr ""
