@@ -300,10 +300,11 @@ const IBusThemeManager = GObject.registerClass(
         }
 
         for (var index in matchedContent) {
-          newFileContent +=
+          newFileContent += this._rmUnrelatedStyleClass(
             matchedContent[index]
               .replace(/assets\//g, stylesheet + "/../assets/")
-              .replace(/.button/g, ".candidate-page-button") + "\n";
+              .replace(/.button/g, ".candidate-page-button") + "\n"
+          );
         }
         regStr = /\n.candidate-[\s\S]*?}/gi;
         matchedContent = ByteArray.toString(contents).match(regStr);
@@ -341,29 +342,32 @@ const IBusThemeManager = GObject.registerClass(
           ) {
             newContent = newContent.replace(/}/g, "  border-image: none;\n}");
           }
-          newFileContent +=
+          newFileContent += this._rmUnrelatedStyleClass(
             newContent
               .replace(/assets\//g, stylesheet + "/../assets/")
-              .replace(/}/g, addedGlobalColor) + "\n";
+              .replace(/}/g, addedGlobalColor) + "\n"
+          );
         }
         regStr = /.horizontal .candidate-[\s\S]*?}/gi;
         matchedContent = ByteArray.toString(contents).match(regStr);
         for (var index in matchedContent) {
-          newFileContent +=
+          newFileContent += this._rmUnrelatedStyleClass(
             matchedContent[index].replace(
               // Set assert file relative path to absolute path
               /assets\//g,
               stylesheet + "/../assets/"
-            ) + "\n";
+            ) + "\n"
+          );
         }
         regStr = /.vertical .candidate-[\s\S]*?}/gi;
         matchedContent = ByteArray.toString(contents).match(regStr);
         for (var index in matchedContent) {
-          newFileContent +=
+          newFileContent += this._rmUnrelatedStyleClass(
             matchedContent[index].replace(
               /assets\//g,
               stylesheet + "/../assets/"
-            ) + "\n";
+            ) + "\n"
+          );
         }
         this._prevCssStylesheet = stylesheet;
       } else {
@@ -395,6 +399,24 @@ const IBusThemeManager = GObject.registerClass(
         );
       }
       if (notFirstStart) this.restart();
+    }
+
+    // Fix to avoid affecting other UI styles
+
+    /* Remove unwanted style if the IBus related style classes (.candidate-*) style 
+       block is shared with other styles that has nothing to do with IBus style 
+    */
+
+    _rmUnrelatedStyleClass(str) {
+      let splitedContent = str.split("{");
+      if (splitedContent.length != 2) return splitedContent.join("{");
+      let classList = splitedContent[0].split(",");
+      let contentPart = splitedContent[1];
+      let newClassList = [];
+      for (var index in classList)
+        if (classList[index].indexOf(".candidate-") != -1)
+          newClassList.push(classList[index]);
+      return newClassList.join(",") + "{" + contentPart;
     }
 
     restart() {
