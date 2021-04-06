@@ -1,5 +1,5 @@
 {
-  "description": "Customize IBus for orientation, theme, font and ascii mode auto-switch",
+  "description": "Customize IBus for orientation, shell theme, background picture, font and ascii mode auto-switch",
   "gettext-domain": "customize-ibus",
   "name": "Customize IBus",
   "settings-schema": "org.gnome.shell.extensions.customize-ibus",
@@ -8,5 +8,5 @@
   "original-authors": ["hollowman@hollowman.ml"],
   "uuid": "customize-ibus@hollowman.ml",
   "extension-id": "customize-ibus",
-  "version": 6
+  "version": 8
 }

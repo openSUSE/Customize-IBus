@@ -38,6 +38,7 @@ const ibusGsettings = new Gio.Settings({
 var Fields = {
   ASCIIMODE: "ascii-mode",
   CUSTOMFONT: "custom-font",
+  CUSTOMBG: "custom-bg",
   UPDATESDIR: "updates-dir",
   CHECKUPDATES: "check-updates",
   INPUTONLIST: "input-on-list",
@@ -47,6 +48,7 @@ var Fields = {
   ENABLECUSTOMTHEME: "enable-custom-theme",
   INPUTLIST: "input-mode-list",
   USECUSTOMFONT: "use-custom-font",
+  USECUSTOMBG: "use-custom-bg",
   AUTOSWITCH: "enable-auto-switch",
   ENABLEORIEN: "enable-orientation",
   UNKNOWNSTATE: "unkown-ascii-state",
@@ -77,6 +79,7 @@ const CustomizeIBus = GObject.registerClass(
     _bulidWidget() {
       this._field_enable_custom_theme = this._checkMaker(_("Custom IME theme"));
       this._field_use_custom_font = this._checkMaker(_("Use custom font"));
+      this._field_use_custom_bg = this._checkMaker(_("Use custom background"));
       this._field_enable_ascii = this._checkMaker(_("Auto switch ASCII mode"));
       this._field_enable_orien = this._checkMaker(_("Candidates orientation"));
 
@@ -92,6 +95,35 @@ const CustomizeIBus = GObject.registerClass(
       this._field_custom_font = new Gtk.FontButton({
         font: gsettings.get_string(Fields.CUSTOMFONT),
       });
+      const filter = new Gtk.FileFilter();
+      filter.add_pixbuf_formats();
+      this._fileChooser = new Gtk.FileChooserNative({
+        title: _("Select an Image"),
+        filter,
+        modal: true,
+      });
+      this._fileChooser.connect("response", (dlg, response) => {
+        if (response !== Gtk.ResponseType.ACCEPT) return;
+        gsettings.set_string("custom-bg", dlg.get_file().get_path());
+      });
+
+      this._logoPicker = new Gtk.Button({
+        label: _("(None)"),
+      });
+      this._logoPicker.connect("clicked", () => {
+        this._fileChooser.transient_for = this.get_root();
+        this._fileChooser.show();
+      });
+      gsettings.connect(
+        "changed::custom-bg",
+        this._updateLogoPicker.bind(this)
+      );
+      this._updateLogoPicker();
+    }
+
+    _updateLogoPicker() {
+      const filename = gsettings.get_string("custom-bg");
+      this._logoPicker.label = GLib.basename(filename);
     }
 
     _bulidUI() {
@@ -124,6 +156,7 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus._add(this._field_enable_orien, this._field_orientation);
       this._ibus._add(this._field_use_custom_font, this._field_custom_font);
       this._ibus._add(this._field_enable_ascii, this._field_unkown_state);
+      this._ibus._add(this._field_use_custom_bg, this._logoPicker);
       this._ibus._add(this._field_enable_custom_theme);
       this._box.append(this._field_theme_color);
     }
@@ -139,17 +172,18 @@ const CustomizeIBus = GObject.registerClass(
         this._field_custom_font.set_sensitive(widget.active);
         ibusGsettings.set_boolean("use-custom-font", widget.active);
       });
+      this._field_use_custom_bg.connect("notify::active", (widget) => {
+        this._logoPicker.set_sensitive(widget.active);
+        ibusGsettings.set_boolean("use-custom-bg", widget.active);
+      });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
         this._field_theme_color.set_sensitive(widget.active);
-      });
-      this._field_custom_font.connect("font-set", (widget) => {
-        ibusGsettings.set_string("custom-font", widget.font_name);
-        gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
       });
 
       this._field_unkown_state.set_sensitive(this._field_enable_ascii.active);
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
+      this._logoPicker.set_sensitive(this._field_use_custom_bg.active);
       this._field_theme_color.set_sensitive(
         this._field_enable_custom_theme.active
       );
@@ -195,6 +229,18 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.USECUSTOMFONT,
         this._field_use_custom_font,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.CUSTOMFONT,
+        this._field_custom_font,
+        "font",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.USECUSTOMBG,
+        this._field_use_custom_bg,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -331,6 +377,11 @@ const CustomizeIBus = GObject.registerClass(
       } while (infos.length > 0);
 
       return fileInfos.map((info) => info.get_name());
+    }
+
+    on_destroy() {
+      if (this._fileChooser) this._fileChooser.destroy();
+      this._fileChooser = null;
     }
   }
 );
