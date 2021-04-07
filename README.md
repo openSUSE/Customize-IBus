@@ -17,7 +17,7 @@
 
 (English version is down below)
 
-### 注意：如果后期无重大 BUG 的话，v9 将是支持 GNOME 3.38 的最后一个版本
+### 注意：如果后期无重大 BUG 的话，v11 将是支持 GNOME 3.38 的最后一个版本
 
 在 GNOME Shell 中更改 IBus 的候选框方向、shell 主题、背景图片、字体和输入法默认语言。
 
@@ -47,7 +47,7 @@ cd Customize-IBus && make install
 ### _提示：_
 
 1. 推荐使用 X11。如果你在 Wayland 中更改 IBus 主题，你的当前所有工作都将会丢失，因为 Wayland 下只支持通过重新登陆来重启 GNOME-shell。
-2. 在 Fedora 33 和 Ubuntu 20.04, GNOME-shell 3.38 中(v3,v5,v9)通过了测试。
+2. 在 Fedora 33 和 Ubuntu 20.04, GNOME-shell 3.38 中(v3,v5,v9,v11)通过了测试。
 3. 对于那些不使用 GNOME 而是使用如 KDE 等桌面环境的用户，更改 IBus 主题最简单的方法请参见[这里](https://github.com/qvshuo/Ibus-custom-theme)，从而为 IBus 指定一个不同的 GTK 主题。
 
 ## 更改 IBus 背景图片的实现
@@ -83,7 +83,7 @@ _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/ope
 
 # Customize IBus
 
-### Note: If no severe bug was found later, v9 will be the last version that support GNOME 3.38.
+### Note: If no severe bug was found later, v11 will be the last version that support GNOME 3.38.
 
 Customize IBus for orientation, shell theme, background picture, font and ascii mode auto-switch.
 
@@ -111,7 +111,7 @@ When user chooses a theme from the list, this extension will first read the them
 ### _NOTE:_
 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
-2. Tested on Fedora 33 and Ubuntu 20.04, GNOME-shell 3.38(v3, v5, v9).
+2. Tested on Fedora 33 and Ubuntu 20.04, GNOME-shell 3.38(v3, v5, v9, v11).
 3. For users who don't use GNOME but other desktop environments like KDE, the easiest way to change the IBus theme is to act as described in [here](https://github.com/qvshuo/Ibus-custom-theme) to use a different GTK theme for IBus.
 
 ## To-do
