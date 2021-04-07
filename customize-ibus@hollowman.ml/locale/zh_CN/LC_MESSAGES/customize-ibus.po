@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: customize-ibus 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-05 17:10+0800\n"
+"POT-Creation-Date: 2021-04-07 09:03+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -17,58 +17,73 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:288
-msgid "loading user theme for IBus:"
-msgstr "正在为IBus加载用户主题:"
+#: extension.js:214
+msgid "loading background for IBus:"
+msgstr "正在为IBus加载背景:"
 
-#: extension.js:374
+#: extension.js:410
 msgid "loading default theme for IBus"
 msgstr "正在为IBus加载当前系统主题"
 
-#: extension.js:423
+#: extension.js:459
 msgid "Restarting..."
 msgstr "正在重新启动⋯⋯"
 
-#: prefs.js:79
+#: prefs.js:81
 msgid "Custom IME theme"
 msgstr "自定义主题"
 
-#: prefs.js:80
+#: prefs.js:82
 msgid "Use custom font"
 msgstr "自定义字体"
 
-#: prefs.js:81
+#: prefs.js:83
+msgid "Use custom background"
+msgstr "自定义背景"
+
+#: prefs.js:84
 msgid "Auto switch ASCII mode"
 msgstr "默认中英文"
 
-#: prefs.js:82
+#: prefs.js:85
 msgid "Candidates orientation"
 msgstr "候选框方向"
 
-#: prefs.js:85
+#: prefs.js:88
 msgid "Vertical"
 msgstr "竖直"
 
-#: prefs.js:86
+#: prefs.js:89
 msgid "Horizontal"
 msgstr "水平"
 
-#: prefs.js:89
+#: prefs.js:92
 msgid "On"
 msgstr "英文"
 
-#: prefs.js:90
+#: prefs.js:93
 msgid "Off"
 msgstr "中文"
 
-#: prefs.js:91
+#: prefs.js:94
 msgid "Default"
 msgstr "默认"
 
-#: prefs.js:120
+#: prefs.js:102
+msgid "Select an Image"
+msgstr "选择一个图片"
+
+#: prefs.js:112
+msgid "(None)"
+msgstr "（无）"
+
+#: prefs.js:152
 msgid "Customize IBus"
 msgstr "自定义IBus"
 
-#: prefs.js:357
+#: prefs.js:406
 msgid "Follow User Theme"
 msgstr "跟随系统主题"
+
+#~ msgid "loading user theme for IBus:"
+#~ msgstr "正在为IBus加载用户主题:"

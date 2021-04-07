@@ -192,6 +192,42 @@ const IBusFontSetting = GObject.registerClass(
   }
 );
 
+const IBusBGSetting = GObject.registerClass(
+  {
+    Properties: {
+      background: GObject.param_spec_string(
+        "bg",
+        "bg",
+        "background",
+        "",
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusBGSetting extends GObject.Object {
+    _init() {
+      super._init();
+      gsettings.bind(Fields.CUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
+    }
+
+    set bg(bg) {
+      global.log(_("loading background for IBus:") + bg);
+      let candidateBox = CandidatePopup.bin.get_children();
+      if (candidateBox)
+        candidateBox[0].set_style(
+          'background: url("%s"); background-repeat:no-repeat; background-size:cover;'.format(
+            bg
+          )
+        );
+    }
+
+    destroy() {
+      let candidateBox = CandidatePopup.bin.get_children();
+      if (candidateBox) candidateBox[0].set_style("");
+    }
+  }
+);
+
 const IBusOrientation = GObject.registerClass(
   {
     Properties: {
@@ -577,6 +613,13 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      bg: GObject.param_spec_boolean(
+        "bg",
+        "bg",
+        "bg",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
       input: GObject.param_spec_boolean(
         "input",
         "input",
@@ -626,6 +669,7 @@ const Extensions = GObject.registerClass(
         "font",
         Gio.SettingsBindFlags.GET
       );
+      gsettings.bind(Fields.USECUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
       gsettings.bind(
         Fields.ENABLEORIEN,
         this,
@@ -665,6 +709,17 @@ const Extensions = GObject.registerClass(
         if (!this._font) return;
         this._font.destroy();
         delete this._font;
+      }
+    }
+
+    set bg(bg) {
+      if (bg) {
+        if (this._bg) return;
+        this._bg = new IBusBGSetting();
+      } else {
+        if (!this._bg) return;
+        this._bg.destroy();
+        delete this._bg;
       }
     }
 

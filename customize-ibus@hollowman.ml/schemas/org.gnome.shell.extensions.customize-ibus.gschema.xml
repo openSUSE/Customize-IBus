@@ -9,6 +9,10 @@
         <default>false</default>
         <summary>use custom font</summary>
     </key>
+    <key type="b" name="use-custom-bg">
+        <default>false</default>
+        <summary>use custom background</summary>
+    </key>
     <key type="b" name="enable-custom-theme">
         <default>false</default>
         <summary>enable custom theme</summary>
@@ -43,6 +47,10 @@
     <key type="s" name="custom-font">
         <default>"Sans 16"</default>
         <summary>custom font</summary>
+    </key>
+    <key type="s" name="custom-bg">
+        <default>""</default>
+        <summary>custom background</summary>
     </key>
     <key type="b" name="enable-updates">
         <default>false</default>
