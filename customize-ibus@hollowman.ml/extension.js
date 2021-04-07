@@ -213,17 +213,22 @@ const IBusBGSetting = GObject.registerClass(
     set bg(bg) {
       global.log(_("loading background for IBus:") + bg);
       let candidateBox = CandidatePopup.bin.get_children();
-      if (candidateBox)
+      if (candidateBox) {
         candidateBox[0].set_style(
           'background: url("%s"); background-repeat:no-repeat; background-size:cover;'.format(
             bg
           )
         );
+        candidateBox[0].add_style_class_name("candidate-box");
+      }
     }
 
     destroy() {
       let candidateBox = CandidatePopup.bin.get_children();
-      if (candidateBox) candidateBox[0].set_style("");
+      if (candidateBox) {
+        candidateBox[0].set_style("");
+        candidateBox[0].remove_style_class_name("candidate-box");
+      }
     }
   }
 );

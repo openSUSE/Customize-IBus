@@ -1,4 +1,4 @@
-# 自定义IBus
+# 自定义 IBus
 
 [![last-commit](https://img.shields.io/github/last-commit/HollowMan6/Customize-IBus)](https://github.com/HollowMan6/Customize-IBus/graphs/commit-activity)
 [![release-date](https://img.shields.io/github/release-date/HollowMan6/Customize-IBus)](../../releases)
@@ -17,15 +17,15 @@
 
 (English version is down below)
 
-在GNOME Shell中更改IBus的候选框方向、shell主题、背景图片、字体和输入法默认语言。
+在 GNOME Shell 中更改 IBus 的候选框方向、shell 主题、背景图片、字体和输入法默认语言。
 
 ![demo](img/demo.png)
 
 ## 安装
 
-从GNOME扩展商店中获取：
+从 GNOME 扩展商店中获取：
 
-[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][EGO]
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego]
 
 或者手动自行安装：
 
@@ -38,36 +38,37 @@ cd Customize-IBus && make install
 
 ![image](img/preference.png)
 
-## 使用用户主题来更改IBus皮肤的实现
+## 使用用户主题来更改 IBus 皮肤的实现
 
-当用户从主题列表中选中一个主题，本扩展会首先读取该主题的定义CSS文件，从中提取出定义IBus皮肤的类样式(`.candidate-*`)，然后将其写入本扩展的`stylesheet.css`文件。最后重启GNOME-shell。
+当用户从主题列表中选中一个主题，本扩展会首先读取该主题的定义 CSS 文件，从中提取出定义 IBus 皮肤的类样式(`.candidate-*`)，然后将其写入本扩展的`stylesheet.css`文件。最后重启 GNOME-shell。
 
-### *提示：* 
-1. 推荐使用X11。如果你在Wayland中更改IBus主题，你的当前所有工作都将会丢失，因为Wayland下只支持通过重新登陆来重启GNOME-shell。
-2. 在Fedora和Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9(GNOME3.38最终版))，40.0(v4，v8)中通过了测试。
-3. 对于那些不使用GNOME而是使用如KDE等桌面环境的用户，更改IBus主题最简单的方法请参见[这里](https://github.com/qvshuo/Ibus-custom-theme)，从而为IBus指定一个不同的GTK主题。
+### _提示：_
 
-## 更改IBus背景图片的实现
+1. 推荐使用 X11。如果你在 Wayland 中更改 IBus 主题，你的当前所有工作都将会丢失，因为 Wayland 下只支持通过重新登陆来重启 GNOME-shell。
+2. 在 Fedora 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11(GNOME3.38 最终版))，40.0(v4，v8，v10)中通过了测试。
+3. 对于那些不使用 GNOME 而是使用如 KDE 等桌面环境的用户，更改 IBus 主题最简单的方法请参见[这里](https://github.com/qvshuo/Ibus-custom-theme)，从而为 IBus 指定一个不同的 GTK 主题。
 
-在[修复Unity8-Wood主题对IBus背景支持](https://github.com/openSUSE/mentoring/issues/158#issuecomment-813837436)时发现为`.candidate-popup-content`增加如下样式：
+## 更改 IBus 背景图片的实现
+
+在[修复 Unity8-Wood 主题对 IBus 背景支持](https://github.com/openSUSE/mentoring/issues/158#issuecomment-813837436)时发现为`.candidate-popup-content`增加如下样式：
 
 ```css
-  background: url("assets/bg.png");
-  background-repeat:no-repeat;
-  background-size:cover;
+background: url("assets/bg.png");
+background-repeat: no-repeat;
+background-size: cover;
 ```
 
 即可实现对背景的修改。
 
-进一步结合[ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)和[background-logo](https://pagure.io/background-logo-extension)，参考GNOME-Shell源代码中`candidate-popup-content`样式[对应组件](https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/master/js/ui/ibusCandidatePopup.js#L154)，并对其修改样式实现不重启GNOME-Shell进行IBus背景图片的修改。
+进一步结合[ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)和[background-logo](https://pagure.io/background-logo-extension)，参考 GNOME-Shell 源代码中`candidate-popup-content`样式[对应组件](https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/master/js/ui/ibusCandidatePopup.js#L154)，并对其修改样式实现不重启 GNOME-Shell 进行 IBus 背景图片的修改。
 
 ## 备忘
 
-- [X] 从[ibus-tweaker](https://github.com/tuberry/ibus-tweaker)中导入，去除与IBus无关功能。
-- [X] 从用户主题中读取IBus相关样式
-- [X] 将相关功能合并在一起。
-- [X] V4: 从GTK3升级到GTK4来适配GNOME40。
-- [X] V8: 增加更改IBus背景图片功能。
+- [x] 从[ibus-tweaker](https://github.com/tuberry/ibus-tweaker)中导入，去除与 IBus 无关功能。
+- [x] 从用户主题中读取 IBus 相关样式
+- [x] 将相关功能合并在一起。
+- [x] V4: 从 GTK3 升级到 GTK4 来适配 GNOME40。
+- [x] V8: 增加更改 IBus 背景图片功能。
 
 ## 致谢
 
@@ -77,7 +78,7 @@ cd Customize-IBus && make install
 4. [shell-restarter](https://github.com/koolskateguy89/gnome-shell-extension-shell-restarter)
 5. [background-logo](https://pagure.io/background-logo-extension)
 
-*该项目是谷歌编程之夏 (GSoC) 2021于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。*
+_该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_
 
 # Customize IBus
 
@@ -86,7 +87,8 @@ Customize IBus for orientation, shell theme, background picture, font and ascii 
 ![demo](img/demo-en.png)
 
 ## Installation
-[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][EGO]
+
+[<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego]
 
 Or manually:
 
@@ -103,9 +105,10 @@ cd Customize-IBus && make install
 
 When user chooses a theme from the list, this extension will first read the theme CSS file, extract the IBus related style classes (`.candidate-*`), then write it to extension's `stylesheet.css`. Finally restart the GNOME-shell.
 
-### *NOTE:* 
+### _NOTE:_
+
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
-2. Tested on Fedora and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9(final version for GNOME 3.38)), 40.0(v4, v8).
+2. Tested on Fedora and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11(final version for GNOME 3.38)), 40.0(v4, v8, v10).
 3. For users who don't use GNOME but other desktop environments like KDE, the easiest way to change the IBus theme is to act as described in [here](https://github.com/qvshuo/Ibus-custom-theme) to use a different GTK theme for IBus.
 
 ## Realization of Modifying IBus Background Picture
@@ -113,9 +116,9 @@ When user chooses a theme from the list, this extension will first read the them
 During [fixing Unity8-Wood theme and add support for IBus Backgound](https://github.com/openSUSE/mentoring/issues/158#issuecomment-813837436), I found that if I add the following style for class `.candidate-popup-content`：
 
 ```css
-  background: url("assets/bg.png");
-  background-repeat:no-repeat;
-  background-size:cover;
+background: url("assets/bg.png");
+background-repeat: no-repeat;
+background-size: cover;
 ```
 
 I can modify the background picture.
@@ -124,11 +127,11 @@ Further combining [ibus-font-setting](https://extensions.gnome.org/extension/112
 
 ## To-do
 
-- [X] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus.
-- [X] Read from user themes and apply only for ibus.
-- [X] Merge functions related together.
-- [X] V4: Update from GTK3 to GTK4 to adapt for GNOME40.
-- [X] V8: Add functionality to modify IBus Background picture.
+- [x] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus.
+- [x] Read from user themes and apply only for ibus.
+- [x] Merge functions related together.
+- [x] V4: Update from GTK3 to GTK4 to adapt for GNOME40.
+- [x] V8: Add functionality to modify IBus Background picture.
 
 ## Acknowledgements
 
@@ -138,6 +141,6 @@ Further combining [ibus-font-setting](https://extensions.gnome.org/extension/112
 4. [shell-restarter](https://github.com/koolskateguy89/gnome-shell-extension-shell-restarter)
 5. [background-logo](https://pagure.io/background-logo-extension)
 
-*This project is part of the achievement of the Google Summer of Code 2021 at [OpenSUSE](https://github.com/openSUSE/mentoring/issues/158).*
+_This project is part of the achievement of the Google Summer of Code 2021 at [OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)._
 
-[EGO]:https://extensions.gnome.org/extension/4112/customize-ibus/
+[ego]: https://extensions.gnome.org/extension/4112/customize-ibus/

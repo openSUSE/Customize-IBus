@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: customize-ibus 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-06 22:02+0800\n"
+"POT-Creation-Date: 2021-04-07 22:51+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -21,15 +21,15 @@ msgstr ""
 msgid "loading background for IBus:"
 msgstr "正在为IBus加载背景:"
 
-#: extension.js:324
+#: extension.js:329
 msgid "loading user theme for IBus:"
 msgstr "正在为IBus加载用户主题:"
 
-#: extension.js:410
+#: extension.js:415
 msgid "loading default theme for IBus"
 msgstr "正在为IBus加载当前系统主题"
 
-#: extension.js:459
+#: extension.js:464
 msgid "Restarting..."
 msgstr "正在重新启动⋯⋯"
 
