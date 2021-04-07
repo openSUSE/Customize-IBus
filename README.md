@@ -44,7 +44,7 @@ cd Customize-IBus && make install
 
 ### *提示：* 
 1. 推荐使用X11。如果你在Wayland中更改IBus主题，你的当前所有工作都将会丢失，因为Wayland下只支持通过重新登陆来重启GNOME-shell。
-2. 在Fedora和Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v7)，40.0(v4，v6，v8)中通过了测试。
+2. 在Fedora和Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9(GNOME3.38最终版))，40.0(v4，v8)中通过了测试。
 3. 对于那些不使用GNOME而是使用如KDE等桌面环境的用户，更改IBus主题最简单的方法请参见[这里](https://github.com/qvshuo/Ibus-custom-theme)，从而为IBus指定一个不同的GTK主题。
 
 ## 更改IBus背景图片的实现
@@ -105,7 +105,7 @@ When user chooses a theme from the list, this extension will first read the them
 
 ### *NOTE:* 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
-2. Tested on Fedora and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5), 40.0(v4, v6).
+2. Tested on Fedora and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9(final version for GNOME 3.38)), 40.0(v4, v8).
 3. For users who don't use GNOME but other desktop environments like KDE, the easiest way to change the IBus theme is to act as described in [here](https://github.com/qvshuo/Ibus-custom-theme) to use a different GTK theme for IBus.
 
 ## Realization of Modifying IBus Background Picture

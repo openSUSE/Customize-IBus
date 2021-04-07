@@ -1,7 +1,7 @@
 {
   "name": "customize-ibus",
   "version": "8.0.0",
-  "description": "Customize IBus for orientation, theme, font and ascii mode auto-switch.",
+  "description": "Customize IBus for orientation, shell theme, background picture, font and ascii mode auto-switch.",
   "dependencies": {
     "eslint": "^7.21.0",
     "eslint-config-prettier": "^8.1.0",
