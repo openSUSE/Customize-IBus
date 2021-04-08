@@ -69,6 +69,8 @@ background-size: cover;
 - [x] 将相关功能合并在一起。
 - [x] V4: 从 GTK3 升级到 GTK4 来适配 GNOME40。
 - [x] V8: 增加更改 IBus 背景图片功能。
+- [ ] 重构代码，将从GNOME-Shell主题提取IBus样式功能剥离，使用Python下CSS解析器而并非正则表达式实现功能，生成额外IBus样式表供用户修改测试使用。
+- [ ] 本扩展改为接受用户提供的IBus样式表进行样式的应用。
 
 ## 致谢
 
@@ -132,6 +134,8 @@ Further combining [ibus-font-setting](https://extensions.gnome.org/extension/112
 - [x] Merge functions related together.
 - [x] V4: Update from GTK3 to GTK4 to adapt for GNOME40.
 - [x] V8: Add functionality to modify IBus Background picture.
+- [ ] Strip the current function of extracting IBus style from Gnome shell theme, refactor and implement using CSS parser libraries in Python instead of regular expression. Additional IBus style sheets are generated for users to modify and test.
+- [ ] Modify this extension to accept IBus style sheets provided by users for style application.
 
 ## Acknowledgements
 
