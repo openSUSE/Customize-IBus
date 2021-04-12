@@ -62,7 +62,7 @@ sudo dnf localinstall ~/rpmbuild/RPMS/noarch/gnome-shell-extension-customize-ibu
 
 1. 推荐使用 X11。如果你在 Wayland 中更改 IBus 主题，你的当前所有工作都将会丢失，因为 Wayland 下只支持通过重新登陆来重启 GNOME-shell。
 2. 在 Fedora 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11(GNOME3.38 最终版))，40.0(v4，v8，v10)中通过了测试。
-3. 对于那些不使用 GNOME 而是使用如 KDE 等桌面环境的用户，更改 IBus 主题最简单的方法请参见[这里](https://github.com/qvshuo/Ibus-custom-theme)，从而为 IBus 指定一个不同的 GTK 主题。
+3. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题请参考我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 
 ## 更改 IBus 背景图片的实现
 
@@ -143,7 +143,7 @@ When user chooses a theme from the list, this extension will first read the them
 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
 2. Tested on Fedora and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11(final version for GNOME 3.38)), 40.0(v4, v8, v10).
-3. For users who don't use GNOME but other desktop environments like KDE, the easiest way to change the IBus theme is to act as described in [here](https://github.com/qvshuo/Ibus-custom-theme) to use a different GTK theme for IBus.
+3. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 
 ## Realization of Modifying IBus Background Picture
 
