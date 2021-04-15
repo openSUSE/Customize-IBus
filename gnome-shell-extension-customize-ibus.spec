@@ -1,6 +1,6 @@
-%global commit d31ef3e2b047ea0497729f5f8d9eb47bc755f7a4
+%global commit ab4f6cf11f07efa2c2e9321535582ab64a5bae3b
 %global extension_version 12
-%global date 20210410
+%global date 20210415
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -42,9 +42,12 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %post
-chmod -R 744 %{_datadir}/gnome-shell/extensions/%{uuid}/
+chmod -R 777 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Thu Apr 15 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-12.20210415gitab4f6cf
+- Fix bugs, make it suitable for RPM installization 
+
 * Sat Apr 10 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-12.20210410gitd31ef3e
 - Initial Fedora package
 
