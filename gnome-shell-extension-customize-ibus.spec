@@ -41,6 +41,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %doc README.md
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
+%post
+chmod -R 744 %{_datadir}/gnome-shell/extensions/%{uuid}/
+
 %changelog
 * Sat Apr 10 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-12.20210410gitd31ef3e
 - Initial Fedora package

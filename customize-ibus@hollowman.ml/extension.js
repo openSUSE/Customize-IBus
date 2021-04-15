@@ -425,6 +425,15 @@ const IBusThemeManager = GObject.registerClass(
           "stylesheet.css",
         ])
       );
+      if (!file.query_exists(null))
+        file = Gio.File.new_for_path(
+          GLib.build_filenamev([
+            global.datadir,
+            "extensions",
+            uuid,
+            "stylesheet.css",
+          ])
+        );
       if (
         GLib.mkdir_with_parents(
           file.get_parent().get_path(),
