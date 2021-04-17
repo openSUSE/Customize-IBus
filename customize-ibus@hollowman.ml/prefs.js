@@ -12,24 +12,6 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 
-const Util = Me.imports.util;
-
-Gio._promisify(
-  Gio._LocalFilePrototype,
-  "enumerate_children_async",
-  "enumerate_children_finish"
-);
-Gio._promisify(
-  Gio._LocalFilePrototype,
-  "query_info_async",
-  "query_info_finish"
-);
-Gio._promisify(
-  Gio.FileEnumerator.prototype,
-  "next_files_async",
-  "next_files_finish"
-);
-
 const gsettings = ExtensionUtils.getSettings();
 const ibusGsettings = new Gio.Settings({
   schema_id: "org.freedesktop.ibus.panel",
@@ -44,7 +26,7 @@ var Fields = {
   INPUTONLIST: "input-on-list",
   ENABLEUPDATES: "enable-updates",
   INPUTOFFLIST: "input-off-list",
-  CUSTOMTHEME: "name",
+  CUSTOMTHEME: "custom-theme",
   ENABLECUSTOMTHEME: "enable-custom-theme",
   INPUTLIST: "input-mode-list",
   USECUSTOMFONT: "use-custom-font",
@@ -119,11 +101,41 @@ const CustomizeIBus = GObject.registerClass(
         this._updateLogoPicker.bind(this)
       );
       this._updateLogoPicker();
+
+      const cssFilter = new Gtk.FileFilter();
+      cssFilter.add_pattern("*.css");
+      this._cssFileChooser = new Gtk.FileChooserNative({
+        title: _("Select an IBus Stylesheet"),
+        filter: cssFilter,
+        modal: true,
+      });
+      this._cssFileChooser.connect("response", (dlg, response) => {
+        if (response !== Gtk.ResponseType.ACCEPT) return;
+        gsettings.set_string("custom-theme", dlg.get_file().get_path());
+      });
+
+      this._cssPicker = new Gtk.Button({
+        label: _("(None)"),
+      });
+      this._cssPicker.connect("clicked", () => {
+        this._cssFileChooser.transient_for = this.get_root();
+        this._cssFileChooser.show();
+      });
+      gsettings.connect(
+        "changed::custom-theme",
+        this._updateCssPicker.bind(this)
+      );
+      this._updateCssPicker();
     }
 
     _updateLogoPicker() {
       const filename = gsettings.get_string("custom-bg");
       this._logoPicker.label = GLib.basename(filename);
+    }
+
+    _updateCssPicker() {
+      const filename = gsettings.get_string("custom-theme");
+      this._cssPicker.label = GLib.basename(filename);
     }
 
     _bulidUI() {
@@ -135,30 +147,13 @@ const CustomizeIBus = GObject.registerClass(
         orientation: Gtk.Orientation.VERTICAL,
       });
       this.set_child(this._box);
-      this._field_theme_color = new Gtk.ListBox({
-        selection_mode: Gtk.SelectionMode.NONE,
-      });
-      this._field_theme_color.get_style_context().add_class("frame");
 
-      this._actionGroup = new Gio.SimpleActionGroup();
-      this._field_theme_color.insert_action_group("theme", this._actionGroup);
-
-      this._settings = ExtensionUtils.getSettings();
-      this._actionGroup.add_action(this._settings.create_action("name"));
-
-      this.connect("destroy", () => this._settings.run_dispose());
-
-      this._rows = new Map();
-      this._addTheme("");
-
-      this._collectThemes();
       this._ibus = this._listFrameMaker(_("Customize IBus"));
       this._ibus._add(this._field_enable_orien, this._field_orientation);
       this._ibus._add(this._field_use_custom_font, this._field_custom_font);
       this._ibus._add(this._field_enable_ascii, this._field_unkown_state);
       this._ibus._add(this._field_use_custom_bg, this._logoPicker);
-      this._ibus._add(this._field_enable_custom_theme);
-      this._box.append(this._field_theme_color);
+      this._ibus._add(this._field_enable_custom_theme, this._cssPicker);
     }
 
     _syncStatus() {
@@ -177,16 +172,15 @@ const CustomizeIBus = GObject.registerClass(
         ibusGsettings.set_boolean("use-custom-bg", widget.active);
       });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
-        this._field_theme_color.set_sensitive(widget.active);
+        this._cssPicker.set_sensitive(widget.active);
+        ibusGsettings.set_boolean("enable-custom-theme", widget.active);
       });
 
       this._field_unkown_state.set_sensitive(this._field_enable_ascii.active);
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._logoPicker.set_sensitive(this._field_use_custom_bg.active);
-      this._field_theme_color.set_sensitive(
-        this._field_enable_custom_theme.active
-      );
+      this._cssPicker.set_sensitive(this._field_enable_custom_theme.active);
     }
 
     _bindValues() {
@@ -205,12 +199,6 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.ENABLEORIEN,
         this._field_enable_orien,
-        "active",
-        Gio.SettingsBindFlags.DEFAULT
-      );
-      gsettings.bind(
-        Fields.CUSTOMTHEME,
-        this._field_theme_color,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -308,134 +296,9 @@ const CustomizeIBus = GObject.registerClass(
       return c;
     }
 
-    async _collectThemes() {
-      for (const dirName of Util.getThemeDirs()) {
-        const dir = Gio.File.new_for_path(dirName);
-        for (const name of await this._enumerateDir(dir)) {
-          if (this._rows.has(name)) continue;
-
-          const file = dir.resolve_relative_path(
-            `${name}/gnome-shell/gnome-shell.css`
-          );
-          try {
-            await file.query_info_async(
-              Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-              Gio.FileQueryInfoFlags.NONE,
-              GLib.PRIORITY_DEFAULT,
-              null
-            );
-            this._addTheme(name);
-          } catch (e) {
-            if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND))
-              logError(e);
-          }
-        }
-      }
-
-      for (const dirName of Util.getModeThemeDirs()) {
-        const dir = Gio.File.new_for_path(dirName);
-        for (const filename of await this._enumerateDir(dir)) {
-          if (!filename.endsWith(".css")) continue;
-
-          const name = filename.slice(0, -4);
-          if (!this._rows.has(name)) this._addTheme(name);
-        }
-      }
-    }
-
-    _addTheme(name) {
-      const row = new iBusThemeRow(name, this._settings);
-      this._rows.set(name, row);
-
-      this._field_theme_color.append(row);
-    }
-
-    async _enumerateDir(dir) {
-      const fileInfos = [];
-      let fileEnum;
-
-      try {
-        fileEnum = await dir.enumerate_children_async(
-          Gio.FILE_ATTRIBUTE_STANDARD_NAME,
-          Gio.FileQueryInfoFlags.NONE,
-          GLib.PRIORITY_DEFAULT,
-          null
-        );
-      } catch (e) {
-        if (!e.matches(Gio.IOErrorEnum, Gio.IOErrorEnum.NOT_FOUND)) logError(e);
-        return [];
-      }
-
-      let infos;
-      do {
-        infos = await fileEnum.next_files_async(
-          100,
-          GLib.PRIORITY_DEFAULT,
-          null
-        );
-        fileInfos.push(...infos);
-      } while (infos.length > 0);
-
-      return fileInfos.map((info) => info.get_name());
-    }
-
     on_destroy() {
       if (this._fileChooser) this._fileChooser.destroy();
       this._fileChooser = null;
-    }
-  }
-);
-
-const iBusThemeRow = GObject.registerClass(
-  class iBusThemeRow extends Gtk.ListBoxRow {
-    _init(name, settings) {
-      this._name = name;
-      this._settings = settings;
-
-      const box = new Gtk.Box({
-        spacing: 12,
-        margin_start: 12,
-        margin_end: 12,
-        margin_top: 12,
-        margin_bottom: 12,
-      });
-      super._init({
-        action_name: "theme.name",
-        action_target: new GLib.Variant("s", name),
-        child: box,
-      });
-
-      box.append(
-        new Gtk.Label({
-          label: name || _("Follow User Theme"),
-          hexpand: true,
-          xalign: 0,
-          max_width_chars: 25,
-          width_chars: 25,
-        })
-      );
-
-      this._checkmark = new Gtk.Image({
-        icon_name: "emblem-ok-symbolic",
-        pixel_size: 16,
-      });
-      box.append(this._checkmark);
-
-      const id = this._settings.connect(
-        "changed::name",
-        this._syncCheckmark.bind(this)
-      );
-      this._syncCheckmark();
-
-      this.connect("destroy", () => {
-        this._settings.disconnect(id);
-        this._settings = null;
-      });
-    }
-
-    _syncCheckmark() {
-      const visible = this._name === this._settings.get_string("name");
-      this._checkmark.opacity = visible ? 1 : 0;
     }
   }
 );

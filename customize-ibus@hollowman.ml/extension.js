@@ -30,14 +30,13 @@ const CandidateArea = CandidatePopup._candidateArea;
 const ExtensionUtils = imports.misc.extensionUtils;
 const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
-const Util = Me.imports.util;
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.prefs.Fields;
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INPUTMODE = "InputMode";
 const uuid = "customize-ibus@hollowman.ml";
-const SETTINGS_KEY = "name";
+const SETTINGS_KEY = "custom-theme";
 const PERMISSIONS_MODE = 0o744;
 
 const IBusAutoSwitch = GObject.registerClass(
@@ -302,118 +301,21 @@ const IBusThemeManager = GObject.registerClass(
       this._changeTheme();
     }
 
-    // Load shell theme from ~/.local/share/themes/name/gnome-shell
+    // Load stylesheet
     _changeTheme() {
-      let stylesheet = null;
-      let themeName = this._settings.get_string(SETTINGS_KEY);
+      let stylesheet = this._settings.get_string(SETTINGS_KEY);
       let enabled = this._settings.get_boolean(Fields.ENABLECUSTOMTHEME);
 
-      if (themeName) {
-        const stylesheetPaths = Util.getThemeDirs().map(
-          (dir) => `${dir}/${themeName}/gnome-shell/gnome-shell.css`
-        );
-
-        stylesheetPaths.push(
-          ...Util.getModeThemeDirs().map((dir) => `${dir}/${themeName}.css`)
-        );
-
-        stylesheet = stylesheetPaths.find((path) => {
-          let file = Gio.file_new_for_path(path);
-          return file.query_exists(null);
-        });
-      }
       let newFileContent = "";
       let notFirstStart = false;
       if (this._prevCssStylesheet) notFirstStart = true;
       if (stylesheet && enabled) {
         global.log(_("loading user theme for IBus:") + stylesheet);
-        let file = Gio.File.new_for_path(stylesheet);
-        let [success, contents] = file.load_contents(null);
-        global.log(success);
-
-        // for IBus candidate page button
-        var regStr = /\n.button[\s\S]*?}/gi;
-        let matchedContent = ByteArray.toString(contents).match(regStr);
-        if (!matchedContent) {
-          // For gnome-classics
-          regStr = / .button[\s\S]*?}/gi;
-          matchedContent = ByteArray.toString(contents).match(regStr);
-        }
-
-        for (var index in matchedContent) {
-          newFileContent += this._rmUnrelatedStyleClass(
-            matchedContent[index]
-              .replace(/assets\//g, stylesheet + "/../assets/")
-              .replace(/.button/g, ".candidate-page-button") + "\n"
-          );
-        }
-        regStr = /\n.candidate-[\s\S]*?}/gi;
-        matchedContent = ByteArray.toString(contents).match(regStr);
-
-        // For gnome-classics
-        regStr = /\n  .candidate-[\s\S]*?}/gi;
-        let tempContent = ByteArray.toString(contents).match(regStr);
-        if (tempContent) matchedContent = matchedContent.concat(tempContent);
-        regStr = / .candidate-popup-boxpointer[\s\S]*?}/gi;
-        tempContent = ByteArray.toString(contents).match(regStr);
-        if (tempContent) matchedContent = matchedContent.concat(tempContent);
-
-        // For candidate color
-        regStr = /\n.popup-menu {[\s\S]*?}/gi;
-        let globalColor = ByteArray.toString(contents).match(regStr);
-        regStr = /color:[\s\S]*?;/gi;
-        if (globalColor) globalColor = globalColor[0].match(regStr);
-        for (var index in matchedContent) {
-          let addedGlobalColor = "}";
-          if (
-            globalColor &&
-            matchedContent[index].indexOf(" color:") === -1 &&
-            (matchedContent[index].indexOf(".candidate-box ") != -1 ||
-              matchedContent[index].indexOf(".candidate-popup-content ") != -1)
-          ) {
-            addedGlobalColor = "  " + globalColor[0] + "\n" + addedGlobalColor;
-          }
-
-          let newContent = matchedContent[index];
-
-          // Avoid black border at pointer when system theme is black
-          if (
-            newContent.indexOf(".candidate-popup-boxpointer {") != -1 &&
-            newContent.indexOf("border-image") === -1
-          ) {
-            newContent = newContent.replace(/}/g, "  border-image: none;\n}");
-          }
-          newFileContent += this._rmUnrelatedStyleClass(
-            newContent
-              .replace(/assets\//g, stylesheet + "/../assets/")
-              .replace(/}/g, addedGlobalColor) + "\n"
-          );
-        }
-        regStr = /.horizontal .candidate-[\s\S]*?}/gi;
-        matchedContent = ByteArray.toString(contents).match(regStr);
-        for (var index in matchedContent) {
-          newFileContent += this._rmUnrelatedStyleClass(
-            matchedContent[index].replace(
-              // Set assert file relative path to absolute path
-              /assets\//g,
-              stylesheet + "/../assets/"
-            ) + "\n"
-          );
-        }
-        regStr = /.vertical .candidate-[\s\S]*?}/gi;
-        matchedContent = ByteArray.toString(contents).match(regStr);
-        for (var index in matchedContent) {
-          newFileContent += this._rmUnrelatedStyleClass(
-            matchedContent[index].replace(
-              /assets\//g,
-              stylesheet + "/../assets/"
-            ) + "\n"
-          );
-        }
+        newFileContent = "@import url(" + stylesheet + ");";
         this._prevCssStylesheet = stylesheet;
       } else {
         global.log(_("loading default theme for IBus"));
-        if (themeName)
+        if (stylesheet)
           this._settings.set_value(SETTINGS_KEY, new GLib.Variant("s", ""));
         this._prevCssStylesheet = "Unsetted";
       }
@@ -449,24 +351,6 @@ const IBusThemeManager = GObject.registerClass(
         );
       }
       if (notFirstStart) this.restart();
-    }
-
-    // Fix to avoid affecting other UI styles
-
-    /* Remove unwanted style if the IBus related style classes (.candidate-*) style 
-       block is shared with other styles that has nothing to do with IBus style 
-    */
-
-    _rmUnrelatedStyleClass(str) {
-      let splitedContent = str.split("{");
-      if (splitedContent.length != 2) return splitedContent.join("{");
-      let classList = splitedContent[0].split(",");
-      let contentPart = splitedContent[1];
-      let newClassList = [];
-      for (var index in classList)
-        if (classList[index].indexOf(".candidate-") != -1)
-          newClassList.push(classList[index]);
-      return newClassList.join(",") + "{" + contentPart;
     }
 
     restart() {

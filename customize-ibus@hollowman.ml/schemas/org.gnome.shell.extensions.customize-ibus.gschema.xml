@@ -26,10 +26,9 @@
         <default>0</default>
         <summary>candidate orientation</summary>
     </key>
-    <key name="name" type="s">
-      <default>""</default>
-      <summary>Theme name</summary>
-      <description>The name of the theme, to be loaded from ~/.themes/name/gnome-shell</description>
+    <key type="s" name="custom-theme">
+        <default>""</default>
+        <summary>custom theme</summary>
     </key>
     <key type="u" name="unkown-ascii-state">
         <default>2</default>
