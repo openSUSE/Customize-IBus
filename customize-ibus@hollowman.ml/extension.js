@@ -308,10 +308,19 @@ const IBusThemeManager = GObject.registerClass(
 
       let newFileContent = "";
       let notFirstStart = false;
+      let needRestart = false;
       if (this._prevCssStylesheet) notFirstStart = true;
       if (stylesheet && enabled) {
         global.log(_("loading user theme for IBus:") + stylesheet);
-        newFileContent = "@import url(" + stylesheet + ");";
+        let file = Gio.File.new_for_path(stylesheet);
+        let [success, contents] = file.load_contents(null);
+        global.log(success);
+        newFileContent =
+          "/* " +
+          _("Copied from Source File: ") +
+          stylesheet +
+          " */\n\n" +
+          contents;
         this._prevCssStylesheet = stylesheet;
       } else {
         global.log(_("loading default theme for IBus"));
@@ -342,15 +351,29 @@ const IBusThemeManager = GObject.registerClass(
           PERMISSIONS_MODE
         ) === 0
       ) {
-        file.replace_contents(
-          newFileContent,
-          null,
-          false,
-          Gio.FileCreateFlags.REPLACE_DESTINATION,
-          null
-        );
+        let [success, contents] = file.load_contents(null);
+        if (success) {
+          if (contents != newFileContent) {
+            file.replace_contents(
+              newFileContent,
+              null,
+              false,
+              Gio.FileCreateFlags.REPLACE_DESTINATION,
+              null
+            );
+            needRestart = true;
+          }
+        } else {
+          file.replace_contents(
+            newFileContent,
+            null,
+            false,
+            Gio.FileCreateFlags.REPLACE_DESTINATION,
+            null
+          );
+        }
       }
-      if (notFirstStart) this.restart();
+      if (notFirstStart || needRestart) this.restart();
     }
 
     restart() {

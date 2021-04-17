@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: customize-ibus 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-17 14:25+0800\n"
+"POT-Creation-Date: 2021-04-18 00:19+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -21,15 +21,19 @@ msgstr ""
 msgid "loading background for IBus:"
 msgstr "正在为IBus加载背景:"
 
-#: extension.js:313
+#: extension.js:314
 msgid "loading user theme for IBus:"
 msgstr "正在为IBus加载用户主题:"
 
-#: extension.js:317
+#: extension.js:320
+msgid "Copied from Source File: "
+msgstr "拷贝自源文件："
+
+#: extension.js:326
 msgid "loading default theme for IBus"
 msgstr "正在为IBus加载当前系统主题"
 
-#: extension.js:357
+#: extension.js:380
 msgid "Restarting..."
 msgstr "正在重新启动⋯⋯"
 
@@ -88,6 +92,3 @@ msgstr "选择一个IBus风格样式表"
 #: prefs.js:149
 msgid "Customize IBus"
 msgstr "自定义IBus"
-
-#~ msgid "Follow User Theme"
-#~ msgstr "跟随系统主题"

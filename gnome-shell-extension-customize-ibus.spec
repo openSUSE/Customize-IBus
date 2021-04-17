@@ -1,6 +1,6 @@
 %global commit cfa502c0e1270635ff412ebc4fc2973e5c77af3c
 %global extension_version 13
-%global date 20210417
+%global date 20210418
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 chmod -R 777 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sat Apr 17 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-13.20210417gitcfa502c
+* Sun Apr 18 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-13.20210418gitcfa502c
 - Fix bugs, make it suitable for RPM installization 
 
 * Thu Apr 15 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-12.20210415gitab4f6cf

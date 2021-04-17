@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-17 14:25+0800\n"
+"POT-Creation-Date: 2021-04-18 00:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,15 +21,19 @@ msgstr ""
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:313
+#: extension.js:314
 msgid "loading user theme for IBus:"
 msgstr ""
 
-#: extension.js:317
+#: extension.js:320
+msgid "Copied from Source File: "
+msgstr ""
+
+#: extension.js:326
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:357
+#: extension.js:380
 msgid "Restarting..."
 msgstr ""
 
