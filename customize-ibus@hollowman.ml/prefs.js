@@ -2,8 +2,6 @@
 // vim:fdm=syntax
 // by:hollowman6@github tuberry@github
 
-// we use async/here to not block the mainloop, not to parallelize
-
 "use strict";
 
 const { Gio, Gtk, GObject, GLib } = imports.gi;

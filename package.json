@@ -22,9 +22,7 @@
     "extends": [
       "plugin:prettier/recommended"
     ],
-    "ignorePatterns": [
-      "**/prefs.js"
-    ],
+    "ignorePatterns": [],
     "rules": {
       "prettier/prettier": "error"
     },
