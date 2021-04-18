@@ -117,7 +117,7 @@ const CustomizeIBus = GObject.registerClass(
         label: _("(None)"),
       });
       this._cssPicker.connect("clicked", () => {
-        this._cssFileChooser.transient_for = this.get_root();
+        this._cssFileChooser.transient_for = this.get_toplevel();
         this._cssFileChooser.show();
       });
       gsettings.connect(
