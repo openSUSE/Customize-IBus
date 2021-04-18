@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 11\n"
+"Project-Id-Version: Customize Ibus 14\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-07 23:10+0800\n"
+"POT-Creation-Date: 2021-04-18 16:37+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,74 +17,78 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:214
+#: extension.js:213
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:329
+#: extension.js:314
 msgid "loading user theme for IBus:"
 msgstr ""
 
-#: extension.js:415
+#: extension.js:320
+msgid "Copied from Source File: "
+msgstr ""
+
+#: extension.js:326
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:464
+#: extension.js:380
 msgid "Restarting..."
 msgstr ""
 
-#: prefs.js:81
+#: prefs.js:61
 msgid "Custom IME theme"
 msgstr ""
 
-#: prefs.js:82
+#: prefs.js:62
 msgid "Use custom font"
 msgstr ""
 
-#: prefs.js:83
+#: prefs.js:63
 msgid "Use custom background"
 msgstr ""
 
-#: prefs.js:84
+#: prefs.js:64
 msgid "Auto switch ASCII mode"
 msgstr ""
 
-#: prefs.js:85
+#: prefs.js:65
 msgid "Candidates orientation"
 msgstr ""
 
-#: prefs.js:88
+#: prefs.js:68
 msgid "Vertical"
 msgstr ""
 
-#: prefs.js:89
+#: prefs.js:69
 msgid "Horizontal"
 msgstr ""
 
-#: prefs.js:92
+#: prefs.js:72
 msgid "On"
 msgstr ""
 
-#: prefs.js:93
+#: prefs.js:73
 msgid "Off"
 msgstr ""
 
-#: prefs.js:94
+#: prefs.js:74
 msgid "Default"
 msgstr ""
 
-#: prefs.js:102
+#: prefs.js:82
 msgid "Select an Image"
 msgstr ""
 
-#: prefs.js:112
+#: prefs.js:92 prefs.js:117
 msgid "(None)"
 msgstr ""
 
-#: prefs.js:152
-msgid "Customize IBus"
+#: prefs.js:107
+msgid "Select an IBus Stylesheet"
 msgstr ""
 
-#: prefs.js:406
-msgid "Follow User Theme"
+#: prefs.js:147
+msgid "Customize IBus"
 msgstr ""

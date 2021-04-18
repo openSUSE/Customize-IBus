@@ -1,6 +1,6 @@
 {
   "name": "customize-ibus",
-  "version": "11.0.0",
+  "version": "14.0.0",
   "description": "Customize IBus for orientation, shell theme, background picture, font and ascii mode auto-switch.",
   "dependencies": {
     "eslint": "^7.21.0",
@@ -22,9 +22,7 @@
     "extends": [
       "plugin:prettier/recommended"
     ],
-    "ignorePatterns": [
-      "**/prefs.js"
-    ],
+    "ignorePatterns": [],
     "rules": {
       "prettier/prettier": "error"
     },
