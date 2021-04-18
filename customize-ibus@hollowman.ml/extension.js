@@ -353,7 +353,7 @@ const IBusThemeManager = GObject.registerClass(
       ) {
         let [success, contents] = file.load_contents(null);
         if (success) {
-          if (contents != newFileContent) {
+          if (contents != newFileContent && stylesheet != file.get_path()) {
             file.replace_contents(
               newFileContent,
               null,
