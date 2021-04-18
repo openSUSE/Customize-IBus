@@ -1,4 +1,4 @@
-%global commit 279ed7caf8964b69ae8ed9715b59d5fd6e8cc63e
+%global commit 6c2a9b3bc0b6669d29aa9ff93fcdc37a2397d150
 %global extension_version 13
 %global date 20210418
 %global shell_version 40.0
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 chmod -R 777 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sun Apr 18 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-13.20210418git279ed7c
+* Sun Apr 18 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-13.20210418git6c2a9b3
 - Fix bugs, make it suitable for RPM installization 
 
 * Thu Apr 15 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-12.20210415gitab4f6cf
