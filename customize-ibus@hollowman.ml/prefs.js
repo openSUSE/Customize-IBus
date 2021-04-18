@@ -297,6 +297,8 @@ const CustomizeIBus = GObject.registerClass(
     on_destroy() {
       if (this._fileChooser) this._fileChooser.destroy();
       this._fileChooser = null;
+      if (this._cssFileChooser) this._cssFileChooser.destroy();
+      this._cssFileChooser = null;
     }
   }
 );
