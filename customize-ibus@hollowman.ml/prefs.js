@@ -129,12 +129,14 @@ const CustomizeIBus = GObject.registerClass(
 
     _updateLogoPicker() {
       const filename = gsettings.get_string("custom-bg");
-      this._logoPicker.label = GLib.basename(filename);
+      if (!GLib.basename(filename)) this._logoPicker.label = _("(None)");
+      else this._logoPicker.label = GLib.basename(filename);
     }
 
     _updateCssPicker() {
       const filename = gsettings.get_string("custom-theme");
-      this._cssPicker.label = GLib.basename(filename);
+      if (!GLib.basename(filename)) this._cssPicker.label = _("(None)");
+      else this._cssPicker.label = GLib.basename(filename);
     }
 
     _bulidUI() {
