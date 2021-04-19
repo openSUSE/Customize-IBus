@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: customize-ibus 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-18 00:19+0800\n"
+"POT-Creation-Date: 2021-04-19 19:20+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -81,7 +81,7 @@ msgstr "默认"
 msgid "Select an Image"
 msgstr "选择一个图片"
 
-#: prefs.js:91 prefs.js:116
+#: prefs.js:91 prefs.js:116 prefs.js:131 prefs.js:137
 msgid "(None)"
 msgstr "（无）"
 
@@ -89,6 +89,6 @@ msgstr "（无）"
 msgid "Select an IBus Stylesheet"
 msgstr "选择一个IBus风格样式表"
 
-#: prefs.js:149
+#: prefs.js:151
 msgid "Customize IBus"
 msgstr "自定义IBus"
