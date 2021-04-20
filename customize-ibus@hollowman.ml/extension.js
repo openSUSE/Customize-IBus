@@ -319,148 +319,6 @@ const IBusThemeManager = GObject.registerClass(
   }
 );
 
-const UpdatesIndicator = GObject.registerClass(
-  {
-    Properties: {
-      updatescmd: GObject.param_spec_string(
-        "updatescmd",
-        "updatescmd",
-        "updates cmd",
-        "checkupdates | wc -l",
-        GObject.ParamFlags.READWRITE
-      ),
-      updatesdir: GObject.param_spec_string(
-        "updatesdir",
-        "updatesdir",
-        "updates dir",
-        "/var/lib/pacman/local",
-        GObject.ParamFlags.READWRITE
-      ),
-    },
-  },
-  class UpdatesIndicator extends GObject.Object {
-    _init() {
-      super._init();
-      this._bindSettings();
-      this._addIndicator();
-      this._checkUpdates();
-      this._checkUpdatesId = GLib.timeout_add_seconds(
-        GLib.PRIORITY_DEFAULT,
-        60 * 60,
-        this._checkUpdates.bind(this)
-      );
-    }
-
-    _bindSettings() {
-      gsettings.bind(
-        Fields.UPDATESDIR,
-        this,
-        "updatesdir",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.CHECKUPDATES,
-        this,
-        "updatescmd",
-        Gio.SettingsBindFlags.GET
-      );
-    }
-
-    _execute(cmd) {
-      return new Promise((resolve, reject) => {
-        try {
-          let command = ["/bin/bash", "-c", this.updatescmd];
-          let proc = new Gio.Subprocess({
-            argv: command,
-            flags:
-              Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
-          });
-          proc.init(null);
-          proc.communicate_utf8_async(null, null, (proc, res) => {
-            let [, stdout, stderr] = proc.communicate_utf8_finish(res);
-            proc.get_exit_status()
-              ? reject(stderr.trim())
-              : resolve(stdout.trim());
-          });
-        } catch (e) {
-          reject(e.message);
-        }
-      });
-    }
-
-    _checkUpdates() {
-      this._execute(gsettings.get_string(Fields.CHECKUPDATES))
-        .then((scc) => {
-          this._showUpdates(scc);
-        })
-        .catch((err) => {
-          Main.notifyError(Me.metadata.name, err);
-        });
-    }
-
-    _showUpdates(count) {
-      this._checkUpdated();
-      if (count == "0") {
-        this._button.hide();
-      } else {
-        let dir = Gio.file_new_for_path(this.updatesdir);
-        this._fileMonitor = dir.monitor_directory(
-          Gio.FileMonitorFlags.NONE,
-          null
-        );
-        this._fileChangedId = this._fileMonitor.connect("changed", () => {
-          GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 10, () => {
-            this._checkUpdates();
-            return GLib.SOURCE_REMOVE;
-          });
-        });
-        this._button.label.set_text(count);
-        this._button.show();
-      }
-    }
-
-    _addIndicator() {
-      if (Main.panel.statusArea[Me.metadata.uuid]) return;
-      this._button = new PanelMenu.Button(0, "Updates Indicator", true);
-      let box = new St.BoxLayout({
-        vertical: false,
-        style_class: "panel-status-menu-box",
-      });
-      let icon = new St.Icon({
-        y_expand: false,
-        style_class: "system-status-icon",
-        icon_name: "software-update-available-symbolic",
-      });
-      this._button.label = new St.Label({
-        text: "0",
-        y_expand: false,
-        y_align: Clutter.ActorAlign.CENTER,
-      });
-      box.add_child(icon);
-      box.add_child(this._button.label);
-      this._button.add_actor(box);
-      Main.panel.addToStatusArea(Me.metadata.name, this._button, 5, "center");
-      this._button.hide();
-    }
-
-    _checkUpdated() {
-      if (!this._fileMonitor) return;
-      if (this._fileChangedId)
-        this._fileMonitor.disconnect(this._fileChangedId),
-          (this._fileChangedId = 0);
-      delete this._fileMonitor;
-    }
-
-    destroy() {
-      if (this._checkUpdatesId)
-        GLib.source_remove(this._checkUpdatesId), (this._checkUpdatesId = 0);
-      this._checkUpdated();
-      this._button.destroy();
-      delete this._button;
-    }
-  }
-);
-
 const Extensions = GObject.registerClass(
   {
     Properties: {
@@ -498,14 +356,7 @@ const Extensions = GObject.registerClass(
         "theme",
         false,
         GObject.ParamFlags.WRITABLE
-      ),
-      update: GObject.param_spec_boolean(
-        "update",
-        "update",
-        "update",
-        false,
-        GObject.ParamFlags.WRITABLE
-      ),
+      )
     },
   },
   class Extensions extends GObject.Object {
@@ -538,12 +389,6 @@ const Extensions = GObject.registerClass(
         Fields.ENABLECUSTOMTHEME,
         this,
         "theme",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.ENABLEUPDATES,
-        this,
-        "update",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -603,24 +448,12 @@ const Extensions = GObject.registerClass(
       }
     }
 
-    set update(update) {
-      if (update) {
-        if (this._update) return;
-        this._update = new UpdatesIndicator();
-      } else {
-        if (!this._update) return;
-        this._update.destroy();
-        delete this._update;
-      }
-    }
-
     destroy() {
       this.bg = false;
       this.font = false;
       this.input = false;
       this.orien = false;
       this.theme = false;
-      this.update = false;
     }
   }
 );

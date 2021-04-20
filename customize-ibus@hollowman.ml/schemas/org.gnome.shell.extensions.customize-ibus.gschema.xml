@@ -51,17 +51,5 @@
         <default>""</default>
         <summary>custom background</summary>
     </key>
-    <key type="b" name="enable-updates">
-        <default>false</default>
-        <summary>enable updates indicator</summary>
-    </key>
-    <key type="s" name="check-updates">
-        <default>"checkupdates | wc -l"</default>
-        <summary>command to check updates(for the Arch-based)</summary>
-    </key>
-    <key type="s" name="updates-dir">
-        <default>"/var/lib/pacman/local"</default>
-        <summary>updates dir</summary>
-    </key>
   </schema>
 </schemalist>
