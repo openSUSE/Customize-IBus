@@ -1,4 +1,4 @@
-%global commit 6c2a9b3bc0b6669d29aa9ff93fcdc37a2397d150
+%global commit 472657a654ab9e6c0684ac61e3037865f092dbd8
 %global extension_version 16
 %global date 20210420
 %global shell_version 40.0
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 chmod -R 777 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Tue Apr 20 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-16.20210418git6c2a9b3
+* Tue Apr 20 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-16.20210418git472657a
 - Modify theme load logic so that now we don't need to reload GNOME-Shell to change IBus themes.
 
 * Sun Apr 18 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-13.20210418git6c2a9b3
