@@ -85,7 +85,7 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._fileChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
-        gsettings.set_string("custom-bg", dlg.get_file().get_path());
+        gsettings.set_string(Fields.CUSTOMBG, dlg.get_file().get_path());
       });
 
       this._logoPicker = new Gtk.Button({
@@ -96,7 +96,7 @@ const CustomizeIBus = GObject.registerClass(
         this._fileChooser.show();
       });
       gsettings.connect(
-        "changed::custom-bg",
+        `changed::${Fields.CUSTOMBG}`,
         this._updateLogoPicker.bind(this)
       );
       this._updateLogoPicker();
@@ -110,7 +110,7 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._cssFileChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
-        gsettings.set_string("custom-theme", dlg.get_file().get_path());
+        gsettings.set_string(Fields.CUSTOMTHEME, dlg.get_file().get_path());
       });
 
       this._cssPicker = new Gtk.Button({
@@ -121,20 +121,20 @@ const CustomizeIBus = GObject.registerClass(
         this._cssFileChooser.show();
       });
       gsettings.connect(
-        "changed::custom-theme",
+        `changed::${Fields.CUSTOMTHEME}`,
         this._updateCssPicker.bind(this)
       );
       this._updateCssPicker();
     }
 
     _updateLogoPicker() {
-      const filename = gsettings.get_string("custom-bg");
+      const filename = gsettings.get_string(Fields.CUSTOMBG);
       if (!GLib.basename(filename)) this._logoPicker.label = _("(None)");
       else this._logoPicker.label = GLib.basename(filename);
     }
 
     _updateCssPicker() {
-      const filename = gsettings.get_string("custom-theme");
+      const filename = gsettings.get_string(Fields.CUSTOMTHEME);
       if (!GLib.basename(filename)) this._cssPicker.label = _("(None)");
       else this._cssPicker.label = GLib.basename(filename);
     }
@@ -163,18 +163,18 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
-        ibusGsettings.set_boolean("use-custom-font", widget.active);
+        ibusGsettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
       });
       this._field_use_custom_bg.connect("notify::active", (widget) => {
         this._logoPicker.set_sensitive(widget.active);
-        ibusGsettings.set_boolean("use-custom-bg", widget.active);
+        ibusGsettings.set_boolean(Fields.USECUSTOMBG, widget.active);
       });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
         this._cssPicker.set_sensitive(widget.active);
-        ibusGsettings.set_boolean("enable-custom-theme", widget.active);
+        ibusGsettings.set_boolean(Fields.ENABLECUSTOMTHEME, widget.active);
       });
       this._field_custom_font.connect("font-set", (widget) => {
-        ibusGsettings.set_string("custom-font", widget.font_name);
+        ibusGsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
         gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
       });
 

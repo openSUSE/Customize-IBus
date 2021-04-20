@@ -17,7 +17,7 @@
 
 (English version is down below)
 
-### 注意：如果后期无重大 BUG 的话，v14 将是支持 GNOME 3.38 的最后一个版本
+### 注意：如果后期无重大 BUG 的话，v15 将是支持 GNOME 3.38 的最后一个版本
 
 在 GNOME Shell 中更改 IBus 的候选框方向、shell 主题、背景图片、字体和输入法默认语言。
 
@@ -53,7 +53,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 ### _提示：_
 
 1. 推荐使用 X11。如果你在 Wayland 中更改 IBus 主题，你的当前所有工作都将会丢失，因为 Wayland 下只支持通过重新登陆来重启 GNOME-shell。
-2. 在 Fedora 33 和 Ubuntu 20.04, GNOME-shell 3.38 中(v3,v5,v9,v11,v14)通过了测试。
+2. 在 Fedora 33 和 Ubuntu 20.04, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15)通过了测试。
 3. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 
 ## 更改 IBus 背景图片的实现
@@ -78,20 +78,19 @@ background-size: cover;
 - [x] V9: 增加更改 IBus 背景图片功能。
 - [x] V14: 将从 GNOME-Shell 主题提取 IBus 样式功能剥离，使用 Python 下 CSS 解析器而并非正则表达式实现功能，生成额外 IBus 样式表供用户修改测试使用。
 - [x] V14: 本扩展改为接受用户提供的 IBus 样式表进行样式的应用。
+- [x] V15: 修改主题加载逻辑，免去每次更换主题都要重启 GNOME-Shell。
 
 ## 致谢
 
 1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
 2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
-3. [user-theme](https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/tree/master/extensions/user-theme)
-4. [shell-restarter](https://github.com/koolskateguy89/gnome-shell-extension-shell-restarter)
-5. [background-logo](https://pagure.io/background-logo-extension)
+3. [background-logo](https://pagure.io/background-logo-extension)
 
 _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_
 
 # Customize IBus
 
-### Note: If no severe bug was found later, v14 will be the last version that support GNOME 3.38.
+### Note: If no severe bug was found later, v15 will be the last version that support GNOME 3.38.
 
 Customize IBus for orientation, shell theme, background picture, font and ascii mode auto-switch.
 
@@ -125,7 +124,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 ### _NOTE:_
 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
-2. Tested on Fedora 33 and Ubuntu 20.04, GNOME-shell 3.38(v3, v5, v9, v11, v14).
+2. Tested on Fedora 33 and Ubuntu 20.04, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15).
 3. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 
 ## To-do
@@ -136,14 +135,13 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 - [x] v9: Add functionality to modify IBus Background picture.
 - [x] V14: Strip the current function of extracting IBus style from Gnome shell theme, implement using CSS parser libraries in Python instead of regular expression. Additional IBus style sheets are generated for users to modify and test.
 - [x] V14: Modify this extension to accept IBus style sheets provided by users for style application.
+- [x] V15: Modify theme load logic so that now we don't need to reload GNOME-Shell to change IBus themes.
 
 ## Acknowledgements
 
 1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
 2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
-3. [user-theme](https://gitlab.gnome.org/GNOME/gnome-shell-extensions/-/tree/master/extensions/user-theme)
-4. [shell-restarter](https://github.com/koolskateguy89/gnome-shell-extension-shell-restarter)
-5. [background-logo](https://pagure.io/background-logo-extension)
+3. [background-logo](https://pagure.io/background-logo-extension)
 
 _This project is part of the achievement of the Google Summer of Code 2021 at [OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)._
 
