@@ -36,8 +36,6 @@ const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INPUTMODE = "InputMode";
 const uuid = "customize-ibus@hollowman.ml";
-const SETTINGS_KEY = "custom-theme";
-const PERMISSIONS_MODE = 0o744;
 
 const IBusAutoSwitch = GObject.registerClass(
   {
@@ -280,14 +278,13 @@ const IBusThemeManager = GObject.registerClass(
   class IBusThemeManager extends GObject.Object {
     _init() {
       super._init();
-      this._settings = ExtensionUtils.getSettings();
       this._prevCssStylesheet = null;
       this.enable();
     }
 
     enable() {
-      this._changedId = this._settings.connect(
-        `changed::${SETTINGS_KEY}`,
+      this._changedId = gsettings.connect(
+        `changed::${Fields.CUSTOMTHEME}`,
         this._changeTheme.bind(this)
       );
       this._changeTheme();
@@ -295,7 +292,7 @@ const IBusThemeManager = GObject.registerClass(
 
     disable() {
       if (this._changedId) {
-        this._settings.disconnect(this._changedId);
+        gsettings.disconnect(this._changedId);
         this._changedId = 0;
       }
       this._changeTheme();
@@ -303,81 +300,21 @@ const IBusThemeManager = GObject.registerClass(
 
     // Load stylesheet
     _changeTheme() {
-      let stylesheet = this._settings.get_string(SETTINGS_KEY);
-      let enabled = this._settings.get_boolean(Fields.ENABLECUSTOMTHEME);
+      let stylesheet = gsettings.get_string(Fields.CUSTOMTHEME);
+      let enabled = gsettings.get_boolean(Fields.ENABLECUSTOMTHEME);
 
-      let newFileContent = "";
-      let notFirstStart = false;
-      let needRestart = false;
-      if (this._prevCssStylesheet) notFirstStart = true;
+      let themeContext = St.ThemeContext.get_for_stage(global.stage);
+      let theme = themeContext.get_theme();
+      if (this._prevCssStylesheet)
+        theme.unload_stylesheet(Gio.File.new_for_path(this._prevCssStylesheet));
       if (stylesheet && enabled) {
         global.log(_("loading user theme for IBus:") + stylesheet);
-        let file = Gio.File.new_for_path(stylesheet);
-        let [success, contents] = file.load_contents(null);
-        global.log(success);
-        newFileContent =
-          "/* " +
-          _("Copied from Source File: ") +
-          stylesheet +
-          " */\n\n" +
-          contents;
+        theme.load_stylesheet(Gio.File.new_for_path(stylesheet));
         this._prevCssStylesheet = stylesheet;
       } else {
         global.log(_("loading default theme for IBus"));
-        if (stylesheet)
-          this._settings.set_value(SETTINGS_KEY, new GLib.Variant("s", ""));
-        this._prevCssStylesheet = "Unsetted";
+        this._prevCssStylesheet = "";
       }
-      let file = Gio.File.new_for_path(
-        GLib.build_filenamev([
-          global.userdatadir,
-          "extensions",
-          uuid,
-          "stylesheet.css",
-        ])
-      );
-      if (!file.query_exists(null))
-        file = Gio.File.new_for_path(
-          GLib.build_filenamev([
-            global.datadir,
-            "extensions",
-            uuid,
-            "stylesheet.css",
-          ])
-        );
-      if (
-        GLib.mkdir_with_parents(
-          file.get_parent().get_path(),
-          PERMISSIONS_MODE
-        ) === 0
-      ) {
-        let [success, contents] = file.load_contents(null);
-        if (success) {
-          if (contents != newFileContent && stylesheet != file.get_path()) {
-            file.replace_contents(
-              newFileContent,
-              null,
-              false,
-              Gio.FileCreateFlags.REPLACE_DESTINATION,
-              null
-            );
-            needRestart = true;
-          }
-        } else {
-          file.replace_contents(
-            newFileContent,
-            null,
-            false,
-            Gio.FileCreateFlags.REPLACE_DESTINATION,
-            null
-          );
-        }
-      }
-      if (notFirstStart || needRestart) this.restart();
-    }
-
-    restart() {
-      Meta.restart(_("Restarting..."));
     }
   }
 );

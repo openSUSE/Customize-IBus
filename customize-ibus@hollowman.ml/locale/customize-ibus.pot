@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 14\n"
+"Project-Id-Version: Customize Ibus 16\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-19 19:20+0800\n"
+"POT-Creation-Date: 2021-04-20 13:54+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,24 +17,16 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:213
+#: extension.js:211
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:314
+#: extension.js:311
 msgid "loading user theme for IBus:"
 msgstr ""
 
-#: extension.js:320
-msgid "Copied from Source File: "
-msgstr ""
-
-#: extension.js:326
+#: extension.js:315
 msgid "loading default theme for IBus"
-msgstr ""
-
-#: extension.js:380
-msgid "Restarting..."
 msgstr ""
 
 #: prefs.js:60
@@ -81,14 +73,14 @@ msgstr ""
 msgid "Select an Image"
 msgstr ""
 
-#: prefs.js:91 prefs.js:116 prefs.js:131 prefs.js:137
+#: prefs.js:92 prefs.js:117 prefs.js:132 prefs.js:138
 msgid "(None)"
 msgstr ""
 
-#: prefs.js:106
+#: prefs.js:107
 msgid "Select an IBus Stylesheet"
 msgstr ""
 
-#: prefs.js:151
+#: prefs.js:152
 msgid "Customize IBus"
 msgstr ""
