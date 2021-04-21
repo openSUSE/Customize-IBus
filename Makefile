@@ -1,4 +1,4 @@
-# by tuberry and based on dashtodock's makefile
+# by hollowman and tuberry, based on dashtodock's makefile
 # to increase version number automatically when manually installing
 
 EXTNUM = 4112
@@ -35,6 +35,7 @@ endif
 LANGUAGE = $(shell echo $(LANG) | sed -e 's/\..*//')
 MSGPOT = locale/$(NAME).pot
 MSGDIR = locale/$(LANGUAGE)/LC_MESSAGES
+INSTDIR = usr/share/gnome-shell/extensions
 MSGSRC = $(MSGDIR)/$(NAME).po
 MSGAIM = $(MSGDIR)/$(NAME).mo
 
@@ -43,9 +44,13 @@ all: _build
 clean:
 	-rm -fR _build
 	-rm -fR *.zip
+	-rm -fR *.deb
+	-rm -fR *.rpm
+	-rm -fR *.pkg.tar.xz
 	-rm -fR $(SCMCPL)
 	-rm -fR $(MSGPOS:.po=.mo)
 	-rm -fR $(MSGPOS:.po=.po~)
+	-rm -fR deb/usr
 
 $(SCMCPL): $(SCMXML)
 	glib-compile-schemas ./$(UUID)/schemas/
@@ -91,3 +96,17 @@ pofile: $(UUID)/$(MSGSRC)
 mergepo: potfile pofile
 	cd $(UUID); \
 		msgmerge -U $(MSGSRC) $(MSGPOT)
+
+deb: _build
+	mkdir -p deb/$(INSTDIR)
+	mv _build deb/$(INSTDIR)/$(UUID)
+	dpkg -b deb gnome-shell-extension-$(NAME)_$(VERSION)_all.deb
+
+rpm:
+	if [ ! -d "~/rpmbuild" ]; then rpmdev-setuptree; fi
+	rm -fR ~/rpmbuild/RPMS/noarch/gnome-shell-extension-customize-ibus-*.noarch.rpm
+	rpmbuild --undefine=_disable_source_fetch -ba gnome-shell-extension-customize-ibus.spec
+	mv ~/rpmbuild/RPMS/noarch/gnome-shell-extension-customize-ibus-*.noarch.rpm .
+
+arch:
+	makepkg

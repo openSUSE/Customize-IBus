@@ -34,22 +34,6 @@ git clone https://github.com/HollowMan6/Customize-IBus.git
 cd Customize-IBus && make install
 ```
 
-或者[打包为 RPM](https://rpm-packaging-guide.github.io/)安装：
-
-若为第一次打包，则执行
-
-```bash
-rpmdev-setuptree
-```
-
-随后，执行
-
-```bash
-wget https://github.com/HollowMan6/Customize-IBus/raw/main/gnome-shell-extension-customize-ibus.spec
-rpmbuild --undefine=_disable_source_fetch -ba gnome-shell-extension-customize-ibus.spec
-sudo dnf localinstall ~/rpmbuild/RPMS/noarch/gnome-shell-extension-customize-ibus-*.noarch.rpm
-```
-
 ## 功能
 
 ![image](img/preference.png)
@@ -132,22 +116,6 @@ Or manually:
 ```bash
 git clone https://github.com/HollowMan6/Customize-IBus.git
 cd Customize-IBus && make install
-```
-
-Or [Pack as RPM](https://rpm-packaging-guide.github.io/) to install：
-
-If you are making RPM package for the first time, execute:
-
-```bash
-rpmdev-setuptree
-```
-
-then execute:
-
-```bash
-wget https://github.com/HollowMan6/Customize-IBus/raw/main/gnome-shell-extension-customize-ibus.spec
-rpmbuild --undefine=_disable_source_fetch -ba gnome-shell-extension-customize-ibus.spec
-sudo dnf localinstall ~/rpmbuild/RPMS/noarch/gnome-shell-extension-customize-ibus-*.noarch.rpm
 ```
 
 ## Features

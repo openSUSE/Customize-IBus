@@ -21,10 +21,11 @@ BuildRequires:	%{_bindir}/glib-compile-schemas
 BuildRequires:  make
 
 Requires:       gnome-shell >= %{shell_version}
+Requires:       gnome-tweaks
 
 %description
-Customize IBus for orientation, shell theme, background picture, font and ascii mode auto-switch.
-在 GNOME Shell 中更改 IBus 的候选框方向、shell 主题、背景图片、字体和输入法默认语言。
+Customize IBus for orientation, font, ascii mode auto-switch; theme and background picture follow GNOME Night Light Mode.
+在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
 %prep
 %%setup -q -n Customize-IBus-%{commit}
