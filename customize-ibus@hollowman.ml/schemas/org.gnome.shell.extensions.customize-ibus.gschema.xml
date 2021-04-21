@@ -13,9 +13,17 @@
         <default>false</default>
         <summary>use custom background</summary>
     </key>
+    <key type="b" name="use-custom-bg-dark">
+        <default>false</default>
+        <summary>use custom dark background</summary>
+    </key>
     <key type="b" name="enable-custom-theme">
         <default>false</default>
         <summary>enable custom theme</summary>
+    </key>
+    <key type="b" name="enable-custom-theme-dark">
+        <default>false</default>
+        <summary>enable custom theme dark</summary>
     </key>
     <key type="b" name="enable-auto-switch">
         <default>true</default>
@@ -29,6 +37,10 @@
     <key type="s" name="custom-theme">
         <default>""</default>
         <summary>custom theme</summary>
+    </key>
+    <key type="s" name="custom-theme-dark">
+        <default>""</default>
+        <summary>custom theme dark</summary>
     </key>
     <key type="u" name="unkown-ascii-state">
         <default>2</default>
@@ -50,6 +62,10 @@
     <key type="s" name="custom-bg">
         <default>""</default>
         <summary>custom background</summary>
+    </key>
+    <key type="s" name="custom-bg-dark">
+        <default>""</default>
+        <summary>custom dark background</summary>
     </key>
   </schema>
 </schemalist>

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 16\n"
+"Project-Id-Version: Customize Ibus 18\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-20 19:12+0800\n"
+"POT-Creation-Date: 2021-04-21 11:12+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,70 +17,95 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:211
+#: extension.js:310
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:311
-msgid "loading user theme for IBus:"
+#: extension.js:318
+msgid "remove custom background for IBus"
 msgstr ""
 
-#: extension.js:315
+#: extension.js:483
+msgid "loading light user theme for IBus:"
+msgstr ""
+
+#: extension.js:493
+msgid "loading dark user theme for IBus:"
+msgstr ""
+
+#: extension.js:498
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: prefs.js:57
-msgid "Custom IME theme"
+#: prefs.js:42
+msgid "Custom IME light theme"
 msgstr ""
 
-#: prefs.js:58
+#: prefs.js:45
+msgid "Custom IME dark theme"
+msgstr ""
+
+#: prefs.js:47
 msgid "Use custom font"
 msgstr ""
 
-#: prefs.js:59
-msgid "Use custom background"
+#: prefs.js:49
+msgid "Use custom light background"
 msgstr ""
 
-#: prefs.js:60
+#: prefs.js:52
+msgid "Use custom dark background"
+msgstr ""
+
+#: prefs.js:54
 msgid "Auto switch ASCII mode"
 msgstr ""
 
-#: prefs.js:61
+#: prefs.js:55
 msgid "Candidates orientation"
 msgstr ""
 
-#: prefs.js:64
+#: prefs.js:58
 msgid "Vertical"
 msgstr ""
 
-#: prefs.js:65
+#: prefs.js:59
 msgid "Horizontal"
 msgstr ""
 
-#: prefs.js:68
+#: prefs.js:62
 msgid "On"
 msgstr ""
 
-#: prefs.js:69
+#: prefs.js:63
 msgid "Off"
 msgstr ""
 
-#: prefs.js:70
+#: prefs.js:64
 msgid "Default"
 msgstr ""
 
-#: prefs.js:78
+#: prefs.js:73 prefs.js:81
 msgid "Select an Image"
 msgstr ""
 
-#: prefs.js:89 prefs.js:114 prefs.js:129 prefs.js:135
+#: prefs.js:78 prefs.js:86 prefs.js:97 prefs.js:105 prefs.js:111 prefs.js:117
+#: prefs.js:123 prefs.js:129
 msgid "(None)"
 msgstr ""
 
-#: prefs.js:104
+#: prefs.js:92 prefs.js:100
 msgid "Select an IBus Stylesheet"
 msgstr ""
 
-#: prefs.js:149
-msgid "Customize IBus"
+#: prefs.js:143
+msgid "Basic"
+msgstr ""
+
+#: prefs.js:151
+msgid "Background"
+msgstr ""
+
+#: prefs.js:155
+msgid "Theme"
 msgstr ""

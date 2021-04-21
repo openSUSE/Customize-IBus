@@ -1,6 +1,6 @@
 %global commit 472657a654ab9e6c0684ac61e3037865f092dbd8
-%global extension_version 16
-%global date 20210420
+%global extension_version 18
+%global date 20210421
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -45,6 +45,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 chmod -R 777 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Wed Apr 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-18.20210418git472657a
+- Add theme and background picture follow GNOME Night Light Mode. Refactor code.
+
 * Tue Apr 20 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-16.20210418git472657a
 - Modify theme load logic so that now we don't need to reload GNOME-Shell to change IBus themes.
 
