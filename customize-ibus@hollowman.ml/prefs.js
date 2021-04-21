@@ -11,29 +11,10 @@ const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 
 const gsettings = ExtensionUtils.getSettings();
+const Fields = Me.imports.fields.Fields;
 const ibusGsettings = new Gio.Settings({
   schema_id: "org.freedesktop.ibus.panel",
 });
-
-var Fields = {
-  ASCIIMODE: "ascii-mode",
-  CUSTOMFONT: "custom-font",
-  CUSTOMBG: "custom-bg",
-  UPDATESDIR: "updates-dir",
-  CHECKUPDATES: "check-updates",
-  INPUTONLIST: "input-on-list",
-  ENABLEUPDATES: "enable-updates",
-  INPUTOFFLIST: "input-off-list",
-  CUSTOMTHEME: "custom-theme",
-  ENABLECUSTOMTHEME: "enable-custom-theme",
-  INPUTLIST: "input-mode-list",
-  USECUSTOMFONT: "use-custom-font",
-  USECUSTOMBG: "use-custom-bg",
-  AUTOSWITCH: "enable-auto-switch",
-  ENABLEORIEN: "enable-orientation",
-  UNKNOWNSTATE: "unkown-ascii-state",
-  ORIENTATION: "candidate-orientation",
-};
 
 function buildPrefsWidget() {
   return new CustomizeIBus();
@@ -58,9 +39,19 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _bulidWidget() {
-      this._field_enable_custom_theme = this._checkMaker(_("Custom IME theme"));
+      this._field_enable_custom_theme = this._checkMaker(
+        _("Custom IME light theme")
+      );
+      this._field_enable_custom_theme_dark = this._checkMaker(
+        _("Custom IME dark theme")
+      );
       this._field_use_custom_font = this._checkMaker(_("Use custom font"));
-      this._field_use_custom_bg = this._checkMaker(_("Use custom background"));
+      this._field_use_custom_bg = this._checkMaker(
+        _("Use custom light background")
+      );
+      this._field_use_custom_bg_dark = this._checkMaker(
+        _("Use custom dark background")
+      );
       this._field_enable_ascii = this._checkMaker(_("Auto switch ASCII mode"));
       this._field_enable_orien = this._checkMaker(_("Candidates orientation"));
 
@@ -76,6 +67,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_custom_font = new Gtk.FontButton({
         font_name: gsettings.get_string(Fields.CUSTOMFONT),
       });
+
       const filter = new Gtk.FileFilter();
       filter.add_pixbuf_formats();
       this._fileChooser = new Gtk.FileChooserNative({
@@ -83,23 +75,17 @@ const CustomizeIBus = GObject.registerClass(
         filter,
         modal: true,
       });
-      this._fileChooser.connect("response", (dlg, response) => {
-        if (response !== Gtk.ResponseType.ACCEPT) return;
-        gsettings.set_string(Fields.CUSTOMBG, dlg.get_file().get_path());
-      });
-
       this._logoPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._logoPicker.connect("clicked", () => {
-        this._fileChooser.transient_for = this.get_toplevel();
-        this._fileChooser.show();
+      this._fileDarkChooser = new Gtk.FileChooserNative({
+        title: _("Select an Image"),
+        filter,
+        modal: true,
       });
-      gsettings.connect(
-        `changed::${Fields.CUSTOMBG}`,
-        this._updateLogoPicker.bind(this)
-      );
-      this._updateLogoPicker();
+      this._logoDarkPicker = new Gtk.Button({
+        label: _("(None)"),
+      });
 
       const cssFilter = new Gtk.FileFilter();
       cssFilter.add_pattern("*.css");
@@ -108,23 +94,17 @@ const CustomizeIBus = GObject.registerClass(
         filter: cssFilter,
         modal: true,
       });
-      this._cssFileChooser.connect("response", (dlg, response) => {
-        if (response !== Gtk.ResponseType.ACCEPT) return;
-        gsettings.set_string(Fields.CUSTOMTHEME, dlg.get_file().get_path());
-      });
-
       this._cssPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._cssPicker.connect("clicked", () => {
-        this._cssFileChooser.transient_for = this.get_toplevel();
-        this._cssFileChooser.show();
+      this._cssDarkFileChooser = new Gtk.FileChooserNative({
+        title: _("Select an IBus Stylesheet"),
+        filter: cssFilter,
+        modal: true,
       });
-      gsettings.connect(
-        `changed::${Fields.CUSTOMTHEME}`,
-        this._updateCssPicker.bind(this)
-      );
-      this._updateCssPicker();
+      this._cssDarkPicker = new Gtk.Button({
+        label: _("(None)"),
+      });
     }
 
     _updateLogoPicker() {
@@ -133,10 +113,22 @@ const CustomizeIBus = GObject.registerClass(
       else this._logoPicker.label = GLib.basename(filename);
     }
 
+    _updateLogoDarkPicker() {
+      const filename = gsettings.get_string(Fields.CUSTOMBGDARK);
+      if (!GLib.basename(filename)) this._logoDarkPicker.label = _("(None)");
+      else this._logoDarkPicker.label = GLib.basename(filename);
+    }
+
     _updateCssPicker() {
       const filename = gsettings.get_string(Fields.CUSTOMTHEME);
       if (!GLib.basename(filename)) this._cssPicker.label = _("(None)");
       else this._cssPicker.label = GLib.basename(filename);
+    }
+
+    _updateCssDarkPicker() {
+      const filename = gsettings.get_string(Fields.CUSTOMTHEMENIGHT);
+      if (!GLib.basename(filename)) this._cssDarkPicker.label = _("(None)");
+      else this._cssDarkPicker.label = GLib.basename(filename);
     }
 
     _bulidUI() {
@@ -146,12 +138,24 @@ const CustomizeIBus = GObject.registerClass(
       });
       this.add(this._box);
 
-      this._ibus = this._listFrameMaker(_("Customize IBus"));
-      this._ibus._add(this._field_enable_orien, this._field_orientation);
-      this._ibus._add(this._field_use_custom_font, this._field_custom_font);
-      this._ibus._add(this._field_enable_ascii, this._field_unkown_state);
-      this._ibus._add(this._field_use_custom_bg, this._logoPicker);
-      this._ibus._add(this._field_enable_custom_theme, this._cssPicker);
+      this._ibus_basic = this._listFrameMaker(_("Basic"));
+      this._ibus_basic._add(this._field_enable_orien, this._field_orientation);
+      this._ibus_basic._add(
+        this._field_use_custom_font,
+        this._field_custom_font
+      );
+      this._ibus_basic._add(this._field_enable_ascii, this._field_unkown_state);
+
+      this._ibus_bg = this._listFrameMaker(_("Background"));
+      this._ibus_bg._add(this._field_use_custom_bg, this._logoPicker);
+      this._ibus_bg._add(this._field_use_custom_bg_dark, this._logoDarkPicker);
+
+      this._ibus_theme = this._listFrameMaker(_("Theme"));
+      this._ibus_theme._add(this._field_enable_custom_theme, this._cssPicker);
+      this._ibus_theme._add(
+        this._field_enable_custom_theme_dark,
+        this._cssDarkPicker
+      );
     }
 
     _syncStatus() {
@@ -169,9 +173,58 @@ const CustomizeIBus = GObject.registerClass(
         this._logoPicker.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USECUSTOMBG, widget.active);
       });
+      this._field_use_custom_bg_dark.connect("notify::active", (widget) => {
+        this._logoDarkPicker.set_sensitive(widget.active);
+        ibusGsettings.set_boolean(Fields.USECUSTOMBGDARK, widget.active);
+      });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
         this._cssPicker.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.ENABLECUSTOMTHEME, widget.active);
+      });
+      this._field_enable_custom_theme_dark.connect(
+        "notify::active",
+        (widget) => {
+          this._cssDarkPicker.set_sensitive(widget.active);
+          ibusGsettings.set_boolean(
+            Fields.ENABLECUSTOMTHEMENIGHT,
+            widget.active
+          );
+        }
+      );
+      this._fileChooser.connect("response", (dlg, response) => {
+        if (response !== Gtk.ResponseType.ACCEPT) return;
+        gsettings.set_string(Fields.CUSTOMBG, dlg.get_file().get_path());
+      });
+      this._logoPicker.connect("clicked", () => {
+        this._fileChooser.transient_for = this.get_toplevel();
+        this._fileChooser.show();
+      });
+      this._fileDarkChooser.connect("response", (dlg, response) => {
+        if (response !== Gtk.ResponseType.ACCEPT) return;
+        gsettings.set_string(Fields.CUSTOMBGDARK, dlg.get_file().get_path());
+      });
+      this._logoDarkPicker.connect("clicked", () => {
+        this._fileDarkChooser.transient_for = this.get_toplevel();
+        this._fileDarkChooser.show();
+      });
+      this._cssFileChooser.connect("response", (dlg, response) => {
+        if (response !== Gtk.ResponseType.ACCEPT) return;
+        gsettings.set_string(Fields.CUSTOMTHEME, dlg.get_file().get_path());
+      });
+      this._cssPicker.connect("clicked", () => {
+        this._cssFileChooser.transient_for = this.get_toplevel();
+        this._cssFileChooser.show();
+      });
+      this._cssDarkFileChooser.connect("response", (dlg, response) => {
+        if (response !== Gtk.ResponseType.ACCEPT) return;
+        gsettings.set_string(
+          Fields.CUSTOMTHEMENIGHT,
+          dlg.get_file().get_path()
+        );
+      });
+      this._cssDarkPicker.connect("clicked", () => {
+        this._cssDarkFileChooser.transient_for = this.get_toplevel();
+        this._cssDarkFileChooser.show();
       });
       this._field_custom_font.connect("font-set", (widget) => {
         ibusGsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
@@ -182,7 +235,11 @@ const CustomizeIBus = GObject.registerClass(
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._logoPicker.set_sensitive(this._field_use_custom_bg.active);
+      this._logoDarkPicker.set_sensitive(this._field_use_custom_bg_dark.active);
       this._cssPicker.set_sensitive(this._field_enable_custom_theme.active);
+      this._cssDarkPicker.set_sensitive(
+        this._field_enable_custom_theme_dark.active
+      );
     }
 
     _bindValues() {
@@ -195,6 +252,12 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.ENABLECUSTOMTHEME,
         this._field_enable_custom_theme,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.ENABLECUSTOMTHEMENIGHT,
+        this._field_enable_custom_theme_dark,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -223,6 +286,32 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.USECUSTOMBGDARK,
+        this._field_use_custom_bg_dark,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.connect(
+        `changed::${Fields.CUSTOMBG}`,
+        this._updateLogoPicker.bind(this)
+      );
+      this._updateLogoPicker();
+      gsettings.connect(
+        `changed::${Fields.CUSTOMBGDARK}`,
+        this._updateLogoDarkPicker.bind(this)
+      );
+      this._updateLogoDarkPicker();
+      gsettings.connect(
+        `changed::${Fields.CUSTOMTHEME}`,
+        this._updateCssPicker.bind(this)
+      );
+      this._updateCssPicker();
+      gsettings.connect(
+        `changed::${Fields.CUSTOMTHEMENIGHT}`,
+        this._updateCssDarkPicker.bind(this)
+      );
+      this._updateCssDarkPicker();
+      gsettings.bind(
         Fields.USECUSTOMFONT,
         this._field_use_custom_font,
         "active",
@@ -232,6 +321,7 @@ const CustomizeIBus = GObject.registerClass(
 
     _listFrameMaker(lbl, margin_top) {
       let frame = new Gtk.Frame({
+        margin_top: 10,
         label_yalign: 1,
       });
       frame.set_label_widget(
@@ -293,8 +383,12 @@ const CustomizeIBus = GObject.registerClass(
     on_destroy() {
       if (this._fileChooser) this._fileChooser.destroy();
       this._fileChooser = null;
+      if (this._fileDarkChooser) this._fileDarkChooser.destroy();
+      this._fileDarkChooser = null;
       if (this._cssFileChooser) this._cssFileChooser.destroy();
       this._cssFileChooser = null;
+      if (this._cssDarkFileChooser) this._cssDarkFileChooser.destroy();
+      this._cssDarkFileChooser = null;
     }
   }
 );

@@ -19,8 +19,6 @@ const {
   GObject,
 } = imports.gi;
 
-const ByteArray = imports.byteArray;
-
 const Keyboard = imports.ui.status.keyboard;
 const InputSourceManager = Keyboard.getInputSourceManager();
 const IBusManager = imports.misc.ibusManager.getIBusManager();
@@ -31,11 +29,23 @@ const ExtensionUtils = imports.misc.extensionUtils;
 const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
-const Fields = Me.imports.prefs.Fields;
+const Fields = Me.imports.fields.Fields;
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INPUTMODE = "InputMode";
-const uuid = "customize-ibus@hollowman.ml";
+
+const System = {
+  LIGHT: "night-light-enabled",
+  PROPERTY: "g-properties-changed",
+  BUS_NAME: "org.gnome.SettingsDaemon.Color",
+  OBJECT_PATH: "/org/gnome/SettingsDaemon/Color",
+};
+const { loadInterfaceXML } = imports.misc.fileUtils;
+const ColorInterface = loadInterfaceXML(System.BUS_NAME);
+const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
+const ngsettings = new Gio.Settings({
+  schema: "org.gnome.settings-daemon.plugins.color",
+});
 
 const IBusAutoSwitch = GObject.registerClass(
   {
@@ -199,33 +209,123 @@ const IBusBGSetting = GObject.registerClass(
         "",
         GObject.ParamFlags.WRITABLE
       ),
+      backgroundDark: GObject.param_spec_string(
+        "bgdark",
+        "bgdark",
+        "backgroundDark",
+        "",
+        GObject.ParamFlags.WRITABLE
+      ),
+      night: GObject.ParamSpec.boolean(
+        "night",
+        "night",
+        "night",
+        GObject.ParamFlags.READWRITE,
+        false
+      ),
     },
   },
   class IBusBGSetting extends GObject.Object {
     _init() {
       super._init();
+      ngsettings.bind(System.LIGHT, this, "night", Gio.SettingsBindFlags.GET);
       gsettings.bind(Fields.CUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
+      gsettings.bind(
+        Fields.CUSTOMBGDARK,
+        this,
+        "bgdark",
+        Gio.SettingsBindFlags.GET
+      );
+      this._candidateBox = CandidatePopup.bin.get_children();
+      if (this._candidateBox) this._candidateBox = this._candidateBox[0];
+      this._buildWidgets();
+    }
+
+    _buildWidgets() {
+      this._proxy = new ColorProxy(
+        Gio.DBus.session,
+        System.BUS_NAME,
+        System.OBJECT_PATH,
+        (proxy, error) => {
+          if (!error) {
+            this._onProxyChanged();
+            this._proxy.connect(
+              System.PROPERTY,
+              this._onProxyChanged.bind(this)
+            );
+          }
+        }
+      );
+    }
+
+    _onProxyChanged() {
+      this._light = this._proxy.NightLightActive;
+      this._changeBG();
+    }
+
+    set night(night) {
+      this._night = night;
+      this._changeBG();
     }
 
     set bg(bg) {
-      global.log(_("loading background for IBus:") + bg);
-      let candidateBox = CandidatePopup.bin.get_children();
-      if (candidateBox) {
-        candidateBox[0].set_style(
-          'background: url("%s"); background-repeat:no-repeat; background-size:cover;'.format(
-            bg
-          )
-        );
-        candidateBox[0].add_style_class_name("candidate-box");
+      this._background = bg;
+      this._changeBG();
+    }
+
+    set bgdark(bgdark) {
+      this._backgroundDark = bgdark;
+      this._changeBG();
+    }
+
+    // Load background
+    _changeBG(toEnable = true) {
+      this._atNight = this._night && this._light;
+      let enabled = gsettings.get_boolean(Fields.USECUSTOMBG);
+      let enabledNight = gsettings.get_boolean(Fields.USECUSTOMBGDARK);
+
+      if (
+        this._background &&
+        enabled &&
+        toEnable &&
+        (!this._atNight || !enabledNight)
+      ) {
+        if (Gio.File.new_for_path(this._background).query_exists(null))
+          this._bgPic = this._background;
+        else this._bgPic = "";
+      } else if (
+        this._backgroundDark &&
+        enabledNight &&
+        toEnable &&
+        (this._atNight || !enabled)
+      ) {
+        if (Gio.File.new_for_path(this._backgroundDark).query_exists(null))
+          this._bgPic = this._backgroundDark;
+        else this._bgPic = "";
+      } else {
+        this._bgPic = "";
+      }
+      if (this._candidateBox) {
+        if (this._bgPic) {
+          global.log(_("loading background for IBus:") + this._bgPic);
+          this._candidateBox.set_style(
+            'background: url("%s"); background-repeat:no-repeat; background-size:cover;'.format(
+              this._bgPic
+            )
+          );
+          this._candidateBox.add_style_class_name("candidate-box");
+        } else {
+          global.log(_("remove custom background for IBus"));
+          this._candidateBox.set_style("");
+          this._candidateBox.remove_style_class_name("candidate-box");
+        }
       }
     }
 
     destroy() {
-      let candidateBox = CandidatePopup.bin.get_children();
-      if (candidateBox) {
-        candidateBox[0].set_style("");
-        candidateBox[0].remove_style_class_name("candidate-box");
-      }
+      this._changeBG(false);
+      if (this._candidateBox) delete this._candidateBox;
+      delete this._proxy;
     }
   }
 );
@@ -273,190 +373,131 @@ const IBusOrientation = GObject.registerClass(
 
 const IBusThemeManager = GObject.registerClass(
   {
-    Properties: {},
+    Properties: {
+      theme: GObject.param_spec_string(
+        "theme",
+        "theme",
+        "theme",
+        "",
+        GObject.ParamFlags.WRITABLE
+      ),
+      themeDark: GObject.param_spec_string(
+        "themedark",
+        "themedark",
+        "themeDark",
+        "",
+        GObject.ParamFlags.WRITABLE
+      ),
+      night: GObject.ParamSpec.boolean(
+        "night",
+        "night",
+        "night",
+        GObject.ParamFlags.READWRITE,
+        false
+      ),
+    },
   },
   class IBusThemeManager extends GObject.Object {
     _init() {
       super._init();
       this._prevCssStylesheet = null;
-      this.enable();
-    }
-
-    enable() {
-      this._changedId = gsettings.connect(
-        `changed::${Fields.CUSTOMTHEME}`,
-        this._changeTheme.bind(this)
+      this._atNight = false;
+      ngsettings.bind(System.LIGHT, this, "night", Gio.SettingsBindFlags.GET);
+      gsettings.bind(
+        Fields.CUSTOMTHEME,
+        this,
+        "theme",
+        Gio.SettingsBindFlags.GET
       );
+      gsettings.bind(
+        Fields.CUSTOMTHEMENIGHT,
+        this,
+        "themedark",
+        Gio.SettingsBindFlags.GET
+      );
+      this._buildWidgets();
+    }
+
+    _buildWidgets() {
+      this._proxy = new ColorProxy(
+        Gio.DBus.session,
+        System.BUS_NAME,
+        System.OBJECT_PATH,
+        (proxy, error) => {
+          if (!error) {
+            this._onProxyChanged();
+            this._proxy.connect(
+              System.PROPERTY,
+              this._onProxyChanged.bind(this)
+            );
+          }
+        }
+      );
+    }
+
+    _onProxyChanged() {
+      this._light = this._proxy.NightLightActive;
       this._changeTheme();
     }
 
-    disable() {
-      if (this._changedId) {
-        gsettings.disconnect(this._changedId);
-        this._changedId = 0;
-      }
+    set night(night) {
+      this._night = night;
       this._changeTheme();
+    }
+
+    set theme(theme) {
+      this._stylesheet = theme;
+      this._changeTheme();
+    }
+
+    set themedark(themedark) {
+      this._stylesheetNight = themedark;
+      this._changeTheme();
+    }
+
+    destroy() {
+      this._changeTheme(false);
+      delete this._proxy;
+    }
+
+    _changeThemeDark(toEnable = true) {
+      this._changeTheme(toEnable);
     }
 
     // Load stylesheet
-    _changeTheme() {
-      let stylesheet = gsettings.get_string(Fields.CUSTOMTHEME);
+    _changeTheme(toEnable = true) {
+      this._atNight = this._night && this._light;
       let enabled = gsettings.get_boolean(Fields.ENABLECUSTOMTHEME);
+      let enabledNight = gsettings.get_boolean(Fields.ENABLECUSTOMTHEMENIGHT);
 
       let themeContext = St.ThemeContext.get_for_stage(global.stage);
       let theme = themeContext.get_theme();
       if (this._prevCssStylesheet)
         theme.unload_stylesheet(Gio.File.new_for_path(this._prevCssStylesheet));
-      if (stylesheet && enabled) {
-        global.log(_("loading user theme for IBus:") + stylesheet);
-        theme.load_stylesheet(Gio.File.new_for_path(stylesheet));
-        this._prevCssStylesheet = stylesheet;
+      if (
+        this._stylesheet &&
+        enabled &&
+        toEnable &&
+        (!this._atNight || !enabledNight)
+      ) {
+        global.log(_("loading light user theme for IBus:") + this._stylesheet);
+        theme.load_stylesheet(Gio.File.new_for_path(this._stylesheet));
+        this._prevCssStylesheet = this._stylesheet;
+      } else if (
+        this._stylesheetNight &&
+        enabledNight &&
+        toEnable &&
+        (this._atNight || !enabled)
+      ) {
+        global.log(
+          _("loading dark user theme for IBus:") + this._stylesheetNight
+        );
+        theme.load_stylesheet(Gio.File.new_for_path(this._stylesheetNight));
+        this._prevCssStylesheet = this._stylesheetNight;
       } else {
         global.log(_("loading default theme for IBus"));
         this._prevCssStylesheet = "";
       }
-    }
-  }
-);
-
-const UpdatesIndicator = GObject.registerClass(
-  {
-    Properties: {
-      updatescmd: GObject.param_spec_string(
-        "updatescmd",
-        "updatescmd",
-        "updates cmd",
-        "checkupdates | wc -l",
-        GObject.ParamFlags.READWRITE
-      ),
-      updatesdir: GObject.param_spec_string(
-        "updatesdir",
-        "updatesdir",
-        "updates dir",
-        "/var/lib/pacman/local",
-        GObject.ParamFlags.READWRITE
-      ),
-    },
-  },
-  class UpdatesIndicator extends GObject.Object {
-    _init() {
-      super._init();
-      this._bindSettings();
-      this._addIndicator();
-      this._checkUpdates();
-      this._checkUpdatesId = GLib.timeout_add_seconds(
-        GLib.PRIORITY_DEFAULT,
-        60 * 60,
-        this._checkUpdates.bind(this)
-      );
-    }
-
-    _bindSettings() {
-      gsettings.bind(
-        Fields.UPDATESDIR,
-        this,
-        "updatesdir",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.CHECKUPDATES,
-        this,
-        "updatescmd",
-        Gio.SettingsBindFlags.GET
-      );
-    }
-
-    _execute(cmd) {
-      return new Promise((resolve, reject) => {
-        try {
-          let command = ["/bin/bash", "-c", this.updatescmd];
-          let proc = new Gio.Subprocess({
-            argv: command,
-            flags:
-              Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
-          });
-          proc.init(null);
-          proc.communicate_utf8_async(null, null, (proc, res) => {
-            let [, stdout, stderr] = proc.communicate_utf8_finish(res);
-            proc.get_exit_status()
-              ? reject(stderr.trim())
-              : resolve(stdout.trim());
-          });
-        } catch (e) {
-          reject(e.message);
-        }
-      });
-    }
-
-    _checkUpdates() {
-      this._execute(gsettings.get_string(Fields.CHECKUPDATES))
-        .then((scc) => {
-          this._showUpdates(scc);
-        })
-        .catch((err) => {
-          Main.notifyError(Me.metadata.name, err);
-        });
-    }
-
-    _showUpdates(count) {
-      this._checkUpdated();
-      if (count == "0") {
-        this._button.hide();
-      } else {
-        let dir = Gio.file_new_for_path(this.updatesdir);
-        this._fileMonitor = dir.monitor_directory(
-          Gio.FileMonitorFlags.NONE,
-          null
-        );
-        this._fileChangedId = this._fileMonitor.connect("changed", () => {
-          GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 10, () => {
-            this._checkUpdates();
-            return GLib.SOURCE_REMOVE;
-          });
-        });
-        this._button.label.set_text(count);
-        this._button.show();
-      }
-    }
-
-    _addIndicator() {
-      if (Main.panel.statusArea[Me.metadata.uuid]) return;
-      this._button = new PanelMenu.Button(0, "Updates Indicator", true);
-      let box = new St.BoxLayout({
-        vertical: false,
-        style_class: "panel-status-menu-box",
-      });
-      let icon = new St.Icon({
-        y_expand: false,
-        style_class: "system-status-icon",
-        icon_name: "software-update-available-symbolic",
-      });
-      this._button.label = new St.Label({
-        text: "0",
-        y_expand: false,
-        y_align: Clutter.ActorAlign.CENTER,
-      });
-      box.add_child(icon);
-      box.add_child(this._button.label);
-      this._button.add_actor(box);
-      Main.panel.addToStatusArea(Me.metadata.name, this._button, 5, "center");
-      this._button.hide();
-    }
-
-    _checkUpdated() {
-      if (!this._fileMonitor) return;
-      if (this._fileChangedId)
-        this._fileMonitor.disconnect(this._fileChangedId),
-          (this._fileChangedId = 0);
-      delete this._fileMonitor;
-    }
-
-    destroy() {
-      if (this._checkUpdatesId)
-        GLib.source_remove(this._checkUpdatesId), (this._checkUpdatesId = 0);
-      this._checkUpdated();
-      this._button.destroy();
-      delete this._button;
     }
   }
 );
@@ -475,6 +516,13 @@ const Extensions = GObject.registerClass(
         "bg",
         "bg",
         "bg",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      bgdark: GObject.param_spec_boolean(
+        "bgdark",
+        "bgdark",
+        "bgdark",
         false,
         GObject.ParamFlags.WRITABLE
       ),
@@ -499,10 +547,10 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
-      update: GObject.param_spec_boolean(
-        "update",
-        "update",
-        "update",
+      themenight: GObject.param_spec_boolean(
+        "themenight",
+        "themenight",
+        "themenight",
         false,
         GObject.ParamFlags.WRITABLE
       ),
@@ -529,6 +577,12 @@ const Extensions = GObject.registerClass(
       );
       gsettings.bind(Fields.USECUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
       gsettings.bind(
+        Fields.USECUSTOMBGDARK,
+        this,
+        "bgdark",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
         Fields.ENABLEORIEN,
         this,
         "orien",
@@ -541,9 +595,9 @@ const Extensions = GObject.registerClass(
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
-        Fields.ENABLEUPDATES,
+        Fields.ENABLECUSTOMTHEMENIGHT,
         this,
-        "update",
+        "themenight",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -571,13 +625,34 @@ const Extensions = GObject.registerClass(
     }
 
     set bg(bg) {
+      this._bgLight = bg;
       if (bg) {
-        if (this._bg) return;
-        this._bg = new IBusBGSetting();
+        if (this._bg) this._bg._changeBG();
+        else this._bg = new IBusBGSetting();
       } else {
         if (!this._bg) return;
-        this._bg.destroy();
-        delete this._bg;
+        if (!this._bgDark && !this._bgLight) {
+          this._bg.destroy();
+          delete this._bg;
+        } else {
+          this._bg._changeBG();
+        }
+      }
+    }
+
+    set bgdark(bg) {
+      this._bgDark = bg;
+      if (bg) {
+        if (this._bg) this._bg._changeBG();
+        else this._bg = new IBusBGSetting();
+      } else {
+        if (!this._bg) return;
+        if (!this._bgDark && !this._bgLight) {
+          this._bg.destroy();
+          delete this._bg;
+        } else {
+          this._bg._changeBG();
+        }
       }
     }
 
@@ -593,34 +668,45 @@ const Extensions = GObject.registerClass(
     }
 
     set theme(theme) {
+      this._themeLight = theme;
       if (theme) {
-        if (this._theme) return;
-        this._theme = new IBusThemeManager();
+        if (this._theme) this._theme._changeTheme();
+        else this._theme = new IBusThemeManager();
       } else {
         if (!this._theme) return;
-        this._theme.disable();
-        delete this._theme;
+        if (!this._themeDark && !this._themeLight) {
+          this._theme.destroy();
+          delete this._theme;
+        } else {
+          this._theme._changeTheme();
+        }
       }
     }
 
-    set update(update) {
-      if (update) {
-        if (this._update) return;
-        this._update = new UpdatesIndicator();
+    set themenight(theme) {
+      this._themeDark = theme;
+      if (theme) {
+        if (this._theme) this._theme._changeTheme();
+        else this._theme = new IBusThemeManager();
       } else {
-        if (!this._update) return;
-        this._update.destroy();
-        delete this._update;
+        if (!this._theme) return;
+        if (!this._themeDark && !this._themeLight) {
+          this._theme.destroy();
+          delete this._theme;
+        } else {
+          this._theme._changeTheme();
+        }
       }
     }
 
     destroy() {
       this.bg = false;
+      this.bgdark = false;
       this.font = false;
       this.input = false;
       this.orien = false;
       this.theme = false;
-      this.update = false;
+      this.themenight = false;
     }
   }
 );
