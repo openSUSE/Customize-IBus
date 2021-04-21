@@ -1,5 +1,5 @@
-# Maintainer: Hollow Man <hollowman@hollowman.ml>
-# Contributor: Hollow Man <hollowman@hollowman.ml>
+# Maintainer: Hollow Man <hollowman at hollowman dot ml>
+# Contributor: Hollow Man <hollowman at hollowman dot ml>
 
 pkgname=gnome-shell-extension-customize-ibus
 _pkgname=Customize-IBus

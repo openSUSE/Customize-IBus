@@ -111,4 +111,5 @@ rpm:
 	mv ~/rpmbuild/RPMS/noarch/gnome-shell-extension-customize-ibus-*.noarch.rpm .
 
 arch:
+	makepkg --printsrcinfo > .SRCINFO
 	makepkg
