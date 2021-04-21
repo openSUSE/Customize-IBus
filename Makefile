@@ -46,7 +46,9 @@ clean:
 	-rm -fR *.zip
 	-rm -fR *.deb
 	-rm -fR *.rpm
-	-rm -fR *.pkg.tar.xz
+	-rm -fR *.pkg.tar.zst
+	-rm -fR *.tar.gz
+	-rm -fR pkg src
 	-rm -fR $(SCMCPL)
 	-rm -fR $(MSGPOS:.po=.mo)
 	-rm -fR $(MSGPOS:.po=.po~)
