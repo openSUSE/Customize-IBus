@@ -21,8 +21,6 @@
 
 ![demo](img/demo.png)
 
-AUR 仓库: https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/
-
 ## 安装
 
 从 GNOME 扩展商店中获取：
@@ -39,8 +37,10 @@ cd Customize-IBus && make install
 如果你使用Arch Linux, 也可使用AUR安装:
 
 ```bash
-yay -s gnome-shell-extension-customize-ibus
+yay -S gnome-shell-extension-customize-ibus
 ```
+
+[![AUR](https://aur.archlinux.org/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
 
 ## 功能
 
@@ -115,8 +115,6 @@ Customize IBus for orientation, font, ascii mode auto-switch; theme and backgrou
 
 ![demo](img/demo-en.png)
 
-AUR: https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/
-
 ## Installation
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego]
@@ -131,8 +129,10 @@ cd Customize-IBus && make install
 If you use Arch Linux, you can also use AUR to install:
 
 ```bash
-yay -s gnome-shell-extension-customize-ibus
+yay -S gnome-shell-extension-customize-ibus
 ```
+
+[![AUR](https://aur.archlinux.org/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
 
 ## Features
 
