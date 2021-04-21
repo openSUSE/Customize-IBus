@@ -19,5 +19,5 @@ package() {
   cd ${_pkgname}-${pkgver}
   make _build VERSION=${pkgver}
   mkdir -p $_install_dir
-  mv _build ${_install_dir}/${uuid}
+  mv _build ${_install_dir}/${_uuid}
 }
