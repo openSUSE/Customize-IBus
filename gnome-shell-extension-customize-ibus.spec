@@ -1,4 +1,4 @@
-%global commit 38e5a78b954a1d14103b84ba850244b6446423ca
+%global commit 3d2ad17554d97a0e39147728368fe3cceddc5f86
 %global extension_version 20
 %global date 20210423
 %global shell_version 40.0
@@ -43,8 +43,8 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Fri Apr 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-20.20210423git38e5a78
-- Add Help page.
+* Fri Apr 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-20.20210423git3d2ad17
+- Change UI; Add Help page.
 
 * Wed Apr 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-18.20210421git38e5a78
 - Add theme and background picture follow GNOME Night Light Mode. Refactor code.

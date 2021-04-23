@@ -98,7 +98,7 @@ background-size: cover;
 - [x] V16: 修改主题加载逻辑，免去每次更换主题都要重启 GNOME-Shell。
 - [x] V18: 增加浅色和深色背景与主题，跟随 GNOME 夜灯模式自动切换。
 - [x] V18: 重构代码。
-- [x] V20: 增加帮助页面。
+- [x] V20: 更改UI；增加帮助页面。
 
 ## 致谢
 
@@ -189,7 +189,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V16: Modify theme load logic so that now we don't need to reload GNOME-Shell to change IBus themes.
 - [x] V18: Add theme and background picture follow GNOME Night Light Mode.
 - [x] V18: Refactor code.
-- [x] V20: Add Help page.
+- [x] V20: Change UI；Add Help page.
 
 ## Acknowledgements
 
