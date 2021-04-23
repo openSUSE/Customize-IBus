@@ -131,14 +131,8 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _bulidUI() {
-      this._box = new Gtk.Box({
-        margin_start: 30,
-        margin_end: 30,
-        margin_top: 30,
-        margin_bottom: 30,
-        orientation: Gtk.Orientation.VERTICAL,
-      });
-      this.set_child(this._box);
+      this._notebook = new Gtk.Notebook();
+      this.set_child(this._notebook);
 
       this._ibus_basic = this._listFrameMaker(_("Basic"));
       this._ibus_basic._add(this._field_enable_orien, this._field_orientation);
@@ -148,16 +142,18 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._ibus_basic._add(this._field_enable_ascii, this._field_unkown_state);
 
-      this._ibus_bg = this._listFrameMaker(_("Background"));
-      this._ibus_bg._add(this._field_use_custom_bg, this._logoPicker);
-      this._ibus_bg._add(this._field_use_custom_bg_dark, this._logoDarkPicker);
-
       this._ibus_theme = this._listFrameMaker(_("Theme"));
       this._ibus_theme._add(this._field_enable_custom_theme, this._cssPicker);
       this._ibus_theme._add(
         this._field_enable_custom_theme_dark,
         this._cssDarkPicker
       );
+
+      this._ibus_bg = this._listFrameMaker(_("Background"));
+      this._ibus_bg._add(this._field_use_custom_bg, this._logoPicker);
+      this._ibus_bg._add(this._field_use_custom_bg_dark, this._logoDarkPicker);
+
+      this._helpPage();
     }
 
     _syncStatus() {
@@ -323,18 +319,20 @@ const CustomizeIBus = GObject.registerClass(
       this._updateCssDarkPicker();
     }
 
-    _listFrameMaker(lbl, margin_top) {
+    _listFrameMaker(lbl) {
+      let box = new Gtk.Box({
+        margin_start: 30,
+        margin_end: 30,
+        margin_top: 30,
+        margin_bottom: 30,
+        orientation: Gtk.Orientation.VERTICAL,
+      });
       let frame = new Gtk.Frame({
         margin_top: 30,
       });
-      frame.set_label_widget(
-        new Gtk.Label({
-          use_markup: true,
-          margin_top: margin_top ? margin_top : 0,
-          label: "<b><big>" + lbl + "</big></b>",
-        })
-      );
-      this._box.append(frame);
+
+      box.append(frame);
+      this._notebook.append_page(box, new Gtk.Label({ label: lbl }));
 
       frame.grid = new Gtk.Grid({
         margin_start: 10,
@@ -360,12 +358,187 @@ const CustomizeIBus = GObject.registerClass(
       return frame;
     }
 
-    _labelMaker(x) {
-      return new Gtk.Label({
-        label: x,
-        hexpand: true,
-        halign: Gtk.Align.START,
+    _helpPage() {
+      let box = new Gtk.Box({
+        margin_start: 30,
+        margin_end: 30,
+        margin_top: 30,
+        margin_bottom: 30,
+        orientation: Gtk.Orientation.VERTICAL,
       });
+      let frame = new Gtk.Frame({
+        margin_top: 30,
+      });
+
+      box.append(frame);
+      this._notebook.append_page(box, new Gtk.Label({ label: _("Help") }));
+
+      frame.grid = new Gtk.Grid({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        hexpand: true,
+        row_spacing: 12,
+        column_spacing: 18,
+        row_homogeneous: false,
+        column_homogeneous: false,
+      });
+
+      frame.grid._row = 0;
+      frame.set_child(frame.grid);
+
+      var version = _("unknown (self-build ?)");
+      if (Me.metadata.version !== undefined) {
+        version = Me.metadata.version.toString();
+      }
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          label: "<b>" + _("Customize IBus") + "</b>",
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({ label: _("Version: ") + version }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          wrap: true,
+          label:
+            "🎨 " +
+            _(
+              "Customize IBus for orientation, font, ascii mode auto-switch; theme and background picture follow GNOME Night Light Mode."
+            ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          label: _(
+            '<span size="small">Copyright © 2021 <a href="https://github.com/HollowMan6">Hollow Man</a> &lt;hollowman@hollowman.ml&gt;</span>'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          label: _(
+            '<span size="small">Source Code: <a href="https://github.com/HollowMan6/Customize-IBus">https://github.com/HollowMan6/Customize-IBus</a></span>'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          label: _(
+            '<span size="small"><a href="https://www.gnu.org/licenses/gpl">GNU General Public License, version 3 or later</a></span>'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({ use_markup: true, label: "<b>" + _("Theme") + "</b>" }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            'Support importing stylesheet generated by <a href="https://github.com/HollowMan6/IBus-Theme">IBus Theme Tool</a> or provided by <a href="https://github.com/HollowMan6/IBus-Theme-Hub">IBus Theme Hub</a>.'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            "When light theme and dark theme are turned on at the same time, the IBus theme will automatically follow GNOME Night Light mode, use light theme when off, and use dark theme when on. When only one of the light theme and dark theme is turned on, the IBus theme will always use the theme that is turned on."
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            '<span size="small"><b>Note:</b> If your IBus stylesheet has changed after application, please close and reopen the corresponding <b>custom IME theme</b> to make it effective.</span>'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          label: "<b>" + _("Background") + "</b>",
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _("Same changing logic as Theme"),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            '<span size="small"><b>Note:</b> Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn\'t mount it by default, please close and reopen the corresponding <b>Use custom background</b> to make it effective after manually mounting.</span>'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
     }
 
     _checkMaker(x) {

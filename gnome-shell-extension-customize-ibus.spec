@@ -1,6 +1,6 @@
 %global commit 38e5a78b954a1d14103b84ba850244b6446423ca
-%global extension_version 18
-%global date 20210421
+%global extension_version 20
+%global date 20210423
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -43,7 +43,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Wed Apr 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-18.20210418git38e5a78
+* Fri Apr 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-20.20210423git38e5a78
+- Add Help page.
+
+* Wed Apr 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-18.20210421git38e5a78
 - Add theme and background picture follow GNOME Night Light Mode. Refactor code.
 
 * Tue Apr 20 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-16.20210418git472657a

@@ -34,7 +34,7 @@ git clone https://github.com/HollowMan6/Customize-IBus.git
 cd Customize-IBus && make install
 ```
 
-如果你使用Arch Linux, 也可使用AUR安装:
+如果你使用 Arch Linux, 也可使用 AUR 安装:
 
 ```bash
 yay -S gnome-shell-extension-customize-ibus
@@ -43,8 +43,6 @@ yay -S gnome-shell-extension-customize-ibus
 [![AUR](https://aur.archlinux.org/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
 
 ## 功能
-
-![image](img/preference.png)
 
 ## 使用用户主题来更改 IBus 皮肤的实现
 
@@ -65,7 +63,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 ### _提示：_
 
 1. 推荐使用 X11。如果你在 Wayland 中更改 IBus 主题，你的当前所有工作都将会丢失，因为 Wayland 下只支持通过重新登陆来重启 GNOME-shell。
-2. 在 Fedora 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18)中通过了测试。
+2. 在 Fedora 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v19)中通过了测试。
 3. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 
 ## 更改 IBus 背景图片的实现
@@ -100,6 +98,7 @@ background-size: cover;
 - [x] V16: 修改主题加载逻辑，免去每次更换主题都要重启 GNOME-Shell。
 - [x] V18: 增加浅色和深色背景与主题，跟随 GNOME 夜灯模式自动切换。
 - [x] V18: 重构代码。
+- [x] V20: 增加帮助页面。
 
 ## 致谢
 
@@ -136,8 +135,6 @@ yay -S gnome-shell-extension-customize-ibus
 
 ## Features
 
-![image](img/preference-en.png)
-
 ## Realization of Customizing IBus with User Theme
 
 This function has been separated, generating IBus theme stylesheet has been moved to [IBus-Theme](https://github.com/HollowMan6/IBus-Theme).
@@ -157,7 +154,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 ### _NOTE:_
 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
-2. Tested on Fedora and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18).
+2. Tested on Fedora and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20).
 3. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 
 ## Realization of Modifying IBus Background Picture
@@ -178,7 +175,7 @@ When light background and dark background are turned on at the same time, the ex
 
 When only one of the light background and dark background is turned on, the extension will always use the background that is turned on.
 
-**Note:** If your IBus style sheet has changed after application, please close and reopen the corresponding `custom IME background` to make it effective.
+**Note:** Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn't mount it by default, please close and reopen the corresponding `Use custom background` to make it effective after manually mounting.
 
 ## To-do
 
@@ -192,6 +189,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V16: Modify theme load logic so that now we don't need to reload GNOME-Shell to change IBus themes.
 - [x] V18: Add theme and background picture follow GNOME Night Light Mode.
 - [x] V18: Refactor code.
+- [x] V20: Add Help page.
 
 ## Acknowledgements
 
