@@ -1,4 +1,4 @@
-# by tuberry and based on dashtodock's makefile
+# by hollowman and tuberry, based on dashtodock's makefile
 # to increase version number automatically when manually installing
 
 EXTNUM = 4112
@@ -35,6 +35,7 @@ endif
 LANGUAGE = $(shell echo $(LANG) | sed -e 's/\..*//')
 MSGPOT = locale/$(NAME).pot
 MSGDIR = locale/$(LANGUAGE)/LC_MESSAGES
+INSTDIR = usr/share/gnome-shell/extensions
 MSGSRC = $(MSGDIR)/$(NAME).po
 MSGAIM = $(MSGDIR)/$(NAME).mo
 
@@ -43,9 +44,15 @@ all: _build
 clean:
 	-rm -fR _build
 	-rm -fR *.zip
+	-rm -fR *.deb
+	-rm -fR *.rpm
+	-rm -fR *.pkg.tar.zst
+	-rm -fR *.tar.gz
+	-rm -fR pkg src
 	-rm -fR $(SCMCPL)
 	-rm -fR $(MSGPOS:.po=.mo)
 	-rm -fR $(MSGPOS:.po=.po~)
+	-rm -fR deb/usr
 
 $(SCMCPL): $(SCMXML)
 	glib-compile-schemas ./$(UUID)/schemas/

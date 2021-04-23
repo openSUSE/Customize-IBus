@@ -2,6 +2,8 @@
 // vim:fdm=syntax
 // by:hollowman6@github tuberry@github
 
+"use strict";
+
 var Fields = {
   ASCIIMODE: "ascii-mode",
   CUSTOMFONT: "custom-font",
