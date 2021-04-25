@@ -613,14 +613,6 @@ const CustomizeIBus = GObject.registerClass(
       );
     }
 
-    _labelMaker(x) {
-      return new Gtk.Label({
-        label: x,
-        hexpand: true,
-        halign: Gtk.Align.START,
-      });
-    }
-
     _checkMaker(x) {
       return new Gtk.CheckButton({
         label: x,
