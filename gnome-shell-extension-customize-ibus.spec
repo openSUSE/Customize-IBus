@@ -1,4 +1,4 @@
-%global commit 3d2ad17554d97a0e39147728368fe3cceddc5f86
+%global commit 51d8ce5f63cb0a5a116b43327ee39cc3f5d3df96
 %global extension_version 22
 %global date 20210425
 %global shell_version 40.0
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sun Apr 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210425git3d2ad17
+* Sun Apr 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210425git51d8ce5
 - Re-design UI.
 
 * Fri Apr 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-20.20210423git3d2ad17
