@@ -17,7 +17,7 @@
 
 (English version is down below)
 
-### 注意：如果后期无重大 BUG 的话，v19 将是支持 GNOME 3.38 的最后一个版本
+### 注意：如果后期无重大 BUG 的话，v21 将是支持 GNOME 3.38 的最后一个版本
 
 在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
@@ -57,7 +57,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 ### _提示：_
 
 1. 推荐使用 X11。如果你在 Wayland 中更改 IBus 主题，你的当前所有工作都将会丢失，因为 Wayland 下只支持通过重新登陆来重启 GNOME-shell。
-2. 在 Fedora 33 和 Ubuntu 20.04, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19)通过了测试。
+2. 在 Fedora 33、Ubuntu 20.04 和 Manjaro 21.0.2, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19,v21)通过了测试。
 3. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 
 ## 更改 IBus 背景图片的实现
@@ -92,6 +92,7 @@ background-size: cover;
 - [x] V17: 增加浅色和深色背景与主题，跟随 GNOME 夜灯模式自动切换。
 - [x] V17: 重构代码。
 - [x] V19: 更改 UI；增加帮助页面。
+- [x] V21: 重新设计 UI.
 
 ## 致谢
 
@@ -103,7 +104,7 @@ _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/ope
 
 # Customize IBus
 
-### Note: If no severe bug was found later, v19 will be the last version that support GNOME 3.38.
+### Note: If no severe bug was found later, v21 will be the last version that support GNOME 3.38.
 
 Customize IBus for orientation, font, ascii mode auto-switch; theme and background picture follow GNOME Night Light Mode.
 
@@ -141,7 +142,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 ### _NOTE:_
 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support relogin to restart the GNOME-shell).
-2. Tested on Fedora 33 and Ubuntu 20.04, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19).
+2. Tested on Fedora 33, Ubuntu 20.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21).
 3. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 
 ## Realization of Modifying IBus Background Picture
@@ -176,6 +177,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V17: Add theme and background picture follow GNOME Night Light Mode.
 - [x] V17: Refactor code.
 - [x] V19: Change UI；Add Help page.
+- [x] V21: Re-design UI.
 
 ## Acknowledgements
 

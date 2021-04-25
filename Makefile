@@ -98,3 +98,18 @@ pofile: $(UUID)/$(MSGSRC)
 mergepo: potfile pofile
 	cd $(UUID); \
 		msgmerge -U $(MSGSRC) $(MSGPOT)
+
+deb: _build
+	mkdir -p deb/$(INSTDIR)
+	mv _build deb/$(INSTDIR)/$(UUID)
+	dpkg -b deb gnome-shell-extension-$(NAME)_$(VERSION)_all.deb
+
+rpm:
+	if [ ! -d "~/rpmbuild" ]; then rpmdev-setuptree; fi
+	rm -fR ~/rpmbuild/RPMS/noarch/gnome-shell-extension-customize-ibus-*.noarch.rpm
+	rpmbuild --undefine=_disable_source_fetch -ba gnome-shell-extension-customize-ibus.spec
+	mv ~/rpmbuild/RPMS/noarch/gnome-shell-extension-customize-ibus-*.noarch.rpm .
+
+arch:
+	makepkg --printsrcinfo > .SRCINFO
+	makepkg
