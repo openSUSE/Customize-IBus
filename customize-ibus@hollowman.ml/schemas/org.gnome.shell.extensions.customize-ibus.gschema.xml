@@ -67,5 +67,15 @@
         <default>""</default>
         <summary>custom dark background</summary>
     </key>
+    <key type="u" name="custom-bg-mode">
+        <default>2</default>
+        <range min="0" max="2"/>
+        <summary>adjustment mode to background</summary>
+    </key>
+    <key type="u" name="custom-bg-dark-mode">
+        <default>2</default>
+        <range min="0" max="2"/>
+        <summary>adjustment mode to dark background</summary>
+    </key>
   </schema>
 </schemalist>

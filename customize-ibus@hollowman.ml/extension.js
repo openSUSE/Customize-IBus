@@ -33,6 +33,12 @@ const Fields = Me.imports.fields.Fields;
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INPUTMODE = "InputMode";
+const BGMODES = ["Centered", "Repeated", "Zoom"];
+const BGMODESACTIONS = {
+  Centered: "auto",
+  Repeated: "contain",
+  Zoom: "cover",
+};
 
 const System = {
   LIGHT: "night-light-enabled",
@@ -223,6 +229,24 @@ const IBusBGSetting = GObject.registerClass(
         GObject.ParamFlags.READWRITE,
         false
       ),
+      backgroundMode: GObject.param_spec_uint(
+        "bgmode",
+        "bgmode",
+        "backgroundMode",
+        0,
+        2,
+        2,
+        GObject.ParamFlags.WRITABLE
+      ),
+      backgroundDarkMode: GObject.param_spec_uint(
+        "bgdarkmode",
+        "bgdarkmode",
+        "backgroundDarkMode",
+        0,
+        2,
+        2,
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class IBusBGSetting extends GObject.Object {
@@ -234,6 +258,13 @@ const IBusBGSetting = GObject.registerClass(
         Fields.CUSTOMBGDARK,
         this,
         "bgdark",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(Fields.BGMODE, this, "bgmode", Gio.SettingsBindFlags.GET);
+      gsettings.bind(
+        Fields.BGDARKMODE,
+        this,
+        "bgdarkmode",
         Gio.SettingsBindFlags.GET
       );
       this._candidateBox = CandidatePopup.bin.get_children();
@@ -278,6 +309,16 @@ const IBusBGSetting = GObject.registerClass(
       this._changeBG();
     }
 
+    set bgmode(bgmode) {
+      this._backgroundMode = BGMODESACTIONS[BGMODES[bgmode]];
+      this._changeBG();
+    }
+
+    set bgdarkmode(bgdarkmode) {
+      this._backgroundDarkMode = BGMODESACTIONS[BGMODES[bgdarkmode]];
+      this._changeBG();
+    }
+
     // Load background
     _changeBG(toEnable = true) {
       this._atNight = this._night && this._light;
@@ -290,18 +331,20 @@ const IBusBGSetting = GObject.registerClass(
         toEnable &&
         (!this._atNight || !enabledNight)
       ) {
-        if (Gio.File.new_for_path(this._background).query_exists(null))
+        if (Gio.File.new_for_path(this._background).query_exists(null)) {
           this._bgPic = this._background;
-        else this._bgPic = "";
+          this._bgMode = this._backgroundMode;
+        } else this._bgPic = "";
       } else if (
         this._backgroundDark &&
         enabledNight &&
         toEnable &&
         (this._atNight || !enabled)
       ) {
-        if (Gio.File.new_for_path(this._backgroundDark).query_exists(null))
+        if (Gio.File.new_for_path(this._backgroundDark).query_exists(null)) {
           this._bgPic = this._backgroundDark;
-        else this._bgPic = "";
+          this._bgMode = this._backgroundDarkMode;
+        } else this._bgPic = "";
       } else {
         this._bgPic = "";
       }
@@ -309,8 +352,9 @@ const IBusBGSetting = GObject.registerClass(
         if (this._bgPic) {
           global.log(_("loading background for IBus:") + this._bgPic);
           this._candidateBox.set_style(
-            'background: url("%s"); background-repeat:no-repeat; background-size:cover;'.format(
-              this._bgPic
+            'background: url("%s"); background-repeat:repeat; background-size: %s;'.format(
+              this._bgPic,
+              this._bgMode
             )
           );
           this._candidateBox.add_style_class_name("candidate-box");

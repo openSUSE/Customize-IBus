@@ -1,6 +1,6 @@
 {
   "name": "customize-ibus",
-  "version": "22.0.0",
+  "version": "24.0.0",
   "description": "Customize IBus for orientation, shell theme, background picture, font and ascii mode auto-switch.",
   "dependencies": {
     "eslint": "^7.24.0",

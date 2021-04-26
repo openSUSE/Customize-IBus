@@ -63,6 +63,19 @@ const CustomizeIBus = GObject.registerClass(
         _("Off"),
         _("Default"),
       ]);
+
+      this._field_bg_mode = this._comboMaker([
+        _("Centered"),
+        _("Repeated"),
+        _("Zoom"),
+      ]);
+
+      this._field_bg_dark_mode = this._comboMaker([
+        _("Centered"),
+        _("Repeated"),
+        _("Zoom"),
+      ]);
+
       this._field_custom_font = new Gtk.FontButton({
         font: gsettings.get_string(Fields.CUSTOMFONT),
       });
@@ -152,8 +165,16 @@ const CustomizeIBus = GObject.registerClass(
       this._themeHelpPage(this._ibus_theme);
 
       this._ibus_bg = this._listFrameMaker(_("Background"));
-      this._ibus_bg._add(this._field_use_custom_bg, this._logoPicker);
-      this._ibus_bg._add(this._field_use_custom_bg_dark, this._logoDarkPicker);
+      this._ibus_bg._add(
+        this._field_use_custom_bg,
+        this._field_bg_mode,
+        this._logoPicker
+      );
+      this._ibus_bg._add(
+        this._field_use_custom_bg_dark,
+        this._field_bg_dark_mode,
+        this._logoDarkPicker
+      );
       this._bgHelpPage(this._ibus_bg);
 
       this._aboutPage();
@@ -172,10 +193,12 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._field_use_custom_bg.connect("notify::active", (widget) => {
         this._logoPicker.set_sensitive(widget.active);
+        this._field_bg_mode.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USECUSTOMBG, widget.active);
       });
       this._field_use_custom_bg_dark.connect("notify::active", (widget) => {
         this._logoDarkPicker.set_sensitive(widget.active);
+        this._field_bg_dark_mode.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USECUSTOMBGDARK, widget.active);
       });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
@@ -231,6 +254,10 @@ const CustomizeIBus = GObject.registerClass(
       this._field_unkown_state.set_sensitive(this._field_enable_ascii.active);
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
+      this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
+      this._field_bg_dark_mode.set_sensitive(
+        this._field_use_custom_bg_dark.active
+      );
       this._logoPicker.set_sensitive(this._field_use_custom_bg.active);
       this._logoDarkPicker.set_sensitive(this._field_use_custom_bg_dark.active);
       this._cssPicker.set_sensitive(this._field_enable_custom_theme.active);
@@ -300,6 +327,18 @@ const CustomizeIBus = GObject.registerClass(
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
+      gsettings.bind(
+        Fields.BGMODE,
+        this._field_bg_mode,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.BGDARKMODE,
+        this._field_bg_dark_mode,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
       gsettings.connect(
         `changed::${Fields.CUSTOMBG}`,
         this._updateLogoPicker.bind(this)
@@ -351,12 +390,18 @@ const CustomizeIBus = GObject.registerClass(
 
       frame.grid._row = 0;
       frame.set_child(frame.grid);
-      frame._add = (x, y) => {
+
+      frame._add = (x, y, z) => {
+        const boxrow = new Gtk.ListBoxRow({
+          activatable: true,
+        });
         const hbox = new Gtk.Box();
+        boxrow.set_child(hbox);
         hbox.set_spacing(4);
         hbox.append(x);
         if (y) hbox.append(y);
-        frame.grid.attach(hbox, 0, frame.grid._row++, 1, 1);
+        if (z) hbox.append(z);
+        frame.grid.attach(boxrow, 0, frame.grid._row++, 1, 1);
       };
       return frame;
     }

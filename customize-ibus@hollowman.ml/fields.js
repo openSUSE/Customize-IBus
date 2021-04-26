@@ -23,4 +23,6 @@ var Fields = {
   ENABLEORIEN: "enable-orientation",
   UNKNOWNSTATE: "unkown-ascii-state",
   ORIENTATION: "candidate-orientation",
+  BGMODE: "custom-bg-mode",
+  BGDARKMODE: "custom-bg-dark-mode",
 };
