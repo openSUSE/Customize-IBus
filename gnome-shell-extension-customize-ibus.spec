@@ -1,4 +1,4 @@
-%global commit 51d8ce5f63cb0a5a116b43327ee39cc3f5d3df96
+%global commit fdc2895703ddc37a74190cf62d7fcee781937e19
 %global extension_version 24
 %global date 20210426
 %global shell_version 40.0
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Mon Apr 26 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210426git51d8ce5
+* Mon Apr 26 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210426gitfdc2895
 - Add background picture displaying mode configure.
 
 * Sun Apr 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210425git51d8ce5
