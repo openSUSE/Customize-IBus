@@ -161,7 +161,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 
 ## Realization of Modifying IBus Background Picture
 
-During [fixing Unity8-Wood theme and add support for IBus Backgound](https://github.com/openSUSE/mentoring/issues/158#issuecomment-813837436), I found that if I add the following style for class `.candidate-popup-content`：
+During [fixing Unity8-Wood theme and add support for IBus Background](https://github.com/openSUSE/mentoring/issues/158#issuecomment-813837436), I found that if I add the following style for class `.candidate-popup-content`：
 
 ```css
 background: url("assets/bg.png");
@@ -182,7 +182,7 @@ When only one of the light background and dark background is turned on, the exte
 ## To-do
 
 - [x] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus.
-- [x] Read from user themes and apply only for ibus.
+- [x] Read from user themes and apply only for IBus.
 - [x] Merge functions related together.
 - [x] V4: Update from GTK3 to GTK4 to adapt for GNOME40.
 - [x] V8: Add functionality to modify IBus Background picture.
