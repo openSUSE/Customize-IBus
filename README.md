@@ -156,7 +156,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 ### _NOTE:_
 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support re-login to restart the GNOME-shell).
-2. Tested on Fedora and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24).
+2. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24).
 3. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 
 ## Realization of Modifying IBus Background Picture
