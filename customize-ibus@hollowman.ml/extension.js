@@ -34,6 +34,7 @@ const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INPUTMODE = "InputMode";
 const BGMODES = ["Centered", "Repeated", "Zoom"];
+const BGREPEATMODES = ["no-repeat", "repeat"];
 const BGMODESACTIONS = {
   Centered: "auto",
   Repeated: "contain",
@@ -247,6 +248,24 @@ const IBusBGSetting = GObject.registerClass(
         2,
         GObject.ParamFlags.WRITABLE
       ),
+      backgroundRepeatMode: GObject.param_spec_uint(
+        "bgrepeatmode",
+        "bgrepeatmode",
+        "backgroundRepeatMode",
+        0,
+        3,
+        3,
+        GObject.ParamFlags.WRITABLE
+      ),
+      backgroundDarkRepeatMode: GObject.param_spec_uint(
+        "bgdarkrepeatmode",
+        "bgdarkrepeatmode",
+        "backgroundDarkRepeatMode",
+        0,
+        3,
+        3,
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class IBusBGSetting extends GObject.Object {
@@ -265,6 +284,18 @@ const IBusBGSetting = GObject.registerClass(
         Fields.BGDARKMODE,
         this,
         "bgdarkmode",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.BGREPEATMODE,
+        this,
+        "bgrepeatmode",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.BGDARKREPEATMODE,
+        this,
+        "bgdarkrepeatmode",
         Gio.SettingsBindFlags.GET
       );
       this._candidateBox = CandidatePopup.bin.get_children();
@@ -319,6 +350,16 @@ const IBusBGSetting = GObject.registerClass(
       this._changeBG();
     }
 
+    set bgrepeatmode(bgrepeatmode) {
+      this._backgroundRepeatMode = BGREPEATMODES[bgrepeatmode];
+      this._changeBG();
+    }
+
+    set bgdarkrepeatmode(bgdarkrepeatmode) {
+      this._backgroundDarkRepeatMode = BGREPEATMODES[bgdarkrepeatmode];
+      this._changeBG();
+    }
+
     // Load background
     _changeBG(toEnable = true) {
       this._atNight = this._night && this._light;
@@ -334,6 +375,7 @@ const IBusBGSetting = GObject.registerClass(
         if (Gio.File.new_for_path(this._background).query_exists(null)) {
           this._bgPic = this._background;
           this._bgMode = this._backgroundMode;
+          this._bgRepeatMode = this._backgroundRepeatMode;
         } else this._bgPic = "";
       } else if (
         this._backgroundDark &&
@@ -344,6 +386,7 @@ const IBusBGSetting = GObject.registerClass(
         if (Gio.File.new_for_path(this._backgroundDark).query_exists(null)) {
           this._bgPic = this._backgroundDark;
           this._bgMode = this._backgroundDarkMode;
+          this._bgRepeatMode = this._backgroundDarkRepeatMode;
         } else this._bgPic = "";
       } else {
         this._bgPic = "";
@@ -352,8 +395,9 @@ const IBusBGSetting = GObject.registerClass(
         if (this._bgPic) {
           global.log(_("loading background for IBus:") + this._bgPic);
           this._candidateBox.set_style(
-            'background: url("%s"); background-repeat:repeat; background-size: %s;'.format(
+            'background: url("%s"); background-repeat: %s; background-size: %s;'.format(
               this._bgPic,
+              this._bgRepeatMode,
               this._bgMode
             )
           );

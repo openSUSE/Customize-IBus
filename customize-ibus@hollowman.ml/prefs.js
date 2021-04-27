@@ -77,6 +77,16 @@ const CustomizeIBus = GObject.registerClass(
         _("Zoom"),
       ]);
 
+      this._field_bg_repeat_mode = this._comboMaker([
+        _("No repeat"),
+        _("Repeat"),
+      ]);
+
+      this._field_bg_dark_repeat_mode = this._comboMaker([
+        _("No repeat"),
+        _("Repeat"),
+      ]);
+
       this._field_custom_font = new Gtk.FontButton({
         font_name: gsettings.get_string(Fields.CUSTOMFONT),
       });
@@ -169,11 +179,13 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus_bg._add(
         this._field_use_custom_bg,
         this._field_bg_mode,
+        this._field_bg_repeat_mode,
         this._logoPicker
       );
       this._ibus_bg._add(
         this._field_use_custom_bg_dark,
         this._field_bg_dark_mode,
+        this._field_bg_dark_repeat_mode,
         this._logoDarkPicker
       );
       this._bgHelpPage(this._ibus_bg);
@@ -190,16 +202,18 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
-        this._field_bg_mode.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
       });
       this._field_use_custom_bg.connect("notify::active", (widget) => {
         this._logoPicker.set_sensitive(widget.active);
+        this._field_bg_mode.set_sensitive(widget.active);
+        this._field_bg_repeat_mode.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USECUSTOMBG, widget.active);
       });
       this._field_use_custom_bg_dark.connect("notify::active", (widget) => {
         this._logoDarkPicker.set_sensitive(widget.active);
         this._field_bg_dark_mode.set_sensitive(widget.active);
+        this._field_bg_dark_repeat_mode.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USECUSTOMBGDARK, widget.active);
       });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
@@ -261,6 +275,12 @@ const CustomizeIBus = GObject.registerClass(
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
       this._field_bg_dark_mode.set_sensitive(
+        this._field_use_custom_bg_dark.active
+      );
+      this._field_bg_repeat_mode.set_sensitive(
+        this._field_use_custom_bg.active
+      );
+      this._field_bg_dark_repeat_mode.set_sensitive(
         this._field_use_custom_bg_dark.active
       );
       this._logoPicker.set_sensitive(this._field_use_custom_bg.active);
@@ -332,6 +352,18 @@ const CustomizeIBus = GObject.registerClass(
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
+      gsettings.bind(
+        Fields.BGREPEATMODE,
+        this._field_bg_repeat_mode,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.BGDARKREPEATMODE,
+        this._field_bg_dark_repeat_mode,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
       gsettings.connect(
         `changed::${Fields.CUSTOMBG}`,
         this._updateLogoPicker.bind(this)
@@ -360,7 +392,7 @@ const CustomizeIBus = GObject.registerClass(
       );
     }
 
-    _listFrameMaker(lbl, margin_top) {
+    _listFrameMaker(lbl) {
       let box = new Gtk.Box({
         margin_start: 30,
         margin_end: 30,
@@ -388,11 +420,12 @@ const CustomizeIBus = GObject.registerClass(
       frame.grid._row = 0;
       frame.add(frame.grid);
 
-      frame._add = (x, y, z) => {
+      frame._add = (x, y, z, a) => {
         const hbox = new Gtk.Box();
         hbox.pack_start(x, true, true, 4);
         if (y) hbox.pack_start(y, false, false, 4);
         if (z) hbox.pack_start(z, false, false, 4);
+        if (a) hbox.pack_start(a, false, false, 4);
         frame.grid.attach(hbox, 0, frame.grid._row++, 1, 1);
       };
       return frame;
@@ -580,6 +613,19 @@ const CustomizeIBus = GObject.registerClass(
           wrap: true,
           label: _(
             "When light theme and dark theme are turned on at the same time, the IBus theme will automatically follow GNOME Night Light mode, use light theme when off, and use dark theme when on. When only one of the light theme and dark theme is turned on, the IBus theme will always use the theme that is turned on."
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            '<span size="small"><b><i>Warning:</i> If not for debugging, please DO NOT add any classes that\'s not started with <i>.candidate-*</i> into IBus stylesheet to prevent from disturbing system themes.</b></span>'
           ),
         }),
         0,
