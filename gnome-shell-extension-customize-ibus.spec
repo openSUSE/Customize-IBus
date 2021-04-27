@@ -1,6 +1,6 @@
 %global commit fdc2895703ddc37a74190cf62d7fcee781937e19
-%global extension_version 24
-%global date 20210426
+%global extension_version 26
+%global date 20210427
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -43,6 +43,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Tue Apr 27 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210427gitfdc2895
+- Add background picture displaying repeat mode configure.
+
 * Mon Apr 26 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210426gitfdc2895
 - Add background picture displaying mode configure.
 

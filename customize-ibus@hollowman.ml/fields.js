@@ -25,4 +25,6 @@ var Fields = {
   ORIENTATION: "candidate-orientation",
   BGMODE: "custom-bg-mode",
   BGDARKMODE: "custom-bg-dark-mode",
+  BGREPEATMODE: "custom-bg-repeat-mode",
+  BGDARKREPEATMODE: "custom-bg-dark-repeat-mode",
 };

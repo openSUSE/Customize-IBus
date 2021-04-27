@@ -77,5 +77,15 @@
         <range min="0" max="2"/>
         <summary>adjustment mode to dark background</summary>
     </key>
+    <key type="u" name="custom-bg-repeat-mode">
+        <default>1</default>
+        <range min="0" max="1"/>
+        <summary>adjustment repeat mode to background</summary>
+    </key>
+    <key type="u" name="custom-bg-dark-repeat-mode">
+        <default>1</default>
+        <range min="0" max="1"/>
+        <summary>adjustment repeat mode to dark background</summary>
+    </key>
   </schema>
 </schemalist>

@@ -63,7 +63,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 ### _提示：_
 
 1. 推荐使用 X11。如果你在 Wayland 中更改 IBus 主题，你的当前所有工作都将会丢失，因为 Wayland 下只支持通过重新登陆来重启 GNOME-shell。
-2. 在 Fedora 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24)中通过了测试。
+2. 在 Fedora，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26)中通过了测试。
 3. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 
 ## 更改 IBus 背景图片的实现
@@ -80,7 +80,7 @@ background-size: cover;
 
 进一步结合[ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)和[background-logo](https://pagure.io/background-logo-extension)，参考 GNOME-Shell 源代码中`candidate-popup-content`样式[对应组件](https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/master/js/ui/ibusCandidatePopup.js#L154)，并对其修改样式实现不重启 GNOME-Shell 进行 IBus 背景图片的修改。
 
-支持设定图片显示模式为：居中，铺满，裁剪。
+支持设定图片显示模式为：居中，铺满，裁剪，以及重复模式。
 
 当浅色背景和深色背景同时开启时，扩展将会自动跟随 GNOME 夜灯模式，关闭时使用浅色背景，开启时使用深色背景。
 
@@ -103,6 +103,7 @@ background-size: cover;
 - [x] V20: 更改 UI；增加帮助页面。
 - [x] V22: 重新设计 UI。
 - [x] V24: 增加背景图片显示模式配置。
+- [x] V26: 增加背景图片显示重复模式配置。
 
 ## 致谢
 
@@ -158,7 +159,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 ### _NOTE:_
 
 1. Recommend to use X11. If you change IME theme under Wayland, all your current work may be lost (Since Wayland only support re-login to restart the GNOME-shell).
-2. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24).
+2. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26).
 3. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 
 ## Realization of Modifying IBus Background Picture
@@ -175,7 +176,7 @@ I can modify the background picture.
 
 Further combining [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/) and [background-logo](https://pagure.io/background-logo-extension), referring to GNOME-Shell's source code, I found the [corresponding widget](https://gitlab.gnome.org/GNOME/gnome-shell/-/blob/master/js/ui/ibusCandidatePopup.js#L154) for class `candidate-popup-content`, and modified the style to realize modifying IBus background picture without restarting GNOME-Shell.
 
-Support setting background picture displaying mode as Centered, Repeated and Zoom.
+Support setting background picture displaying mode as Centered, Repeated and Zoom, and also repeat mode.
 
 When light background and dark background are turned on at the same time, the extension will automatically follow GNOME Night Light mode, use light background when off, and use dark background when on.
 
@@ -198,6 +199,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V20: Change UI；Add Help page.
 - [x] V22: Re-design UI.
 - [x] V24: Add background picture displaying mode configure.
+- [x] V26: Add background picture displaying repeat mode configure.
 
 ## Acknowledgements
 
