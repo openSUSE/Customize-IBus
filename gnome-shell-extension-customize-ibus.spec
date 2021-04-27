@@ -1,4 +1,4 @@
-%global commit adc131314750186270304195c06528328de4e5a4
+%global commit 4b319247b7df753cbbb9f283483fe520cae72081
 %global extension_version 26
 %global date 20210427
 %global shell_version 40.0
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Tue Apr 27 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210427gitadc1313
+* Tue Apr 27 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210427git4b31924
 - Add background picture displaying repeat mode configure.
 
 * Mon Apr 26 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210426gitfdc2895
