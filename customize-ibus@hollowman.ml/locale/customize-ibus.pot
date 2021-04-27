@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 26\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-27 20:11+0800\n"
+"POT-Creation-Date: 2021-04-27 20:53+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,7 @@ msgid ""
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 
-#: prefs.js:568 prefs.js:594 prefs.js:646
+#: prefs.js:568 prefs.js:594 prefs.js:659
 msgid "Help"
 msgstr ""
 
@@ -204,18 +204,25 @@ msgstr ""
 
 #: prefs.js:632
 msgid ""
+"<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
+"add any classes that's not started with <i>.candidate-*</i> into IBus "
+"stylesheet to prevent from disturbing system themes.</b></span>"
+msgstr ""
+
+#: prefs.js:645
+msgid ""
 "<span size=\"small\"><b>Note:</b> If your IBus stylesheet has changed after "
 "application, please close and reopen the corresponding <b>custom IME theme</"
 "b> to make it effective.</span>"
 msgstr ""
 
-#: prefs.js:658
+#: prefs.js:671
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than theme defined background."
 msgstr ""
 
-#: prefs.js:671
+#: prefs.js:684
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -224,7 +231,7 @@ msgid ""
 "will always use the background that is turned on."
 msgstr ""
 
-#: prefs.js:684
+#: prefs.js:697
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "

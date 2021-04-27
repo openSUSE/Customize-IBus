@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: customize-ibus 26\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-27 20:11+0800\n"
+"POT-Creation-Date: 2021-04-27 20:53+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -185,7 +185,7 @@ msgstr ""
 "<span size=\"small\">参见 <a href=\"https://www.gnu.org/licenses/gpl\">GNU 通"
 "用公共许可证，第三版或更高版本</a>以了解更多细节。</span>"
 
-#: prefs.js:568 prefs.js:594 prefs.js:646
+#: prefs.js:568 prefs.js:594 prefs.js:659
 msgid "Help"
 msgstr "帮助"
 
@@ -221,6 +221,16 @@ msgstr ""
 
 #: prefs.js:632
 msgid ""
+"<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
+"add any classes that's not started with <i>.candidate-*</i> into IBus "
+"stylesheet to prevent from disturbing system themes.</b></span>"
+msgstr ""
+"<span size=\"small\"><b><i>警告：</i> 如非调试需要，请勿在IBus主题"
+"样式表中加入非 <i>.candidate-*</i> 开头的"
+"类，以免干扰系统主题。</b></span>"
+
+#: prefs.js:645
+msgid ""
 "<span size=\"small\"><b>Note:</b> If your IBus stylesheet has changed after "
 "application, please close and reopen the corresponding <b>custom IME theme</"
 "b> to make it effective.</span>"
@@ -228,13 +238,13 @@ msgstr ""
 "<span size=\"small\"><b>注：</b> 如你的 IBus 样式表在应用后作出了更改，请关闭"
 "并重新开启对应 <b>自定义主题</b>来使其生效。</span>"
 
-#: prefs.js:658
+#: prefs.js:671
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than theme defined background."
 msgstr "支持使用图片来自定义IBus候选框背景，其具有比主题背景更高的优先级。"
 
-#: prefs.js:671
+#: prefs.js:684
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -246,7 +256,7 @@ msgstr ""
 "使用浅色背景，开启时使用深色背景。当浅色背景和深色背景只有一个被开启时，扩展"
 "将会始终使用那个开启的背景。"
 
-#: prefs.js:684
+#: prefs.js:697
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "

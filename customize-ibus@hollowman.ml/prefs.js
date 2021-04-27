@@ -629,6 +629,19 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
+            '<span size="small"><b><i>Warning:</i> If not for debugging, please DO NOT add any classes that\'s not started with <i>.candidate-*</i> into IBus stylesheet to prevent from disturbing system themes.</b></span>'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
             '<span size="small"><b>Note:</b> If your IBus stylesheet has changed after application, please close and reopen the corresponding <b>custom IME theme</b> to make it effective.</span>'
           ),
         }),
