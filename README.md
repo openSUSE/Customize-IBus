@@ -21,6 +21,8 @@
 
 在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
+[自定义 IBus 操作指南](GUIDE_CN.md)
+
 ![demo](img/demo.png)
 
 ## 安装
@@ -112,6 +114,8 @@ _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/ope
 ### Note: If no severe bug was found later, v27 will be the last version that support GNOME 3.38.
 
 Customize IBus for orientation, font, ascii mode auto-switch; theme and background picture follow GNOME Night Light Mode.
+
+[Customize IBus User Guide (in Chinese)](GUIDE_CN.md)
 
 ![demo](img/demo-en.png)
 
