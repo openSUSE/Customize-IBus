@@ -585,6 +585,19 @@ const CustomizeIBus = GObject.registerClass(
         1,
         1
       );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            '<span size="small"><b>Note:</b> If <b>auto switch ASCII mode</b> is enabled, every opened window\'s input mode will be remembered if you have switched the input method manually in that window, and the newly-opened window will follow the configuration.</span>'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
     }
 
     _themeHelpPage(frame) {

@@ -1,6 +1,6 @@
 %global commit 4b319247b7df753cbbb9f283483fe520cae72081
-%global extension_version 26
-%global date 20210427
+%global extension_version 28
+%global date 20210501
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -43,10 +43,13 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Tue Apr 27 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210427git4b31924
+* Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-28.20210501git4b31924
+- Add extension prefs menu entry into IBus Input Source Indicate Panel.
+
+* Tue Apr 27 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-26.20210427git4b31924
 - Add background picture displaying repeat mode configure.
 
-* Mon Apr 26 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210426gitfdc2895
+* Mon Apr 26 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-24.20210426gitfdc2895
 - Add background picture displaying mode configure.
 
 * Sun Apr 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-22.20210425git51d8ce5
