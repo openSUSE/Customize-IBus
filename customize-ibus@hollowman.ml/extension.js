@@ -21,11 +21,13 @@ const {
 
 const Keyboard = imports.ui.status.keyboard;
 const InputSourceManager = Keyboard.getInputSourceManager();
+const InputSourceIndicator = Main.panel.statusArea.keyboard;
 const IBusManager = imports.misc.ibusManager.getIBusManager();
 const CandidatePopup = IBusManager._candidatePopup;
 const CandidateArea = CandidatePopup._candidateArea;
 
 const ExtensionUtils = imports.misc.extensionUtils;
+const Util = imports.misc.util;
 const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
@@ -87,7 +89,7 @@ const IBusAutoSwitch = GObject.registerClass(
     }
 
     get _state() {
-      const labels = Main.panel.statusArea.keyboard._indicatorLabels;
+      const labels = InputSourceIndicator._indicatorLabels;
       return ASCIIMODES.includes(
         labels[InputSourceManager.currentSource.index].get_text()
       );
@@ -648,6 +650,16 @@ const Extensions = GObject.registerClass(
     _init() {
       super._init();
       this._bindSettings();
+      this._showExtensionItem = InputSourceIndicator.menu.addAction(
+        _("Customize IBus"),
+        this._showInPanel.bind(InputSourceIndicator)
+      );
+      this._showExtensionItem.visible = true;
+    }
+
+    _showInPanel() {
+      Main.overview.hide();
+      Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid.toString()]);
     }
 
     _bindSettings() {
@@ -795,6 +807,8 @@ const Extensions = GObject.registerClass(
       this.orien = false;
       this.theme = false;
       this.themenight = false;
+      this._showExtensionItem.visible = false;
+      delete this._showExtensionItem;
     }
   }
 );
