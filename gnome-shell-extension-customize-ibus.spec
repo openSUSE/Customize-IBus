@@ -1,4 +1,4 @@
-%global commit 4b319247b7df753cbbb9f283483fe520cae72081
+%global commit 017ebaa6925cf24db2fde4effab19e569cdcdd2f
 %global extension_version 28
 %global date 20210501
 %global shell_version 40.0
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-28.20210501git4b31924
+* Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-28.20210501git017ebaa
 - Add extension prefs menu entry into IBus Input Source Indicate Panel.
 
 * Tue Apr 27 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-26.20210427git4b31924
