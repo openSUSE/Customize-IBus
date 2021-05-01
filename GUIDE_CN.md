@@ -41,7 +41,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 如你的 IBus 样式表在应用后作出了更改，请关闭并重新开启对应`自定义主题`来使其生效。
 
-你可以到该网站下载更多GNOME Shell主题：https://www.gnome-look.org/browse/cat/135/，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
+你可以到该网站下载更多GNOME Shell主题：https://www.pling.com/s/Gnome/browse/cat/134/order/latest/，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
 
 [IBus 主题工具](https://github.com/HollowMan6/IBus-Theme)样式表生成借助于电脑上已经安装了的GNOME Shell主题进行IBus样式的提取，其提取步骤如下：
 
