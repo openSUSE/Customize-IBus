@@ -202,7 +202,7 @@ msgid ""
 "Here you can set the IBus input window orientation, font, and also ascii "
 "mode auto-switch when windows are switched by users."
 msgstr ""
-"这里你可以设定 IBus 候选框方向、字体，以及当一个窗口切换时输入法默认语言。"
+"这里你可以设定 IBus 候选框方向、字体，以及当窗口切换时输入法默认切换语言。"
 
 #: prefs.js:611
 msgid ""
