@@ -1,4 +1,4 @@
-%global commit 0eff08c805a72c07db67c043aa8d9989219d6b03
+%global commit 55b8fe00c79c0834161083e43ce4bb4aa3ab2d7c
 %global extension_version 30
 %global date 20210502
 %global shell_version 40.0
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-30.20210502git0eff08c
+* Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-30.20210502git55b8fe0
 - Add Remember Input State options.
 
 * Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-28.20210501git017ebaa
