@@ -16,6 +16,7 @@ var Fields = {
   CUSTOMTHEMENIGHT: "custom-theme-dark",
   ENABLECUSTOMTHEMENIGHT: "enable-custom-theme-dark",
   INPUTLIST: "input-mode-list",
+  REMEMBERINPUT: "input-mode-remember",
   USECUSTOMFONT: "use-custom-font",
   USECUSTOMBG: "use-custom-bg",
   USECUSTOMBGDARK: "use-custom-bg-dark",

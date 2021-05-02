@@ -64,7 +64,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 
 ### _提示：_
 
-1. 在 Fedora，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28)中通过了测试。
+1. 在 Fedora，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30)中通过了测试。
 2. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 3. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
@@ -107,6 +107,7 @@ background-size: cover;
 - [x] V24: 增加背景图片显示模式配置。
 - [x] V26: 增加背景图片显示重复模式配置。
 - [x] V28: 增加打开扩展配置选项到 IBus 输入源指示面板中。
+- [x] V30: 增加记住输入状态选项。
 
 ## 致谢
 
@@ -163,7 +164,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 
 ### _NOTE:_
 
-1. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28).
+1. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30).
 2. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 3. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
 
@@ -206,6 +207,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V24: Add background picture displaying mode configure.
 - [x] V26: Add background picture displaying repeat mode configure.
 - [x] V28: Add extension prefs menu entry into IBus Input Source Indicate Panel.
+- [x] V30: Add Remember Input State options.
 
 ## Acknowledgements
 

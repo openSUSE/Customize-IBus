@@ -87,5 +87,10 @@
         <range min="0" max="1"/>
         <summary>adjustment repeat mode to dark background</summary>
     </key>
+    <key type="u" name="input-mode-remember">
+        <default>1</default>
+        <range min="0" max="1"/>
+        <summary>remember window input state</summary>
+    </key>
   </schema>
 </schemalist>

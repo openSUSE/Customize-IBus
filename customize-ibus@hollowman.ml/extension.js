@@ -68,6 +68,15 @@ const IBusAutoSwitch = GObject.registerClass(
         2,
         GObject.ParamFlags.READWRITE
       ),
+      remember: GObject.param_spec_uint(
+        "remember",
+        "remember",
+        "remember",
+        0,
+        1,
+        1,
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class IBusAutoSwitch extends GObject.Object {
@@ -100,17 +109,30 @@ const IBusAutoSwitch = GObject.registerClass(
       if (!win) return false;
 
       let state = this._state;
-      let store = this._states.get(this._tmpWindow);
-      if (state != store) this._states.set(this._tmpWindow, state);
+      let stateConf = false;
+      if (this._remember) {
+        let store = this._states.get(this._tmpWindow);
+        if (state != store) this._states.set(this._tmpWindow, state);
 
-      this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : "";
-      if (!this._states.has(this._tmpWindow)) {
-        let unknown =
+        this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : "";
+        if (!this._states.has(this._tmpWindow)) {
+          let unknown =
+            this.unknown == UNKNOWN.DEFAULT
+              ? state
+              : this.unknown == UNKNOWN.ON;
+          this._states.set(this._tmpWindow, unknown);
+        }
+        stateConf = this._states.get(this._tmpWindow);
+      } else {
+        stateConf =
           this.unknown == UNKNOWN.DEFAULT ? state : this.unknown == UNKNOWN.ON;
-        this._states.set(this._tmpWindow, unknown);
       }
 
-      return state ^ this._states.get(this._tmpWindow);
+      return state ^ stateConf;
+    }
+
+    set remember(remember) {
+      this._remember = remember;
     }
 
     _onWindowChanged() {
@@ -120,6 +142,12 @@ const IBusAutoSwitch = GObject.registerClass(
     }
 
     _bindSettings() {
+      gsettings.bind(
+        Fields.REMEMBERINPUT,
+        this,
+        "remember",
+        Gio.SettingsBindFlags.GET
+      );
       gsettings.bind(
         Fields.UNKNOWNSTATE,
         this,

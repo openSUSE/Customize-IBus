@@ -1,6 +1,6 @@
 %global commit 017ebaa6925cf24db2fde4effab19e569cdcdd2f
-%global extension_version 28
-%global date 20210501
+%global extension_version 30
+%global date 20210502
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -43,6 +43,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-30.20210502git017ebaa
+- Add Remember Input State options.
+
 * Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-28.20210501git017ebaa
 - Add extension prefs menu entry into IBus Input Source Indicate Panel.
 
