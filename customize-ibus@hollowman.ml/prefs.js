@@ -59,10 +59,16 @@ const CustomizeIBus = GObject.registerClass(
         _("Vertical"),
         _("Horizontal"),
       ]);
+
+      this._field_remember_input = this._comboMaker([
+        _("Don't Remember State"),
+        _("Remember Input State"),
+      ]);
+
       this._field_unkown_state = this._comboMaker([
         _("On"),
         _("Off"),
-        _("Default"),
+        _("Keep"),
       ]);
 
       this._field_bg_mode = this._comboMaker([
@@ -164,7 +170,11 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_custom_font,
         this._field_custom_font
       );
-      this._ibus_basic._add(this._field_enable_ascii, this._field_unkown_state);
+      this._ibus_basic._add(
+        this._field_enable_ascii,
+        this._field_remember_input,
+        this._field_unkown_state
+      );
       this._basicHelpPage(this._ibus_basic);
 
       this._ibus_theme = this._listFrameMaker(_("Theme"));
@@ -195,6 +205,7 @@ const CustomizeIBus = GObject.registerClass(
 
     _syncStatus() {
       this._field_enable_ascii.connect("notify::active", (widget) => {
+        this._field_remember_input.set_sensitive(widget.active);
         this._field_unkown_state.set_sensitive(widget.active);
       });
       this._field_enable_orien.connect("notify::active", (widget) => {
@@ -270,6 +281,7 @@ const CustomizeIBus = GObject.registerClass(
         gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
       });
 
+      this._field_remember_input.set_sensitive(this._field_enable_ascii.active);
       this._field_unkown_state.set_sensitive(this._field_enable_ascii.active);
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
@@ -319,6 +331,12 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.ORIENTATION,
         this._field_orientation,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.REMEMBERINPUT,
+        this._field_remember_input,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -573,7 +591,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, font, and also ascii mode auto-switch when a new window is opened."
+            "Here you can set the IBus input window orientation, font, and also ascii mode auto-switch when windows are switched by users."
           ),
         }),
         0,
@@ -586,7 +604,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If <b>auto switch ASCII mode</b> is enabled, every opened window\'s input mode will be remembered if you have switched the input method manually in that window, and the newly-opened window will follow the configuration.</span>'
+            "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is enabled, and you have set to <b>Remember Input State</b>, every opened APP's input mode will be remembered if you have switched the input source manually in the APP's window, and the newly-opened APP will follow the configuration. APP's Input State will be remembered forever.</span>"
           ),
         }),
         0,

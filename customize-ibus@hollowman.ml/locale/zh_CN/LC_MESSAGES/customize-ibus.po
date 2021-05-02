@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: customize-ibus 26\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-01 15:55+0800\n"
+"POT-Creation-Date: 2021-05-02 14:10+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -17,136 +17,144 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:398
+#: extension.js:426
 msgid "loading background for IBus:"
 msgstr "正在为IBus加载背景:"
 
-#: extension.js:408
+#: extension.js:436
 msgid "remove custom background for IBus"
 msgstr "为IBus去除自定义背景"
 
-#: extension.js:573
+#: extension.js:601
 msgid "loading light user theme for IBus:"
 msgstr "正在为IBus加载浅色用户主题:"
 
-#: extension.js:583
+#: extension.js:611
 msgid "loading dark user theme for IBus:"
 msgstr "正在为IBus加载深色用户主题:"
 
-#: extension.js:588
+#: extension.js:616
 msgid "loading default theme for IBus"
 msgstr "正在为IBus加载当前系统主题"
 
-#: extension.js:654 prefs.js:482
+#: extension.js:682 prefs.js:504
 msgid "Customize IBus"
 msgstr "自定义 IBus"
 
-#: prefs.js:43
+#: prefs.js:42
 msgid "Custom IME light theme"
 msgstr "自定义浅色主题"
 
-#: prefs.js:46
+#: prefs.js:45
 msgid "Custom IME dark theme"
 msgstr "自定义深色主题"
 
-#: prefs.js:48
+#: prefs.js:47
 msgid "Use custom font"
 msgstr "自定义字体"
 
-#: prefs.js:50
+#: prefs.js:49
 msgid "Use custom light background"
 msgstr "自定义浅色背景"
 
-#: prefs.js:53
+#: prefs.js:52
 msgid "Use custom dark background"
 msgstr "自定义深色背景"
 
-#: prefs.js:55
+#: prefs.js:54
 msgid "Auto switch ASCII mode"
-msgstr "默认中英文"
+msgstr "自动切换源"
 
-#: prefs.js:56
+#: prefs.js:55
 msgid "Candidates orientation"
 msgstr "候选框方向"
 
-#: prefs.js:59
+#: prefs.js:58
 msgid "Vertical"
 msgstr "竖直"
 
-#: prefs.js:60
+#: prefs.js:59
 msgid "Horizontal"
 msgstr "水平"
 
 #: prefs.js:63
+msgid "Don't Remember State"
+msgstr "不记住状态"
+
+#: prefs.js:64
+msgid "Remember Input State"
+msgstr "记住输入状态"
+
+#: prefs.js:68
 msgid "On"
 msgstr "英文"
 
-#: prefs.js:64
+#: prefs.js:69
 msgid "Off"
 msgstr "中文"
 
-#: prefs.js:65
-msgid "Default"
-msgstr "默认"
+#: prefs.js:70
+msgid "Keep"
+msgstr "保持"
 
-#: prefs.js:69 prefs.js:75
+#: prefs.js:74 prefs.js:80
 msgid "Centered"
 msgstr "居中"
 
-#: prefs.js:70 prefs.js:76
+#: prefs.js:75 prefs.js:81
 msgid "Repeated"
 msgstr "铺满"
 
-#: prefs.js:71 prefs.js:77
+#: prefs.js:76 prefs.js:82
 msgid "Zoom"
 msgstr "裁剪"
 
-#: prefs.js:81 prefs.js:86
+#: prefs.js:86 prefs.js:91
 msgid "No repeat"
 msgstr "不重复"
 
-#: prefs.js:82 prefs.js:87
+#: prefs.js:87 prefs.js:92
 msgid "Repeat"
 msgstr "重复"
 
-#: prefs.js:97 prefs.js:105
+#: prefs.js:102 prefs.js:110
 msgid "Select an Image"
 msgstr "选择一个图片"
 
-#: prefs.js:102 prefs.js:110 prefs.js:121 prefs.js:129 prefs.js:135
-#: prefs.js:141 prefs.js:147 prefs.js:153
+#: prefs.js:107 prefs.js:115 prefs.js:126 prefs.js:134 prefs.js:140
+#: prefs.js:146 prefs.js:152 prefs.js:158
 msgid "(None)"
 msgstr "（无）"
 
-#: prefs.js:116 prefs.js:124
+#: prefs.js:121 prefs.js:129
 msgid "Select an IBus Stylesheet"
 msgstr "选择一个IBus风格样式表"
 
-#: prefs.js:161
+#: prefs.js:166
 msgid "Basic"
 msgstr "基本"
 
-#: prefs.js:170
+#: prefs.js:179
 msgid "Theme"
 msgstr "主题"
 
-#: prefs.js:178
+#: prefs.js:187
 msgid "Background"
 msgstr "背景"
 
-#: prefs.js:447
+#: prefs.js:473
 msgid "About"
 msgstr "关于"
 
-#: prefs.js:464
+#: prefs.js:490
 msgid "unknown (self-build ?)"
 msgstr "未知（自编译？）"
 
-#: prefs.js:490
+#: prefs.js:512
 msgid "Version: "
 msgstr "版本："
 
-#: prefs.js:502
+#: prefs.js:524
 msgid ""
 "Customize IBus for orientation, font, ascii mode auto-switch; theme and "
 "background picture follow GNOME Night Light Mode."
@@ -154,7 +162,7 @@ msgstr ""
 "在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言，主题、背景图片"
 "跟随 GNOME 夜灯模式自动切换。"
 
-#: prefs.js:514
+#: prefs.js:536
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
@@ -164,7 +172,7 @@ msgstr ""
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
 "\">hollowman@hollowman.ml</a>&gt;</span>"
 
-#: prefs.js:526
+#: prefs.js:548
 msgid ""
 "<span size=\"small\">Source Code: <a href=\"https://github.com/HollowMan6/"
 "Customize-IBus\">https://github.com/HollowMan6/Customize-IBus</a></span>"
@@ -172,12 +180,12 @@ msgstr ""
 "<span size=\"small\">源代码：<a href=\"https://github.com/HollowMan6/"
 "Customize-IBus\">https://github.com/HollowMan6/Customize-IBus</a></span>"
 
-#: prefs.js:538
+#: prefs.js:560
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.</span>"
 msgstr "<span size=\"small\">本程序不提供任何担保。</span>"
 
-#: prefs.js:550
+#: prefs.js:572
 msgid ""
 "<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/gpl"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
@@ -185,30 +193,31 @@ msgstr ""
 "<span size=\"small\">参见 <a href=\"https://www.gnu.org/licenses/gpl\">GNU 通"
 "用公共许可证，第三版或更高版本</a>以了解更多细节。</span>"
 
-#: prefs.js:564 prefs.js:603 prefs.js:668
+#: prefs.js:586 prefs.js:625 prefs.js:690
 msgid "Help"
 msgstr "帮助"
 
-#: prefs.js:576
+#: prefs.js:598
 msgid ""
 "Here you can set the IBus input window orientation, font, and also ascii "
-"mode auto-switch when a new window is opened."
+"mode auto-switch when windows are switched by users."
 msgstr ""
-"这里你可以设定 IBus 候选框方向、字体，以及当一个新窗口被打开时输入法默认语"
-"言。"
+"这里你可以设定 IBus 候选框方向、字体，以及当窗口切换时输入法默认切换语言。"
 
-#: prefs.js:589
+#: prefs.js:611
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is "
-"enabled, every opened window's input mode will be remembered if you have "
-"switched the input method manually in that window, and the newly-opened "
-"window will follow the configuration.</span>"
+"enabled, and you have set to <b>Remember Input State</b>, every opened APP's "
+"input mode will be remembered if you have switched the input source manually "
+"in the APP's window, and the newly-opened APP will follow the configuration. "
+"APP's Input State will be remembered forever.</span>"
 msgstr ""
-"<span size=\"small\"><b>注：</b> 如果 <b>默认中英文</b> 被启用，你在一个窗口"
-"中手动切换了输入法，则该窗口的输入模式将会被自动记住。另外，新打开的窗口将会"
-"遵循你的配置。</span>"
+"<span size=\"small\"><b>注：</b> 如果 <b>自动切换源</b> 被启用，并且你启用了"
+"<b>记住输入状态</b>，那么你在一个应用中手动切换了输入源，则该应用的输入源模式"
+"将会被自动记住。另外，新打开的应用将会遵循你的输入源配置，应用的输入状态将会"
+"永远被记住。</span>"
 
-#: prefs.js:615
+#: prefs.js:637
 msgid ""
 "Support importing stylesheet generated by <a href=\"https://github.com/"
 "HollowMan6/IBus-Theme\">IBus Theme Tool</a> or provided by <a href=\"https://"
@@ -218,7 +227,7 @@ msgstr ""
 "</a> 生成的或者由 <a href=\"https://github.com/HollowMan6/IBus-Theme-Hub"
 "\">IBus 主题集合</a> 提供的样式表。"
 
-#: prefs.js:628
+#: prefs.js:650
 msgid ""
 "When light theme and dark theme are turned on at the same time, the IBus "
 "theme will automatically follow GNOME Night Light mode, use light theme when "
@@ -230,7 +239,7 @@ msgstr ""
 "使用浅色主题，开启时使用深色主题。当浅色主题和深色主题只有一个被开启时，扩展"
 "将会始终使用那个开启的主题。"
 
-#: prefs.js:641
+#: prefs.js:663
 msgid ""
 "<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
 "add any classes that's not started with <i>.candidate-*</i> into IBus "
@@ -239,7 +248,7 @@ msgstr ""
 "<span size=\"small\"><b><i>警告：</i> 如非调试需要，请勿在IBus主题样式表中加"
 "入非 <i>.candidate-*</i> 开头的类，以免干扰系统主题。</b></span>"
 
-#: prefs.js:654
+#: prefs.js:676
 msgid ""
 "<span size=\"small\"><b>Note:</b> If your IBus stylesheet has changed after "
 "application, please close and reopen the corresponding <b>custom IME theme</"
@@ -248,13 +257,13 @@ msgstr ""
 "<span size=\"small\"><b>注：</b> 如你的 IBus 样式表在应用后作出了更改，请关闭"
 "并重新开启对应 <b>自定义主题</b>来使其生效。</span>"
 
-#: prefs.js:680
+#: prefs.js:702
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than theme defined background."
 msgstr "支持使用图片来自定义IBus候选框背景，其具有比主题背景更高的优先级。"
 
-#: prefs.js:693
+#: prefs.js:715
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -266,7 +275,7 @@ msgstr ""
 "使用浅色背景，开启时使用深色背景。当浅色背景和深色背景只有一个被开启时，扩展"
 "将会始终使用那个开启的背景。"
 
-#: prefs.js:706
+#: prefs.js:728
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "

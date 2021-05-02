@@ -17,7 +17,7 @@
 
 (English version is down below)
 
-### 注意：如果后期无重大 BUG 的话，v27 将是支持 GNOME 3.38 的最后一个版本
+### 注意：如果后期无重大 BUG 的话，v29 将是支持 GNOME 3.38 的最后一个版本
 
 在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
@@ -58,7 +58,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 
 ### _提示：_
 
-1. 在 Fedora 33、Ubuntu 21.04 和 Manjaro 21.0.2, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19,v21,v23,v25,v27)通过了测试。
+1. 在 Fedora 33、Ubuntu 21.04 和 Manjaro 21.0.2, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19,v21,v23,v25,v27,v29)通过了测试。
 2. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 3. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
@@ -100,6 +100,7 @@ background-size: cover;
 - [x] V23: 增加背景图片显示模式配置。
 - [x] V25: 增加背景图片显示重复模式配置。
 - [x] V27: 增加打开扩展配置选项到 IBus 输入源指示面板中。
+- [x] V29: 增加记住输入状态选项。
 
 ## 致谢
 
@@ -111,7 +112,7 @@ _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/ope
 
 # Customize IBus
 
-### Note: If no severe bug was found later, v27 will be the last version that support GNOME 3.38.
+### Note: If no severe bug was found later, v29 will be the last version that support GNOME 3.38.
 
 Customize IBus for orientation, font, ascii mode auto-switch; theme and background picture follow GNOME Night Light Mode.
 
@@ -150,7 +151,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 
 ### _NOTE:_
 
-1. Tested on Fedora 33, Ubuntu 21.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27).
+1. Tested on Fedora 33, Ubuntu 21.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29).
 2. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 3. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
 
@@ -192,6 +193,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V23: Add background picture displaying mode configure.
 - [x] V25: Add background picture displaying repeat mode configure.
 - [x] V27: Add extension prefs menu entry into IBus Input Source Indicate Panel.
+- [x] V29: Add Remember Input State options.
 
 ## Acknowledgements
 
