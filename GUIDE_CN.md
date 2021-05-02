@@ -8,6 +8,11 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 如果你不会安装，可以参考这里：https://linux.cn/article-9447-1.html 来从 Web 浏览器安装 GNOME Shell 扩展。
 
+如果你想将该插件作为系统插件为所有用户安装，你还可以从GitHub处下载打包好的Debian、Arch或RPM包：[https://github.com/HollowMan6/Customize-IBus/releases](https://github.com/HollowMan6/Customize-IBus/releases)
+
+如果你使用Arch系Linux，还可以直接使用AUR仓库安装：
+[![](https://img-blog.csdnimg.cn/20210502152203849.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
+
 安装之后，你会发现 IBus 输入源指示面板中多了一个菜单选项`自定义IBus`，点击后即可打开自定义IBus配置选项。如果没有该菜单项，请确保你安装了最新版的插件并且已经开启了该插件。
 
 ![](https://img-blog.csdnimg.cn/20210501182259180.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -18,14 +23,14 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 ### 基础
 
-![](https://img-blog.csdnimg.cn/20210501183057233.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210502152732704.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置IBus输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
 点击`自定义字体`左侧的复选框来进行选中，即可支持配置IBus输入法候选框中文字的字体和字号。点击右侧，打开字体选择器，弹出的对话框中上部可以选择你想要的字体，下部可以选择字号，点击选择确认修改。
 ![](https://img-blog.csdnimg.cn/20210501183652350.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-点击`默认中英文`左侧的复选框来进行选中，即可支持配置一个新窗口被打开时IBus输入法的输入语言。点击右侧进行选择，支持设定为中文或者英文，如果选择默认则保持打开新窗口前输入法状态不变。当该功能被启用时，一个窗口的输入模式将会被自动记住；当你切换到另一个窗口并切换回来时，即使在另一个窗口中切换了与之前不同的输入模式，原窗口中的输入法模式仍然会恢复为窗口切换前的输入模式。
+点击`自动切换源`左侧的复选框来进行选中，即可支持配置窗口切换时输入法默认切换语言。点击最右侧进行选择，支持设定为中文或者英文，如果选择保持则保持切换窗口时输入法状态不变。在右侧你还可以选择是否记住输入状态。当记住输入状态被启用时，那么你在一个应用中手动切换了输入源，则该应用的输入源模式将会被自动记住。另外，新打开的应用将会遵循你的输入源配置，应用的输入状态将会永远被记住。
 
 ### 主题
 
@@ -144,6 +149,8 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
   background: transparent;
   /* 修复系统主题IBus边框部分被替换的主题继承 */
   border: transparent;
+  /* 修复系统主题IBus边框阴影部分被替换的主题继承 */
+  box-shadow: none;
   /* 修复候选词颜色 */
   color: #2e3436;
 }
@@ -195,23 +202,23 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 示例各种图片显示模式（使用的图片为：https://github.com/HollowMan6/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.jpeg ）：
 
 - **居中 + 不重复**：
-![](https://img-blog.csdnimg.cn/20210501192345365.png)
+![](https://img-blog.csdnimg.cn/20210502154455434.png)
 
 - **居中 + 重复**：
-![](https://img-blog.csdnimg.cn/20210501192519569.png)
+![](https://img-blog.csdnimg.cn/20210502154706164.png)
 
 - **铺满 + 不重复**：
-![](https://img-blog.csdnimg.cn/20210501192721345.png)
+![](https://img-blog.csdnimg.cn/20210502154540732.png)
 
 - **铺满 + 重复**：
-![](https://img-blog.csdnimg.cn/20210501192626557.png)
+![](https://img-blog.csdnimg.cn/20210502154748287.png)
 
 - **裁剪 + 不重复/重复(等效)**：
-![](https://img-blog.csdnimg.cn/20210501192854124.png)
+![](https://img-blog.csdnimg.cn/20210502154629691.png)
 
 ### 关于
 
-![](https://img-blog.csdnimg.cn/20210501190939829.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210502154839936.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ## 非GNOME桌面
 ### 自定义IBus主题
