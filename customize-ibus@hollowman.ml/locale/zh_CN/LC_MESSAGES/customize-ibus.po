@@ -78,7 +78,6 @@ msgid "Horizontal"
 msgstr "水平"
 
 #: prefs.js:63
-#, fuzzy
 msgid "Don't Remember State"
 msgstr "不记住状态"
 
