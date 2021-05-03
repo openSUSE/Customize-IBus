@@ -164,7 +164,7 @@ const CustomizeIBus = GObject.registerClass(
       this._notebook = new Gtk.Notebook();
       this.add(this._notebook);
 
-      this._ibus_basic = this._listFrameMaker(_("Basic"));
+      this._ibus_basic = this._listFrameMaker(_("General"));
       this._ibus_basic._add(this._field_enable_orien, this._field_orientation);
       this._ibus_basic._add(
         this._field_use_custom_font,
@@ -412,10 +412,10 @@ const CustomizeIBus = GObject.registerClass(
 
     _listFrameMaker(lbl) {
       let box = new Gtk.Box({
-        margin_start: 30,
-        margin_end: 30,
-        margin_top: 30,
-        margin_bottom: 30,
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
         orientation: Gtk.Orientation.VERTICAL,
       });
       let frame = new Gtk.Frame({
@@ -451,14 +451,14 @@ const CustomizeIBus = GObject.registerClass(
 
     _aboutPage() {
       let box = new Gtk.Box({
-        margin_start: 30,
-        margin_end: 30,
-        margin_top: 30,
-        margin_bottom: 30,
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
         orientation: Gtk.Orientation.VERTICAL,
       });
       let frame = new Gtk.Frame({
-        margin_top: 30,
+        margin_top: 10,
       });
 
       box.add(frame);
@@ -485,8 +485,10 @@ const CustomizeIBus = GObject.registerClass(
       }
       frame.grid.attach(
         new Gtk.Image({
-          pixbuf: GdkPixbuf.Pixbuf.new_from_file(
-            GLib.build_filenamev([Me.dir.get_path(), "img", "logo.jpeg"])
+          pixbuf: GdkPixbuf.Pixbuf.new_from_file_at_size(
+            GLib.build_filenamev([Me.dir.get_path(), "img", "logo.png"]),
+            80,
+            80
           ),
         }),
         0,
@@ -576,17 +578,32 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _basicHelpPage(frame) {
-      frame.grid.attach(
-        new Gtk.Label({
-          use_markup: true,
-          label: "<b>" + _("Help") + "</b>",
-        }),
-        0,
-        frame.grid._row++,
-        1,
-        1
-      );
-      frame.grid.attach(
+      let expanderFrame = new Gtk.Frame({
+        margin_top: 10,
+      });
+      expanderFrame.grid = new Gtk.Grid({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        hexpand: true,
+        row_spacing: 12,
+        column_spacing: 18,
+        row_homogeneous: false,
+        column_homogeneous: false,
+      });
+      expanderFrame.grid._row = 0;
+      expanderFrame.add(expanderFrame.grid);
+
+      let expander = new Gtk.Expander({
+        use_markup: true,
+        child: expanderFrame,
+        expanded: true,
+        label: "<b>💡" + _("Help") + "</b>",
+      });
+      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
+
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -595,11 +612,11 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );
-      frame.grid.attach(
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -608,24 +625,39 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );
     }
 
     _themeHelpPage(frame) {
-      frame.grid.attach(
-        new Gtk.Label({
-          use_markup: true,
-          label: "<b>" + _("Help") + "</b>",
-        }),
-        0,
-        frame.grid._row++,
-        1,
-        1
-      );
-      frame.grid.attach(
+      let expanderFrame = new Gtk.Frame({
+        margin_top: 10,
+      });
+      expanderFrame.grid = new Gtk.Grid({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        hexpand: true,
+        row_spacing: 12,
+        column_spacing: 18,
+        row_homogeneous: false,
+        column_homogeneous: false,
+      });
+      expanderFrame.grid._row = 0;
+      expanderFrame.add(expanderFrame.grid);
+
+      let expander = new Gtk.Expander({
+        use_markup: true,
+        child: expanderFrame,
+        expanded: true,
+        label: "<b>💡" + _("Help") + "</b>",
+      });
+      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
+
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -634,11 +666,11 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );
-      frame.grid.attach(
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -647,11 +679,11 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );
-      frame.grid.attach(
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -660,11 +692,11 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );
-      frame.grid.attach(
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -673,24 +705,39 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );
     }
 
     _bgHelpPage(frame) {
-      frame.grid.attach(
-        new Gtk.Label({
-          use_markup: true,
-          label: "<b>" + _("Help") + "</b>",
-        }),
-        0,
-        frame.grid._row++,
-        1,
-        1
-      );
-      frame.grid.attach(
+      let expanderFrame = new Gtk.Frame({
+        margin_top: 10,
+      });
+      expanderFrame.grid = new Gtk.Grid({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        hexpand: true,
+        row_spacing: 12,
+        column_spacing: 18,
+        row_homogeneous: false,
+        column_homogeneous: false,
+      });
+      expanderFrame.grid._row = 0;
+      expanderFrame.add(expanderFrame.grid);
+
+      let expander = new Gtk.Expander({
+        use_markup: true,
+        child: expanderFrame,
+        expanded: true,
+        label: "<b>💡" + _("Help") + "</b>",
+      });
+      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
+
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -699,11 +746,11 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );
-      frame.grid.attach(
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -712,11 +759,11 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );
-      frame.grid.attach(
+      expanderFrame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
@@ -725,7 +772,7 @@ const CustomizeIBus = GObject.registerClass(
           ),
         }),
         0,
-        frame.grid._row++,
+        expanderFrame.grid._row++,
         1,
         1
       );

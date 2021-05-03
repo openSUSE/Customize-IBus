@@ -1,6 +1,6 @@
 pkgbase = gnome-shell-extension-customize-ibus
 	pkgdesc = Customize IBus for orientation, font, ascii mode auto-switch; theme and background picture follow GNOME Night Light Mode.
-	pkgver = 29
+	pkgver = 31
 	pkgrel = 1
 	epoch = 0
 	url = https://extensions.gnome.org/extension/4112/customize-ibus/
