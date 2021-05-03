@@ -1,6 +1,6 @@
 %global commit 55b8fe00c79c0834161083e43ce4bb4aa3ab2d7c
-%global extension_version 30
-%global date 20210502
+%global extension_version 32
+%global date 20210503
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -43,7 +43,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-30.20210502git55b8fe0
+* Mon May 03 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-32.20210503git55b8fe0
+- Change extension logo and UI.
+
+* Sun May 02 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-30.20210502git55b8fe0
 - Add Remember Input State options.
 
 * Sat May 01 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-28.20210501git017ebaa
