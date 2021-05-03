@@ -19,11 +19,11 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 你也可以在[https://extensions.gnome.org/local/](https://extensions.gnome.org/local/)中点击Customize IBus插件的配置图标来打开该选项。
 
-![](https://img-blog.csdnimg.cn/20210501182753862.png)
+![](https://img-blog.csdnimg.cn/20210503123304137.png)
 
-### 基础
+### 常规
 
-![](https://img-blog.csdnimg.cn/20210502152732704.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210503123423422.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置IBus输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
@@ -34,9 +34,9 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 ### 主题
 
-![](https://img-blog.csdnimg.cn/20210501184432857.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/202105031235386.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-同基础部分，单击左侧复选框选中来进行功能的启用，单击右侧进行IBus主题样式表选择。
+同常规部分，单击左侧复选框选中来进行功能的启用，单击右侧进行IBus主题样式表选择。
 
 支持导入由 [IBus 主题工具](https://github.com/HollowMan6/IBus-Theme)生成的或者由[IBus 主题集合](https://github.com/HollowMan6/IBus-Theme-Hub)提供的样式表。
 
@@ -187,7 +187,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 ### 背景
 
-![](https://img-blog.csdnimg.cn/20210501191250634.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210503124317533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 支持使用图片来自定义IBus候选框背景，其具有比主题背景更高的优先级。
 
@@ -195,30 +195,30 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 请确保背景图片始终可以访问，如你的图片存放在可移动设备，系统默认不挂载，每次手动挂载后请关闭并重新开启对应`自定义背景`来使其生效。
 
-同基础部分，单击左侧复选框选中来进行功能的启用，单击最右侧进行IBus输入候选框背景图片的选择。
+同常规部分，单击左侧复选框选中来进行功能的启用，单击最右侧进行IBus输入候选框背景图片的选择。
 
 你还可以设定背景图片显示模式，可以设定背景图片是否重复显示，以及显示方式为居中，铺满或者裁剪。
 
-示例各种图片显示模式（使用的图片为：https://github.com/HollowMan6/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.jpeg ）：
+示例各种图片显示模式（使用128x128的压缩后图片：https://github.com/HollowMan6/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.png ）：
 
 - **居中 + 不重复**：
-![](https://img-blog.csdnimg.cn/20210502154455434.png)
+![](https://img-blog.csdnimg.cn/20210503124715765.png)
 
 - **居中 + 重复**：
-![](https://img-blog.csdnimg.cn/20210502154706164.png)
+![](https://img-blog.csdnimg.cn/2021050312502110.png)
 
 - **铺满 + 不重复**：
-![](https://img-blog.csdnimg.cn/20210502154540732.png)
+![](https://img-blog.csdnimg.cn/20210503124814264.png)
 
 - **铺满 + 重复**：
-![](https://img-blog.csdnimg.cn/20210502154748287.png)
+![](https://img-blog.csdnimg.cn/20210503125129957.png)
 
 - **裁剪 + 不重复/重复(等效)**：
-![](https://img-blog.csdnimg.cn/20210502154629691.png)
+![](https://img-blog.csdnimg.cn/20210503124907786.png)
 
 ### 关于
 
-![](https://img-blog.csdnimg.cn/20210502154839936.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210503124209248.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ## 非GNOME桌面
 ### 自定义IBus主题
@@ -229,7 +229,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 下列步骤可以更改IBus的GTK主题：
 
-1. 下载[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)源代码仓库到本地。
+1. 下载[IBus Theme Tools](https://github.com/HollowMan6/IBus-Theme)源代码仓库到本地。
 ```bash
 git clone https://github.com/HollowMan6/IBus-Theme.git
 cd IBus-Theme
