@@ -23,7 +23,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 ### 常规
 
-![](https://img-blog.csdnimg.cn/20210503123423422.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210505013125487.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置IBus输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
@@ -32,9 +32,23 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 点击`自动切换源`左侧的复选框来进行选中，即可支持配置窗口切换时输入法默认切换语言。点击最右侧进行选择，支持设定为中文或者英文，如果选择保持则保持切换窗口时输入法状态不变。在右侧你还可以选择是否记住输入状态。当记住输入状态被启用时，那么你在一个应用中手动切换了输入源，则该应用的输入源模式将会被自动记住。另外，新打开的应用将会遵循你的输入源配置，应用的输入状态将会永远被记住。
 
+### 托盘
+
+![](https://img-blog.csdnimg.cn/20210505013201963.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+
+这里你可以选择为位于系统托盘处的IBus输入源指示菜单增加额外的菜单项，各菜单功能如文字描述，点击右侧切换按钮即可启用。
+
+所有菜单都启用：
+![](https://img-blog.csdnimg.cn/2021050501344893.png)
+
+你还可以通过点击最上方的按钮来启动或者重启IBus：
+
+![](https://img-blog.csdnimg.cn/20210505013532470.png)
+
+
 ### 主题
 
-![](https://img-blog.csdnimg.cn/202105031235386.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210505013613161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 同常规部分，单击左侧复选框选中来进行功能的启用，单击右侧进行IBus主题样式表选择。
 
@@ -187,7 +201,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 ### 背景
 
-![](https://img-blog.csdnimg.cn/20210503124317533.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210505013654336.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 支持使用图片来自定义IBus候选框背景，其具有比主题背景更高的优先级。
 
@@ -218,7 +232,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 ### 关于
 
-![](https://img-blog.csdnimg.cn/20210503124209248.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210505013724421.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ## 非GNOME桌面
 ### 自定义IBus主题
@@ -253,7 +267,7 @@ chmod +x IBus-Theme.py
 
 6. 若无任何错误提示，则设定成功。现在使用IBus输入法你可以看到主题已经换成了你设定的GTK主题，并且重启之后也不会失效，因为自动切换主题命令已经加入了你的自启动目录`$HOME/.config/autostart/`中。
 
-## 自定义IBus字体字号
+### 自定义IBus字体字号
 
 `$HOME/.config/gtk-3.0/settings.ini`文件定义了当前的GTK3主题及字体字号。
 
