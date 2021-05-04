@@ -1,4 +1,4 @@
-%global commit a5226c2b39dd64429015216b94dd83f4aaf58ea2
+%global commit cfed4c2ac5f071e78da9223a5f7a82272de3ab43
 %global extension_version 34
 %global date 20210505
 %global shell_version 40.0
@@ -24,8 +24,8 @@ Requires:       gnome-shell >= %{shell_version}
 Requires:       gnome-tweaks
 
 %description
-Customize IBus for orientation, font, ascii mode auto-switch; theme and background picture follow GNOME Night Light Mode.
-在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode.
+在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
 %prep
 %%setup -q -n Customize-IBus-%{commit}
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Wed May 05 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-34.20210505gita5226c2
+* Wed May 05 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-34.20210505gitcfed4c2
 - Add tray menu entries modifications and start/restart IBus button.
 
 * Mon May 03 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-32.20210503gita5226c2
