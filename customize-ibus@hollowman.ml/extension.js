@@ -672,22 +672,54 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      menuibusemoji: GObject.param_spec_boolean(
+        "menuibusemoji",
+        "menuibusemoji",
+        "menuibusemoji",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      menuextpref: GObject.param_spec_boolean(
+        "menuextpref",
+        "menuextpref",
+        "menuextpref",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      menuibuspref: GObject.param_spec_boolean(
+        "menuibuspref",
+        "menuibuspref",
+        "menuibuspref",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      menuibusrest: GObject.param_spec_boolean(
+        "menuibusrest",
+        "menuibusrest",
+        "menuibusrest",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      menuibusexit: GObject.param_spec_boolean(
+        "menuibusexit",
+        "menuibusexit",
+        "menuibusexit",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      theme: GObject.param_spec_string(
+        "ibusresttime",
+        "ibusresttime",
+        "ibusresttime",
+        "",
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class Extensions extends GObject.Object {
     _init() {
       super._init();
       this._bindSettings();
-      this._showExtensionItem = InputSourceIndicator.menu.addAction(
-        _("Customize IBus"),
-        this._showInPanel.bind(InputSourceIndicator)
-      );
-      this._showExtensionItem.visible = true;
-    }
-
-    _showInPanel() {
-      Main.overview.hide();
-      Util.spawn(["gnome-shell-extension-prefs", Me.metadata.uuid.toString()]);
     }
 
     _bindSettings() {
@@ -726,6 +758,42 @@ const Extensions = GObject.registerClass(
         Fields.ENABLECUSTOMTHEMENIGHT,
         this,
         "themenight",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.MENUIBUSEMOJI,
+        this,
+        "menuibusemoji",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.MENUEXTPREF,
+        this,
+        "menuextpref",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.MENUIBUSPREF,
+        this,
+        "menuibuspref",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.MENUIBUSREST,
+        this,
+        "menuibusrest",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.MENUIBUSEXIT,
+        this,
+        "menuibusexit",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.IBUSRESTTIME,
+        this,
+        "ibusresttime",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -827,6 +895,118 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    set menuibusemoji(menuibusemoji) {
+      if (menuibusemoji) {
+        if (this._menuibusemoji) return;
+        this._menuibusemoji = InputSourceIndicator.menu.addAction(
+          _("Copy Emoji"),
+          this._MenuIBusEmoji.bind(InputSourceIndicator)
+        );
+        this._menuibusemoji.visible = true;
+      } else {
+        if (!this._menuibusemoji) return;
+        this._menuibusemoji.visible = false;
+        delete this._menuibusemoji;
+      }
+    }
+
+    set menuextpref(menuextpref) {
+      if (menuextpref) {
+        if (this._menuextpref) return;
+        this._menuextpref = InputSourceIndicator.menu.addAction(
+          _("Customize IBus"),
+          this._MenuExtPref.bind(InputSourceIndicator)
+        );
+        this._menuextpref.visible = true;
+      } else {
+        if (!this._menuextpref) return;
+        this._menuextpref.visible = false;
+        delete this._menuextpref;
+      }
+    }
+
+    set menuibuspref(menuibuspref) {
+      if (menuibuspref) {
+        if (this._menuibuspref) return;
+        this._menuibuspref = InputSourceIndicator.menu.addAction(
+          _("IBus Preferences"),
+          this._menuIBusPref.bind(InputSourceIndicator)
+        );
+        this._menuibuspref.visible = true;
+      } else {
+        if (!this._menuibuspref) return;
+        this._menuibuspref.visible = false;
+        delete this._menuibuspref;
+      }
+    }
+
+    set menuibusrest(menuibusrest) {
+      if (menuibusrest) {
+        if (this._menuibusrest) return;
+        this._menuibusrest = InputSourceIndicator.menu.addAction(
+          _("Restart"),
+          this._MenuIBusRest.bind(InputSourceIndicator)
+        );
+        this._menuibusrest.visible = true;
+      } else {
+        if (!this._menuibusrest) return;
+        this._menuibusrest.visible = false;
+        delete this._menuibusrest;
+      }
+    }
+
+    set menuibusexit(menuibusexit) {
+      if (menuibusexit) {
+        if (this._menuibusexit) return;
+        this._menuibusexit = InputSourceIndicator.menu.addAction(
+          _("Exit"),
+          this._MenuIBusExit.bind(InputSourceIndicator)
+        );
+        this._menuibusexit.visible = true;
+      } else {
+        if (!this._menuibusexit) return;
+        this._menuibusexit.visible = false;
+        delete this._menuibusexit;
+      }
+    }
+
+    set ibusresttime(ibusresttime) {
+      if (this._not_extension_first_start) {
+        Util.spawnCommandLine("pkill ibus-daemon");
+        Util.spawnCommandLine("ibus-daemon -dx");
+        Util.spawn([
+          "notify-send",
+          _("Successfully triggered a restart for IBus"),
+          new Date(parseInt(ibusresttime)).toString(),
+        ]);
+      }
+      this._not_extension_first_start = true;
+    }
+
+    _MenuIBusEmoji() {
+      Main.overview.hide();
+      Util.spawn(["ibus", "emoji"]);
+    }
+
+    _MenuExtPref() {
+      Main.overview.hide();
+      ExtensionUtils.openPrefs(Me.metadata.uuid.toString());
+    }
+
+    _menuIBusPref() {
+      Main.overview.hide();
+      Util.spawn(["ibus-setup"]);
+    }
+
+    _MenuIBusRest() {
+      Main.overview.hide();
+      Util.spawn(["ibus", "restart"]);
+    }
+
+    _MenuIBusExit() {
+      Main.overview.hide();
+      Util.spawn(["ibus", "exit"]);
+    }
     destroy() {
       this.bg = false;
       this.bgdark = false;
@@ -835,8 +1015,12 @@ const Extensions = GObject.registerClass(
       this.orien = false;
       this.theme = false;
       this.themenight = false;
-      this._showExtensionItem.visible = false;
-      delete this._showExtensionItem;
+      this.menuibusemoji = false;
+      this.menuextpref = false;
+      this.menuibuspref = false;
+      this.menuibusrest = false;
+      this.menuibusexit = false;
+      this._not_extension_first_start = false;
     }
   }
 );

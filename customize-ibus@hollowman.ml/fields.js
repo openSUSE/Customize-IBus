@@ -28,4 +28,11 @@ var Fields = {
   BGDARKMODE: "custom-bg-dark-mode",
   BGREPEATMODE: "custom-bg-repeat-mode",
   BGDARKREPEATMODE: "custom-bg-dark-repeat-mode",
+  MENUIBUSEMOJI: "menu-ibus-emoji",
+  MENUEXTPREF: "menu-extension-preference",
+  MENUIBUSPREF: "menu-ibus-preference",
+  MENUIBUSVER: "menu-ibus-version",
+  MENUIBUSREST: "menu-ibus-restart",
+  MENUIBUSEXIT: "menu-ibus-exit",
+  IBUSRESTTIME: "ibus-restart-time",
 };

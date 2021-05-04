@@ -1,6 +1,6 @@
 %global commit a5226c2b39dd64429015216b94dd83f4aaf58ea2
-%global extension_version 32
-%global date 20210503
+%global extension_version 34
+%global date 20210505
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -43,6 +43,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Wed May 05 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-34.20210505gita5226c2
+- Add tray menu entries modifications and start/restart IBus button.
+
 * Mon May 03 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-32.20210503gita5226c2
 - Change extension logo and UI.
 

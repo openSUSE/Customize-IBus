@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 32\n"
+"Project-Id-Version: Customize Ibus 34\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-03 10:42+0800\n"
+"POT-Creation-Date: 2021-05-05 00:13+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,8 +37,28 @@ msgstr ""
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:682 prefs.js:505
+#: extension.js:902
+msgid "Copy Emoji"
+msgstr ""
+
+#: extension.js:917 prefs.js:594
 msgid "Customize IBus"
+msgstr ""
+
+#: extension.js:932
+msgid "IBus Preferences"
+msgstr ""
+
+#: extension.js:947
+msgid "Restart"
+msgstr ""
+
+#: extension.js:962
+msgid "Exit"
+msgstr ""
+
+#: extension.js:979
+msgid "Successfully triggered a restart for IBus"
 msgstr ""
 
 #: prefs.js:42
@@ -70,131 +90,159 @@ msgid "Candidates orientation"
 msgstr ""
 
 #: prefs.js:58
-msgid "Vertical"
-msgstr ""
-
-#: prefs.js:59
-msgid "Horizontal"
-msgstr ""
-
-#: prefs.js:63
-msgid "Don't Remember State"
+msgid "Start/Restart IBus"
 msgstr ""
 
 #: prefs.js:64
-msgid "Remember Input State"
+msgid "Vertical"
 msgstr ""
 
-#: prefs.js:68
-msgid "On"
+#: prefs.js:65
+msgid "Horizontal"
 msgstr ""
 
 #: prefs.js:69
-msgid "Off"
+msgid "Don't Remember State"
 msgstr ""
 
 #: prefs.js:70
+msgid "Remember Input State"
+msgstr ""
+
+#: prefs.js:74
+msgid "On"
+msgstr ""
+
+#: prefs.js:75
+msgid "Off"
+msgstr ""
+
+#: prefs.js:76
 msgid "Keep"
 msgstr ""
 
-#: prefs.js:74 prefs.js:80
+#: prefs.js:80 prefs.js:86
 msgid "Centered"
 msgstr ""
 
-#: prefs.js:75 prefs.js:81
+#: prefs.js:81 prefs.js:87
 msgid "Repeated"
 msgstr ""
 
-#: prefs.js:76 prefs.js:82
+#: prefs.js:82 prefs.js:88
 msgid "Zoom"
 msgstr ""
 
-#: prefs.js:86 prefs.js:91
+#: prefs.js:92 prefs.js:97
 msgid "No repeat"
 msgstr ""
 
-#: prefs.js:87 prefs.js:92
+#: prefs.js:93 prefs.js:98
 msgid "Repeat"
 msgstr ""
 
-#: prefs.js:102 prefs.js:110
+#: prefs.js:114 prefs.js:122
 msgid "Select an Image"
 msgstr ""
 
-#: prefs.js:107 prefs.js:115 prefs.js:126 prefs.js:134 prefs.js:140
-#: prefs.js:146 prefs.js:152 prefs.js:158
+#: prefs.js:119 prefs.js:127 prefs.js:138 prefs.js:146 prefs.js:152
+#: prefs.js:158 prefs.js:164 prefs.js:170
 msgid "(None)"
 msgstr ""
 
-#: prefs.js:121 prefs.js:129
+#: prefs.js:133 prefs.js:141
 msgid "Select an IBus Stylesheet"
 msgstr ""
 
-#: prefs.js:166
+#: prefs.js:178
 msgid "General"
 msgstr ""
 
-#: prefs.js:179
+#: prefs.js:191
+msgid "Tray"
+msgstr ""
+
+#: prefs.js:194
+msgid "Entry for <b>copying emoji</b>"
+msgstr ""
+
+#: prefs.js:199
+msgid "Entry for <b>this extension's preferences</b>"
+msgstr ""
+
+#: prefs.js:204
+msgid "Entry for <b>IBus preferences</b>"
+msgstr ""
+
+#: prefs.js:208
+msgid "Entry for <b>restarting IBus</b>"
+msgstr ""
+
+#: prefs.js:212
+msgid "Entry for <b>exiting IBus</b>"
+msgstr ""
+
+#: prefs.js:217
 msgid "Theme"
 msgstr ""
 
-#: prefs.js:187
+#: prefs.js:225
 msgid "Background"
 msgstr ""
 
-#: prefs.js:474
+#: prefs.js:563
 msgid "About"
 msgstr ""
 
-#: prefs.js:491
+#: prefs.js:580
 msgid "unknown (self-build ?)"
 msgstr ""
 
-#: prefs.js:513
+#: prefs.js:602
 msgid "Version: "
 msgstr ""
 
-#: prefs.js:525
+#: prefs.js:614
 msgid ""
-"Customize IBus for orientation, font, ascii mode auto-switch; theme and "
-"background picture follow GNOME Night Light Mode."
+"Customize IBus for orientation, font, ascii mode auto-switch, system tray "
+"menu entries; theme and background picture follow GNOME Night Light Mode."
 msgstr ""
 
-#: prefs.js:537
+#: prefs.js:626
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
 "\">hollowman@hollowman.ml</a>&gt;</span>"
 msgstr ""
 
-#: prefs.js:549
+#: prefs.js:638
 msgid ""
 "<span size=\"small\">Source Code: <a href=\"https://github.com/HollowMan6/"
 "Customize-IBus\">https://github.com/HollowMan6/Customize-IBus</a></span>"
 msgstr ""
 
-#: prefs.js:561
+#: prefs.js:650
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.</span>"
 msgstr ""
 
-#: prefs.js:573
+#: prefs.js:662
 msgid ""
 "<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/gpl"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 
-#: prefs.js:605 prefs.js:659 prefs.js:739
+#: prefs.js:694 prefs.js:748 prefs.js:789 prefs.js:869
 msgid "Help"
 msgstr ""
 
-#: prefs.js:614
+#: prefs.js:703
 msgid ""
 "Here you can set the IBus input window orientation, font, and also ascii "
 "mode auto-switch when windows are switched by users."
 msgstr ""
 
-#: prefs.js:627
+#: prefs.js:716
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is "
 "enabled, and you have set to <b>Remember Input State</b>, every opened APP's "
@@ -203,14 +251,21 @@ msgid ""
 "APP's Input State will be remembered forever.</span>"
 msgstr ""
 
-#: prefs.js:668
+#: prefs.js:757
+msgid ""
+"Here you can set to add additional menu entries to IBus input source "
+"indicator menu at system tray. You can also start or restart IBus by "
+"pressing the top button."
+msgstr ""
+
+#: prefs.js:798
 msgid ""
 "Support importing stylesheet generated by <a href=\"https://github.com/"
 "HollowMan6/IBus-Theme\">IBus Theme Tool</a> or provided by <a href=\"https://"
 "github.com/HollowMan6/IBus-Theme-Hub\">IBus Theme Hub</a>."
 msgstr ""
 
-#: prefs.js:681
+#: prefs.js:811
 msgid ""
 "When light theme and dark theme are turned on at the same time, the IBus "
 "theme will automatically follow GNOME Night Light mode, use light theme when "
@@ -219,27 +274,27 @@ msgid ""
 "on."
 msgstr ""
 
-#: prefs.js:694
+#: prefs.js:824
 msgid ""
 "<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
 "add any classes that's not started with <i>.candidate-*</i> into IBus "
 "stylesheet to prevent from disturbing system themes.</b></span>"
 msgstr ""
 
-#: prefs.js:707
+#: prefs.js:837
 msgid ""
 "<span size=\"small\"><b>Note:</b> If your IBus stylesheet has changed after "
 "application, please close and reopen the corresponding <b>custom IME theme</"
 "b> to make it effective.</span>"
 msgstr ""
 
-#: prefs.js:748
+#: prefs.js:878
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than theme defined background."
 msgstr ""
 
-#: prefs.js:761
+#: prefs.js:891
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -248,7 +303,7 @@ msgid ""
 "will always use the background that is turned on."
 msgstr ""
 
-#: prefs.js:774
+#: prefs.js:904
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "

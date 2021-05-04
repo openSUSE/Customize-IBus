@@ -92,5 +92,29 @@
         <range min="0" max="1"/>
         <summary>remember window input state</summary>
     </key>
+    <key type="b" name="menu-ibus-emoji">
+        <default>false</default>
+        <summary>show copy ibus emoji in tray menu</summary>
+    </key>
+    <key type="b" name="menu-extension-preference">
+        <default>true</default>
+        <summary>show extension preference in tray menu</summary>
+    </key>
+    <key type="b" name="menu-ibus-preference">
+        <default>false</default>
+        <summary>show ibus preference in tray menu</summary>
+    </key>
+    <key type="b" name="menu-ibus-restart">
+        <default>false</default>
+        <summary>show restart ibus in tray menu</summary>
+    </key>
+    <key type="b" name="menu-ibus-exit">
+        <default>false</default>
+        <summary>show exit ibus in tray menu</summary>
+    </key>
+    <key type="s" name="ibus-restart-time">
+        <default>""</default>
+        <summary>last ibus manually restart time</summary>
+    </key>
   </schema>
 </schemalist>
