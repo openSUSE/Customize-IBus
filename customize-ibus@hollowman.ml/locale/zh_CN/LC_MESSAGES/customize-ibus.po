@@ -126,7 +126,7 @@ msgid "Centered"
 msgstr "居中"
 
 #: prefs.js:81 prefs.js:87
-msgid "Repeated"
+msgid "Full"
 msgstr "铺满"
 
 #: prefs.js:82 prefs.js:88

@@ -78,13 +78,13 @@ const CustomizeIBus = GObject.registerClass(
 
       this._field_bg_mode = this._comboMaker([
         _("Centered"),
-        _("Repeated"),
+        _("Full"),
         _("Zoom"),
       ]);
 
       this._field_bg_dark_mode = this._comboMaker([
         _("Centered"),
-        _("Repeated"),
+        _("Full"),
         _("Zoom"),
       ]);
 
