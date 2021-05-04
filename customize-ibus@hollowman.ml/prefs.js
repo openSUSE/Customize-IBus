@@ -55,6 +55,12 @@ const CustomizeIBus = GObject.registerClass(
       this._field_enable_ascii = this._checkMaker(_("Auto switch ASCII mode"));
       this._field_enable_orien = this._checkMaker(_("Candidates orientation"));
 
+      this._restart_ibus = new Gtk.Button({
+        label: _("Start/Restart IBus"),
+        hexpand: true,
+        halign: Gtk.Align.CENTER,
+      });
+
       this._field_orientation = this._comboMaker([
         _("Vertical"),
         _("Horizontal"),
@@ -73,13 +79,13 @@ const CustomizeIBus = GObject.registerClass(
 
       this._field_bg_mode = this._comboMaker([
         _("Centered"),
-        _("Repeated"),
+        _("Full"),
         _("Zoom"),
       ]);
 
       this._field_bg_dark_mode = this._comboMaker([
         _("Centered"),
-        _("Repeated"),
+        _("Full"),
         _("Zoom"),
       ]);
 
@@ -92,6 +98,12 @@ const CustomizeIBus = GObject.registerClass(
         _("No repeat"),
         _("Repeat"),
       ]);
+
+      this._field_ibus_emoji = new Gtk.Switch();
+      this._field_extension_entry = new Gtk.Switch();
+      this._field_ibus_preference = new Gtk.Switch();
+      this._field_ibus_restart = new Gtk.Switch();
+      this._field_ibus_exit = new Gtk.Switch();
 
       this._field_custom_font = new Gtk.FontButton({
         font_name: gsettings.get_string(Fields.CUSTOMFONT),
@@ -177,6 +189,32 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._basicHelpPage(this._ibus_basic);
 
+      this._ibus_tray = this._listFrameMaker(_("Tray"));
+      this._ibus_tray._add(this._restart_ibus);
+      this._ibus_tray._add(
+        this._switchLabelMaker(_("Entry for <b>copying emoji</b>")),
+        this._field_ibus_emoji
+      );
+      this._ibus_tray._add(
+        this._switchLabelMaker(
+          _("Entry for <b>this extension's preferences</b>")
+        ),
+        this._field_extension_entry
+      );
+      this._ibus_tray._add(
+        this._switchLabelMaker(_("Entry for <b>IBus preferences</b>")),
+        this._field_ibus_preference
+      );
+      this._ibus_tray._add(
+        this._switchLabelMaker(_("Entry for <b>restarting IBus</b>")),
+        this._field_ibus_restart
+      );
+      this._ibus_tray._add(
+        this._switchLabelMaker(_("Entry for <b>exiting IBus</b>")),
+        this._field_ibus_exit
+      );
+      this._trayHelpPage(this._ibus_tray);
+
       this._ibus_theme = this._listFrameMaker(_("Theme"));
       this._ibus_theme._add(this._field_enable_custom_theme, this._cssPicker);
       this._ibus_theme._add(
@@ -210,6 +248,21 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._field_enable_orien.connect("notify::active", (widget) => {
         this._field_orientation.set_sensitive(widget.active);
+      });
+      this._field_ibus_emoji.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.MENUIBUSEMOJI, widget.active);
+      });
+      this._field_extension_entry.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.MENUEXTPREF, widget.active);
+      });
+      this._field_ibus_preference.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.MENUIBUSPREF, widget.active);
+      });
+      this._field_ibus_restart.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.MENUIBUSREST, widget.active);
+      });
+      this._field_ibus_exit.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.MENUIBUSEXIT, widget.active);
       });
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
@@ -248,6 +301,12 @@ const CustomizeIBus = GObject.registerClass(
       this._logoPicker.connect("clicked", () => {
         this._fileChooser.transient_for = this.get_toplevel();
         this._fileChooser.show();
+      });
+      this._restart_ibus.connect("clicked", () => {
+        gsettings.set_string(
+          Fields.IBUSRESTTIME,
+          new Date().getTime().toString()
+        );
       });
       this._fileDarkChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
@@ -379,6 +438,36 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.BGDARKREPEATMODE,
         this._field_bg_dark_repeat_mode,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.MENUIBUSEMOJI,
+        this._field_ibus_emoji,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.MENUEXTPREF,
+        this._field_extension_entry,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.MENUIBUSPREF,
+        this._field_ibus_preference,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.MENUIBUSREST,
+        this._field_ibus_restart,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.MENUIBUSEXIT,
+        this._field_ibus_exit,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -519,7 +608,7 @@ const CustomizeIBus = GObject.registerClass(
           label:
             "🎨 " +
             _(
-              "Customize IBus for orientation, font, ascii mode auto-switch; theme and background picture follow GNOME Night Light Mode."
+              "Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode."
             ),
         }),
         0,
@@ -622,6 +711,47 @@ const CustomizeIBus = GObject.registerClass(
           wrap: true,
           label: _(
             "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is enabled, and you have set to <b>Remember Input State</b>, every opened APP's input mode will be remembered if you have switched the input source manually in the APP's window, and the newly-opened APP will follow the configuration. APP's Input State will be remembered forever.</span>"
+          ),
+        }),
+        0,
+        expanderFrame.grid._row++,
+        1,
+        1
+      );
+    }
+
+    _trayHelpPage(frame) {
+      let expanderFrame = new Gtk.Frame({
+        margin_top: 10,
+      });
+      expanderFrame.grid = new Gtk.Grid({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        hexpand: true,
+        row_spacing: 12,
+        column_spacing: 18,
+        row_homogeneous: false,
+        column_homogeneous: false,
+      });
+      expanderFrame.grid._row = 0;
+      expanderFrame.add(expanderFrame.grid);
+
+      let expander = new Gtk.Expander({
+        use_markup: true,
+        child: expanderFrame,
+        expanded: true,
+        label: "<b>💡" + _("Help") + "</b>",
+      });
+      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
+
+      expanderFrame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            "Here you can set to add additional menu entries to IBus input source indicator menu at system tray. You can also start or restart IBus by pressing the top button."
           ),
         }),
         0,
@@ -782,6 +912,15 @@ const CustomizeIBus = GObject.registerClass(
       return new Gtk.CheckButton({
         label: x,
         hexpand: true,
+        halign: Gtk.Align.START,
+      });
+    }
+
+    _switchLabelMaker(x) {
+      return new Gtk.Label({
+        label: x,
+        hexpand: true,
+        use_markup: true,
         halign: Gtk.Align.START,
       });
     }
