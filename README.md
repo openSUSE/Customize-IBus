@@ -24,6 +24,15 @@
 ```bash
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
 sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
+sudo dnf update
+```
+
+## Debian/Ubuntu
+
+```bash
+echo "deb https://hollowman.ml/Customize-IBus/deb/ /" > /etc/apt/sources.list.d/customize-ibus-deb.list
+wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | apt-key add -
+sudo apt update
 ```
 
 # Customize IBus Distribution Repos
@@ -35,4 +44,13 @@ Customize IBus for orientation, font, ascii mode auto-switch, system tray menu e
 ```bash
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
 sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
+sudo dnf update
+```
+
+## Debian/Ubuntu
+
+```bash
+echo "deb https://hollowman.ml/Customize-IBus/deb/ /" > /etc/apt/sources.list.d/customize-ibus-deb.list
+wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | apt-key add -
+sudo apt update
 ```
