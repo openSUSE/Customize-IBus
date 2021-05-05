@@ -23,14 +23,16 @@
 
 ```bash
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
-mv customize-ibus-rpm.repo /etc/yum.repos.d/
+sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 ```
 
 # Customize IBus Distribution Repos
 
 Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode.
 
+## Fedora
+
 ```bash
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
-mv customize-ibus-rpm.repo /etc/yum.repos.d/
+sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 ```

@@ -2,3 +2,5 @@
 name=Customize IBus RPM
 baseurl=https://hollowman.ml/Customize-IBus/rpm
 enabled=1 
+gpgcheck=1
+gpgkey=https://hollowman.ml/Customize-IBus/hollowman.pgp
