@@ -19,7 +19,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 你也可以在[https://extensions.gnome.org/local/](https://extensions.gnome.org/local/)中点击Customize IBus插件的配置图标来打开该选项。
 
-![](https://img-blog.csdnimg.cn/20210503123304137.png)
+![](https://img-blog.csdnimg.cn/20210505112939201.png)
 
 ### 常规
 
@@ -39,11 +39,10 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 这里你可以选择为位于系统托盘处的IBus输入源指示菜单增加额外的菜单项，各菜单功能如文字描述，点击右侧切换按钮即可启用。
 
 所有菜单都启用：
-![](https://img-blog.csdnimg.cn/2021050501344893.png)
+![](https://img-blog.csdnimg.cn/20210505113237490.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 你还可以通过点击最上方的按钮来启动或者重启IBus：
-
-![](https://img-blog.csdnimg.cn/20210505013532470.png)
+![](https://img-blog.csdnimg.cn/20210505113524964.png)
 
 
 ### 主题
@@ -232,7 +231,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 ### 关于
 
-![](https://img-blog.csdnimg.cn/20210505013724421.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210505113716997.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ## 非GNOME桌面
 ### 自定义IBus主题
