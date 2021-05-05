@@ -30,8 +30,8 @@ sudo dnf update
 ## Debian/Ubuntu
 
 ```bash
-echo "deb https://hollowman.ml/Customize-IBus/deb/ /" > /etc/apt/sources.list.d/customize-ibus-deb.list
-wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | apt-key add -
+echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
+wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
 sudo apt update
 ```
 
@@ -50,7 +50,7 @@ sudo dnf update
 ## Debian/Ubuntu
 
 ```bash
-echo "deb https://hollowman.ml/Customize-IBus/deb/ /" > /etc/apt/sources.list.d/customize-ibus-deb.list
-wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | apt-key add -
+echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
+wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
 sudo apt update
 ```

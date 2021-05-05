@@ -1,0 +1,18 @@
+Package: gnome-shell-extension-customize-ibus
+Version: 35
+Architecture: all
+Maintainer: Hollow Man <hollowman@hollowman.ml>
+Depends: gnome-shell, gnome-tweaks
+Filename: ./gnome-shell-extension-customize-ibus_35_all.deb
+Size: 44730
+MD5sum: 6edb3a03fce48e1477100c7498d85c1c
+SHA1: 999478c7f83fa8f6bc5c8ce24ab161ce4a801c59
+SHA256: fbff580770cdad2217407a5f20238618a7a65c2809e1ad3a4e66dfd84226f23f
+Section: default
+Priority: extra
+Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
+Description: Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode.
+  在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+License: GPLv3
+Vendor: Hollow Man <hollowman@hollowman.ml>
+
