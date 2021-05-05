@@ -4,16 +4,41 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 ## GNOME桌面
 
-首先请确保安装了用于自定义IBus的GNOME Shell 扩展：https://extensions.gnome.org/extension/4112/customize-ibus/
+首先请确保安装了用于自定义IBus的GNOME Shell 扩展：[https://extensions.gnome.org/extension/4112/customize-ibus/](https://extensions.gnome.org/extension/4112/customize-ibus/)
 
-如果你不会安装，可以参考这里：https://linux.cn/article-9447-1.html 来从 Web 浏览器安装 GNOME Shell 扩展。
+### 安装
 
-如果你想将该插件作为系统插件为所有用户安装，你还可以从GitHub处下载打包好的Debian、Arch或RPM包：[https://github.com/HollowMan6/Customize-IBus/releases](https://github.com/HollowMan6/Customize-IBus/releases)
+可以参考这里：[https://linux.cn/article-9447-1.html](https://linux.cn/article-9447-1.html) 来从 Web 浏览器安装 GNOME Shell 扩展。
 
-如果你使用Arch系Linux，还可以直接使用AUR仓库安装：
+或者
+
+```bash
+git clone https://github.com/HollowMan6/Customize-IBus.git
+cd Customize-IBus && make install
+```
+
+如果你想将该插件作为系统插件为所有用户安装：
+- Arch 系：
+```bash
+yay -S gnome-shell-extension-customize-ibus
+```
 [![](https://img-blog.csdnimg.cn/20210502152203849.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
+- Fedora: 
+```bash
+wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
+sudo dnf update
+sudo dnf install gnome-shell-extension-customize-ibus
+```
+- Debian 系(Ubuntu): 
+```bash
+echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
+wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
+sudo apt update
+sudo apt install gnome-shell-extension-customize-ibus
+```
 
-安装之后，你会发现 IBus 输入源指示面板中多了一个菜单选项`自定义IBus`，点击后即可打开自定义IBus配置选项。如果没有该菜单项，请确保你安装了最新版的插件并且已经开启了该插件。
+安装之后，你会发现 IBus 输入源指示面板中多了一个菜单选项`自定义IBus`，点击后即可打开自定义IBus配置选项。如果没有该菜单项，你可以`Alt+F2`然后按`r`重启shell，或者注销之后重新登陆。如果还是不行，请确保你安装了最新版的插件并且已经开启了该插件。
 
 ![](https://img-blog.csdnimg.cn/20210501182259180.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
@@ -59,7 +84,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 如你的 IBus 样式表在应用后作出了更改，请关闭并重新开启对应`自定义主题`来使其生效。
 
-你可以到该网站下载更多GNOME Shell主题：https://www.pling.com/s/Gnome/browse/cat/134/order/latest/ ，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
+你可以到该网站下载更多GNOME Shell主题：[https://www.pling.com/s/Gnome/browse/cat/134/order/latest/](https://www.pling.com/s/Gnome/browse/cat/134/order/latest/) ，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
 
 [IBus 主题工具](https://github.com/HollowMan6/IBus-Theme)样式表生成借助于电脑上已经安装了的GNOME Shell主题进行IBus样式的提取，其提取步骤如下：
 
@@ -212,7 +237,9 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 你还可以设定背景图片显示模式，可以设定背景图片是否重复显示，以及显示方式为居中，铺满或者裁剪。
 
-示例各种图片显示模式（使用128x128的压缩后图片：https://github.com/HollowMan6/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.png ）：
+示例各种图片显示模式（使用128x128的压缩后图片：[https://github.com/HollowMan6/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.png](https://github.com/HollowMan6/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.png) ）：
+
+![](https://img-blog.csdnimg.cn/20210505155614345.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 - **居中 + 不重复**：
 ![](https://img-blog.csdnimg.cn/20210503124715765.png)
@@ -238,7 +265,7 @@ CSDN链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 非GNOME桌面环境下，IBus的显示效果是由GTK主题确定的。
 
-你可以到该网站下载更多GTK3/4主题：https://www.gnome-look.org/browse/cat/135/ ，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
+你可以到该网站下载更多GTK3/4主题：[https://www.gnome-look.org/browse/cat/135/](https://www.gnome-look.org/browse/cat/135/) ，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
 
 下列步骤可以更改IBus的GTK主题：
 
@@ -280,4 +307,6 @@ gtk-font-name=更纱黑体 SC 12
 
 上述表述中，`gtk-theme-name`指定了当前GTK主题为`Materia-light`，`gtk-font-name`指定了当前的字体为`更纱黑体 SC`，字号为`12`。
 
-可通过修改上述文件实现改变IBus字体和字号的目的。
+可通过修改上述文件实现改变GTK主题字体和字号的目的。
+
+当然你可以直接更改IBus首选项中的字体和字号设置。
