@@ -1,0 +1,4 @@
+[customizeibus]
+name=Customize IBus RPM
+baseurl=https://hollowman.ml/Customize-IBus/rpm
+enabled=1 
