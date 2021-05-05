@@ -1,7 +1,7 @@
 {
   "name": "customize-ibus",
-  "version": "33.0.0",
-  "description": "Customize IBus for orientation, shell theme, background picture, font and ascii mode auto-switch.",
+  "version": "35.0.0",
+  "description": "Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode.",
   "dependencies": {
     "eslint": "^7.25.0",
     "eslint-config-prettier": "^8.3.0",

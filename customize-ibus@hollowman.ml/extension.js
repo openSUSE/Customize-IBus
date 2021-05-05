@@ -707,7 +707,7 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
-      theme: GObject.param_spec_string(
+      ibusresttime: GObject.param_spec_string(
         "ibusresttime",
         "ibusresttime",
         "ibusresttime",
