@@ -38,6 +38,32 @@ git clone https://github.com/HollowMan6/Customize-IBus.git
 cd Customize-IBus && make install
 ```
 
+如果你使用 Arch Linux, 也可使用 AUR 安装为系统插件:
+
+```bash
+yay -S gnome-shell-extension-customize-ibus
+```
+
+[![AUR](https://aur.archlinux.org/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
+
+[Fedora](../../tree/package-repo#fedora)也可使用RPM Repository安装为系统插件: 
+
+```bash
+wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
+sudo dnf update
+sudo dnf install gnome-shell-extension-customize-ibus
+```
+
+[Debian 系(Ubuntu)](../../tree/package-repo#debianubuntu) 也可使用Debian Repository安装为系统插件: 
+
+```bash
+echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
+wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
+sudo apt update
+sudo apt install gnome-shell-extension-customize-ibus
+```
+
 ## 功能
 
 ## 使用用户主题来更改 IBus 皮肤的实现
@@ -131,6 +157,32 @@ Or manually:
 ```bash
 git clone https://github.com/HollowMan6/Customize-IBus.git
 cd Customize-IBus && make install
+```
+
+If you use Arch Linux, you can also use AUR to install as a system extension:
+
+```bash
+yay -S gnome-shell-extension-customize-ibus
+```
+
+[![AUR](https://aur.archlinux.org/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
+
+You can also use RPM Repository to install as a system extension under [Fedora](../../tree/package-repo#fedora):
+
+```bash
+wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
+sudo dnf update
+sudo dnf install gnome-shell-extension-customize-ibus
+```
+
+You can also use Debian Repository to install as a system extension under [Debian (Ubuntu)](../../tree/package-repo#debianubuntu):
+
+```bash
+echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
+wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
+sudo apt update
+sudo apt install gnome-shell-extension-customize-ibus
 ```
 
 ## Features
