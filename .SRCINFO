@@ -8,7 +8,7 @@ pkgbase = gnome-shell-extension-customize-ibus
 	license = GPLv3
 	depends = gnome-shell>=40,
 	depends = gnome-tweaks
-	source = https://github.com/HollowMan6/Customize-IBus/archive/84a450e96ff4be08a5c5d89d65f2c4ac8bc41e63/Customize-IBus-84a450e96ff4be08a5c5d89d65f2c4ac8bc41e63.tar.gz
+	source = https://github.com/HollowMan6/Customize-IBus/archive/f9aa79742abbf1855bd11f6eb2d2c7ea45bee863/Customize-IBus-f9aa79742abbf1855bd11f6eb2d2c7ea45bee863.tar.gz
 	sha512sums = SKIP
 
 pkgname = gnome-shell-extension-customize-ibus

@@ -1,4 +1,4 @@
-%global commit 84a450e96ff4be08a5c5d89d65f2c4ac8bc41e63
+%global commit f9aa79742abbf1855bd11f6eb2d2c7ea45bee863
 %global extension_version 38
 %global date 20210507
 %global shell_version 40.0
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Fri May 07 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-38.20210507git84a450e
+* Fri May 07 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-38.20210507gitf9aa797
 - Add IBus version displaying and input source indicator.
 
 * Wed May 05 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-36.20210505gitb7423b7
