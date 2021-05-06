@@ -104,6 +104,10 @@
         <default>false</default>
         <summary>show ibus preference in tray menu</summary>
     </key>
+    <key type="b" name="menu-ibus-version">
+        <default>false</default>
+        <summary>show ibus version in tray menu</summary>
+    </key>
     <key type="b" name="menu-ibus-restart">
         <default>false</default>
         <summary>show restart ibus in tray menu</summary>

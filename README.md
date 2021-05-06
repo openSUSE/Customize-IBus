@@ -44,7 +44,7 @@ yay -S gnome-shell-extension-customize-ibus
 
 [![AUR](https://aur.archlinux.org/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
 
-[Fedora](../../tree/package-repo#fedora)也可使用RPM Repository安装为系统插件: 
+[Fedora](../../tree/package-repo#fedora)也可使用 RPM Repository 安装为系统插件:
 
 ```bash
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
@@ -53,7 +53,7 @@ sudo dnf update
 sudo dnf install gnome-shell-extension-customize-ibus
 ```
 
-[Debian 系(Ubuntu)](../../tree/package-repo#debianubuntu) 也可使用Debian Repository安装为系统插件: 
+[Debian 系(Ubuntu)](../../tree/package-repo#debianubuntu) 也可使用 Debian Repository 安装为系统插件:
 
 ```bash
 echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
@@ -82,7 +82,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 
 ### _提示：_
 
-1. 在 Fedora，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36)中通过了测试。
+1. 在 Fedora，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38)中通过了测试。
 2. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 3. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
@@ -128,6 +128,7 @@ background-size: cover;
 - [x] V30: 增加记住输入状态选项。
 - [x] V32: 更改扩展 logo 以及 UI 界面。
 - [x] V36: 增加托盘菜单项修改和启动/重启 IBus 按钮。
+- [x] V38: 增加 IBus 版本显示。
 
 ## 致谢
 
@@ -202,7 +203,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 
 ### _NOTE:_
 
-1. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36).
+1. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38).
 2. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 3. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
 
@@ -248,6 +249,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V30: Add Remember Input State options.
 - [x] V32: Change extension logo and UI.
 - [x] V36: Add tray menu entries modifications and start/restart IBus button.
+- [x] V38: Add IBus version displaying.
 
 ## Acknowledgements
 

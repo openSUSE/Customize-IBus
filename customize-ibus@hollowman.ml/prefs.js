@@ -4,7 +4,7 @@
 
 "use strict";
 
-const { Gio, Gtk, GObject, GLib, GdkPixbuf } = imports.gi;
+const { Gio, Gtk, GObject, GLib, IBus, GdkPixbuf } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
@@ -98,9 +98,17 @@ const CustomizeIBus = GObject.registerClass(
         _("Repeat"),
       ]);
 
-      this._field_ibus_emoji = new Gtk.Switch();
+      (this._ibus_version = new Gtk.Label({
+        use_markup: true,
+        hexpand: true,
+        halign: Gtk.Align.CENTER,
+        label:
+          "<b>" + _("IBus Version: ") + "</b>" + _("unknown (installed ?)"),
+      })),
+        (this._field_ibus_emoji = new Gtk.Switch());
       this._field_extension_entry = new Gtk.Switch();
       this._field_ibus_preference = new Gtk.Switch();
+      this._field_ibus_version = new Gtk.Switch();
       this._field_ibus_restart = new Gtk.Switch();
       this._field_ibus_exit = new Gtk.Switch();
 
@@ -171,6 +179,19 @@ const CustomizeIBus = GObject.registerClass(
       else this._cssDarkPicker.label = GLib.basename(filename);
     }
 
+    _updateIBusVersion() {
+      let IBusVersion = _("unknown (installed ?)");
+      if (IBus.MAJOR_VERSION)
+        IBusVersion =
+          IBus.MAJOR_VERSION +
+          "." +
+          IBus.MINOR_VERSION +
+          "." +
+          IBus.MICRO_VERSION;
+      this._ibus_version.label =
+        "<b>" + _("IBus Version: ") + "</b>" + IBusVersion;
+    }
+
     _bulidUI() {
       this._notebook = new Gtk.Notebook();
       this.set_child(this._notebook);
@@ -189,9 +210,10 @@ const CustomizeIBus = GObject.registerClass(
       this._basicHelpPage(this._ibus_basic);
 
       this._ibus_tray = this._listFrameMaker(_("Tray"));
+      this._ibus_tray._add(this._ibus_version);
       this._ibus_tray._add(this._restart_ibus);
       this._ibus_tray._add(
-        this._switchLabelMaker(_("Entry for <b>copying emoji</b>")),
+        this._switchLabelMaker(_("Entry for <b>copying Emoji</b>")),
         this._field_ibus_emoji
       );
       this._ibus_tray._add(
@@ -203,6 +225,10 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus_tray._add(
         this._switchLabelMaker(_("Entry for <b>IBus preferences</b>")),
         this._field_ibus_preference
+      );
+      this._ibus_tray._add(
+        this._switchLabelMaker(_("Entry for <b>IBus Version</b>")),
+        this._field_ibus_version
       );
       this._ibus_tray._add(
         this._switchLabelMaker(_("Entry for <b>restarting IBus</b>")),
@@ -257,6 +283,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_ibus_preference.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSPREF, widget.active);
       });
+      this._field_ibus_version.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.MENUIBUSVER, widget.active);
+      });
       this._field_ibus_restart.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSREST, widget.active);
       });
@@ -306,6 +335,7 @@ const CustomizeIBus = GObject.registerClass(
           Fields.IBUSRESTTIME,
           new Date().getTime().toString()
         );
+        this._updateIBusVersion();
       });
       this._fileDarkChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
@@ -467,6 +497,12 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.MENUIBUSVER,
+        this._field_ibus_version,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.MENUIBUSREST,
         this._field_ibus_restart,
         "active",
@@ -498,6 +534,7 @@ const CustomizeIBus = GObject.registerClass(
         this._updateCssDarkPicker.bind(this)
       );
       this._updateCssDarkPicker();
+      this._updateIBusVersion();
     }
 
     _listFrameMaker(lbl) {
@@ -754,7 +791,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to add additional menu entries to IBus input source indicator menu at system tray. You can also start or restart IBus by pressing the top button."
+            "Here you can set to add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment. You can also start or restart IBus by pressing the top button."
           ),
         }),
         0,

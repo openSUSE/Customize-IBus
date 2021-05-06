@@ -693,6 +693,13 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      menuibusver: GObject.param_spec_boolean(
+        "menuibusver",
+        "menuibusver",
+        "menuibusver",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
       menuibusrest: GObject.param_spec_boolean(
         "menuibusrest",
         "menuibusrest",
@@ -776,6 +783,12 @@ const Extensions = GObject.registerClass(
         Fields.MENUIBUSPREF,
         this,
         "menuibuspref",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.MENUIBUSVER,
+        this,
+        "menuibusver",
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
@@ -940,6 +953,21 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    set menuibusver(menuibusver) {
+      if (menuibusver) {
+        if (this._menuibusver) return;
+        this._menuibusver = InputSourceIndicator.menu.addAction(
+          _("IBus Version"),
+          this._MenuIBusVer.bind(InputSourceIndicator)
+        );
+        this._menuibusver.visible = true;
+      } else {
+        if (!this._menuibusver) return;
+        this._menuibusver.visible = false;
+        delete this._menuibusver;
+      }
+    }
+
     set menuibusrest(menuibusrest) {
       if (menuibusrest) {
         if (this._menuibusrest) return;
@@ -959,7 +987,7 @@ const Extensions = GObject.registerClass(
       if (menuibusexit) {
         if (this._menuibusexit) return;
         this._menuibusexit = InputSourceIndicator.menu.addAction(
-          _("Exit"),
+          _("Quit"),
           this._MenuIBusExit.bind(InputSourceIndicator)
         );
         this._menuibusexit.visible = true;
@@ -998,6 +1026,19 @@ const Extensions = GObject.registerClass(
       Util.spawn(["ibus-setup"]);
     }
 
+    _MenuIBusVer() {
+      Main.overview.hide();
+      Util.spawn([
+        "notify-send",
+        _("IBus Version"),
+        IBus.MAJOR_VERSION +
+          "." +
+          IBus.MINOR_VERSION +
+          "." +
+          IBus.MICRO_VERSION,
+      ]);
+    }
+
     _MenuIBusRest() {
       Main.overview.hide();
       Util.spawn(["ibus", "restart"]);
@@ -1018,6 +1059,7 @@ const Extensions = GObject.registerClass(
       this.menuibusemoji = false;
       this.menuextpref = false;
       this.menuibuspref = false;
+      this.menuibusver = false;
       this.menuibusrest = false;
       this.menuibusexit = false;
       this._not_extension_first_start = false;

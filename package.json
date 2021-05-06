@@ -1,6 +1,6 @@
 {
   "name": "customize-ibus",
-  "version": "36.0.0",
+  "version": "38.0.0",
   "description": "Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode.",
   "dependencies": {
     "eslint": "^7.25.0",
