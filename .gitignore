@@ -1,0 +1,9 @@
+# dependencies
+/node_modules
+
+# misc
+.DS_Store
+
+.husky
+package-lock.json
+yarn.lock
