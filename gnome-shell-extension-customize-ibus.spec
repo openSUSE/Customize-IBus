@@ -1,6 +1,6 @@
 %global commit 84a450e96ff4be08a5c5d89d65f2c4ac8bc41e63
 %global extension_version 38
-%global date 20210506
+%global date 20210507
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -24,8 +24,8 @@ Requires:       gnome-shell >= %{shell_version}
 Requires:       gnome-tweaks
 
 %description
-Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode.
-在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
+在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
 %prep
 %%setup -q -n Customize-IBus-%{commit}
@@ -43,8 +43,8 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Thu May 06 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-38.20210506git84a450e
-- Add IBus version displaying.
+* Fri May 07 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-38.20210507git84a450e
+- Add IBus version displaying and input source indicator.
 
 * Wed May 05 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-36.20210505gitb7423b7
 - Add tray menu entries modifications and start/restart IBus button.

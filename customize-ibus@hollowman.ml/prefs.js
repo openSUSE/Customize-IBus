@@ -98,19 +98,35 @@ const CustomizeIBus = GObject.registerClass(
         _("Repeat"),
       ]);
 
-      (this._ibus_version = new Gtk.Label({
+      this._field_indicator_animation = this._comboMaker([
+        _("None"),
+        _("Slide"),
+        _("Fade"),
+        _("All"),
+      ]);
+
+      this._ibus_version = new Gtk.Label({
         use_markup: true,
         hexpand: true,
         halign: Gtk.Align.CENTER,
         label:
           "<b>" + _("IBus Version: ") + "</b>" + _("unknown (installed ?)"),
-      })),
-        (this._field_ibus_emoji = new Gtk.Switch());
+      });
+      this._field_ibus_emoji = new Gtk.Switch();
       this._field_extension_entry = new Gtk.Switch();
       this._field_ibus_preference = new Gtk.Switch();
       this._field_ibus_version = new Gtk.Switch();
       this._field_ibus_restart = new Gtk.Switch();
       this._field_ibus_exit = new Gtk.Switch();
+      this._field_use_indicator = new Gtk.Switch();
+      this._field_indicator_only_toggle = new Gtk.Switch();
+
+      let adjustment = this._createAdjustment(Fields.INPUTINDHID, 1);
+      this._field_indicator_hide_time = new Gtk.Scale({
+        adjustment,
+        draw_value: true,
+        hexpand: true,
+      });
 
       this._field_custom_font = new Gtk.FontButton({
         font: gsettings.get_string(Fields.CUSTOMFONT),
@@ -240,6 +256,25 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._trayHelpPage(this._ibus_tray);
 
+      this._ibus_indicator = this._listFrameMaker(_("Indicator"));
+      this._ibus_indicator._add(
+        this._switchLabelMaker(_("Use input source indicator")),
+        this._field_use_indicator
+      );
+      this._ibus_indicator._add(
+        this._switchLabelMaker(_("Indicate only when switching input source")),
+        this._field_indicator_only_toggle
+      );
+      this._ibus_indicator._add(
+        this._switchLabelMaker(_("Indicater popup animation")),
+        this._field_indicator_animation
+      );
+      this._ibus_indicator._add(
+        this._switchLabelMaker(_("Indicater auto hide timeout")),
+        this._field_indicator_hide_time
+      );
+      this._indicatorHelpPage(this._ibus_indicator);
+
       this._ibus_theme = this._listFrameMaker(_("Theme"));
       this._ibus_theme._add(this._field_enable_custom_theme, this._cssPicker);
       this._ibus_theme._add(
@@ -291,6 +326,15 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._field_ibus_exit.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSEXIT, widget.active);
+      });
+      this._field_use_indicator.connect("notify::active", (widget) => {
+        this._field_indicator_only_toggle.set_sensitive(widget.active);
+        this._field_indicator_animation.set_sensitive(widget.active);
+        this._field_indicator_hide_time.set_sensitive(widget.active);
+        ibusGsettings.set_boolean(Fields.USEINPUTIND, widget.active);
+      });
+      this._field_indicator_only_toggle.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.INPUTINDTOG, widget.active);
       });
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
@@ -368,6 +412,15 @@ const CustomizeIBus = GObject.registerClass(
       this._field_remember_input.set_sensitive(this._field_enable_ascii.active);
       this._field_unkown_state.set_sensitive(this._field_enable_ascii.active);
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
+      this._field_indicator_only_toggle.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_animation.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_hide_time.set_sensitive(
+        this._field_use_indicator.active
+      );
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
       this._field_bg_dark_mode.set_sensitive(
@@ -514,6 +567,30 @@ const CustomizeIBus = GObject.registerClass(
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
+      gsettings.bind(
+        Fields.USEINPUTIND,
+        this._field_use_indicator,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDTOG,
+        this._field_indicator_only_toggle,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDANIM,
+        this._field_indicator_animation,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDHID,
+        this._field_indicator_only_toggle,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
       gsettings.connect(
         `changed::${Fields.CUSTOMBG}`,
         this._updateLogoPicker.bind(this)
@@ -535,6 +612,22 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._updateCssDarkPicker();
       this._updateIBusVersion();
+    }
+
+    _createAdjustment(key, step) {
+      let schemaKey = gsettings.settings_schema.get_key(key);
+      let [type, variant] = schemaKey.get_range().deep_unpack();
+      if (type !== "range")
+        throw new Error('Invalid key type "%s" for adjustment'.format(type));
+      let [lower, upper] = variant.deep_unpack();
+      let adj = new Gtk.Adjustment({
+        lower,
+        upper,
+        step_increment: step,
+        page_increment: step,
+      });
+      gsettings.bind(key, adj, "value", Gio.SettingsBindFlags.DEFAULT);
+      return adj;
     }
 
     _listFrameMaker(lbl) {
@@ -648,7 +741,7 @@ const CustomizeIBus = GObject.registerClass(
           label:
             "🎨 " +
             _(
-              "Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode."
+              "Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode."
             ),
         }),
         0,
@@ -792,6 +885,47 @@ const CustomizeIBus = GObject.registerClass(
           wrap: true,
           label: _(
             "Here you can set to add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment. You can also start or restart IBus by pressing the top button."
+          ),
+        }),
+        0,
+        expanderFrame.grid._row++,
+        1,
+        1
+      );
+    }
+
+    _indicatorHelpPage(frame) {
+      let expanderFrame = new Gtk.Frame({
+        margin_top: 10,
+      });
+      expanderFrame.grid = new Gtk.Grid({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        hexpand: true,
+        row_spacing: 12,
+        column_spacing: 18,
+        row_homogeneous: false,
+        column_homogeneous: false,
+      });
+      expanderFrame.grid._row = 0;
+      expanderFrame.set_child(expanderFrame.grid);
+
+      let expander = new Gtk.Expander({
+        use_markup: true,
+        child: expanderFrame,
+        expanded: true,
+        label: "<b>💡" + _("Help") + "</b>",
+      });
+      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
+
+      expanderFrame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set popup animation and auto hide timeout."
           ),
         }),
         0,

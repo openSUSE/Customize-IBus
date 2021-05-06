@@ -1,5 +1,5 @@
 {
-  "description": "Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode",
+  "description": "Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode",
   "gettext-domain": "customize-ibus",
   "name": "Customize IBus",
   "settings-schema": "org.gnome.shell.extensions.customize-ibus",
