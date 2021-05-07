@@ -121,7 +121,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_use_indicator = new Gtk.Switch();
       this._field_indicator_only_toggle = new Gtk.Switch();
 
-      let adjustment = this._createAdjustment(Fields.INPUTINDHID, 1);
+      let adjustment = this._createAdjustment(Fields.INPUTINDHID);
       this._field_indicator_hide_time = new Gtk.Scale({
         adjustment,
         draw_value: true,
@@ -614,7 +614,7 @@ const CustomizeIBus = GObject.registerClass(
       this._updateIBusVersion();
     }
 
-    _createAdjustment(key, step) {
+    _createAdjustment(key) {
       let schemaKey = gsettings.settings_schema.get_key(key);
       let [type, variant] = schemaKey.get_range().deep_unpack();
       if (type !== "range")
@@ -623,8 +623,6 @@ const CustomizeIBus = GObject.registerClass(
       let adj = new Gtk.Adjustment({
         lower,
         upper,
-        step_increment: step,
-        page_increment: step,
       });
       gsettings.bind(key, adj, "value", Gio.SettingsBindFlags.DEFAULT);
       return adj;

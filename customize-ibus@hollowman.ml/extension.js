@@ -153,7 +153,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
     }
 
     set inputindhid(inputindhid) {
-      this.hideTime = inputindhid * 1000;
+      this.hideTime = inputindhid;
     }
 
     _connectPanelService(panelService) {
@@ -205,14 +205,23 @@ const IBusInputSourceIndicater = GObject.registerClass(
     _updateVisibility(sourceToggle = false) {
       this.visible = !CandidatePopup.visible;
       if (this.onlyOnToggle) this.visible = this.onlyOnToggle && sourceToggle;
+      if (this._lastTimeOut) {
+        GLib.source_remove(this._lastTimeOut);
+        this._lastTimeOut = null;
+      }
       if (this.visible) {
         this.setPosition(this._dummyCursor, 0);
         this.open(BoxPointer.PopupAnimation[this.animation]);
         this.get_parent().set_child_above_sibling(this, null);
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, this.hideTime, () => {
-          this.close(BoxPointer.PopupAnimation[this.animation]);
-          return GLib.SOURCE_REMOVE;
-        });
+        this._lastTimeOut = GLib.timeout_add_seconds(
+          GLib.PRIORITY_DEFAULT,
+          this.hideTime,
+          () => {
+            this.close(BoxPointer.PopupAnimation[this.animation]);
+            this._lastTimeOut = null;
+            return GLib.SOURCE_REMOVE;
+          }
+        );
       } else {
         this.close(BoxPointer.PopupAnimation[this.animation]);
       }
