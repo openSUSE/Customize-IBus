@@ -133,6 +133,7 @@ background-size: cover;
 - [x] V32: 更改扩展 logo 以及 UI 界面。
 - [x] V36: 增加托盘菜单项修改和启动/重启 IBus 按钮。
 - [x] V38: 增加 IBus 版本显示，输入源指示器。
+- [ ] 当 GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836)被合并后，增加IBus输入框弹出动画配置功能。
 
 ## 致谢
 
@@ -258,6 +259,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V32: Change extension logo and UI.
 - [x] V36: Add tray menu entries modifications and start/restart IBus button.
 - [x] V38: Add IBus version displaying and input source indicator.
+- [ ] When GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836) got merged, add IBus Input Popup Box animation customization feature.
 
 ## Acknowledgements
 
