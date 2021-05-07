@@ -19,6 +19,7 @@ const {
   GObject,
 } = imports.gi;
 
+const BoxPointer = imports.ui.boxpointer;
 const Keyboard = imports.ui.status.keyboard;
 const InputSourceManager = Keyboard.getInputSourceManager();
 const InputSourceIndicator = Main.panel.statusArea.keyboard;
@@ -34,6 +35,7 @@ const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
+const INDICATORANI = ["NONE", "SLIDE", "FADE", "FULL"];
 const INPUTMODE = "InputMode";
 const BGMODES = ["Centered", "Repeated", "Zoom"];
 const BGREPEATMODES = ["no-repeat", "repeat"];
@@ -55,6 +57,208 @@ const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
 const ngsettings = new Gio.Settings({
   schema: "org.gnome.settings-daemon.plugins.color",
 });
+
+const IBusInputSourceIndicater = GObject.registerClass(
+  {
+    Properties: {
+      inputindtog: GObject.param_spec_boolean(
+        "inputindtog",
+        "inputindtog",
+        "inputindtog",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindanim: GObject.param_spec_uint(
+        "inputindanim",
+        "inputindanim",
+        "inputindanim",
+        0,
+        3,
+        3,
+        GObject.ParamFlags.READWRITE
+      ),
+      inputindhid: GObject.param_spec_uint(
+        "inputindhid",
+        "inputindhid",
+        "inputindhid",
+        1,
+        5,
+        2,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusInputSourceIndicater extends BoxPointer.BoxPointer {
+    _init() {
+      super._init(St.Side.TOP);
+      this._bindSettings();
+      this.visible = false;
+      this.style_class = "candidate-popup-boxpointer";
+      this._dummyCursor = new St.Widget({ opacity: 0 });
+      Main.layoutManager.uiGroup.add_actor(this._dummyCursor);
+      Main.layoutManager.addChrome(this);
+      let box = new St.BoxLayout({
+        style_class: "candidate-popup-content",
+        vertical: true,
+      });
+      this.bin.set_child(box);
+      this._inputIndicatorLabel = new St.Label({
+        style_class: "candidate-popup-text",
+        visible: true,
+      });
+      box.add(this._inputIndicatorLabel);
+
+      this._panelService = null;
+      this._overviewHiddenID = Main.overview.connect(
+        "hidden",
+        this._onWindowChanged.bind(this)
+      );
+      this._overviewShowingID = Main.overview.connect(
+        "showing",
+        this._onWindowChanged.bind(this)
+      );
+      this._onWindowChangedID = global.display.connect(
+        "notify::focus-window",
+        this._onWindowChanged.bind(this)
+      );
+    }
+
+    _bindSettings() {
+      gsettings.bind(
+        Fields.INPUTINDTOG,
+        this,
+        "inputindtog",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDANIM,
+        this,
+        "inputindanim",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDHID,
+        this,
+        "inputindhid",
+        Gio.SettingsBindFlags.GET
+      );
+    }
+
+    set inputindtog(inputindtog) {
+      this.onlyOnToggle = inputindtog;
+    }
+
+    set inputindanim(inputindanim) {
+      this.animation = INDICATORANI[inputindanim];
+    }
+
+    set inputindhid(inputindhid) {
+      this.hideTime = inputindhid * 1000;
+    }
+
+    _connectPanelService(panelService) {
+      this._panelService = panelService;
+      if (!panelService) return;
+
+      this._setCursorLocationID = panelService.connect(
+        "set-cursor-location",
+        (ps, x, y, w, h) => {
+          this._setDummyCursorGeometry(x, y, w, h);
+        }
+      );
+      try {
+        this._setCursorLocationRelativeID = panelService.connect(
+          "set-cursor-location-relative",
+          (ps, x, y, w, h) => {
+            if (!global.display.focus_window) return;
+            let window = global.display.focus_window.get_compositor_private();
+            this._setDummyCursorGeometry(window.x + x, window.y + y, w, h);
+          }
+        );
+      } catch (e) {
+        // Only recent IBus versions have support for this signal
+        // which is used for wayland clients. In order to work
+        // with older IBus versions we can silently ignore the
+        // signal's absence.
+      }
+      this._focusOutID = panelService.connect("focus-out", () => {
+        this.close(BoxPointer.PopupAnimation[this.animation]);
+      });
+      this._updatePropertyID = panelService.connect(
+        "update-property",
+        (engineName, prop) => {
+          if (prop.get_key() == INPUTMODE) {
+            this._inputIndicatorLabel.text = this._getInputLabel();
+            this._updateVisibility(true);
+          }
+        }
+      );
+    }
+
+    _setDummyCursorGeometry(x, y, w, h) {
+      this._dummyCursor.set_position(Math.round(x), Math.round(y));
+      this._dummyCursor.set_size(Math.round(w), Math.round(h));
+      this.setPosition(this._dummyCursor, 0);
+      this._updateVisibility();
+    }
+
+    _updateVisibility(sourceToggle = false) {
+      this.visible = !CandidatePopup.visible;
+      if (this.onlyOnToggle) this.visible = this.onlyOnToggle && sourceToggle;
+      if (this.visible) {
+        this.setPosition(this._dummyCursor, 0);
+        this.open(BoxPointer.PopupAnimation[this.animation]);
+        this.get_parent().set_child_above_sibling(this, null);
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, this.hideTime, () => {
+          this.close(BoxPointer.PopupAnimation[this.animation]);
+          return GLib.SOURCE_REMOVE;
+        });
+      } else {
+        this.close(BoxPointer.PopupAnimation[this.animation]);
+      }
+    }
+
+    _onWindowChanged() {
+      if (IBusManager._panelService !== this._panelService) {
+        this._connectPanelService(IBusManager._panelService);
+        global.log(_("IBus panel service connected!"));
+        this._inputIndicatorLabel.text = this._getInputLabel();
+      }
+    }
+
+    _getInputLabel() {
+      const labels = InputSourceIndicator._indicatorLabels;
+      return labels[InputSourceManager.currentSource.index].get_text();
+    }
+
+    _destroy_indicator() {
+      if (this._setCursorLocationID)
+        this._panelService.disconnect(this._setCursorLocationID),
+          (this._setCursorLocationID = 0);
+      if (this._setCursorLocationRelativeID)
+        this._panelService.disconnect(this._setCursorLocationRelativeID),
+          (this._setCursorLocationRelativeID = 0);
+      if (this._focusOutID)
+        this._panelService.disconnect(this._focusOutID), (this._focusOutID = 0);
+      if (this._updatePropertyID)
+        this._panelService.disconnect(this._updatePropertyID),
+          (this._updatePropertyID = 0);
+    }
+
+    destroy() {
+      if (this._onWindowChangedID)
+        global.display.disconnect(this._onWindowChangedID),
+          (this._onWindowChangedID = 0);
+      if (this._overviewShowingID)
+        Main.overview.disconnect(this._overviewShowingID),
+          (this._overviewShowingID = 0);
+      if (this._overviewHiddenID)
+        Main.overview.disconnect(this._overviewHiddenID),
+          (this._overviewHiddenID = 0);
+      this._destroy_indicator();
+    }
+  }
+);
 
 const IBusAutoSwitch = GObject.registerClass(
   {
@@ -693,6 +897,13 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      menuibusver: GObject.param_spec_boolean(
+        "menuibusver",
+        "menuibusver",
+        "menuibusver",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
       menuibusrest: GObject.param_spec_boolean(
         "menuibusrest",
         "menuibusrest",
@@ -712,6 +923,13 @@ const Extensions = GObject.registerClass(
         "ibusresttime",
         "ibusresttime",
         "",
+        GObject.ParamFlags.WRITABLE
+      ),
+      useinputind: GObject.param_spec_boolean(
+        "useinputind",
+        "useinputind",
+        "useinputind",
+        false,
         GObject.ParamFlags.WRITABLE
       ),
     },
@@ -779,6 +997,12 @@ const Extensions = GObject.registerClass(
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
+        Fields.MENUIBUSVER,
+        this,
+        "menuibusver",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
         Fields.MENUIBUSREST,
         this,
         "menuibusrest",
@@ -794,6 +1018,12 @@ const Extensions = GObject.registerClass(
         Fields.IBUSRESTTIME,
         this,
         "ibusresttime",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USEINPUTIND,
+        this,
+        "useinputind",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -895,6 +1125,17 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    set useinputind(useinputind) {
+      if (useinputind) {
+        if (this._useinputind) return;
+        this._useinputind = new IBusInputSourceIndicater();
+      } else {
+        if (!this._useinputind) return;
+        this._useinputind.destroy();
+        delete this._useinputind;
+      }
+    }
+
     set menuibusemoji(menuibusemoji) {
       if (menuibusemoji) {
         if (this._menuibusemoji) return;
@@ -940,6 +1181,21 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    set menuibusver(menuibusver) {
+      if (menuibusver) {
+        if (this._menuibusver) return;
+        this._menuibusver = InputSourceIndicator.menu.addAction(
+          _("IBus Version"),
+          this._MenuIBusVer.bind(InputSourceIndicator)
+        );
+        this._menuibusver.visible = true;
+      } else {
+        if (!this._menuibusver) return;
+        this._menuibusver.visible = false;
+        delete this._menuibusver;
+      }
+    }
+
     set menuibusrest(menuibusrest) {
       if (menuibusrest) {
         if (this._menuibusrest) return;
@@ -959,7 +1215,7 @@ const Extensions = GObject.registerClass(
       if (menuibusexit) {
         if (this._menuibusexit) return;
         this._menuibusexit = InputSourceIndicator.menu.addAction(
-          _("Exit"),
+          _("Quit"),
           this._MenuIBusExit.bind(InputSourceIndicator)
         );
         this._menuibusexit.visible = true;
@@ -998,6 +1254,19 @@ const Extensions = GObject.registerClass(
       Util.spawn(["ibus-setup"]);
     }
 
+    _MenuIBusVer() {
+      Main.overview.hide();
+      Util.spawn([
+        "notify-send",
+        _("IBus Version"),
+        IBus.MAJOR_VERSION +
+          "." +
+          IBus.MINOR_VERSION +
+          "." +
+          IBus.MICRO_VERSION,
+      ]);
+    }
+
     _MenuIBusRest() {
       Main.overview.hide();
       Util.spawn(["ibus", "restart"]);
@@ -1015,9 +1284,11 @@ const Extensions = GObject.registerClass(
       this.orien = false;
       this.theme = false;
       this.themenight = false;
+      this.useinputind = false;
       this.menuibusemoji = false;
       this.menuextpref = false;
       this.menuibuspref = false;
+      this.menuibusver = false;
       this.menuibusrest = false;
       this.menuibusexit = false;
       this._not_extension_first_start = false;

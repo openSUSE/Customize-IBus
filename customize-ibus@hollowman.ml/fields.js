@@ -35,4 +35,8 @@ var Fields = {
   MENUIBUSREST: "menu-ibus-restart",
   MENUIBUSEXIT: "menu-ibus-exit",
   IBUSRESTTIME: "ibus-restart-time",
+  USEINPUTIND: "use-input-indicator",
+  INPUTINDTOG: "input-indicator-only-on-toggle",
+  INPUTINDANIM: "input-indicator-animation",
+  INPUTINDHID: "input-indicator-hide-time",
 };

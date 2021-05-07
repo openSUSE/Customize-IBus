@@ -104,6 +104,10 @@
         <default>false</default>
         <summary>show ibus preference in tray menu</summary>
     </key>
+    <key type="b" name="menu-ibus-version">
+        <default>false</default>
+        <summary>show ibus version in tray menu</summary>
+    </key>
     <key type="b" name="menu-ibus-restart">
         <default>false</default>
         <summary>show restart ibus in tray menu</summary>
@@ -115,6 +119,24 @@
     <key type="s" name="ibus-restart-time">
         <default>""</default>
         <summary>last ibus manually restart time</summary>
+    </key>
+    <key type="b" name="use-input-indicator">
+        <default>true</default>
+        <summary>use input state indicator</summary>
+    </key>
+    <key type="b" name="input-indicator-only-on-toggle">
+        <default>false</default>
+        <summary>use input indicator only on toggle</summary>
+    </key>
+    <key type="u" name="input-indicator-animation">
+        <default>3</default>
+        <range min="0" max="3"/>
+        <summary>input state indicator popup animation</summary>
+    </key>
+    <key type="u" name="input-indicator-hide-time">
+        <default>2</default>
+        <range min="1" max="5"/>
+        <summary>input state indicator hide time</summary>
     </key>
   </schema>
 </schemalist>
