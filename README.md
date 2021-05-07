@@ -66,6 +66,10 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ## 功能
 
+## 输入源指示器
+
+![](img/indicator.gif)
+
 ## 使用用户主题来更改 IBus 皮肤的实现
 
 该功能已经被拆分，生成 IBus 皮肤样式表功能迁移到了[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
@@ -187,6 +191,10 @@ sudo apt install gnome-shell-extension-customize-ibus
 ```
 
 ## Features
+
+## Input Source Indicator
+
+![](img/indicator.gif)
 
 ## Realization of Customizing IBus with User Theme
 

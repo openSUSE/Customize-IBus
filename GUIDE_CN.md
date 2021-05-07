@@ -44,11 +44,11 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 你也可以在[https://extensions.gnome.org/local/](https://extensions.gnome.org/local/)中点击Customize IBus插件的配置图标来打开该选项。
 
-![](https://img-blog.csdnimg.cn/20210505112939201.png)
+![](https://img-blog.csdnimg.cn/202105071101023.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ### 常规
 
-![](https://img-blog.csdnimg.cn/20210505013125487.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210507110234282.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置IBus输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
@@ -59,20 +59,28 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 托盘
 
-![](https://img-blog.csdnimg.cn/20210505013201963.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210507110307451.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-这里你可以选择为位于系统托盘处的IBus输入源指示菜单增加额外的菜单项，各菜单功能如文字描述，点击右侧切换按钮即可启用。
+这里你可以选择为位于系统托盘处的IBus输入源指示菜单增加额外的菜单项，来复原IBus在非GNOME桌面的体验。各菜单功能如文字描述，点击右侧切换按钮即可启用。
 
 所有菜单都启用：
-![](https://img-blog.csdnimg.cn/20210505113237490.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/2021050711043135.png)
 
 你还可以通过点击最上方的按钮来启动或者重启IBus：
 ![](https://img-blog.csdnimg.cn/20210505113524964.png)
 
+## 指示
+
+![](https://img-blog.csdnimg.cn/20210507111217679.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+
+这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`指示器显示动画`和`自动隐藏时延`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`，`自动隐藏时延`支持1秒到5秒范围内设定，设定步进为0.1。
+
+示例动画：
+![](https://img-blog.csdnimg.cn/20210507111902567.gif)
 
 ### 主题
 
-![](https://img-blog.csdnimg.cn/20210505013613161.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210507110530929.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 同常规部分，单击左侧复选框选中来进行功能的启用，单击右侧进行IBus主题样式表选择。
 
@@ -225,7 +233,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 背景
 
-![](https://img-blog.csdnimg.cn/20210505013654336.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210507110719258.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 支持使用图片来自定义IBus候选框背景，其具有比主题背景更高的优先级。
 
@@ -258,7 +266,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 关于
 
-![](https://img-blog.csdnimg.cn/20210505113716997.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210507110756490.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ## 非GNOME桌面
 ### 自定义IBus主题
