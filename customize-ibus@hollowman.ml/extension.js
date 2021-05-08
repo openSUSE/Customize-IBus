@@ -241,7 +241,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
       if (this.onlyOnToggle) this.visible = this.onlyOnToggle && sourceToggle;
       if (this.onlyASCII)
         if (!ASCIIMODES.includes(this._inputIndicatorLabel.text))
-          this.visible=false;
+          this.visible = false;
       if (this._lastTimeOut) {
         GLib.source_remove(this._lastTimeOut);
         this._lastTimeOut = null;

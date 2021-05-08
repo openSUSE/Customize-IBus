@@ -133,7 +133,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_only_in_ascii = new Gtk.Switch();
 
       let adjustment = this._createAdjustment(Fields.INPUTINDHID);
-      this._field_indicator_enable_autohide = this._checkMaker(_("Enable Indicater auto hide timeout (unit: seconds)"));
+      this._field_indicator_enable_autohide = this._checkMaker(
+        _("Enable Indicater auto hide timeout (unit: seconds)")
+      );
       this._field_indicator_hide_time = new Gtk.Scale({
         adjustment,
         draw_value: true,
@@ -353,10 +355,13 @@ const CustomizeIBus = GObject.registerClass(
       this._field_ibus_exit.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSEXIT, widget.active);
       });
-      this._field_indicator_enable_autohide.connect("notify::active", (widget) => {
-        this._field_indicator_hide_time.set_sensitive(widget.active);
-        ibusGsettings.set_boolean(Fields.USEINDAUTOHID, widget.active);
-      });
+      this._field_indicator_enable_autohide.connect(
+        "notify::active",
+        (widget) => {
+          this._field_indicator_hide_time.set_sensitive(widget.active);
+          ibusGsettings.set_boolean(Fields.USEINDAUTOHID, widget.active);
+        }
+      );
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
         this._field_indicator_only_in_ascii.set_sensitive(widget.active);
@@ -368,9 +373,12 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_only_toggle.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.INPUTINDTOG, widget.active);
       });
-      this._field_indicator_only_in_ascii.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
-      });
+      this._field_indicator_only_in_ascii.connect(
+        "notify::active",
+        (widget) => {
+          ibusGsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
+        }
+      );
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
@@ -463,7 +471,8 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_indicator.active
       );
       this._field_indicator_hide_time.set_sensitive(
-        this._field_use_indicator.active && this._field_indicator_enable_autohide.active
+        this._field_use_indicator.active &&
+          this._field_indicator_enable_autohide.active
       );
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
