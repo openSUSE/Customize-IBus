@@ -76,9 +76,9 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ## 指示
 
-![](https://img-blog.csdnimg.cn/20210507111217679.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210508231128305.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`指示器显示动画`和`自动隐藏时延`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`，`自动隐藏时延`支持1秒到5秒范围内设定，设定步进为0.1。
+这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`和`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`，你还可以`启用指示器自动隐藏时延`，支持始终显示和1秒到5秒范围内设定隐藏时延，设定步进为0.1。
 
 示例动画：
 ![](https://img-blog.csdnimg.cn/20210507111902567.gif)
