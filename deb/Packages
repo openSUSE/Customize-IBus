@@ -4,10 +4,10 @@ Architecture: all
 Maintainer: Hollow Man <hollowman@hollowman.ml>
 Depends: gnome-shell, gnome-tweaks
 Filename: ./gnome-shell-extension-customize-ibus_39_all.deb
-Size: 48030
-MD5sum: 6e7a6640d35734ad2a3153c647074560
-SHA1: 48a837cccbb9b7b4d53f9b27dd0255666cf4153e
-SHA256: 60a17155c774b7f59f88502dc702ab335fe5036f4ce99c182c1e3257fc571272
+Size: 48434
+MD5sum: 7b1061af1ec92ae09c5c2e188b9c12d4
+SHA1: b816400bb1bf3a49f68909e9ca3be541f91d473b
+SHA256: 873b22b80f9ed68ff1e7c3db6eba3e97db7cbe84794f5663f8a2aa07fff2f30c
 Section: default
 Priority: extra
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
