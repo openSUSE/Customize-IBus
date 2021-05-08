@@ -68,6 +68,13 @@ const IBusInputSourceIndicater = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      inputindascii: GObject.param_spec_boolean(
+        "inputindascii",
+        "inputindascii",
+        "inputindascii",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
       inputindanim: GObject.param_spec_uint(
         "inputindanim",
         "inputindanim",
@@ -76,6 +83,13 @@ const IBusInputSourceIndicater = GObject.registerClass(
         3,
         3,
         GObject.ParamFlags.READWRITE
+      ),
+      useindautohid: GObject.param_spec_boolean(
+        "useindautohid",
+        "useindautohid",
+        "useindautohid",
+        false,
+        GObject.ParamFlags.WRITABLE
       ),
       inputindhid: GObject.param_spec_uint(
         "inputindhid",
@@ -131,9 +145,21 @@ const IBusInputSourceIndicater = GObject.registerClass(
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
+        Fields.INPUTINDASCII,
+        this,
+        "inputindascii",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
         Fields.INPUTINDANIM,
         this,
         "inputindanim",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USEINDAUTOHID,
+        this,
+        "useindautohid",
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
@@ -148,8 +174,16 @@ const IBusInputSourceIndicater = GObject.registerClass(
       this.onlyOnToggle = inputindtog;
     }
 
+    set inputindascii(inputindascii) {
+      this.onlyASCII = inputindascii;
+    }
+
     set inputindanim(inputindanim) {
       this.animation = INDICATORANI[inputindanim];
+    }
+
+    set useindautohid(useindautohid) {
+      this.enableAutoHide = useindautohid;
     }
 
     set inputindhid(inputindhid) {
@@ -205,6 +239,9 @@ const IBusInputSourceIndicater = GObject.registerClass(
     _updateVisibility(sourceToggle = false) {
       this.visible = !CandidatePopup.visible;
       if (this.onlyOnToggle) this.visible = this.onlyOnToggle && sourceToggle;
+      if (this.onlyASCII)
+        if (!ASCIIMODES.includes(this._inputIndicatorLabel.text))
+          this.visible=false;
       if (this._lastTimeOut) {
         GLib.source_remove(this._lastTimeOut);
         this._lastTimeOut = null;
@@ -213,15 +250,16 @@ const IBusInputSourceIndicater = GObject.registerClass(
         this.setPosition(this._dummyCursor, 0);
         this.open(BoxPointer.PopupAnimation[this.animation]);
         this.get_parent().set_child_above_sibling(this, null);
-        this._lastTimeOut = GLib.timeout_add_seconds(
-          GLib.PRIORITY_DEFAULT,
-          this.hideTime,
-          () => {
-            this.close(BoxPointer.PopupAnimation[this.animation]);
-            this._lastTimeOut = null;
-            return GLib.SOURCE_REMOVE;
-          }
-        );
+        if (this.enableAutoHide)
+          this._lastTimeOut = GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT,
+            this.hideTime,
+            () => {
+              this.close(BoxPointer.PopupAnimation[this.animation]);
+              this._lastTimeOut = null;
+              return GLib.SOURCE_REMOVE;
+            }
+          );
       } else {
         this.close(BoxPointer.PopupAnimation[this.animation]);
       }

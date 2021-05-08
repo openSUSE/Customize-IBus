@@ -130,8 +130,10 @@ const CustomizeIBus = GObject.registerClass(
       this._field_ibus_exit = new Gtk.Switch();
       this._field_use_indicator = new Gtk.Switch();
       this._field_indicator_only_toggle = new Gtk.Switch();
+      this._field_indicator_only_in_ascii = new Gtk.Switch();
 
       let adjustment = this._createAdjustment(Fields.INPUTINDHID);
+      this._field_indicator_enable_autohide = this._checkMaker(_("Enable Indicater auto hide timeout (unit: seconds)"));
       this._field_indicator_hide_time = new Gtk.Scale({
         adjustment,
         draw_value: true,
@@ -280,11 +282,15 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_only_toggle
       );
       this._ibus_indicator._add(
+        this._switchLabelMaker(_("Indicate only when using ASCII mode")),
+        this._field_indicator_only_in_ascii
+      );
+      this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicater popup animation")),
         this._field_indicator_animation
       );
       this._ibus_indicator._add(
-        this._switchLabelMaker(_("Indicater auto hide timeout")),
+        this._field_indicator_enable_autohide,
         this._field_indicator_hide_time
       );
       this._indicatorHelpPage(this._ibus_indicator);
@@ -347,14 +353,23 @@ const CustomizeIBus = GObject.registerClass(
       this._field_ibus_exit.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSEXIT, widget.active);
       });
+      this._field_indicator_enable_autohide.connect("notify::active", (widget) => {
+        this._field_indicator_hide_time.set_sensitive(widget.active);
+        ibusGsettings.set_boolean(Fields.USEINDAUTOHID, widget.active);
+      });
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
+        this._field_indicator_only_in_ascii.set_sensitive(widget.active);
         this._field_indicator_animation.set_sensitive(widget.active);
+        this._field_indicator_enable_autohide.set_sensitive(widget.active);
         this._field_indicator_hide_time.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USEINPUTIND, widget.active);
       });
       this._field_indicator_only_toggle.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.INPUTINDTOG, widget.active);
+      });
+      this._field_indicator_only_in_ascii.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
       });
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
@@ -438,11 +453,17 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_only_toggle.set_sensitive(
         this._field_use_indicator.active
       );
+      this._field_indicator_only_in_ascii.set_sensitive(
+        this._field_use_indicator.active
+      );
       this._field_indicator_animation.set_sensitive(
         this._field_use_indicator.active
       );
-      this._field_indicator_hide_time.set_sensitive(
+      this._field_indicator_enable_autohide.set_sensitive(
         this._field_use_indicator.active
+      );
+      this._field_indicator_hide_time.set_sensitive(
+        this._field_use_indicator.active && this._field_indicator_enable_autohide.active
       );
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
@@ -615,14 +636,26 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.INPUTINDASCII,
+        this._field_indicator_only_in_ascii,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.INPUTINDANIM,
         this._field_indicator_animation,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.USEINDAUTOHID,
+        this._field_indicator_enable_autohide,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.INPUTINDHID,
-        this._field_indicator_only_toggle,
+        this._field_indicator_hide_time,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -971,7 +1004,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set popup animation and auto hide timeout."
+            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, popup animation and enable autohide and auto hide timeout (in seconds)."
           ),
         }),
         0,
