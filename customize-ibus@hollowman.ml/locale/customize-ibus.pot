@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 40\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-08 10:37+0800\n"
+"POT-Creation-Date: 2021-05-08 11:56+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,49 +29,43 @@ msgstr ""
 msgid "remove custom background for IBus"
 msgstr ""
 
-#: extension.js:737
-msgid ""
-"Unable to change IBus Candidate Popup Animation since you use an old version "
-"of GNOME"
-msgstr ""
-
-#: extension.js:857
+#: extension.js:850
 msgid "loading light user theme for IBus:"
 msgstr ""
 
-#: extension.js:867
+#: extension.js:860
 msgid "loading dark user theme for IBus:"
 msgstr ""
 
-#: extension.js:872
+#: extension.js:865
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:1219
+#: extension.js:1212
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:1234 prefs.js:757
+#: extension.js:1227 prefs.js:757
 msgid "Customize IBus"
 msgstr ""
 
-#: extension.js:1249
+#: extension.js:1242
 msgid "IBus Preferences"
 msgstr ""
 
-#: extension.js:1264 extension.js:1337
+#: extension.js:1257 extension.js:1330
 msgid "IBus Version"
 msgstr ""
 
-#: extension.js:1279
+#: extension.js:1272
 msgid "Restart"
 msgstr ""
 
-#: extension.js:1294
+#: extension.js:1287
 msgid "Quit"
 msgstr ""
 
-#: extension.js:1311
+#: extension.js:1304
 msgid "Successfully triggered a restart for IBus"
 msgstr ""
 
