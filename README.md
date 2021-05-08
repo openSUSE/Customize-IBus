@@ -62,7 +62,11 @@ sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
 
-## 功能
+## 动画
+
+开启滑动:
+
+![](img/animation.gif)
 
 ## 输入源指示器
 
@@ -188,11 +192,15 @@ sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
 
-## Features
-
 ## Input Source Indicator
 
 ![](img/indicator.gif)
+
+## Animation
+
+With Slide enabled:
+
+![](img/animation.gif)
 
 ## Realization of Customizing IBus with User Theme
 

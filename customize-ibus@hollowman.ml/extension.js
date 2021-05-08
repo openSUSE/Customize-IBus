@@ -728,15 +728,8 @@ const IBusAnimation = GObject.registerClass(
     }
 
     set animation(animation) {
-      if (CandidatePopup._popupAnimation)
-        CandidatePopup._popupAnimation =
-          BoxPointer.PopupAnimation[INDICATORANI[animation]];
-      else
-        global.log(
-          _(
-            "Unable to change IBus Candidate Popup Animation since you use an old version of GNOME"
-          )
-        );
+      CandidatePopup._popupAnimation =
+        BoxPointer.PopupAnimation[INDICATORANI[animation]];
     }
 
     destroy() {
