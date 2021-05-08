@@ -128,10 +128,18 @@
         <default>false</default>
         <summary>use input indicator only on toggle</summary>
     </key>
+    <key type="b" name="input-indicator-only-use-ascii">
+        <default>false</default>
+        <summary>use input indicator only when using ASCII mode</summary>
+    </key>
     <key type="u" name="input-indicator-animation">
         <default>3</default>
         <range min="0" max="3"/>
         <summary>input state indicator popup animation</summary>
+    </key>
+    <key type="b" name="use-indicator-auto-hide">
+        <default>false</default>
+        <summary>enable input indicator auto hide</summary>
     </key>
     <key type="u" name="input-indicator-hide-time">
         <default>2</default>
@@ -145,7 +153,7 @@
     <key type="u" name="candidate-popup-animation">
         <default>3</default>
         <range min="0" max="3"/>
-        <summary>candidate- popup animation</summary>
+        <summary>candidate popup animation</summary>
     </key>
   </schema>
 </schemalist>
