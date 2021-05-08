@@ -12,6 +12,7 @@ for r in `gresource list $gs`; do
 done
 
 cd $HOME/gnome-shell-js/ui
+rm -rf ibusCandidatePopup.js
 
 wget https://gitlab.gnome.org/HollowMan6/gnome-shell/-/raw/HollowMan6-master-patch-85303/js/ui/ibusCandidatePopup.js
 
