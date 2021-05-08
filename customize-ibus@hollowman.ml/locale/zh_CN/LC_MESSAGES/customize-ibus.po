@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: customize-ibus 37\n"
+"Project-Id-Version: customize-ibus 39\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-07 10:35+0800\n"
+"POT-Creation-Date: 2021-05-08 13:40+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -17,55 +17,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:224
+#: extension.js:233
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服务连接成功！"
 
-#: extension.js:630
+#: extension.js:639
 msgid "loading background for IBus:"
 msgstr "正在为IBus加载背景:"
 
-#: extension.js:640
+#: extension.js:649
 msgid "remove custom background for IBus"
 msgstr "为IBus去除自定义背景"
 
-#: extension.js:805
+#: extension.js:850
 msgid "loading light user theme for IBus:"
 msgstr "正在为IBus加载浅色用户主题:"
 
-#: extension.js:815
+#: extension.js:860
 msgid "loading dark user theme for IBus:"
 msgstr "正在为IBus加载深色用户主题:"
 
-#: extension.js:820
+#: extension.js:865
 msgid "loading default theme for IBus"
 msgstr "正在为IBus加载当前系统主题"
 
-#: extension.js:1143
+#: extension.js:1212
 msgid "Copy Emoji"
 msgstr "复制 Emoji"
 
-#: extension.js:1158 prefs.js:732
+#: extension.js:1227 prefs.js:767
 msgid "Customize IBus"
 msgstr "自定义 IBus"
 
-#: extension.js:1173
+#: extension.js:1242
 msgid "IBus Preferences"
 msgstr "IBus 首选项"
 
-#: extension.js:1188 extension.js:1261
+#: extension.js:1257 extension.js:1330
 msgid "IBus Version"
 msgstr "IBus 版本"
 
-#: extension.js:1203
+#: extension.js:1272
 msgid "Restart"
 msgstr "重新启动"
 
-#: extension.js:1218
+#: extension.js:1287
 msgid "Quit"
 msgstr "退出"
 
-#: extension.js:1235
+#: extension.js:1304
 msgid "Successfully triggered a restart for IBus"
 msgstr "成功触发一次IBus的重新启动"
 
@@ -97,177 +97,181 @@ msgstr "自动切换源"
 msgid "Candidates orientation"
 msgstr "候选框方向"
 
-#: prefs.js:59
+#: prefs.js:58
+msgid "Candidates popup animation"
+msgstr "候选框动画"
+
+#: prefs.js:62
 msgid "Start/Restart IBus"
 msgstr "启动/重启IBus"
 
-#: prefs.js:65
+#: prefs.js:68
 msgid "Vertical"
 msgstr "竖直"
 
-#: prefs.js:66
+#: prefs.js:69
 msgid "Horizontal"
 msgstr "水平"
 
-#: prefs.js:70
+#: prefs.js:73
 msgid "Don't Remember State"
 msgstr "不记住状态"
 
-#: prefs.js:71
+#: prefs.js:74
 msgid "Remember Input State"
 msgstr "记住输入状态"
 
-#: prefs.js:75
+#: prefs.js:78
 msgid "On"
 msgstr "英文"
 
-#: prefs.js:76
+#: prefs.js:79
 msgid "Off"
 msgstr "中文"
 
-#: prefs.js:77
+#: prefs.js:80
 msgid "Keep"
 msgstr "保持"
 
-#: prefs.js:81 prefs.js:87
+#: prefs.js:84 prefs.js:90
 msgid "Centered"
 msgstr "居中"
 
-#: prefs.js:82 prefs.js:88
+#: prefs.js:85 prefs.js:91
 msgid "Full"
 msgstr "铺满"
 
-#: prefs.js:83 prefs.js:89
+#: prefs.js:86 prefs.js:92
 msgid "Zoom"
 msgstr "裁剪"
 
-#: prefs.js:93 prefs.js:98
+#: prefs.js:96 prefs.js:101
 msgid "No repeat"
 msgstr "不重复"
 
-#: prefs.js:94 prefs.js:99
+#: prefs.js:97 prefs.js:102
 msgid "Repeat"
 msgstr "重复"
 
-#: prefs.js:103
+#: prefs.js:106 prefs.js:113
 msgid "None"
 msgstr "无"
 
-#: prefs.js:104
+#: prefs.js:107 prefs.js:114
 msgid "Slide"
 msgstr "滑动"
 
-#: prefs.js:105
+#: prefs.js:108 prefs.js:115
 msgid "Fade"
 msgstr "渐退"
 
-#: prefs.js:106
+#: prefs.js:109 prefs.js:116
 msgid "All"
 msgstr "全包含"
 
-#: prefs.js:114 prefs.js:209
+#: prefs.js:124 prefs.js:219
 msgid "IBus Version: "
 msgstr "IBus版本："
 
-#: prefs.js:114 prefs.js:200
+#: prefs.js:124 prefs.js:210
 msgid "unknown (installed ?)"
 msgstr "未知（已安装？）"
 
-#: prefs.js:139 prefs.js:147
+#: prefs.js:149 prefs.js:157
 msgid "Select an Image"
 msgstr "选择一个图片"
 
-#: prefs.js:144 prefs.js:152 prefs.js:163 prefs.js:171 prefs.js:177
-#: prefs.js:183 prefs.js:189 prefs.js:195
+#: prefs.js:154 prefs.js:162 prefs.js:173 prefs.js:181 prefs.js:187
+#: prefs.js:193 prefs.js:199 prefs.js:205
 msgid "(None)"
 msgstr "（无）"
 
-#: prefs.js:158 prefs.js:166
+#: prefs.js:168 prefs.js:176
 msgid "Select an IBus Stylesheet"
 msgstr "选择一个IBus风格样式表"
 
-#: prefs.js:216
+#: prefs.js:226
 msgid "General"
 msgstr "常规"
 
-#: prefs.js:229
+#: prefs.js:243
 msgid "Tray"
 msgstr "托盘"
 
-#: prefs.js:233
+#: prefs.js:247
 msgid "Entry for <b>copying Emoji</b>"
 msgstr "添加<b>复制 Emoji </b>菜单"
 
-#: prefs.js:238
+#: prefs.js:252
 msgid "Entry for <b>this extension's preferences</b>"
 msgstr "添加<b>此扩展首选项</b>菜单"
 
-#: prefs.js:243
+#: prefs.js:257
 msgid "Entry for <b>IBus preferences</b>"
 msgstr "添加<b>IBus首选项</b>菜单"
 
-#: prefs.js:247
+#: prefs.js:261
 msgid "Entry for <b>IBus Version</b>"
 msgstr "添加<b>IBus版本</b>菜单"
 
-#: prefs.js:251
+#: prefs.js:265
 msgid "Entry for <b>restarting IBus</b>"
 msgstr "添加<b>重启IBus</b>菜单"
 
-#: prefs.js:255
+#: prefs.js:269
 msgid "Entry for <b>exiting IBus</b>"
 msgstr "添加<b>退出IBus</b>菜单"
 
-#: prefs.js:260
+#: prefs.js:274
 msgid "Indicator"
 msgstr "指示"
 
-#: prefs.js:262
+#: prefs.js:276
 msgid "Use input source indicator"
 msgstr "开启输入源指示器"
 
-#: prefs.js:266
+#: prefs.js:280
 msgid "Indicate only when switching input source"
 msgstr "仅当切换输入源指示"
 
-#: prefs.js:270
+#: prefs.js:284
 msgid "Indicater popup animation"
 msgstr "指示器显示动画"
 
-#: prefs.js:275
+#: prefs.js:289
 msgid "Indicater auto hide timeout"
 msgstr "指示器自动隐藏时延"
 
-#: prefs.js:290
+#: prefs.js:304
 msgid "Theme"
 msgstr "主题"
 
-#: prefs.js:298
+#: prefs.js:312
 msgid "Background"
 msgstr "背景"
 
-#: prefs.js:695
+#: prefs.js:730
 msgid "About"
 msgstr "关于"
 
-#: prefs.js:712
+#: prefs.js:747
 msgid "unknown (self-build ?)"
 msgstr "未知（自编译？）"
 
-#: prefs.js:740
+#: prefs.js:775
 msgid "Version: "
 msgstr "版本："
 
-#: prefs.js:752
+#: prefs.js:787
 msgid ""
-"Customize IBus for orientation, font, ascii mode auto-switch, system tray "
-"menu entries, input source indicator; theme and background picture follow "
-"GNOME Night Light Mode."
+"Customize IBus for orientation, animation, font, ascii mode auto-switch, "
+"system tray menu entries, input source indicator; theme and background "
+"picture follow GNOME Night Light Mode."
 msgstr ""
-"在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单、"
-"输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。"
+"在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、系统托盘"
+"菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。"
 
-#: prefs.js:764
+#: prefs.js:799
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
@@ -277,7 +281,7 @@ msgstr ""
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
 "\">hollowman@hollowman.ml</a>&gt;</span>"
 
-#: prefs.js:776
+#: prefs.js:811
 msgid ""
 "<span size=\"small\">Source Code: <a href=\"https://github.com/HollowMan6/"
 "Customize-IBus\">https://github.com/HollowMan6/Customize-IBus</a></span>"
@@ -285,12 +289,12 @@ msgstr ""
 "<span size=\"small\">源代码：<a href=\"https://github.com/HollowMan6/"
 "Customize-IBus\">https://github.com/HollowMan6/Customize-IBus</a></span>"
 
-#: prefs.js:788
+#: prefs.js:823
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.</span>"
 msgstr "<span size=\"small\">本程序不提供任何担保。</span>"
 
-#: prefs.js:800
+#: prefs.js:835
 msgid ""
 "<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/gpl"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
@@ -298,18 +302,29 @@ msgstr ""
 "<span size=\"small\">参见 <a href=\"https://www.gnu.org/licenses/gpl\">GNU 通"
 "用公共许可证，第三版或更高版本</a>以了解更多细节。</span>"
 
-#: prefs.js:832 prefs.js:886 prefs.js:927 prefs.js:968 prefs.js:1048
+#: prefs.js:867 prefs.js:934 prefs.js:975 prefs.js:1016 prefs.js:1096
 msgid "Help"
 msgstr "帮助"
 
-#: prefs.js:841
+#: prefs.js:876
 msgid ""
-"Here you can set the IBus input window orientation, font, and also ascii "
-"mode auto-switch when windows are switched by users."
+"Here you can set the IBus input window orientation, animation, font, and "
+"also ascii mode auto-switch when windows are switched by users."
 msgstr ""
-"这里你可以设定 IBus 候选框方向、字体，以及当窗口切换时输入法默认切换语言。"
+"这里你可以设定 IBus 候选框方向、动画、字体，以及当窗口切换时输入法默认切换语"
+"言。"
 
-#: prefs.js:854
+#: prefs.js:889
+msgid ""
+"<span size=\"small\"><b>Note: Candidates popup animation</b> can only work "
+"when you use GNOME with <a href='https://gitlab.gnome.org/GNOME/gnome-"
+"shell/-/merge_requests/1836'>this patch</a> merged.</span>"
+msgstr ""
+"<span size=\"small\"><b>注： 候选框动画</b> 当且仅当你使用的GNOME是该<a "
+"href='https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836'>补丁"
+"</a>被合并后的版本时才会生效。</span>"
+
+#: prefs.js:902
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is "
 "enabled, and you have set to <b>Remember Input State</b>, every opened APP's "
@@ -322,7 +337,7 @@ msgstr ""
 "将会被自动记住。另外，新打开的应用将会遵循你的输入源配置，应用的输入状态将会"
 "永远被记住。</span>"
 
-#: prefs.js:895
+#: prefs.js:943
 msgid ""
 "Here you can set to add additional menu entries to IBus input source "
 "indicator menu at system tray to restore the feelings on Non-GNOME desktop "
@@ -331,7 +346,7 @@ msgstr ""
 "这里你可以选择为位于系统托盘处的IBus输入源指示菜单增加额外的菜单项，来复原"
 "IBus在非GNOME桌面的体验。你还可以通过点击最上方的按钮来启动或者重启IBus。"
 
-#: prefs.js:936
+#: prefs.js:984
 msgid ""
 "Here you can set to show input source indicator, default is to show "
 "indicator everytime you type, move caret or switch input source. You can set "
@@ -342,7 +357,7 @@ msgstr ""
 "显示指示器。你可以设定仅当切换输入源时显示指示器，你还可以设定指示器显示动画"
 "和自动隐藏时延。"
 
-#: prefs.js:977
+#: prefs.js:1025
 msgid ""
 "Support importing stylesheet generated by <a href=\"https://github.com/"
 "HollowMan6/IBus-Theme\">IBus Theme Tool</a> or provided by <a href=\"https://"
@@ -352,7 +367,7 @@ msgstr ""
 "</a> 生成的或者由 <a href=\"https://github.com/HollowMan6/IBus-Theme-Hub"
 "\">IBus 主题集合</a> 提供的样式表。"
 
-#: prefs.js:990
+#: prefs.js:1038
 msgid ""
 "When light theme and dark theme are turned on at the same time, the IBus "
 "theme will automatically follow GNOME Night Light mode, use light theme when "
@@ -364,7 +379,7 @@ msgstr ""
 "使用浅色主题，开启时使用深色主题。当浅色主题和深色主题只有一个被开启时，扩展"
 "将会始终使用那个开启的主题。"
 
-#: prefs.js:1003
+#: prefs.js:1051
 msgid ""
 "<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
 "add any classes that's not started with <i>.candidate-*</i> into IBus "
@@ -373,7 +388,7 @@ msgstr ""
 "<span size=\"small\"><b><i>警告：</i> 如非调试需要，请勿在IBus主题样式表中加"
 "入非 <i>.candidate-*</i> 开头的类，以免干扰系统主题。</b></span>"
 
-#: prefs.js:1016
+#: prefs.js:1064
 msgid ""
 "<span size=\"small\"><b>Note:</b> If your IBus stylesheet has changed after "
 "application, please close and reopen the corresponding <b>custom IME theme</"
@@ -382,13 +397,13 @@ msgstr ""
 "<span size=\"small\"><b>注：</b> 如你的 IBus 样式表在应用后作出了更改，请关闭"
 "并重新开启对应 <b>自定义主题</b>来使其生效。</span>"
 
-#: prefs.js:1057
+#: prefs.js:1105
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than theme defined background."
 msgstr "支持使用图片来自定义IBus候选框背景，其具有比主题背景更高的优先级。"
 
-#: prefs.js:1070
+#: prefs.js:1118
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -400,7 +415,7 @@ msgstr ""
 "使用浅色背景，开启时使用深色背景。当浅色背景和深色背景只有一个被开启时，扩展"
 "将会始终使用那个开启的背景。"
 
-#: prefs.js:1083
+#: prefs.js:1131
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "

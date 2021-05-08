@@ -153,7 +153,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
     }
 
     set inputindhid(inputindhid) {
-      this.hideTime = inputindhid * 1000;
+      this.hideTime = inputindhid;
     }
 
     _connectPanelService(panelService) {
@@ -205,14 +205,23 @@ const IBusInputSourceIndicater = GObject.registerClass(
     _updateVisibility(sourceToggle = false) {
       this.visible = !CandidatePopup.visible;
       if (this.onlyOnToggle) this.visible = this.onlyOnToggle && sourceToggle;
+      if (this._lastTimeOut) {
+        GLib.source_remove(this._lastTimeOut);
+        this._lastTimeOut = null;
+      }
       if (this.visible) {
         this.setPosition(this._dummyCursor, 0);
         this.open(BoxPointer.PopupAnimation[this.animation]);
         this.get_parent().set_child_above_sibling(this, null);
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, this.hideTime, () => {
-          this.close(BoxPointer.PopupAnimation[this.animation]);
-          return GLib.SOURCE_REMOVE;
-        });
+        this._lastTimeOut = GLib.timeout_add_seconds(
+          GLib.PRIORITY_DEFAULT,
+          this.hideTime,
+          () => {
+            this.close(BoxPointer.PopupAnimation[this.animation]);
+            this._lastTimeOut = null;
+            return GLib.SOURCE_REMOVE;
+          }
+        );
       } else {
         this.close(BoxPointer.PopupAnimation[this.animation]);
       }
@@ -693,6 +702,42 @@ const IBusOrientation = GObject.registerClass(
   }
 );
 
+const IBusAnimation = GObject.registerClass(
+  {
+    Properties: {
+      animation: GObject.param_spec_uint(
+        "animation",
+        "animation",
+        "animation",
+        0,
+        3,
+        3,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusAnimation extends GObject.Object {
+    _init() {
+      super._init();
+      gsettings.bind(
+        Fields.CANDANIMATION,
+        this,
+        "animation",
+        Gio.SettingsBindFlags.GET
+      );
+    }
+
+    set animation(animation) {
+      CandidatePopup._popupAnimation =
+        BoxPointer.PopupAnimation[INDICATORANI[animation]];
+    }
+
+    destroy() {
+      CandidatePopup._popupAnimation = BoxPointer.PopupAnimation["NONE"];
+    }
+  }
+);
+
 const IBusThemeManager = GObject.registerClass(
   {
     Properties: {
@@ -932,6 +977,13 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      useanimation: GObject.param_spec_boolean(
+        "animation",
+        "animation",
+        "animation",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class Extensions extends GObject.Object {
@@ -1024,6 +1076,12 @@ const Extensions = GObject.registerClass(
         Fields.USEINPUTIND,
         this,
         "useinputind",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USECANDANIM,
+        this,
+        "animation",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -1133,6 +1191,17 @@ const Extensions = GObject.registerClass(
         if (!this._useinputind) return;
         this._useinputind.destroy();
         delete this._useinputind;
+      }
+    }
+
+    set animation(animation) {
+      if (animation) {
+        if (this._animation) return;
+        this._animation = new IBusAnimation();
+      } else {
+        if (!this._animation) return;
+        this._animation.destroy();
+        delete this._animation;
       }
     }
 
@@ -1285,6 +1354,7 @@ const Extensions = GObject.registerClass(
       this.theme = false;
       this.themenight = false;
       this.useinputind = false;
+      this.animation = false;
       this.menuibusemoji = false;
       this.menuextpref = false;
       this.menuibuspref = false;

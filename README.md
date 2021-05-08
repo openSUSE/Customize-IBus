@@ -17,9 +17,9 @@
 
 (English version is down below)
 
-### 注意：如果后期无重大 BUG 的话，v37 将是支持 GNOME 3.38 的最后一个版本
+### 注意：如果后期无重大 BUG 的话，v39 将是支持 GNOME 3.38 的最后一个版本
 
-在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
 [自定义 IBus 操作指南](GUIDE_CN.md)
 
@@ -64,11 +64,23 @@ sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
 
-## 功能
-
 ## 输入源指示器
 
 ![](img/indicator.gif)
+
+## 动画
+
+运行[此脚本](update-to-use-animation.sh)，体验 IBus Candidate Popup 动画功能。
+
+运行完成后注销并重新登录。如果更新GNOME，或者，遇到问题GNOME崩溃注释掉`~/.profile`中的这一行：
+
+```bash
+export GNOME_SHELL_JS=$HOME/gnome-shell-js
+```
+
+开启滑动:
+
+![](img/animation.gif)
 
 ## 使用用户主题来更改 IBus 皮肤的实现
 
@@ -88,7 +100,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 
 ### _提示：_
 
-1. 在 Fedora 33、Ubuntu 21.04 和 Manjaro 21.0.2, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19,v21,v23,v25,v27,v29,v31,v35,v37)通过了测试。
+1. 在 Fedora 33、Ubuntu 21.04 和 Manjaro 21.0.2, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19,v21,v23,v25,v27,v29,v31,v35,v37,v39)通过了测试。
 2. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 3. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
@@ -134,6 +146,7 @@ background-size: cover;
 - [x] V31: 更改扩展 logo 以及 UI 界面。
 - [x] V35: 增加托盘菜单项修改和启动/重启 IBus 按钮。
 - [x] V37: 增加 IBus 版本显示，输入源指示器。
+- [x] V39: 修复输入源指示器定时关闭缺陷。增加 IBus 输入框弹出动画配置功能，当 GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836)被合并后可用。
 
 ## 致谢
 
@@ -145,9 +158,9 @@ _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/ope
 
 # Customize IBus
 
-### Note: If no severe bug was found later, v37 will be the last version that support GNOME 3.38.
+### Note: If no severe bug was found later, v39 will be the last version that support GNOME 3.38.
 
-Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
+Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
 
 [Customize IBus User Guide (in Chinese)](GUIDE_CN.md)
 
@@ -190,11 +203,23 @@ sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
 
-## Features
-
 ## Input Source Indicator
 
 ![](img/indicator.gif)
+
+## Animation
+
+Run [this script](update-to-use-animation.sh) to experience IBus Candidate Popup animation.
+
+Relogin after you run. If updating GNOME or faces problem and GNOME is down comment the line in `~/.profile`:
+
+```bash
+export GNOME_SHELL_JS=$HOME/gnome-shell-js
+```
+
+With Slide enabled:
+
+![](img/animation.gif)
 
 ## Realization of Customizing IBus with User Theme
 
@@ -214,7 +239,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 
 ### _NOTE:_
 
-1. Tested on Fedora 33, Ubuntu 21.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37).
+1. Tested on Fedora 33, Ubuntu 21.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39).
 2. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 3. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
 
@@ -260,6 +285,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V31: Change extension logo and UI.
 - [x] V35: Add tray menu entries modifications and start/restart IBus button.
 - [x] V37: Add IBus version displaying and input source indicator.
+- [x] V39: Fix input source indicator BUGS. Add IBus Input Popup Box animation customization feature, works When GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836) got merged.
 
 ## Acknowledgements
 

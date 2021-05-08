@@ -39,4 +39,6 @@ var Fields = {
   INPUTINDTOG: "input-indicator-only-on-toggle",
   INPUTINDANIM: "input-indicator-animation",
   INPUTINDHID: "input-indicator-hide-time",
+  USECANDANIM: "use-popup-animation",
+  CANDANIMATION: "candidate-popup-animation",
 };
