@@ -48,11 +48,11 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 常规
 
-![](https://img-blog.csdnimg.cn/20210508191400852.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210509013200891.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置IBus输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
-点击`候选框动画`左侧的复选框来进行选中，即可支持配置IBus输入法候选框动画。点击右侧进行选择，支持设定为无动画、滑动、渐退、两种都有。注意，仅当你使用的 GNOME 为该 PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836)被合并后的版本可用此功能。
+点击`候选框动画`左侧的复选框来进行选中，即可支持配置IBus输入法候选框动画。点击右侧进行选择，支持设定为无动画、滑动、渐退、两种都有。
 
 示例开启滑动动画：
 ![](https://img-blog.csdnimg.cn/20210508195804482.gif)
