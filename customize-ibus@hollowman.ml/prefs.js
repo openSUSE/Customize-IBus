@@ -53,6 +53,9 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._field_enable_ascii = this._checkMaker(_("Auto switch ASCII mode"));
       this._field_enable_orien = this._checkMaker(_("Candidates orientation"));
+      this._field_use_candidate_animation = this._checkMaker(
+        _("Candidates popup animation")
+      );
 
       this._restart_ibus = new Gtk.Button({
         label: _("Start/Restart IBus"),
@@ -99,6 +102,13 @@ const CustomizeIBus = GObject.registerClass(
       ]);
 
       this._field_indicator_animation = this._comboMaker([
+        _("None"),
+        _("Slide"),
+        _("Fade"),
+        _("All"),
+      ]);
+
+      this._field_candidate_animation = this._comboMaker([
         _("None"),
         _("Slide"),
         _("Fade"),
@@ -215,6 +225,10 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus_basic = this._listFrameMaker(_("General"));
       this._ibus_basic._add(this._field_enable_orien, this._field_orientation);
       this._ibus_basic._add(
+        this._field_use_candidate_animation,
+        this._field_candidate_animation
+      );
+      this._ibus_basic._add(
         this._field_use_custom_font,
         this._field_custom_font
       );
@@ -309,6 +323,12 @@ const CustomizeIBus = GObject.registerClass(
       this._field_enable_orien.connect("notify::active", (widget) => {
         this._field_orientation.set_sensitive(widget.active);
       });
+      this._field_use_candidate_animation.connect(
+        "notify::active",
+        (widget) => {
+          this._field_candidate_animation.set_sensitive(widget.active);
+        }
+      );
       this._field_ibus_emoji.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSEMOJI, widget.active);
       });
@@ -412,6 +432,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_remember_input.set_sensitive(this._field_enable_ascii.active);
       this._field_unkown_state.set_sensitive(this._field_enable_ascii.active);
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
+      this._field_candidate_animation.set_sensitive(
+        this._field_use_candidate_animation.active
+      );
       this._field_indicator_only_toggle.set_sensitive(
         this._field_use_indicator.active
       );
@@ -468,6 +491,18 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.ORIENTATION,
         this._field_orientation,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.USECANDANIM,
+        this._field_use_candidate_animation,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.CANDANIMATION,
+        this._field_candidate_animation,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -739,7 +774,7 @@ const CustomizeIBus = GObject.registerClass(
           label:
             "🎨 " +
             _(
-              "Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode."
+              "Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode."
             ),
         }),
         0,
@@ -828,7 +863,20 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, font, and also ascii mode auto-switch when windows are switched by users."
+            "Here you can set the IBus input window orientation, animation, font, and also ascii mode auto-switch when windows are switched by users."
+          ),
+        }),
+        0,
+        expanderFrame.grid._row++,
+        1,
+        1
+      );
+      expanderFrame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            "<span size=\"small\"><b>Note: Candidates popup animation</b> can only work when you use GNOME with <a href='https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836'>this patch</a> merged.</span>"
           ),
         }),
         0,

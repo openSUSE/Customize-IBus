@@ -1,6 +1,6 @@
 %global commit f9aa79742abbf1855bd11f6eb2d2c7ea45bee863
-%global extension_version 38
-%global date 20210507
+%global extension_version 40
+%global date 20210508
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -24,8 +24,8 @@ Requires:       gnome-shell >= %{shell_version}
 Requires:       gnome-tweaks
 
 %description
-Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
-在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
+在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
 %prep
 %%setup -q -n Customize-IBus-%{commit}
@@ -43,6 +43,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Fri May 08 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-40.20210508gitf9aa797
+- Fix input source indicator BUGS. 
+- Add IBus Input Popup Box animation customization feature, works When GNOME PR #1836 got merged.
+
 * Fri May 07 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-38.20210507gitf9aa797
 - Add IBus version displaying and input source indicator.
 

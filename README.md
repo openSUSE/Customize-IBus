@@ -17,7 +17,7 @@
 
 (English version is down below)
 
-在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
 [自定义 IBus 操作指南](GUIDE_CN.md)
 
@@ -86,7 +86,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 
 ### _提示：_
 
-1. 在 Fedora，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38)中通过了测试。
+1. 在 Fedora，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39(GNOME3.38 最终版))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40)中通过了测试。
 2. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 3. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
@@ -133,7 +133,7 @@ background-size: cover;
 - [x] V32: 更改扩展 logo 以及 UI 界面。
 - [x] V36: 增加托盘菜单项修改和启动/重启 IBus 按钮。
 - [x] V38: 增加 IBus 版本显示，输入源指示器。
-- [ ] 当 GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836)被合并后，增加IBus输入框弹出动画配置功能。
+- [x] V40: 修复输入源指示器定时关闭缺陷。增加 IBus 输入框弹出动画配置功能，当 GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836)被合并后可用。
 
 ## 致谢
 
@@ -145,7 +145,7 @@ _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/ope
 
 # Customize IBus
 
-Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
+Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
 
 [Customize IBus User Guide (in Chinese)](GUIDE_CN.md)
 
@@ -212,7 +212,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 
 ### _NOTE:_
 
-1. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38).
+1. Tested on Fedora, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39(final version for GNOME 3.38)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40).
 2. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 3. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
 
@@ -259,7 +259,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V32: Change extension logo and UI.
 - [x] V36: Add tray menu entries modifications and start/restart IBus button.
 - [x] V38: Add IBus version displaying and input source indicator.
-- [ ] When GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836) got merged, add IBus Input Popup Box animation customization feature.
+- [x] V40: Fix input source indicator BUGS. Add IBus Input Popup Box animation customization feature, works When GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836) got merged.
 
 ## Acknowledgements
 

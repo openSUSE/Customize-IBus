@@ -138,5 +138,14 @@
         <range min="1" max="5"/>
         <summary>input state indicator hide time</summary>
     </key>
+    <key type="b" name="use-popup-animation">
+        <default>false</default>
+        <summary>use popup animation</summary>
+    </key>
+    <key type="u" name="candidate-popup-animation">
+        <default>3</default>
+        <range min="0" max="3"/>
+        <summary>candidate- popup animation</summary>
+    </key>
   </schema>
 </schemalist>
