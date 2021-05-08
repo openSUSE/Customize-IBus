@@ -1,4 +1,4 @@
-%global commit e76d1cc26b745e2a54bba97ade8144701c9ca99c
+%global commit d9049cca378b256136f2aad6787a7d7d6eab8edc
 %global extension_version 40
 %global date 20210508
 %global shell_version 40.0
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Fri May 08 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-40.20210508gite76d1cc
+* Fri May 08 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-40.20210508gitd9049cc
 - Fix input source indicator BUGS. 
 - Add IBus Input Popup Box animation customization feature, works When GNOME PR #1836 got merged.
 
