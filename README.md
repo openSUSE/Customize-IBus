@@ -19,7 +19,7 @@
 
 在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
-## Fedora
+## [Fedora](rpm)
 
 ```bash
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
@@ -27,7 +27,7 @@ sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 sudo dnf update
 ```
 
-## Debian/Ubuntu
+## [Debian/Ubuntu](deb)
 
 ```bash
 echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
@@ -39,7 +39,7 @@ sudo apt update
 
 Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries; theme and background picture follow GNOME Night Light Mode.
 
-## Fedora
+## [Fedora](rpm)
 
 ```bash
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
@@ -47,7 +47,7 @@ sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 sudo dnf update
 ```
 
-## Debian/Ubuntu
+## [Debian/Ubuntu](deb)
 
 ```bash
 echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
