@@ -757,6 +757,7 @@ const IBusAnimation = GObject.registerClass(
   class IBusAnimation extends GObject.Object {
     _init() {
       super._init();
+      this._openOrig = IBusManager._candidatePopup.open;
       gsettings.bind(
         Fields.CANDANIMATION,
         this,
@@ -766,12 +767,39 @@ const IBusAnimation = GObject.registerClass(
     }
 
     set animation(animation) {
-      CandidatePopup._popupAnimation =
-        BoxPointer.PopupAnimation[INDICATORANI[animation]];
+      const openOrig = this._openOrig;
+      if (INDICATORANI[animation] === "NONE") this.destroy();
+      else if (INDICATORANI[animation] === "FADE")
+        IBusManager._candidatePopup.open = () => {
+          openOrig.call(
+            IBusManager._candidatePopup,
+            BoxPointer.PopupAnimation.FADE
+          );
+        };
+      else if (INDICATORANI[animation] === "SLIDE")
+        IBusManager._candidatePopup.open = () => {
+          openOrig.call(
+            IBusManager._candidatePopup,
+            BoxPointer.PopupAnimation.SLIDE
+          );
+        };
+      else if (INDICATORANI[animation] === "FULL")
+        IBusManager._candidatePopup.open = () => {
+          openOrig.call(
+            IBusManager._candidatePopup,
+            BoxPointer.PopupAnimation.FULL
+          );
+        };
     }
 
     destroy() {
-      CandidatePopup._popupAnimation = BoxPointer.PopupAnimation["NONE"];
+      const openOrig = this._openOrig;
+      IBusManager._candidatePopup.open = () => {
+        openOrig.call(
+          IBusManager._candidatePopup,
+          BoxPointer.PopupAnimation.NONE
+        );
+      };
     }
   }
 );

@@ -70,14 +70,6 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ## 动画
 
-运行[此脚本](update-to-use-animation.sh)，体验 IBus Candidate Popup 动画功能。
-
-运行完成后注销并重新登录。如果更新 GNOME，或者，遇到问题 GNOME 崩溃注释掉`~/.profile`中的这一行：
-
-```bash
-export GNOME_SHELL_JS=$HOME/gnome-shell-js
-```
-
 开启滑动:
 
 ![](img/animation.gif)
@@ -146,7 +138,7 @@ background-size: cover;
 - [x] V31: 更改扩展 logo 以及 UI 界面。
 - [x] V35: 增加托盘菜单项修改和启动/重启 IBus 按钮。
 - [x] V37: 增加 IBus 版本显示，输入源指示器。
-- [x] V39: 修复输入源指示器定时关闭缺陷，增加更多配置。增加 IBus 输入框弹出动画配置功能，当 GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836)被合并后可用。
+- [x] V39: 修复输入源指示器定时关闭缺陷，增加更多配置。增加 IBus 输入框弹出动画配置功能。
 
 ## 致谢
 
@@ -208,14 +200,6 @@ sudo apt install gnome-shell-extension-customize-ibus
 ![](img/indicator.gif)
 
 ## Animation
-
-Run [this script](update-to-use-animation.sh) to experience IBus Candidate Popup animation.
-
-Relogin after you run. If updating GNOME or faces problem and GNOME is down comment the line in `~/.profile`:
-
-```bash
-export GNOME_SHELL_JS=$HOME/gnome-shell-js
-```
 
 With Slide enabled:
 
@@ -285,7 +269,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V31: Change extension logo and UI.
 - [x] V35: Add tray menu entries modifications and start/restart IBus button.
 - [x] V37: Add IBus version displaying and input source indicator.
-- [x] V39: Fix input source indicator BUGS, add more configs. Add IBus Input Popup Box animation customization feature, works When GNOME PR [#1836](https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/1836) got merged.
+- [x] V39: Fix input source indicator BUGS, add more configs. Add IBus Input Popup Box animation customization feature.
 
 ## Acknowledgements
 
