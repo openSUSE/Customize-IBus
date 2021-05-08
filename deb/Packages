@@ -3,16 +3,16 @@ Version: 37
 Architecture: all
 Maintainer: Hollow Man <hollowman@hollowman.ml>
 Depends: gnome-shell, gnome-tweaks
-Filename: ./gnome-shell-extension-customize-ibus_37_all.deb
-Size: 47514
-MD5sum: 93a8992f02a9e47b4ced7e09106eec30
-SHA1: fcf10da155b72270035b54a01e78110a81dae5ee
-SHA256: b2c0a3610867f6880e765852af9002b31db7317397f44b5d13ce6ef850347b46
+Filename: ./gnome-shell-extension-customize-ibus_39_all.deb
+Size: 48038
+MD5sum: 0815faae33bb95888de5df02b6cef242
+SHA1: 1872f00ad893872984a305db56014a985b50f2df
+SHA256: 853d94a5e357547608feea86e1d49454e6b47d734e2a6aa2b72befd744b4370a
 Section: default
 Priority: extra
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
-Description: Customize IBus for orientation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
-  在 GNOME Shell 中更改 IBus 的候选框方向、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+Description: Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
+  在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 License: GPLv3
 Vendor: Hollow Man <hollowman@hollowman.ml>
 
