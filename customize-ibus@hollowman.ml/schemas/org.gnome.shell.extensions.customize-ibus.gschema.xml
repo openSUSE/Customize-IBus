@@ -151,9 +151,17 @@
         <summary>use popup animation</summary>
     </key>
     <key type="u" name="candidate-popup-animation">
-        <default>3</default>
+        <default>1</default>
         <range min="0" max="3"/>
         <summary>candidate popup animation</summary>
+    </key>
+    <key type="b" name="use-candidate-reposition">
+        <default>false</default>
+        <summary>use candidate reposition by drag</summary>
+    </key>
+    <key type="b" name="use-indicator-reposition">
+        <default>false</default>
+        <summary>use indicator reposition by drag</summary>
     </key>
   </schema>
 </schemalist>

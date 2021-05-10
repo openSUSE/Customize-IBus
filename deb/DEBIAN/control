@@ -1,5 +1,5 @@
 Package: gnome-shell-extension-customize-ibus
-Version: 39
+Version: 41
 License: GPLv3
 Vendor: Hollow Man <hollowman@hollowman.ml>
 Architecture: all
@@ -8,5 +8,5 @@ Depends: gnome-shell, gnome-tweaks
 Section: default
 Priority: extra
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
-Description: Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
-  在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+Description: Customize IBus for orientation, animation, font, ascii mode auto-switch, reposition, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
+  在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、移动、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
