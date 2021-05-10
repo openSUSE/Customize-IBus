@@ -1,6 +1,6 @@
 %global commit 6b080f2dbe933bce92554d3e639d53ff438a0eff
-%global extension_version 40
-%global date 20210508
+%global extension_version 42
+%global date 20210510
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -25,7 +25,7 @@ Requires:       gnome-tweaks
 
 %description
 Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
-在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、移动、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
 %prep
 %%setup -q -n Customize-IBus-%{commit}

@@ -81,7 +81,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
         "inputindanim",
         0,
         3,
-        3,
+        1,
         GObject.ParamFlags.READWRITE
       ),
       useindautohid: GObject.param_spec_boolean(
@@ -98,6 +98,13 @@ const IBusInputSourceIndicater = GObject.registerClass(
         1,
         5,
         2,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindmove: GObject.param_spec_boolean(
+        "inputindmove",
+        "inputindmove",
+        "inputindmove",
+        false,
         GObject.ParamFlags.WRITABLE
       ),
     },
@@ -168,6 +175,12 @@ const IBusInputSourceIndicater = GObject.registerClass(
         "inputindhid",
         Gio.SettingsBindFlags.GET
       );
+      gsettings.bind(
+        Fields.INPUTINDMOVE,
+        this,
+        "inputindmove",
+        Gio.SettingsBindFlags.GET
+      );
     }
 
     set inputindtog(inputindtog) {
@@ -188,6 +201,58 @@ const IBusInputSourceIndicater = GObject.registerClass(
 
     set inputindhid(inputindhid) {
       this.hideTime = inputindhid;
+    }
+
+    set inputindmove(inputindmove) {
+      if (inputindmove) {
+        this.reactive = true;
+        this._move = (x, y) => {
+          this._boxX += x;
+          this._boxY += y;
+          this._dummyCursor.set_position(this._boxX, this._boxY);
+          this.setPosition(this._dummyCursor, 0);
+        };
+        this._buttonPressID = this.connect(
+          "button-press-event",
+          (actor, event) => {
+            this._boxX = this._dummyCursor.get_position()[0];
+            this._boxY = this._dummyCursor.get_position()[1];
+            this._previousX = event.get_coords()[0];
+            this._previousY = event.get_coords()[1];
+            this._inSetPosMode = true;
+          }
+        );
+        this._leaveID = this.connect("leave-event", (actor, event) => {
+          this._inSetPosMode = false;
+        });
+        this._buttonReleaseID = this.connect(
+          "button-release-event",
+          (actor, event) => {
+            this._inSetPosMode = false;
+          }
+        );
+        this._motionID = this.connect("motion-event", (actor, event) => {
+          if (this._inSetPosMode) {
+            this._move(
+              event.get_coords()[0] - this._previousX,
+              event.get_coords()[1] - this._previousY
+            );
+            this._previousX = event.get_coords()[0];
+            this._previousY = event.get_coords()[1];
+          }
+        });
+      } else {
+        if (this._buttonPressID)
+          this.disconnect(this._buttonPressID), (this._buttonPressID = 0);
+        if (this._leaveID) this.disconnect(this._leaveID), (this._leaveID = 0);
+        if (this._buttonReleaseID)
+          this.disconnect(this._buttonReleaseID), (this._buttonReleaseID = 0);
+        if (this._motionID)
+          this.disconnect(this._motionID), (this._motionID = 0);
+        this.reactive = false;
+        this._move = null;
+        this._inSetPosMode = false;
+      }
     }
 
     _connectPanelService(panelService) {
@@ -279,6 +344,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
     }
 
     _destroy_indicator() {
+      this.close(BoxPointer.PopupAnimation[this.animation]);
       if (this._setCursorLocationID)
         this._panelService.disconnect(this._setCursorLocationID),
           (this._setCursorLocationID = 0);
@@ -740,6 +806,72 @@ const IBusOrientation = GObject.registerClass(
   }
 );
 
+const IBusReposition = GObject.registerClass(
+  class IBusReposition extends GObject.Object {
+    _init() {
+      super._init();
+      CandidatePopup.reactive = true;
+      CandidatePopup._move = (x, y) => {
+        CandidatePopup._boxX += x;
+        CandidatePopup._boxY += y;
+        CandidatePopup._dummyCursor.set_position(
+          CandidatePopup._boxX,
+          CandidatePopup._boxY
+        );
+        CandidatePopup.setPosition(CandidatePopup._dummyCursor, 0);
+      };
+      this._buttonPressID = CandidatePopup.connect(
+        "button-press-event",
+        (actor, event) => {
+          CandidatePopup._boxX = CandidatePopup._dummyCursor.get_position()[0];
+          CandidatePopup._boxY = CandidatePopup._dummyCursor.get_position()[1];
+          CandidatePopup._previousX = event.get_coords()[0];
+          CandidatePopup._previousY = event.get_coords()[1];
+          CandidatePopup._inSetPosMode = true;
+        }
+      );
+      this._leaveID = CandidatePopup.connect("leave-event", (actor, event) => {
+        CandidatePopup._inSetPosMode = false;
+      });
+      this._buttonReleaseID = CandidatePopup.connect(
+        "button-release-event",
+        (actor, event) => {
+          CandidatePopup._inSetPosMode = false;
+        }
+      );
+      this._motionID = CandidatePopup.connect(
+        "motion-event",
+        (actor, event) => {
+          if (CandidatePopup._inSetPosMode) {
+            CandidatePopup._move(
+              event.get_coords()[0] - CandidatePopup._previousX,
+              event.get_coords()[1] - CandidatePopup._previousY
+            );
+            CandidatePopup._previousX = event.get_coords()[0];
+            CandidatePopup._previousY = event.get_coords()[1];
+          }
+        }
+      );
+    }
+
+    destroy() {
+      if (this._buttonPressID)
+        CandidatePopup.disconnect(this._buttonPressID),
+          (this._buttonPressID = 0);
+      if (this._leaveID)
+        CandidatePopup.disconnect(this._leaveID), (this._leaveID = 0);
+      if (this._buttonReleaseID)
+        CandidatePopup.disconnect(this._buttonReleaseID),
+          (this._buttonReleaseID = 0);
+      if (this._motionID)
+        CandidatePopup.disconnect(this._motionID), (this._motionID = 0);
+      CandidatePopup.reactive = false;
+      CandidatePopup._move = null;
+      CandidatePopup._inSetPosMode = false;
+    }
+  }
+);
+
 const IBusAnimation = GObject.registerClass(
   {
     Properties: {
@@ -1043,10 +1175,17 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
-      useanimation: GObject.param_spec_boolean(
+      animation: GObject.param_spec_boolean(
         "animation",
         "animation",
         "animation",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      reposition: GObject.param_spec_boolean(
+        "reposition",
+        "reposition",
+        "reposition",
         false,
         GObject.ParamFlags.WRITABLE
       ),
@@ -1148,6 +1287,12 @@ const Extensions = GObject.registerClass(
         Fields.USECANDANIM,
         this,
         "animation",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USEREPOSITION,
+        this,
+        "reposition",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -1268,6 +1413,17 @@ const Extensions = GObject.registerClass(
         if (!this._animation) return;
         this._animation.destroy();
         delete this._animation;
+      }
+    }
+
+    set reposition(reposition) {
+      if (reposition) {
+        if (this._reposition) return;
+        this._reposition = new IBusReposition();
+      } else {
+        if (!this._reposition) return;
+        this._reposition.destroy();
+        delete this._reposition;
       }
     }
 
@@ -1421,6 +1577,7 @@ const Extensions = GObject.registerClass(
       this.themenight = false;
       this.useinputind = false;
       this.animation = false;
+      this.reposition = false;
       this.menuibusemoji = false;
       this.menuextpref = false;
       this.menuibuspref = false;

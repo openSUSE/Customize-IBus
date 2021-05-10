@@ -122,6 +122,7 @@ const CustomizeIBus = GObject.registerClass(
         label:
           "<b>" + _("IBus Version: ") + "</b>" + _("unknown (installed ?)"),
       });
+      this._field_candidate_reposition = new Gtk.Switch();
       this._field_ibus_emoji = new Gtk.Switch();
       this._field_extension_entry = new Gtk.Switch();
       this._field_ibus_preference = new Gtk.Switch();
@@ -131,6 +132,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_use_indicator = new Gtk.Switch();
       this._field_indicator_only_toggle = new Gtk.Switch();
       this._field_indicator_only_in_ascii = new Gtk.Switch();
+      this._field_indicator_reposition = new Gtk.Switch();
 
       let adjustment = this._createAdjustment(Fields.INPUTINDHID);
       this._field_indicator_enable_autohide = this._checkMaker(
@@ -241,6 +243,10 @@ const CustomizeIBus = GObject.registerClass(
         this._field_remember_input,
         this._field_unkown_state
       );
+      this._ibus_basic._add(
+        this._switchLabelMaker(_("Enable drag to re-position candidate")),
+        this._field_candidate_reposition
+      );
       this._basicHelpPage(this._ibus_basic);
 
       this._ibus_tray = this._listFrameMaker(_("Tray"));
@@ -286,6 +292,10 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicate only when using ASCII mode")),
         this._field_indicator_only_in_ascii
+      );
+      this._ibus_indicator._add(
+        this._switchLabelMaker(_("Enable drag to re-position indicator")),
+        this._field_indicator_reposition
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicater popup animation")),
@@ -340,6 +350,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_ibus_emoji.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSEMOJI, widget.active);
       });
+      this._field_candidate_reposition.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.USEREPOSITION, widget.active);
+      });
       this._field_extension_entry.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUEXTPREF, widget.active);
       });
@@ -365,6 +378,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
         this._field_indicator_only_in_ascii.set_sensitive(widget.active);
+        this._field_indicator_reposition.set_sensitive(widget.active);
         this._field_indicator_animation.set_sensitive(widget.active);
         this._field_indicator_hide_time.set_sensitive(
           this._field_indicator_enable_autohide.active && widget.active
@@ -381,6 +395,9 @@ const CustomizeIBus = GObject.registerClass(
           ibusGsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
         }
       );
+      this._field_indicator_reposition.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.INPUTINDMOVE, widget.active);
+      });
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
@@ -464,6 +481,9 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_indicator.active
       );
       this._field_indicator_only_in_ascii.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_reposition.set_sensitive(
         this._field_use_indicator.active
       );
       this._field_indicator_animation.set_sensitive(
@@ -605,6 +625,12 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.USEREPOSITION,
+        this._field_candidate_reposition,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.MENUEXTPREF,
         this._field_extension_entry,
         "active",
@@ -649,6 +675,12 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.INPUTINDASCII,
         this._field_indicator_only_in_ascii,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDMOVE,
+        this._field_indicator_reposition,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -818,7 +850,7 @@ const CustomizeIBus = GObject.registerClass(
           label:
             "🎨 " +
             _(
-              "Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode."
+              "Customize IBus for orientation, animation, font, ascii mode auto-switch, reposition, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode."
             ),
         }),
         0,
@@ -907,7 +939,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, font, and also ascii mode auto-switch when windows are switched by users."
+            "Here you can set the IBus input window orientation, animation, font, ascii mode auto-switch when windows are switched by users, and also re-position candidate by dragging when input."
           ),
         }),
         0,
@@ -1002,7 +1034,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, popup animation and enable autohide and auto hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, drag to re-position indicator, popup animation, enable autohide and auto hide timeout (in seconds)."
           ),
         }),
         0,

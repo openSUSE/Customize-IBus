@@ -43,4 +43,6 @@ var Fields = {
   INPUTINDHID: "input-indicator-hide-time",
   USECANDANIM: "use-popup-animation",
   CANDANIMATION: "candidate-popup-animation",
+  USEREPOSITION: "use-candidate-reposition",
+  INPUTINDMOVE: "use-indicator-reposition",
 };
