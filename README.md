@@ -197,15 +197,15 @@ sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
 
+## Input Source Indicator
+
+![](img/indicator.gif)
+
 ## Animation
 
 With Slide enabled:
 
 ![](img/animation.gif)
-
-## Input Source Indicator
-
-![](img/indicator.gif)
 
 ## Drag to Reposition
 
