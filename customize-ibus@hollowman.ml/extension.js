@@ -281,6 +281,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
         // signal's absence.
       }
       this._focusOutID = panelService.connect("focus-out", () => {
+        this._inSetPosMode = false;
         this.close(BoxPointer.PopupAnimation[this.animation]);
       });
       this._updatePropertyID = panelService.connect(
@@ -320,12 +321,14 @@ const IBusInputSourceIndicater = GObject.registerClass(
             GLib.PRIORITY_DEFAULT,
             this.hideTime,
             () => {
+              this._inSetPosMode = false;
               this.close(BoxPointer.PopupAnimation[this.animation]);
               this._lastTimeOut = null;
               return GLib.SOURCE_REMOVE;
             }
           );
       } else {
+        this._inSetPosMode = false;
         this.close(BoxPointer.PopupAnimation[this.animation]);
       }
     }
@@ -344,6 +347,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
     }
 
     _destroy_indicator() {
+      this._inSetPosMode = false;
       this.close(BoxPointer.PopupAnimation[this.animation]);
       if (this._setCursorLocationID)
         this._panelService.disconnect(this._setCursorLocationID),
