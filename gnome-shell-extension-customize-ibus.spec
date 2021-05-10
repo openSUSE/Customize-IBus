@@ -1,4 +1,4 @@
-%global commit 6b080f2dbe933bce92554d3e639d53ff438a0eff
+%global commit cadef52cd2bf42fe0e16850294dd64022866b57b
 %global extension_version 42
 %global date 20210510
 %global shell_version 40.0
@@ -43,9 +43,12 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Mon May 10 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-42.20210510gitcadef52
+- Add drag to move function.
+
 * Sat May 08 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-40.20210508git6b080f2
 - Fix input source indicator BUGS. 
-- Add IBus Input Popup Box animation customization feature
+- Add IBus Input Popup Box animation customization feature.
 
 * Fri May 07 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-38.20210507gitf9aa797
 - Add IBus version displaying and input source indicator.
