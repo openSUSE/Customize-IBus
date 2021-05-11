@@ -1,4 +1,4 @@
-%global commit cadef52cd2bf42fe0e16850294dd64022866b57b
+%global commit 0405f90175d61d82dba3fcf78448ae6c8c37b650
 %global extension_version 44
 %global date 20210512
 %global shell_version 40.0
@@ -43,7 +43,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Wed May 12 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-44.20210512gitcadef52
+* Wed May 12 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-44.20210512git0405f90
 - Refactor dragging to move feature to make it more robust.
 
 * Mon May 10 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-42.20210510gitcadef52
