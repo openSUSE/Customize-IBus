@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 41\n"
+"Project-Id-Version: Customize Ibus 43\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-10 12:10+0800\n"
+"POT-Creation-Date: 2021-05-12 00:29+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,55 +17,55 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:336
+#: extension.js:352
 msgid "IBus panel service connected!"
 msgstr ""
 
-#: extension.js:743
+#: extension.js:760
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:753
+#: extension.js:770
 msgid "remove custom background for IBus"
 msgstr ""
 
-#: extension.js:1048
+#: extension.js:1070
 msgid "loading light user theme for IBus:"
 msgstr ""
 
-#: extension.js:1058
+#: extension.js:1080
 msgid "loading dark user theme for IBus:"
 msgstr ""
 
-#: extension.js:1063
+#: extension.js:1085
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:1434
+#: extension.js:1456
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:1449 prefs.js:838
+#: extension.js:1471 prefs.js:838
 msgid "Customize IBus"
 msgstr ""
 
-#: extension.js:1464
+#: extension.js:1486
 msgid "IBus Preferences"
 msgstr ""
 
-#: extension.js:1479 extension.js:1552
+#: extension.js:1501 extension.js:1574
 msgid "IBus Version"
 msgstr ""
 
-#: extension.js:1494
+#: extension.js:1516
 msgid "Restart"
 msgstr ""
 
-#: extension.js:1509
+#: extension.js:1531
 msgid "Quit"
 msgstr ""
 
-#: extension.js:1526
+#: extension.js:1548
 msgid "Successfully triggered a restart for IBus"
 msgstr ""
 
