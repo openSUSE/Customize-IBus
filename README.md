@@ -143,6 +143,7 @@ background-size: cover;
 - [x] V38: 增加 IBus 版本显示，输入源指示器。
 - [x] V40: 修复输入源指示器定时关闭缺陷，增加更多配置。增加 IBus 输入框弹出动画配置功能。
 - [x] V42: 增加拖拽移动功能。
+- [x] V44: 重构拖拽移动功能使其更健壮。
 
 ## 致谢
 
@@ -278,6 +279,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V38: Add IBus version displaying and input source indicator.
 - [x] V40: Fix input source indicator BUGS, add more configs. Add IBus Input Popup Box animation customization feature.
 - [x] V42: Add drag to move function.
+- [x] V44: Refactor dragging to move feature to make it more robust.
 
 ## Acknowledgements
 

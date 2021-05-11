@@ -206,53 +206,66 @@ const IBusInputSourceIndicater = GObject.registerClass(
     set inputindmove(inputindmove) {
       if (inputindmove) {
         this.reactive = true;
-        this._move = (x, y) => {
-          this._boxX += x;
-          this._boxY += y;
-          this._dummyCursor.set_position(this._boxX, this._boxY);
-          this.setPosition(this._dummyCursor, 0);
-        };
         this._buttonPressID = this.connect(
           "button-press-event",
           (actor, event) => {
-            this._boxX = this._dummyCursor.get_position()[0];
-            this._boxY = this._dummyCursor.get_position()[1];
-            this._previousX = event.get_coords()[0];
-            this._previousY = event.get_coords()[1];
-            this._inSetPosMode = true;
-          }
-        );
-        this._leaveID = this.connect("leave-event", (actor, event) => {
-          this._inSetPosMode = false;
-        });
-        this._buttonReleaseID = this.connect(
-          "button-release-event",
-          (actor, event) => {
-            this._inSetPosMode = false;
-          }
-        );
-        this._motionID = this.connect("motion-event", (actor, event) => {
-          if (this._inSetPosMode) {
-            this._move(
-              event.get_coords()[0] - this._previousX,
-              event.get_coords()[1] - this._previousY
+            let [boxX, boxY] = this._dummyCursor.get_position();
+            let [mouseX, mouseY] = event.get_coords();
+            this._relativePosX = mouseX - boxX;
+            this._relativePosY = mouseY - boxY;
+            this._location_handler = GLib.timeout_add(
+              GLib.PRIORITY_DEFAULT,
+              10,
+              this._updatePos.bind(this)
             );
-            this._previousX = event.get_coords()[0];
-            this._previousY = event.get_coords()[1];
           }
+        );
+        this._sideChangeID = this.connect("arrow-side-changed", () => {
+          let themeNode = this.get_theme_node();
+          let gap = themeNode.get_length("-boxpointer-gap");
+          let [, , , natHeight] = this.get_preferred_size();
+          let sourceTopLeft = this._sourceExtents.get_top_left();
+          let sourceBottomRight = this._sourceExtents.get_bottom_right();
+          switch (this._arrowSide) {
+            case St.Side.TOP:
+              this._relativePosY +=
+                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+              break;
+            case St.Side.BOTTOM:
+              this._relativePosY -=
+                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+              break;
+          }
+          this._updatePos();
         });
       } else {
         if (this._buttonPressID)
           this.disconnect(this._buttonPressID), (this._buttonPressID = 0);
-        if (this._leaveID) this.disconnect(this._leaveID), (this._leaveID = 0);
-        if (this._buttonReleaseID)
-          this.disconnect(this._buttonReleaseID), (this._buttonReleaseID = 0);
-        if (this._motionID)
-          this.disconnect(this._motionID), (this._motionID = 0);
+        if (this._sideChangeID)
+          this.disconnect(this._sideChangeID), (this._sideChangeID = 0);
+        if (this._location_handler)
+          GLib.source_remove(this._location_handler),
+            (this._location_handler = 0);
         this.reactive = false;
-        this._move = null;
-        this._inSetPosMode = false;
+        this._relativePosX = null;
+        this._relativePosY = null;
       }
+    }
+
+    _move(x, y) {
+      this._dummyCursor.set_position(
+        x - this._relativePosX,
+        y - this._relativePosY
+      );
+      this.setPosition(this._dummyCursor, 0);
+    }
+
+    _updatePos() {
+      let [mouse_x, mouse_y, mask] = global.get_pointer();
+      this._move(mouse_x, mouse_y);
+      if (mask === 272) return GLib.SOURCE_CONTINUE;
+      this._location_handler = null;
+      return GLib.SOURCE_REMOVE;
     }
 
     _connectPanelService(panelService) {
@@ -815,63 +828,68 @@ const IBusReposition = GObject.registerClass(
     _init() {
       super._init();
       CandidatePopup.reactive = true;
-      CandidatePopup._move = (x, y) => {
-        CandidatePopup._boxX += x;
-        CandidatePopup._boxY += y;
-        CandidatePopup._dummyCursor.set_position(
-          CandidatePopup._boxX,
-          CandidatePopup._boxY
-        );
-        CandidatePopup.setPosition(CandidatePopup._dummyCursor, 0);
-      };
       this._buttonPressID = CandidatePopup.connect(
         "button-press-event",
         (actor, event) => {
-          CandidatePopup._boxX = CandidatePopup._dummyCursor.get_position()[0];
-          CandidatePopup._boxY = CandidatePopup._dummyCursor.get_position()[1];
-          CandidatePopup._previousX = event.get_coords()[0];
-          CandidatePopup._previousY = event.get_coords()[1];
-          CandidatePopup._inSetPosMode = true;
+          let [boxX, boxY] = CandidatePopup._dummyCursor.get_position();
+          let [mouseX, mouseY] = event.get_coords();
+          CandidatePopup._relativePosX = mouseX - boxX;
+          CandidatePopup._relativePosY = mouseY - boxY;
+          this._location_handler = GLib.timeout_add(
+            GLib.PRIORITY_DEFAULT,
+            10,
+            this._updatePos.bind(this)
+          );
         }
       );
-      this._leaveID = CandidatePopup.connect("leave-event", (actor, event) => {
-        CandidatePopup._inSetPosMode = false;
+      this._sideChangeID = CandidatePopup.connect("arrow-side-changed", () => {
+        let themeNode = CandidatePopup.get_theme_node();
+        let gap = themeNode.get_length("-boxpointer-gap");
+        let [, , , natHeight] = CandidatePopup.get_preferred_size();
+        let sourceTopLeft = CandidatePopup._sourceExtents.get_top_left();
+        let sourceBottomRight = CandidatePopup._sourceExtents.get_bottom_right();
+        switch (CandidatePopup._arrowSide) {
+          case St.Side.TOP:
+            CandidatePopup._relativePosY +=
+              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+            break;
+          case St.Side.BOTTOM:
+            CandidatePopup._relativePosY -=
+              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+            break;
+        }
+        this._updatePos();
       });
-      this._buttonReleaseID = CandidatePopup.connect(
-        "button-release-event",
-        (actor, event) => {
-          CandidatePopup._inSetPosMode = false;
-        }
+    }
+
+    _move(x, y) {
+      CandidatePopup._dummyCursor.set_position(
+        x - CandidatePopup._relativePosX,
+        y - CandidatePopup._relativePosY
       );
-      this._motionID = CandidatePopup.connect(
-        "motion-event",
-        (actor, event) => {
-          if (CandidatePopup._inSetPosMode) {
-            CandidatePopup._move(
-              event.get_coords()[0] - CandidatePopup._previousX,
-              event.get_coords()[1] - CandidatePopup._previousY
-            );
-            CandidatePopup._previousX = event.get_coords()[0];
-            CandidatePopup._previousY = event.get_coords()[1];
-          }
-        }
-      );
+      CandidatePopup.setPosition(CandidatePopup._dummyCursor, 0);
+    }
+
+    _updatePos() {
+      let [mouse_x, mouse_y, mask] = global.get_pointer();
+      this._move(mouse_x, mouse_y);
+      if (mask === 272) return GLib.SOURCE_CONTINUE;
+      this._location_handler = null;
+      return GLib.SOURCE_REMOVE;
     }
 
     destroy() {
       if (this._buttonPressID)
         CandidatePopup.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
-      if (this._leaveID)
-        CandidatePopup.disconnect(this._leaveID), (this._leaveID = 0);
-      if (this._buttonReleaseID)
-        CandidatePopup.disconnect(this._buttonReleaseID),
-          (this._buttonReleaseID = 0);
-      if (this._motionID)
-        CandidatePopup.disconnect(this._motionID), (this._motionID = 0);
+      if (this._sideChangeID)
+        CandidatePopup.disconnect(this._sideChangeID), (this._sideChangeID = 0);
+      if (this._location_handler)
+        GLib.source_remove(this._location_handler),
+          (this._location_handler = 0);
       CandidatePopup.reactive = false;
-      CandidatePopup._move = null;
-      CandidatePopup._inSetPosMode = false;
+      CandidatePopup._relativePosX = null;
+      CandidatePopup._relativePosY = null;
     }
   }
 );
