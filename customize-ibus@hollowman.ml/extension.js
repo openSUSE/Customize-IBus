@@ -263,7 +263,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
     _updatePos() {
       let [mouse_x, mouse_y, mask] = global.get_pointer();
       this._move(mouse_x, mouse_y);
-      if (mask === 272) return GLib.SOURCE_CONTINUE;
+      if (mask === Clutter.ModifierType.BUTTON1_MASK) return GLib.SOURCE_CONTINUE;
       this._location_handler = null;
       return GLib.SOURCE_REMOVE;
     }
@@ -873,7 +873,7 @@ const IBusReposition = GObject.registerClass(
     _updatePos() {
       let [mouse_x, mouse_y, mask] = global.get_pointer();
       this._move(mouse_x, mouse_y);
-      if (mask === 272) return GLib.SOURCE_CONTINUE;
+      if (mask === Clutter.ModifierType.BUTTON1_MASK) return GLib.SOURCE_CONTINUE;
       this._location_handler = null;
       return GLib.SOURCE_REMOVE;
     }
