@@ -7,17 +7,7 @@
 const Main = imports.ui.main;
 const Panel = imports.ui.panel;
 const PanelMenu = imports.ui.panelMenu;
-const {
-  Shell,
-  Clutter,
-  Gio,
-  GLib,
-  Meta,
-  IBus,
-  Pango,
-  St,
-  GObject,
-} = imports.gi;
+const { Clutter, Gio, GLib, Meta, IBus, Pango, St, GObject } = imports.gi;
 
 const BoxPointer = imports.ui.boxpointer;
 const Keyboard = imports.ui.status.keyboard;
@@ -213,6 +203,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
             let [mouseX, mouseY] = event.get_coords();
             this._relativePosX = mouseX - boxX;
             this._relativePosY = mouseY - boxY;
+            global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
             this._location_handler = GLib.timeout_add(
               GLib.PRIORITY_DEFAULT,
               10,
@@ -243,9 +234,11 @@ const IBusInputSourceIndicater = GObject.registerClass(
           this.disconnect(this._buttonPressID), (this._buttonPressID = 0);
         if (this._sideChangeID)
           this.disconnect(this._sideChangeID), (this._sideChangeID = 0);
-        if (this._location_handler)
+        if (this._location_handler) {
+          global.display.set_cursor(Meta.Cursor.DEFAULT);
           GLib.source_remove(this._location_handler),
             (this._location_handler = 0);
+        }
         this.reactive = false;
         this._relativePosX = null;
         this._relativePosY = null;
@@ -263,8 +256,10 @@ const IBusInputSourceIndicater = GObject.registerClass(
     _updatePos() {
       let [mouse_x, mouse_y, mask] = global.get_pointer();
       this._move(mouse_x, mouse_y);
-      if (mask === Clutter.ModifierType.BUTTON1_MASK) return GLib.SOURCE_CONTINUE;
+      mask &= Clutter.ModifierType.BUTTON1_MASK;
+      if (mask) return GLib.SOURCE_CONTINUE;
       this._location_handler = null;
+      global.display.set_cursor(Meta.Cursor.DEFAULT);
       return GLib.SOURCE_REMOVE;
     }
 
@@ -835,6 +830,7 @@ const IBusReposition = GObject.registerClass(
           let [mouseX, mouseY] = event.get_coords();
           CandidatePopup._relativePosX = mouseX - boxX;
           CandidatePopup._relativePosY = mouseY - boxY;
+          global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
           this._location_handler = GLib.timeout_add(
             GLib.PRIORITY_DEFAULT,
             10,
@@ -873,8 +869,10 @@ const IBusReposition = GObject.registerClass(
     _updatePos() {
       let [mouse_x, mouse_y, mask] = global.get_pointer();
       this._move(mouse_x, mouse_y);
-      if (mask === Clutter.ModifierType.BUTTON1_MASK) return GLib.SOURCE_CONTINUE;
+      mask &= Clutter.ModifierType.BUTTON1_MASK;
+      if (mask) return GLib.SOURCE_CONTINUE;
       this._location_handler = null;
+      global.display.set_cursor(Meta.Cursor.DEFAULT);
       return GLib.SOURCE_REMOVE;
     }
 
@@ -884,9 +882,11 @@ const IBusReposition = GObject.registerClass(
           (this._buttonPressID = 0);
       if (this._sideChangeID)
         CandidatePopup.disconnect(this._sideChangeID), (this._sideChangeID = 0);
-      if (this._location_handler)
+      if (this._location_handler) {
+        global.display.set_cursor(Meta.Cursor.DEFAULT);
         GLib.source_remove(this._location_handler),
           (this._location_handler = 0);
+      }
       CandidatePopup.reactive = false;
       CandidatePopup._relativePosX = null;
       CandidatePopup._relativePosY = null;
