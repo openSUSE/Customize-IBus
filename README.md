@@ -25,6 +25,16 @@
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
 sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 sudo dnf update
+sudo dnf install gnome-shell-extension-customize-ibus
+```
+
+## [openSUSE](rpm)
+
+```bash
+wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+sudo mv customize-ibus-rpm.repo /etc/zypper/repos.d/
+sudo zypper refresh
+sudo zypper install gnome-shell-extension-customize-ibus
 ```
 
 ## [Debian/Ubuntu](deb)
@@ -33,6 +43,7 @@ sudo dnf update
 echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
 wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
 sudo apt update
+sudo apt install gnome-shell-extension-customize-ibus
 ```
 
 # Customize IBus Distribution Repos
@@ -45,6 +56,16 @@ Customize IBus for orientation, font, ascii mode auto-switch, system tray menu e
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
 sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 sudo dnf update
+sudo dnf install gnome-shell-extension-customize-ibus
+```
+
+## [openSUSE](rpm)
+
+```bash
+wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+sudo mv customize-ibus-rpm.repo /etc/zypper/repos.d/
+sudo zypper refresh
+sudo zypper install gnome-shell-extension-customize-ibus
 ```
 
 ## [Debian/Ubuntu](deb)
@@ -53,4 +74,5 @@ sudo dnf update
 echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
 wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
 sudo apt update
+sudo apt install gnome-shell-extension-customize-ibus
 ```
