@@ -55,6 +55,15 @@ sudo dnf update
 sudo dnf install gnome-shell-extension-customize-ibus
 ```
 
+[OpenSUSE](../../tree/package-repo#opensuse)也可使用 RPM Repository 安装为系统插件:
+
+```bash
+wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+sudo mv customize-ibus-rpm.repo /etc/zypper/repos.d/
+sudo zypper refresh
+sudo zypper install gnome-shell-extension-customize-ibus
+```
+
 [Debian 系(Ubuntu)](../../tree/package-repo#debianubuntu) 也可使用 Debian Repository 安装为系统插件:
 
 ```bash
@@ -144,7 +153,7 @@ background-size: cover;
 - [x] V37: 增加 IBus 版本显示，输入源指示器。
 - [x] V39: 修复输入源指示器定时关闭缺陷，增加更多配置。增加 IBus 输入框弹出动画配置功能。
 - [x] V41: 增加拖拽移动功能。
-- [x] V44: 重构拖拽移动功能使其更健壮。
+- [x] V43: 重构拖拽移动功能使其更健壮。
 
 ## 致谢
 
@@ -190,6 +199,15 @@ wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibu
 sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 sudo dnf update
 sudo dnf install gnome-shell-extension-customize-ibus
+```
+
+You can also use RPM Repository to install as a system extension under [OpenSUSE](../../tree/package-repo#opensuse):
+
+```bash
+wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+sudo mv customize-ibus-rpm.repo /etc/zypper/repos.d/
+sudo zypper refresh
+sudo zypper install gnome-shell-extension-customize-ibus
 ```
 
 You can also use Debian Repository to install as a system extension under [Debian (Ubuntu)](../../tree/package-repo#debianubuntu):
@@ -281,7 +299,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V37: Add IBus version displaying and input source indicator.
 - [x] V39: Fix input source indicator BUGS, add more configs. Add IBus Input Popup Box animation customization feature.
 - [x] V41: Add drag to move function.
-- [x] V44: Refactor dragging to move feature to make it more robust.
+- [x] V43: Refactor dragging to move feature to make it more robust.
 
 ## Acknowledgements
 

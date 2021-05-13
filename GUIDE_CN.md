@@ -30,6 +30,13 @@ sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 sudo dnf update
 sudo dnf install gnome-shell-extension-customize-ibus
 ```
+- OpenSUSE: 
+```bash
+wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+sudo mv customize-ibus-rpm.repo /etc/zypper/repos.d/
+sudo zypper refresh
+sudo zypper install gnome-shell-extension-customize-ibus
+```
 - Debian 系(Ubuntu): 
 ```bash
 echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
