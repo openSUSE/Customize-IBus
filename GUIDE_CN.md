@@ -33,7 +33,7 @@ sudo dnf install gnome-shell-extension-customize-ibus
 - OpenSUSE: 
 ```bash
 wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
-sudo mv customize-ibus-rpm.repo /etc/zypper/repos.d/
+sudo mv customize-ibus-rpm.repo /etc/zypp/repos.d/
 sudo zypper refresh
 sudo zypper install gnome-shell-extension-customize-ibus
 ```
