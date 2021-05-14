@@ -36,13 +36,13 @@ make _build VERSION=%{extension_version}
 %install
 mkdir -p %{buildroot}/%{_datadir}/gnome-shell/extensions
 mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
+%find_lang customize-ibus
 
-%files
+%files -f customize-ibus.lang
 %license LICENSE
 %doc README.md
 %dir %{_datadir}/gnome-shell
 %dir %{_datadir}/gnome-shell/extensions
-%lang(zh_CN) %{_datadir}/gnome-shell/extensions/%{uuid}/locale/zh_CN/LC_MESSAGES/customize-ibus.mo
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
