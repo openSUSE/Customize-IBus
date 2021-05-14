@@ -11,13 +11,13 @@ Version:        %{shell_version}
 Release:        %{extension_version}.%{date}git%{shortcommit}%{?dist}
 Summary:        Customize IBus extension for GNOME Shell
 
-License:        GPLv3
+License:        GPL-3.0+
 URL:            %{forgeurl}
 Source0:        %{forgeurl}/archive/%{commit}/Customize-IBus-%{commit}.tar.gz
 BuildArch:	noarch
 
 BuildRequires:	gettext
-BuildRequires:	%{_bindir}/glib-compile-schemas
+BuildRequires:	glib2-devel
 BuildRequires:  make
 
 Requires:       gnome-shell >= %{shell_version}
@@ -40,6 +40,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %files
 %license LICENSE
 %doc README.md
+%dir %{_datadir}/gnome-shell
+%dir %{_datadir}/gnome-shell/extensions
+%lang(zh_CN) %{_datadir}/gnome-shell/extensions/%{uuid}/locale/zh_CN/LC_MESSAGES/customize-ibus.mo
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog

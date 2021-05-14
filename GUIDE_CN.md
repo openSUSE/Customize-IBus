@@ -37,6 +37,9 @@ sudo mv customize-ibus-rpm.repo /etc/zypp/repos.d/
 sudo zypper refresh
 sudo zypper install gnome-shell-extension-customize-ibus
 ```
+
+或者直接通过[OpenSUSE应用商店](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus)/[ymp文件](https://software.opensuse.org/ymp/home:hollowman/openSUSE_Factory/gnome-shell-extension-customize-ibus.ymp)安装。
+
 - Debian 系(Ubuntu): 
 ```bash
 echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
