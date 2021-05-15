@@ -49,6 +49,15 @@ clean:
 	-rm -fR *.pkg.tar.zst
 	-rm -fR *.tar.gz
 	-rm -fR pkg src
+	-rm -fR *.dsc
+	-rm -fR *.tar.xz
+	-rm -fR *.buildinfo
+	-rm -fR *.changes
+	-rm -fR deb/_build
+	-rm -fR deb/debian/gnome-shell-extension-customize-ibus*
+	-rm -fR deb/debian/debhelper-build-stamp
+	-rm -fR deb/debian/files
+	-rm -fR deb/debian/.debhelper
 	-rm -fR $(SCMCPL)
 	-rm -fR $(MSGPOS:.po=.mo)
 	-rm -fR $(MSGPOS:.po=.po~)
@@ -100,9 +109,8 @@ mergepo: potfile pofile
 		msgmerge -U $(MSGSRC) $(MSGPOT)
 
 deb: _build
-	mkdir -p deb/$(INSTDIR)
-	mv _build deb/$(INSTDIR)/$(UUID)
-	dpkg -b deb gnome-shell-extension-$(NAME)_$(VERSION)_all.deb
+	mv _build deb
+	cd deb; dpkg-buildpackage
 
 rpm:
 	if [ ! -d "~/rpmbuild" ]; then rpmdev-setuptree; fi

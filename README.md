@@ -64,6 +64,8 @@ sudo zypper refresh
 sudo zypper install gnome-shell-extension-customize-ibus
 ```
 
+或者直接通过[ymp文件](gnome-shell-extension-customize-ibus.ymp)安装。
+
 [Debian 系(Ubuntu)](../../tree/package-repo#debianubuntu) 也可使用 Debian Repository 安装为系统插件:
 
 ```bash
@@ -72,6 +74,8 @@ wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key ad
 sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
+
+所有版本的Linux都可以通过 [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) 下载相关安装包后安装。
 
 ## 输入源指示器
 
@@ -210,6 +214,8 @@ sudo zypper refresh
 sudo zypper install gnome-shell-extension-customize-ibus
 ```
 
+Or directly use [ymp file](gnome-shell-extension-customize-ibus.ymp) to install.
+
 You can also use Debian Repository to install as a system extension under [Debian (Ubuntu)](../../tree/package-repo#debianubuntu):
 
 ```bash
@@ -218,6 +224,8 @@ wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key ad
 sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
+
+All versions of Linux can download related packages through [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) and then make installation.
 
 ## Input Source Indicator
 

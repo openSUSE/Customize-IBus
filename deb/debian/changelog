@@ -1,0 +1,6 @@
+gnome-shell-extension-customize-ibus (43) mx; urgency=medium
+
+  * v43: Initial Debian Package
+
+ -- Hollow Man <hollowman@hollowman.ml>  Sat, 15 May 2021 12:46:06 +0800
+

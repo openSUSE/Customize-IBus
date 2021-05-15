@@ -37,6 +37,7 @@ sudo mv customize-ibus-rpm.repo /etc/zypp/repos.d/
 sudo zypper refresh
 sudo zypper install gnome-shell-extension-customize-ibus
 ```
+或者直接通过[ymp文件](https://software.opensuse.org/ymp/home:hollowman/openSUSE_Factory/gnome-shell-extension-customize-ibus.ymp)安装。
 - Debian 系(Ubuntu): 
 ```bash
 echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
@@ -44,6 +45,8 @@ wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key ad
 sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
+
+所有版本的Linux都可以通过 [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) 下载相关安装包后安装。
 
 安装之后，你会发现 IBus 输入源指示面板中多了一个菜单选项`自定义IBus`，点击后即可打开自定义IBus配置选项。如果没有该菜单项，你可以`Alt+F2`然后按`r`重启shell，或者注销之后重新登陆。如果还是不行，请确保你安装了最新版的插件并且已经开启了该插件。
 
