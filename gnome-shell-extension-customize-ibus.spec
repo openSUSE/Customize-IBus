@@ -46,7 +46,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Wed May 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-46.20210521gita9781aa
+* Fri May 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-46.20210521gita9781aa
 - Fix several BUGs.
 - Add right click to close source indicator.
 
