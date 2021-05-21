@@ -1,4 +1,4 @@
-%global commit b846fe428c1737e22ec6586e8fbadec415248c1c
+%global commit a9781aa518557b8fbec1c0d751d155d27bdd970e
 %global extension_version 46
 %global date 20210521
 %global shell_version 40.0
@@ -46,7 +46,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Wed May 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-46.20210521gitb846fe4
+* Wed May 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-46.20210521gita9781aa
 - Fix several BUGs.
 - Add right click to close source indicator.
 
