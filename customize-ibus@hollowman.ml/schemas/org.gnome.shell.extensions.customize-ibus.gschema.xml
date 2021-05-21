@@ -53,7 +53,7 @@
     </key>
     <key type="s" name="ascii-mode">
         <default>"A#en#英"</default>
-        <summary>ascii mode</summary>
+        <summary>ASCII mode</summary>
     </key>
     <key type="s" name="custom-font">
         <default>"Sans 16"</default>
@@ -162,6 +162,10 @@
     <key type="b" name="use-indicator-reposition">
         <default>false</default>
         <summary>use indicator reposition by drag</summary>
+    </key>
+    <key type="b" name="input-indicator-right-close">
+        <default>false</default>
+        <summary>use indicator mouse right click to close</summary>
     </key>
   </schema>
 </schemalist>

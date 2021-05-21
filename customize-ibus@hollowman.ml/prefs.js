@@ -51,7 +51,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_use_custom_bg_dark = this._checkMaker(
         _("Use custom dark background")
       );
-      this._field_enable_ascii = this._checkMaker(_("Auto switch ASCII mode"));
+      this._field_enable_ASCII = this._checkMaker(_("Auto switch ASCII mode"));
       this._field_enable_orien = this._checkMaker(_("Candidates orientation"));
       this._field_use_candidate_animation = this._checkMaker(
         _("Candidates popup animation")
@@ -131,8 +131,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_ibus_exit = new Gtk.Switch();
       this._field_use_indicator = new Gtk.Switch();
       this._field_indicator_only_toggle = new Gtk.Switch();
-      this._field_indicator_only_in_ascii = new Gtk.Switch();
+      this._field_indicator_only_in_ASCII = new Gtk.Switch();
       this._field_indicator_reposition = new Gtk.Switch();
+      this._field_indicator_right_close = new Gtk.Switch();
 
       let adjustment = this._createAdjustment(Fields.INPUTINDHID);
       this._field_indicator_enable_autohide = this._checkMaker(
@@ -239,7 +240,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_custom_font
       );
       this._ibus_basic._add(
-        this._field_enable_ascii,
+        this._field_enable_ASCII,
         this._field_remember_input,
         this._field_unkown_state
       );
@@ -291,11 +292,15 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicate only when using ASCII mode")),
-        this._field_indicator_only_in_ascii
+        this._field_indicator_only_in_ASCII
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Enable drag to re-position indicator")),
         this._field_indicator_reposition
+      );
+      this._ibus_indicator._add(
+        this._switchLabelMaker(_("Enable right click to close indicator")),
+        this._field_indicator_right_close
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicater popup animation")),
@@ -334,7 +339,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _syncStatus() {
-      this._field_enable_ascii.connect("notify::active", (widget) => {
+      this._field_enable_ASCII.connect("notify::active", (widget) => {
         this._field_remember_input.set_sensitive(widget.active);
         this._field_unkown_state.set_sensitive(widget.active);
       });
@@ -377,8 +382,9 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
-        this._field_indicator_only_in_ascii.set_sensitive(widget.active);
+        this._field_indicator_only_in_ASCII.set_sensitive(widget.active);
         this._field_indicator_reposition.set_sensitive(widget.active);
+        this._field_indicator_right_close.set_sensitive(widget.active);
         this._field_indicator_animation.set_sensitive(widget.active);
         this._field_indicator_hide_time.set_sensitive(
           this._field_indicator_enable_autohide.active && widget.active
@@ -389,7 +395,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_only_toggle.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.INPUTINDTOG, widget.active);
       });
-      this._field_indicator_only_in_ascii.connect(
+      this._field_indicator_only_in_ASCII.connect(
         "notify::active",
         (widget) => {
           ibusGsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
@@ -397,6 +403,9 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._field_indicator_reposition.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.INPUTINDMOVE, widget.active);
+      });
+      this._field_indicator_right_close.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.INPUTINDRIGC, widget.active);
       });
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
@@ -471,8 +480,8 @@ const CustomizeIBus = GObject.registerClass(
         this._cssDarkFileChooser.show();
       });
 
-      this._field_remember_input.set_sensitive(this._field_enable_ascii.active);
-      this._field_unkown_state.set_sensitive(this._field_enable_ascii.active);
+      this._field_remember_input.set_sensitive(this._field_enable_ASCII.active);
+      this._field_unkown_state.set_sensitive(this._field_enable_ASCII.active);
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
       this._field_candidate_animation.set_sensitive(
         this._field_use_candidate_animation.active
@@ -480,10 +489,13 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_only_toggle.set_sensitive(
         this._field_use_indicator.active
       );
-      this._field_indicator_only_in_ascii.set_sensitive(
+      this._field_indicator_only_in_ASCII.set_sensitive(
         this._field_use_indicator.active
       );
       this._field_indicator_reposition.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_right_close.set_sensitive(
         this._field_use_indicator.active
       );
       this._field_indicator_animation.set_sensitive(
@@ -518,7 +530,7 @@ const CustomizeIBus = GObject.registerClass(
     _bindValues() {
       gsettings.bind(
         Fields.AUTOSWITCH,
-        this._field_enable_ascii,
+        this._field_enable_ASCII,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -674,13 +686,19 @@ const CustomizeIBus = GObject.registerClass(
       );
       gsettings.bind(
         Fields.INPUTINDASCII,
-        this._field_indicator_only_in_ascii,
+        this._field_indicator_only_in_ASCII,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
         Fields.INPUTINDMOVE,
         this._field_indicator_reposition,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDRIGC,
+        this._field_indicator_right_close,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -850,7 +868,7 @@ const CustomizeIBus = GObject.registerClass(
           label:
             "🎨 " +
             _(
-              "Customize IBus for orientation, animation, font, ascii mode auto-switch, reposition, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode."
+              "Customize IBus for orientation, animation, font, ASCII mode auto-switch, reposition, system tray menu entries, input source indicator. Theme and background picture follow GNOME Night Light Mode."
             ),
         }),
         0,
@@ -875,6 +893,18 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           label: _(
             '<span size="small">Source Code: <a href="https://github.com/HollowMan6/Customize-IBus">https://github.com/HollowMan6/Customize-IBus</a></span>'
+          ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          label: _(
+            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b>@openSUSE</b>.</span>'
           ),
         }),
         0,
@@ -939,7 +969,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, font, ascii mode auto-switch when windows are switched by users, and also re-position candidate by dragging when input."
+            "Here you can set the IBus input window orientation, animation, font, ASCII mode auto-switch when windows are switched by users, and also re-position candidate by dragging when input."
           ),
         }),
         0,
@@ -1034,7 +1064,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, drag to re-position indicator, popup animation, enable autohide and auto hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, drag to re-position indicator, mouse right click to close indicator, popup animation, enable autohide and auto hide timeout (in seconds)."
           ),
         }),
         0,

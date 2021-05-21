@@ -1,6 +1,6 @@
 %global commit b846fe428c1737e22ec6586e8fbadec415248c1c
-%global extension_version 44
-%global date 20210512
+%global extension_version 46
+%global date 20210521
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -24,7 +24,7 @@ Requires:       gnome-shell >= %{shell_version}
 Requires:       gnome-tweaks
 
 %description
-Customize IBus for orientation, animation, font, ascii mode auto-switch, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
+Customize IBus for orientation, animation, font, ASCII mode auto-switch, reposition, system tray menu entries, input source indicator. Theme and background picture follow GNOME Night Light Mode.
 在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、移动、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
 %prep
@@ -46,6 +46,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Wed May 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-46.20210521gitb846fe4
+- Fix several BUGs.
+- Add right click to close source indicator.
+
 * Wed May 12 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-44.20210512gitb846fe4
 - Refactor dragging to move feature to make it more robust.
 

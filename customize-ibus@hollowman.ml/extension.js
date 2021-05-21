@@ -58,10 +58,10 @@ const IBusInputSourceIndicater = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
-      inputindascii: GObject.param_spec_boolean(
-        "inputindascii",
-        "inputindascii",
-        "inputindascii",
+      inputindASCII: GObject.param_spec_boolean(
+        "inputindASCII",
+        "inputindASCII",
+        "inputindASCII",
         false,
         GObject.ParamFlags.WRITABLE
       ),
@@ -94,6 +94,13 @@ const IBusInputSourceIndicater = GObject.registerClass(
         "inputindmove",
         "inputindmove",
         "inputindmove",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindrigc: GObject.param_spec_boolean(
+        "inputindrigc",
+        "inputindrigc",
+        "inputindrigc",
         false,
         GObject.ParamFlags.WRITABLE
       ),
@@ -144,7 +151,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
       gsettings.bind(
         Fields.INPUTINDASCII,
         this,
-        "inputindascii",
+        "inputindASCII",
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
@@ -166,6 +173,12 @@ const IBusInputSourceIndicater = GObject.registerClass(
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
+        Fields.INPUTINDRIGC,
+        this,
+        "inputindrigc",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
         Fields.INPUTINDMOVE,
         this,
         "inputindmove",
@@ -177,8 +190,8 @@ const IBusInputSourceIndicater = GObject.registerClass(
       this.onlyOnToggle = inputindtog;
     }
 
-    set inputindascii(inputindascii) {
-      this.onlyASCII = inputindascii;
+    set inputindASCII(inputindASCII) {
+      this.onlyASCII = inputindASCII;
     }
 
     set inputindanim(inputindanim) {
@@ -193,22 +206,34 @@ const IBusInputSourceIndicater = GObject.registerClass(
       this.hideTime = inputindhid;
     }
 
+    set inputindrigc(inputindrigc) {
+      this.enableRightClickClose = inputindrigc;
+    }
+
     set inputindmove(inputindmove) {
       if (inputindmove) {
         this.reactive = true;
         this._buttonPressID = this.connect(
           "button-press-event",
           (actor, event) => {
-            let [boxX, boxY] = this._dummyCursor.get_position();
-            let [mouseX, mouseY] = event.get_coords();
-            this._relativePosX = mouseX - boxX;
-            this._relativePosY = mouseY - boxY;
-            global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
-            this._location_handler = GLib.timeout_add(
-              GLib.PRIORITY_DEFAULT,
-              10,
-              this._updatePos.bind(this)
-            );
+            if (event.get_state() & Clutter.ModifierType.BUTTON1_MASK) {
+              let [boxX, boxY] = this._dummyCursor.get_position();
+              let [mouseX, mouseY] = event.get_coords();
+              this._relativePosX = mouseX - boxX;
+              this._relativePosY = mouseY - boxY;
+              global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
+              this._location_handler = GLib.timeout_add(
+                GLib.PRIORITY_DEFAULT,
+                10,
+                this._updatePos.bind(this)
+              );
+            } else if (
+              this.enableRightClickClose &&
+              event.get_state() & Clutter.ModifierType.BUTTON3_MASK
+            ) {
+              this._inSetPosMode = false;
+              this.close(BoxPointer.PopupAnimation[this.animation]);
+            }
           }
         );
         this._sideChangeID = this.connect("arrow-side-changed", () => {
@@ -826,16 +851,33 @@ const IBusReposition = GObject.registerClass(
       this._buttonPressID = CandidatePopup.connect(
         "button-press-event",
         (actor, event) => {
-          let [boxX, boxY] = CandidatePopup._dummyCursor.get_position();
-          let [mouseX, mouseY] = event.get_coords();
-          CandidatePopup._relativePosX = mouseX - boxX;
-          CandidatePopup._relativePosY = mouseY - boxY;
-          global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
-          this._location_handler = GLib.timeout_add(
-            GLib.PRIORITY_DEFAULT,
-            10,
-            this._updatePos.bind(this)
-          );
+          if (
+            event.get_state() & Clutter.ModifierType.BUTTON1_MASK &&
+            !this._mouseInCandidate
+          ) {
+            let [boxX, boxY] = CandidatePopup._dummyCursor.get_position();
+            let [mouseX, mouseY] = event.get_coords();
+            CandidatePopup._relativePosX = mouseX - boxX;
+            CandidatePopup._relativePosY = mouseY - boxY;
+            global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
+            this._location_handler = GLib.timeout_add(
+              GLib.PRIORITY_DEFAULT,
+              10,
+              this._updatePos.bind(this)
+            );
+          }
+        }
+      );
+      this._mouseCandidateEnterID = CandidateArea.connect(
+        "enter-event",
+        (actor, event) => {
+          this._mouseInCandidate = true;
+        }
+      );
+      this._mouseCandidateLeaveID = CandidateArea.connect(
+        "leave-event",
+        (actor, event) => {
+          this._mouseInCandidate = false;
         }
       );
       this._sideChangeID = CandidatePopup.connect("arrow-side-changed", () => {
@@ -887,6 +929,12 @@ const IBusReposition = GObject.registerClass(
         GLib.source_remove(this._location_handler),
           (this._location_handler = 0);
       }
+      if (this._mouseCandidateEnterID)
+        CandidateArea.disconnect(this._mouseCandidateEnterID),
+          (this._mouseCandidateEnterID = 0);
+      if (this._mouseCandidateLeaveID)
+        CandidateArea.disconnect(this._mouseCandidateLeaveID),
+          (this._mouseCandidateLeaveID = 0);
       CandidatePopup.reactive = false;
       CandidatePopup._relativePosX = null;
       CandidatePopup._relativePosY = null;
@@ -1541,8 +1589,7 @@ const Extensions = GObject.registerClass(
 
     set ibusresttime(ibusresttime) {
       if (this._not_extension_first_start) {
-        Util.spawnCommandLine("pkill ibus-daemon");
-        Util.spawnCommandLine("ibus-daemon -dx");
+        IBusManager.restartDaemon();
         Util.spawn([
           "notify-send",
           _("Successfully triggered a restart for IBus"),
