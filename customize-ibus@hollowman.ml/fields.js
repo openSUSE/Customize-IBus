@@ -41,6 +41,7 @@ var Fields = {
   INPUTINDANIM: "input-indicator-animation",
   USEINDAUTOHID: "use-indicator-auto-hide",
   INPUTINDHID: "input-indicator-hide-time",
+  INPUTINDRIGC: "input-indicator-right-close",
   USECANDANIM: "use-popup-animation",
   CANDANIMATION: "candidate-popup-animation",
   USEREPOSITION: "use-candidate-reposition",

@@ -17,7 +17,7 @@
 
 (English version is down below)
 
-### 注意：如果后期无重大 BUG 的话，v43 将是支持 GNOME 3.38 的最后一个版本
+### 注意：如果后期无重大 BUG 的话，v45 将是支持 GNOME 3.38 的最后一个版本
 
 在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、移动、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
 
@@ -109,7 +109,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 
 ### _提示：_
 
-1. 在 Fedora 33、Ubuntu 21.04 和 Manjaro 21.0.2, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19,v21,v23,v25,v27,v29,v31,v35,v37,v39,v41,v43)通过了测试。
+1. 在 Fedora 33、Ubuntu 21.04 和 Manjaro 21.0.2, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19,v21,v23,v25,v27,v29,v31,v35,v37,v39,v41,v43,v45)通过了测试。
 2. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 3. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
@@ -158,6 +158,7 @@ background-size: cover;
 - [x] V39: 修复输入源指示器定时关闭缺陷，增加更多配置。增加 IBus 输入框弹出动画配置功能。
 - [x] V41: 增加拖拽移动功能。
 - [x] V43: 重构拖拽移动功能使其更健壮。
+- [x] V45: 修复一些 BUGs，增加右键关闭指示器功能。
 
 ## 致谢
 
@@ -169,9 +170,9 @@ _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/ope
 
 # Customize IBus
 
-### Note: If no severe bug was found later, v43 will be the last version that support GNOME 3.38.
+### Note: If no severe bug was found later, v45 will be the last version that support GNOME 3.38.
 
-Customize IBus for orientation, animation, font, ascii mode auto-switch, reposition, system tray menu entries, input source indicator; theme and background picture follow GNOME Night Light Mode.
+Customize IBus for orientation, animation, font, ASCII mode auto-switch, reposition, system tray menu entries, input source indicator. Theme and background picture follow GNOME Night Light Mode.
 
 [Customize IBus User Guide (in Chinese)](GUIDE_CN.md)
 
@@ -259,7 +260,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 
 ### _NOTE:_
 
-1. Tested on Fedora 33, Ubuntu 21.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43).
+1. Tested on Fedora 33, Ubuntu 21.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45).
 2. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 3. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
 
@@ -308,6 +309,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V39: Fix input source indicator BUGS, add more configs. Add IBus Input Popup Box animation customization feature.
 - [x] V41: Add drag to move function.
 - [x] V43: Refactor dragging to move feature to make it more robust.
+- [x] V45: Fix several BUGs. Add right click to close source indicator.
 
 ## Acknowledgements
 

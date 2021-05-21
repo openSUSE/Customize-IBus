@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (45) mx; urgency=medium
+
+  * v45: Fix several BUGs. Add right click to close source indicator.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Fri, 21 May 2021 21:38:43 +0800
+
 gnome-shell-extension-customize-ibus (43) mx; urgency=medium
 
   * v43: Initial Debian Package
