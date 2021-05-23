@@ -1,4 +1,4 @@
-%global commit a9781aa518557b8fbec1c0d751d155d27bdd970e
+%global commit 8ece98a2db246bde5f05d76f8aad4be3856089e4
 %global extension_version 48
 %global date 20210523
 %global shell_version 40.0
@@ -46,7 +46,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sun May 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-48.20210523gita9781aa
+* Sun May 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-48.20210523git8ece98a
 - Add right click candidate box to switch input source. 
 - Support show or hide tray icon, directly click tray icon to switch input source.
 
