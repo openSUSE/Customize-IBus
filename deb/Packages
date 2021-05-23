@@ -1,17 +1,17 @@
 Package: gnome-shell-extension-customize-ibus
-Version: 45
+Version: 47
 Architecture: all
 Maintainer: Hollow Man <hollowman@hollowman.ml>
-Installed-Size: 180
+Installed-Size: 193
 Depends: gnome-shell, gnome-tweaks
-Filename: ./gnome-shell-extension-customize-ibus_45_all.deb
-Size: 50682
-MD5sum: 2e8ffeb88994ade7dfe6ae3c99ac35e3
-SHA1: 10159ac9227c29c466e88c2a1348dbdfe83c1d18
-SHA256: 27e22f904d0b19d2fadc7bfd2822332c8ee07d8d732b72957909b2a5e35239b8
+Filename: ./gnome-shell-extension-customize-ibus_47_all.deb
+Size: 51806
+MD5sum: f70539fa8f592c84e2902e0c6ec0556b
+SHA1: 9f9cf826b8406d36082754c322c773620c6cbf20
+SHA256: 267080c01455644bbaf1c152313aaf32b0dc33c6b1dc54ac808bd560b166f824
 Section: system
 Priority: optional
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
-Description: Customize IBus for orientation, animation, font, ASCII mode auto-switch, reposition, system tray menu entries, input source indicator. Theme and background picture follow GNOME Night Light Mode.
-  在 GNOME Shell 中更改 IBus 的候选框方向、动画、字体、输入法默认语言、移动、系统托盘菜单、输入源指示器，主题、背景图片跟随 GNOME 夜灯模式自动切换。
+Description: Full customization of appearance, behavior, system tray and input source indicator for IBus.
+  深度定制 IBus 的外观、行为、系统托盘以及输入指示。
 
