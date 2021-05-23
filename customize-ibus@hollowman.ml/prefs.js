@@ -58,6 +58,10 @@ const CustomizeIBus = GObject.registerClass(
         _("Candidates popup animation")
       );
 
+      this._field_use_tray_source_switch_key = this._checkMaker(
+        _("Directly switch source with click")
+      );
+
       this._restart_ibus = new Gtk.Button({
         label: _("Start/Restart IBus"),
         hexpand: true,
@@ -78,6 +82,11 @@ const CustomizeIBus = GObject.registerClass(
         _("On"),
         _("Off"),
         _("Keep"),
+      ]);
+
+      this._field_tray_source_switch_key = this._comboMaker([
+        _("Left"),
+        _("Right"),
       ]);
 
       this._field_bg_mode = this._comboMaker([
@@ -123,7 +132,9 @@ const CustomizeIBus = GObject.registerClass(
         label:
           "<b>" + _("IBus Version: ") + "</b>" + _("unknown (installed ?)"),
       });
+      this._field_candidate_right_click = new Gtk.Switch();
       this._field_candidate_reposition = new Gtk.Switch();
+      this._field_use_tray = new Gtk.Switch();
       this._field_ibus_emoji = new Gtk.Switch();
       this._field_extension_entry = new Gtk.Switch();
       this._field_ibus_preference = new Gtk.Switch();
@@ -246,6 +257,12 @@ const CustomizeIBus = GObject.registerClass(
         this._field_unkown_state
       );
       this._ibus_basic._add(
+        this._switchLabelMaker(
+          _("Enable candidate box right click to switch source")
+        ),
+        this._field_candidate_right_click
+      );
+      this._ibus_basic._add(
         this._switchLabelMaker(_("Enable drag to re-position candidate")),
         this._field_candidate_reposition
       );
@@ -255,29 +272,43 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus_tray._add(this._ibus_version);
       this._ibus_tray._add(this._restart_ibus);
       this._ibus_tray._add(
-        this._switchLabelMaker(_("Entry for <b>copying Emoji</b>")),
+        this._switchLabelMaker(_("Show IBus tray icon")),
+        this._field_use_tray
+      );
+      this._ibus_tray._add(
+        this._field_use_tray_source_switch_key,
+        this._field_tray_source_switch_key
+      );
+      this._ibus_tray._add(
+        new Gtk.Label({
+          use_markup: true,
+          hexpand: true,
+          halign: Gtk.Align.CENTER,
+          label: "<b>" + _("Add Additional Menu Entries") + "</b>",
+        })
+      );
+      this._ibus_tray._add(
+        this._switchLabelMaker(_("Copying Emoji")),
         this._field_ibus_emoji
       );
       this._ibus_tray._add(
-        this._switchLabelMaker(
-          _("Entry for <b>this extension's preferences</b>")
-        ),
+        this._switchLabelMaker(_("This extension's preferences")),
         this._field_extension_entry
       );
       this._ibus_tray._add(
-        this._switchLabelMaker(_("Entry for <b>IBus preferences</b>")),
+        this._switchLabelMaker(_("IBus preferences")),
         this._field_ibus_preference
       );
       this._ibus_tray._add(
-        this._switchLabelMaker(_("Entry for <b>IBus Version</b>")),
+        this._switchLabelMaker(_("IBus Version")),
         this._field_ibus_version
       );
       this._ibus_tray._add(
-        this._switchLabelMaker(_("Entry for <b>restarting IBus</b>")),
+        this._switchLabelMaker(_("Restarting IBus")),
         this._field_ibus_restart
       );
       this._ibus_tray._add(
-        this._switchLabelMaker(_("Entry for <b>exiting IBus</b>")),
+        this._switchLabelMaker(_("Exiting IBus")),
         this._field_ibus_exit
       );
       this._trayHelpPage(this._ibus_tray);
@@ -359,8 +390,30 @@ const CustomizeIBus = GObject.registerClass(
           this._field_candidate_animation.set_sensitive(widget.active);
         }
       );
+      this._field_use_tray_source_switch_key.connect(
+        "notify::active",
+        (widget) => {
+          this._field_tray_source_switch_key.set_sensitive(widget.active);
+        }
+      );
+      this._field_use_tray.connect("notify::active", (widget) => {
+        this._field_tray_source_switch_key.set_sensitive(
+          this._field_use_tray_source_switch_key && widget.active
+        );
+        this._field_use_tray_source_switch_key.set_sensitive(widget.active);
+        this._field_ibus_emoji.set_sensitive(widget.active);
+        this._field_extension_entry.set_sensitive(widget.active);
+        this._field_ibus_preference.set_sensitive(widget.active);
+        this._field_ibus_version.set_sensitive(widget.active);
+        this._field_ibus_restart.set_sensitive(widget.active);
+        this._field_ibus_exit.set_sensitive(widget.active);
+        ibusGsettings.set_boolean(Fields.USETRAY, widget.active);
+      });
       this._field_ibus_emoji.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSEMOJI, widget.active);
+      });
+      this._field_candidate_right_click.connect("notify::active", (widget) => {
+        ibusGsettings.set_boolean(Fields.USECANDRIGHTSWITCH, widget.active);
       });
       this._field_candidate_reposition.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.USEREPOSITION, widget.active);
@@ -487,9 +540,9 @@ const CustomizeIBus = GObject.registerClass(
         this._cssDarkFileChooser.show();
       });
       this._field_custom_font.connect("font-set", (widget) => {
-		        ibusGsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
-		        gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
-		      });
+        ibusGsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
+        gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
+      });
 
       this._field_remember_input.set_sensitive(this._field_enable_ASCII.active);
       this._field_unkown_state.set_sensitive(this._field_enable_ASCII.active);
@@ -497,6 +550,19 @@ const CustomizeIBus = GObject.registerClass(
       this._field_candidate_animation.set_sensitive(
         this._field_use_candidate_animation.active
       );
+      this._field_use_tray_source_switch_key.set_sensitive(
+        this._field_use_tray.active
+      );
+      this._field_tray_source_switch_key.set_sensitive(
+        this._field_use_tray.active &&
+          this._field_use_tray_source_switch_key.active
+      );
+      this._field_ibus_emoji.set_sensitive(this._field_use_tray.active);
+      this._field_extension_entry.set_sensitive(this._field_use_tray.active);
+      this._field_ibus_preference.set_sensitive(this._field_use_tray.active);
+      this._field_ibus_version.set_sensitive(this._field_use_tray.active);
+      this._field_ibus_restart.set_sensitive(this._field_use_tray.active);
+      this._field_ibus_exit.set_sensitive(this._field_use_tray.active);
       this._field_indicator_only_toggle.set_sensitive(
         this._field_use_indicator.active
       );
@@ -582,6 +648,18 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.USETRAYSSWITCH,
+        this._field_use_tray_source_switch_key,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.TRAYSSWITCHKEY,
+        this._field_tray_source_switch_key,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.REMEMBERINPUT,
         this._field_remember_input,
         "active",
@@ -636,8 +714,20 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.USECANDRIGHTSWITCH,
+        this._field_candidate_right_click,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.USEREPOSITION,
         this._field_candidate_reposition,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.USETRAY,
+        this._field_use_tray,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -867,11 +957,10 @@ const CustomizeIBus = GObject.registerClass(
       );
       frame.grid.attach(
         new Gtk.Label({
-          wrap: true,
           label:
-            "🎨 " +
+            "😎 " +
             _(
-              "Customize IBus for orientation, animation, font, ASCII mode auto-switch, reposition, system tray menu entries, input source indicator. Theme and background picture follow GNOME Night Light Mode."
+              "Full customization of appearance, behavior, system tray and input source indicator for IBus."
             ),
         }),
         0,
@@ -972,7 +1061,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, font, ASCII mode auto-switch when windows are switched by users, and also re-position candidate by dragging when input."
+            "Here you can set the IBus input window orientation, animation, font, ASCII mode auto-switch when windows are switched by users, right click input window to get input source switched, and also re-position candidate by dragging when input."
           ),
         }),
         0,
@@ -1026,7 +1115,21 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment. You can also start or restart IBus by pressing the top button."
+            "Here you can set to show IBus tray icon, enable directly switch source with click, add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment. You can also start or restart IBus by pressing the top button."
+          ),
+        }),
+        0,
+        expanderFrame.grid._row++,
+        1,
+        1
+      );
+
+      expanderFrame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            '<span size="small"><b>Note:</b> If <b>Directly switch source with click</b> is enabled, when the left key is selected, if you click the tray icon with left key, you will have input source switched, and click right key will open the menu as normal, vice versa.</span>'
           ),
         }),
         0,

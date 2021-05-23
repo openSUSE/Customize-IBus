@@ -7,7 +7,18 @@
 const Main = imports.ui.main;
 const Panel = imports.ui.panel;
 const PanelMenu = imports.ui.panelMenu;
-const { Clutter, Gio, GLib, Meta, IBus, Pango, St, GObject } = imports.gi;
+const {
+  Clutter,
+  Gio,
+  GLib,
+  Meta,
+  IBus,
+  Pango,
+  St,
+  Atspi,
+  Gdk,
+  GObject,
+} = imports.gi;
 
 const BoxPointer = imports.ui.boxpointer;
 const Keyboard = imports.ui.status.keyboard;
@@ -843,6 +854,89 @@ const IBusOrientation = GObject.registerClass(
   }
 );
 
+const IBusClickSwitch = GObject.registerClass(
+  class IBusClickSwitch extends GObject.Object {
+    _init() {
+      super._init();
+      CandidatePopup.reactive = true;
+      this._buttonPressID = CandidatePopup.connect(
+        "button-press-event",
+        (actor, event) => {
+          if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
+            Atspi.generate_keyboard_event(
+              Gdk.keyval_from_name("KP_Enter"),
+              null,
+              Atspi.KeySynthType.PRESS | Atspi.KeySynthType.SYM
+            );
+            CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
+            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+          }
+        }
+      );
+    }
+
+    destroy() {
+      if (this._buttonPressID)
+        CandidatePopup.disconnect(this._buttonPressID),
+          (this._buttonPressID = 0);
+    }
+  }
+);
+
+const IBusTrayClickSwitch = GObject.registerClass(
+  {
+    Properties: {
+      traysswitchkey: GObject.param_spec_uint(
+        "traysswitchkey",
+        "traysswitchkey",
+        "traysswitchkey",
+        0,
+        1,
+        0,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusTrayClickSwitch extends GObject.Object {
+    _init() {
+      super._init();
+      gsettings.bind(
+        Fields.TRAYSSWITCHKEY,
+        this,
+        "traysswitchkey",
+        Gio.SettingsBindFlags.GET
+      );
+    }
+
+    set traysswitchkey(traysswitchkey) {
+      if (this._buttonPressID)
+        InputSourceIndicator.container.disconnect(this._buttonPressID),
+          (this._buttonPressID = 0);
+      let keyNum = traysswitchkey == 0 ? "1" : "3";
+      InputSourceIndicator.container.reactive = true;
+      this._buttonPressID = InputSourceIndicator.container.connect(
+        "button-press-event",
+        function (actor, event) {
+          if (
+            event.get_state() &
+            Clutter.ModifierType["BUTTON" + keyNum + "_MASK"]
+          ) {
+            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+            InputSourceIndicator.menu.close();
+          }
+        }
+      );
+    }
+
+    destroy() {
+      if (this._buttonPressID)
+        InputSourceIndicator.container.disconnect(this._buttonPressID),
+          (this._buttonPressID = 0);
+      InputSourceIndicator.container.reactive = false;
+    }
+  }
+);
+
 const IBusReposition = GObject.registerClass(
   class IBusReposition extends GObject.Object {
     _init() {
@@ -935,7 +1029,6 @@ const IBusReposition = GObject.registerClass(
       if (this._mouseCandidateLeaveID)
         CandidateArea.disconnect(this._mouseCandidateLeaveID),
           (this._mouseCandidateLeaveID = 0);
-      CandidatePopup.reactive = false;
       CandidatePopup._relativePosX = null;
       CandidatePopup._relativePosY = null;
     }
@@ -995,13 +1088,8 @@ const IBusAnimation = GObject.registerClass(
     }
 
     destroy() {
-      const openOrig = this._openOrig;
-      IBusManager._candidatePopup.open = () => {
-        openOrig.call(
-          IBusManager._candidatePopup,
-          BoxPointer.PopupAnimation.NONE
-        );
-      };
+      if (this._openOrig);
+      IBusManager._candidatePopup.open = this._openOrig;
     }
   }
 );
@@ -1259,6 +1347,27 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      usetray: GObject.param_spec_boolean(
+        "usetray",
+        "usetray",
+        "usetray",
+        true,
+        GObject.ParamFlags.WRITABLE
+      ),
+      usetraysswitch: GObject.param_spec_boolean(
+        "usetraysswitch",
+        "usetraysswitch",
+        "usetraysswitch",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      usecandrightswitch: GObject.param_spec_boolean(
+        "usecandrightswitch",
+        "usecandrightswitch",
+        "usecandrightswitch",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class Extensions extends GObject.Object {
@@ -1363,6 +1472,24 @@ const Extensions = GObject.registerClass(
         Fields.USEREPOSITION,
         this,
         "reposition",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USETRAY,
+        this,
+        "usetray",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USETRAYSSWITCH,
+        this,
+        "usetraysswitch",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USECANDRIGHTSWITCH,
+        this,
+        "usecandrightswitch",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -1494,6 +1621,31 @@ const Extensions = GObject.registerClass(
         if (!this._reposition) return;
         this._reposition.destroy();
         delete this._reposition;
+      }
+    }
+    set usetray(usetray) {
+      InputSourceIndicator.container.visible = usetray;
+    }
+
+    set usetraysswitch(usetraysswitch) {
+      if (usetraysswitch) {
+        if (this._usetraysswitch) return;
+        this._usetraysswitch = new IBusTrayClickSwitch();
+      } else {
+        if (!this._usetraysswitch) return;
+        this._usetraysswitch.destroy();
+        delete this._usetraysswitch;
+      }
+    }
+
+    set usecandrightswitch(usecandrightswitch) {
+      if (usecandrightswitch) {
+        if (this._usecandrightswitch) return;
+        this._usecandrightswitch = new IBusClickSwitch();
+      } else {
+        if (!this._usecandrightswitch) return;
+        this._usecandrightswitch.destroy();
+        delete this._usecandrightswitch;
       }
     }
 
@@ -1629,7 +1781,7 @@ const Extensions = GObject.registerClass(
 
     _MenuIBusRest() {
       Main.overview.hide();
-      Util.spawn(["ibus", "restart"]);
+      IBusManager.restartDaemon();
     }
 
     _MenuIBusExit() {
@@ -1647,6 +1799,9 @@ const Extensions = GObject.registerClass(
       this.useinputind = false;
       this.animation = false;
       this.reposition = false;
+      this.usetray = true;
+      this.usetraysswitch = false;
+      this.usecandrightswitch = false;
       this.menuibusemoji = false;
       this.menuextpref = false;
       this.menuibuspref = false;

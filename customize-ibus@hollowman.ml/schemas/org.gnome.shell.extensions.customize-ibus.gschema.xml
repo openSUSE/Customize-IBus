@@ -167,5 +167,22 @@
         <default>false</default>
         <summary>use indicator mouse right click to close</summary>
     </key>
+    <key type="b" name="use-tray">
+        <default>true</default>
+        <summary>use IBus system tray icon</summary>
+    </key>
+    <key type="b" name="use-tray-click-source-switch">
+        <default>false</default>
+        <summary>use tray mouse click to directly switch source</summary>
+    </key>
+    <key type="u" name="tray-source-switch-click-key">
+        <default>0</default>
+        <range min="0" max="1"/>
+        <summary>tray directly switch source mouse click key</summary>
+    </key>
+    <key type="b" name="use-candidate-box-right-click">
+        <default>false</default>
+        <summary>use candidate popup box right click to switch source</summary>
+    </key>
   </schema>
 </schemalist>
