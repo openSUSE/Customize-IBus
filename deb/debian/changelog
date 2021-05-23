@@ -1,3 +1,10 @@
+gnome-shell-extension-customize-ibus (48) mx; urgency=medium
+
+  * v48: Add right click candidate box to switch input source. 
+  Support show or hide tray icon, directly click tray icon to switch input source.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Sun, 23 May 2021 23:16:52 +0800
+
 gnome-shell-extension-customize-ibus (46) mx; urgency=medium
 
   * v46: Fix several BUGs. Add right click to close source indicator.

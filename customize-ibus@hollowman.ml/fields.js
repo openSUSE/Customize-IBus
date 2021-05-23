@@ -46,4 +46,8 @@ var Fields = {
   CANDANIMATION: "candidate-popup-animation",
   USEREPOSITION: "use-candidate-reposition",
   INPUTINDMOVE: "use-indicator-reposition",
+  USETRAY: "use-tray",
+  USETRAYSSWITCH: "use-tray-click-source-switch",
+  TRAYSSWITCHKEY: "tray-source-switch-click-key",
+  USECANDRIGHTSWITCH: "use-candidate-box-right-click",
 };
