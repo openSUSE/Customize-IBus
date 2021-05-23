@@ -54,11 +54,11 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 你也可以在[https://extensions.gnome.org/local/](https://extensions.gnome.org/local/)中点击Customize IBus插件的配置图标来打开该选项。
 
-![](https://img-blog.csdnimg.cn/20210521233725233.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210524003749157.png)
 
 ### 常规
 
-![](https://img-blog.csdnimg.cn/20210510123450156.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210524003959579.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置IBus输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
@@ -72,6 +72,8 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 点击`自动切换源`左侧的复选框来进行选中，即可支持配置窗口切换时输入法默认切换语言。点击最右侧进行选择，支持设定为中文或者英文，如果选择保持则保持切换窗口时输入法状态不变。在右侧你还可以选择是否记住输入状态。当记住输入状态被启用时，那么你在一个应用中手动切换了输入源，则该应用的输入源模式将会被自动记住。另外，新打开的应用将会遵循你的输入源配置，应用的输入状态将会永远被记住。
 
+点击`右击候选框换源`右侧的开关即可开启或关闭此功能。
+
 点击`拖拽移动候选框`右侧的开关即可开启或关闭此功能。
 
 示例开启`拖拽移动候选框`：
@@ -79,9 +81,9 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 托盘
 
-![](https://img-blog.csdnimg.cn/20210507110307451.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210524004113338.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-这里你可以选择为位于系统托盘处的IBus输入源指示菜单增加额外的菜单项，来复原IBus在非GNOME桌面的体验。各菜单功能如文字描述，点击右侧切换按钮即可启用。
+这里你可以选择显示 IBus 托盘图标，启用直接点击切换输入源，为位于系统托盘处的 IBus 输入源指示菜单增加额外的菜单项，来复原 IBus 在非GNOME桌面的体验。各菜单功能如文字描述，点击右侧切换按钮即可启用。
 
 所有菜单都启用：
 ![](https://img-blog.csdnimg.cn/2021050711043135.png)
@@ -286,7 +288,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 关于
 
-![](https://img-blog.csdnimg.cn/20210521234208851.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210524004258729.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ## 非GNOME桌面
 ### 自定义IBus主题
