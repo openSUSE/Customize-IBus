@@ -1,4 +1,4 @@
-%global commit 4d8914d1985af42167cc085bd22ec64d057e7637
+%global commit 4fc5522be0f98a5e6324cd8f7a78c10ed9bd5e06
 %global extension_version 50
 %global date 20210525
 %global shell_version 40.0
@@ -46,7 +46,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-50.20210525git4d8914d
+* Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-50.20210525git4fc5522
 - Add open menu for candidate right click
 - Add click Input Source Indicator to switch source
 
