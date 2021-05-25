@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 47\n"
+"Project-Id-Version: Customize Ibus 50\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-24 00:20+0800\n"
+"POT-Creation-Date: 2021-05-25 13:52+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,337 +17,348 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:383
+#: extension.js:436
 msgid "IBus panel service connected!"
 msgstr ""
 
-#: extension.js:791
+#: extension.js:848
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:801
+#: extension.js:858
 msgid "remove custom background for IBus"
 msgstr ""
 
-#: extension.js:1206
+#: extension.js:1316
 msgid "loading light user theme for IBus:"
 msgstr ""
 
-#: extension.js:1216
+#: extension.js:1326
 msgid "loading dark user theme for IBus:"
 msgstr ""
 
-#: extension.js:1221
+#: extension.js:1331
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:1656
+#: extension.js:1766
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:1671 prefs.js:944
+#: extension.js:1781 prefs.js:983
 msgid "Customize IBus"
 msgstr ""
 
-#: extension.js:1686
+#: extension.js:1796
 msgid "IBus Preferences"
 msgstr ""
 
-#: extension.js:1701 extension.js:1773 prefs.js:303
+#: extension.js:1811 extension.js:1883 prefs.js:315
 msgid "IBus Version"
 msgstr ""
 
-#: extension.js:1716
+#: extension.js:1826
 msgid "Restart"
 msgstr ""
 
-#: extension.js:1731
+#: extension.js:1841
 msgid "Quit"
 msgstr ""
 
-#: extension.js:1747
+#: extension.js:1857
 msgid "Successfully triggered a restart for IBus"
 msgstr ""
 
-#: prefs.js:43
+#: prefs.js:42
 msgid "Custom IME light theme"
 msgstr ""
 
-#: prefs.js:46
+#: prefs.js:45
 msgid "Custom IME dark theme"
 msgstr ""
 
-#: prefs.js:48
+#: prefs.js:47
 msgid "Use custom font"
 msgstr ""
 
-#: prefs.js:50
+#: prefs.js:49
 msgid "Use custom light background"
 msgstr ""
 
-#: prefs.js:53
+#: prefs.js:52
 msgid "Use custom dark background"
 msgstr ""
 
-#: prefs.js:55
+#: prefs.js:54
 msgid "Auto switch ASCII mode"
 msgstr ""
 
-#: prefs.js:56
+#: prefs.js:55
 msgid "Candidates orientation"
 msgstr ""
 
-#: prefs.js:58
+#: prefs.js:57
 msgid "Candidates popup animation"
 msgstr ""
 
-#: prefs.js:62
+#: prefs.js:61
 msgid "Directly switch source with click"
 msgstr ""
 
-#: prefs.js:66
+#: prefs.js:65
+msgid "Candidate box right click"
+msgstr ""
+
+#: prefs.js:69
 msgid "Start/Restart IBus"
 msgstr ""
 
-#: prefs.js:72
+#: prefs.js:75
 msgid "Vertical"
 msgstr ""
 
-#: prefs.js:73
+#: prefs.js:76
 msgid "Horizontal"
 msgstr ""
 
-#: prefs.js:77
+#: prefs.js:80
 msgid "Don't Remember State"
 msgstr ""
 
-#: prefs.js:78
+#: prefs.js:81
 msgid "Remember Input State"
 msgstr ""
 
-#: prefs.js:82
+#: prefs.js:85
 msgid "On"
 msgstr ""
 
-#: prefs.js:83
+#: prefs.js:86
 msgid "Off"
 msgstr ""
 
-#: prefs.js:84
+#: prefs.js:87
 msgid "Keep"
 msgstr ""
 
-#: prefs.js:88
+#: prefs.js:91
 msgid "Left"
 msgstr ""
 
-#: prefs.js:89
+#: prefs.js:92
 msgid "Right"
 msgstr ""
 
-#: prefs.js:93 prefs.js:99
+#: prefs.js:96
+msgid "Drag to Move"
+msgstr ""
+
+#: prefs.js:97 prefs.js:102
+msgid "Switch Source"
+msgstr ""
+
+#: prefs.js:101
+msgid "Open Menu"
+msgstr ""
+
+#: prefs.js:106 prefs.js:112
 msgid "Centered"
 msgstr ""
 
-#: prefs.js:94 prefs.js:100
+#: prefs.js:107 prefs.js:113
 msgid "Full"
 msgstr ""
 
-#: prefs.js:95 prefs.js:101
+#: prefs.js:108 prefs.js:114
 msgid "Zoom"
 msgstr ""
 
-#: prefs.js:105 prefs.js:110
+#: prefs.js:118 prefs.js:123
 msgid "No repeat"
 msgstr ""
 
-#: prefs.js:106 prefs.js:111
+#: prefs.js:119 prefs.js:124
 msgid "Repeat"
 msgstr ""
 
-#: prefs.js:115 prefs.js:122
+#: prefs.js:128 prefs.js:135
 msgid "None"
 msgstr ""
 
-#: prefs.js:116 prefs.js:123
+#: prefs.js:129 prefs.js:136
 msgid "Slide"
 msgstr ""
 
-#: prefs.js:117 prefs.js:124
+#: prefs.js:130 prefs.js:137
 msgid "Fade"
 msgstr ""
 
-#: prefs.js:118 prefs.js:125
+#: prefs.js:131 prefs.js:138
 msgid "All"
 msgstr ""
 
-#: prefs.js:133 prefs.js:237
+#: prefs.js:146 prefs.js:251
 msgid "IBus Version: "
 msgstr ""
 
-#: prefs.js:133 prefs.js:228
+#: prefs.js:146 prefs.js:242
 msgid "unknown (installed ?)"
 msgstr ""
 
-#: prefs.js:152
+#: prefs.js:163
+msgid "Enable Indicater left click"
+msgstr ""
+
+#: prefs.js:166
 msgid "Enable Indicater auto hide timeout (unit: seconds)"
 msgstr ""
 
-#: prefs.js:167 prefs.js:175
+#: prefs.js:181 prefs.js:189
 msgid "Select an Image"
 msgstr ""
 
-#: prefs.js:172 prefs.js:180 prefs.js:191 prefs.js:199 prefs.js:205
-#: prefs.js:211 prefs.js:217 prefs.js:223
+#: prefs.js:186 prefs.js:194 prefs.js:205 prefs.js:213 prefs.js:219
+#: prefs.js:225 prefs.js:231 prefs.js:237
 msgid "(None)"
 msgstr ""
 
-#: prefs.js:186 prefs.js:194
+#: prefs.js:200 prefs.js:208
 msgid "Select an IBus Stylesheet"
 msgstr ""
 
-#: prefs.js:244
+#: prefs.js:258
 msgid "General"
 msgstr ""
 
-#: prefs.js:261
-msgid "Enable candidate box right click to switch source"
-msgstr ""
-
-#: prefs.js:266
+#: prefs.js:278
 msgid "Enable drag to re-position candidate"
 msgstr ""
 
-#: prefs.js:271
+#: prefs.js:283
 msgid "Tray"
 msgstr ""
 
-#: prefs.js:275
+#: prefs.js:287
 msgid "Show IBus tray icon"
 msgstr ""
 
-#: prefs.js:287
+#: prefs.js:299
 msgid "Add Additional Menu Entries"
 msgstr ""
 
-#: prefs.js:291
+#: prefs.js:303
 msgid "Copying Emoji"
 msgstr ""
 
-#: prefs.js:295
+#: prefs.js:307
 msgid "This extension's preferences"
 msgstr ""
 
-#: prefs.js:299
+#: prefs.js:311
 msgid "IBus preferences"
 msgstr ""
 
-#: prefs.js:307
+#: prefs.js:319
 msgid "Restarting IBus"
 msgstr ""
 
-#: prefs.js:311
+#: prefs.js:323
 msgid "Exiting IBus"
 msgstr ""
 
-#: prefs.js:316
+#: prefs.js:328
 msgid "Indicator"
 msgstr ""
 
-#: prefs.js:318
+#: prefs.js:330
 msgid "Use input source indicator"
 msgstr ""
 
-#: prefs.js:322
+#: prefs.js:334
 msgid "Indicate only when switching input source"
 msgstr ""
 
-#: prefs.js:326
+#: prefs.js:338
 msgid "Indicate only when using ASCII mode"
 msgstr ""
 
-#: prefs.js:330
-msgid "Enable drag to re-position indicator"
-msgstr ""
-
-#: prefs.js:334
+#: prefs.js:342
 msgid "Enable right click to close indicator"
 msgstr ""
 
-#: prefs.js:338
+#: prefs.js:346
 msgid "Indicater popup animation"
 msgstr ""
 
-#: prefs.js:353
+#: prefs.js:359
 msgid "Theme"
 msgstr ""
 
-#: prefs.js:361
+#: prefs.js:367
 msgid "Background"
 msgstr ""
 
-#: prefs.js:907
+#: prefs.js:952
 msgid "About"
 msgstr ""
 
-#: prefs.js:924
+#: prefs.js:969
 msgid "unknown (self-build ?)"
 msgstr ""
 
-#: prefs.js:952
+#: prefs.js:991
 msgid "Version: "
 msgstr ""
 
-#: prefs.js:963
+#: prefs.js:1002
 msgid ""
 "Full customization of appearance, behavior, system tray and input source "
 "indicator for IBus."
 msgstr ""
 
-#: prefs.js:975
+#: prefs.js:1014
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
 "\">hollowman@hollowman.ml</a>&gt;</span>"
 msgstr ""
 
-#: prefs.js:987
+#: prefs.js:1026
 msgid ""
 "<span size=\"small\">Source Code: <a href=\"https://github.com/HollowMan6/"
 "Customize-IBus\">https://github.com/HollowMan6/Customize-IBus</a></span>"
 msgstr ""
 
-#: prefs.js:999
+#: prefs.js:1038
 msgid ""
 "<span size=\"small\">Sponsored by <a href=\"https://summerofcode.withgoogle."
 "com/projects/#5505085183885312\">Google Summer of Code 2021</a> "
 "<b>@openSUSE</b>.</span>"
 msgstr ""
 
-#: prefs.js:1011
+#: prefs.js:1050
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.</span>"
 msgstr ""
 
-#: prefs.js:1023
+#: prefs.js:1062
 msgid ""
 "<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/gpl"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 
-#: prefs.js:1055 prefs.js:1109 prefs.js:1164 prefs.js:1205 prefs.js:1285
+#: prefs.js:1094 prefs.js:1148 prefs.js:1203 prefs.js:1244 prefs.js:1324
 msgid "Help"
 msgstr ""
 
-#: prefs.js:1064
+#: prefs.js:1103
 msgid ""
-"Here you can set the IBus input window orientation, animation, font, ASCII "
-"mode auto-switch when windows are switched by users, right click input "
-"window to get input source switched, and also re-position candidate by "
-"dragging when input."
+"Here you can set the IBus input window orientation, animation, right click "
+"to open menu or switch source, font, ASCII mode auto-switch when windows are "
+"switched by users, and also re-position candidate by dragging when input."
 msgstr ""
 
-#: prefs.js:1077
+#: prefs.js:1116
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is "
 "enabled, and you have set to <b>Remember Input State</b>, every opened APP's "
@@ -356,7 +367,7 @@ msgid ""
 "APP's Input State will be remembered forever.</span>"
 msgstr ""
 
-#: prefs.js:1118
+#: prefs.js:1157
 msgid ""
 "Here you can set to show IBus tray icon, enable directly switch source with "
 "click, add additional menu entries to IBus input source indicator menu at "
@@ -364,7 +375,7 @@ msgid ""
 "can also start or restart IBus by pressing the top button."
 msgstr ""
 
-#: prefs.js:1132
+#: prefs.js:1171
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>Directly switch source with click</"
 "b> is enabled, when the left key is selected, if you click the tray icon "
@@ -372,24 +383,24 @@ msgid ""
 "open the menu as normal, vice versa.</span>"
 msgstr ""
 
-#: prefs.js:1173
+#: prefs.js:1212
 msgid ""
 "Here you can set to show input source indicator, default is to show "
 "indicator everytime you type, move caret or switch input source. You can set "
 "to show indicator only when switching input source. You can also set to only "
-"notify in ASCII mode, drag to re-position indicator, mouse right click to "
-"close indicator, popup animation, enable autohide and auto hide timeout (in "
-"seconds)."
+"notify in ASCII mode, mouse right click to close indicator, popup animation, "
+"mouse left click to switch input source or drag to move indicator, enable "
+"autohide and auto hide timeout (in seconds)."
 msgstr ""
 
-#: prefs.js:1214
+#: prefs.js:1253
 msgid ""
 "Support importing stylesheet generated by <a href=\"https://github.com/"
 "HollowMan6/IBus-Theme\">IBus Theme Tool</a> or provided by <a href=\"https://"
 "github.com/HollowMan6/IBus-Theme-Hub\">IBus Theme Hub</a>."
 msgstr ""
 
-#: prefs.js:1227
+#: prefs.js:1266
 msgid ""
 "When light theme and dark theme are turned on at the same time, the IBus "
 "theme will automatically follow GNOME Night Light mode, use light theme when "
@@ -398,27 +409,27 @@ msgid ""
 "on."
 msgstr ""
 
-#: prefs.js:1240
+#: prefs.js:1279
 msgid ""
 "<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
 "add any classes that's not started with <i>.candidate-*</i> into IBus "
 "stylesheet to prevent from disturbing system themes.</b></span>"
 msgstr ""
 
-#: prefs.js:1253
+#: prefs.js:1292
 msgid ""
 "<span size=\"small\"><b>Note:</b> If your IBus stylesheet has changed after "
 "application, please close and reopen the corresponding <b>custom IME theme</"
 "b> to make it effective.</span>"
 msgstr ""
 
-#: prefs.js:1294
+#: prefs.js:1333
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than theme defined background."
 msgstr ""
 
-#: prefs.js:1307
+#: prefs.js:1346
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -427,7 +438,7 @@ msgid ""
 "will always use the background that is turned on."
 msgstr ""
 
-#: prefs.js:1320
+#: prefs.js:1359
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "
