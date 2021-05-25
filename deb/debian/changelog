@@ -1,7 +1,13 @@
+gnome-shell-extension-customize-ibus (51) mx; urgency=medium
+
+  * v51: Add feature for fixing candidate box.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Tue, 26 May 2021 00:54:33 +0800
+
 gnome-shell-extension-customize-ibus (49) mx; urgency=medium
 
-  * v49: Add open menu for candidate right click
-  Add click Input Source Indicator to switch source
+  * v49: Add open menu for candidate right click.
+  Add click Input Source Indicator to switch source.
 
  -- Hollow Man <hollowman@hollowman.ml>  Tue, 25 May 2021 16:46:54 +0800
 
@@ -20,7 +26,7 @@ gnome-shell-extension-customize-ibus (45) mx; urgency=medium
 
 gnome-shell-extension-customize-ibus (43) mx; urgency=medium
 
-  * v43: Initial Debian Package
+  * v43: Initial Debian Package.
 
  -- Hollow Man <hollowman@hollowman.ml>  Sat, 15 May 2021 12:46:06 +0800
 

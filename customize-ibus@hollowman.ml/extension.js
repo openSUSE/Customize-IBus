@@ -900,6 +900,143 @@ const IBusOrientation = GObject.registerClass(
   }
 );
 
+const IBusNotFollowCaret = GObject.registerClass(
+  {
+    Properties: {
+      position: GObject.param_spec_uint(
+        "position",
+        "position",
+        "position",
+        0,
+        8,
+        0,
+        GObject.ParamFlags.READWRITE
+      ),
+      remember: GObject.param_spec_uint(
+        "remember",
+        "remember",
+        "remember",
+        0,
+        1,
+        1,
+        GObject.ParamFlags.READWRITE
+      ),
+    },
+  },
+  class IBusNotFollowCaret extends GObject.Object {
+    _init() {
+      super._init();
+      this._setDummyCursorGeometryOrig =
+        IBusManager._candidatePopup._setDummyCursorGeometry;
+      IBusManager._candidatePopup._setDummyCursorGeometry = (x, y, w, h) => {
+        IBusManager._candidatePopup._dummyCursor.set_size(
+          Math.round(w),
+          Math.round(h)
+        );
+        if (IBusManager._candidatePopup.visible)
+          IBusManager._candidatePopup.setPosition(
+            IBusManager._candidatePopup._dummyCursor,
+            0
+          );
+      };
+      gsettings.bind(
+        Fields.CANDSTILLPOS,
+        this,
+        "position",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.REMCANDPOS,
+        this,
+        "remember",
+        Gio.SettingsBindFlags.GET
+      );
+    }
+
+    set position(position) {
+      this._position = position;
+      this.update_pos();
+    }
+
+    set remember(remember) {
+      this._remember = remember;
+      this.update_pos();
+    }
+
+    update_pos() {
+      let x = 0,
+        y = 0,
+        successGetRem = false;
+      if (this._remember && !this._hasSetRember) {
+        let state = new Map(
+          Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack())
+        );
+        if (state.has("x") && state.has("y")) {
+          x = state.get("x");
+          y = state.get("y");
+          successGetRem = true;
+        }
+      }
+      if (!successGetRem) {
+        switch (this._position) {
+          case 1:
+            x = global.screen_width / 30;
+            y = global.screen_height / 3;
+            break;
+          case 2:
+            x = global.screen_width / 30;
+            y = global.screen_height / 30;
+            break;
+          case 3:
+            x = global.screen_width / 3;
+            y = global.screen_height / 30;
+            break;
+          case 4:
+            x = (global.screen_width / 3) * 2;
+            y = global.screen_height / 30;
+            break;
+          case 5:
+            x = (global.screen_width / 3) * 2;
+            y = global.screen_height / 3;
+            break;
+          case 6:
+            x = (global.screen_width / 3) * 2;
+            y = (global.screen_height / 3) * 2;
+            break;
+          case 7:
+            x = global.screen_width / 3;
+            y = (global.screen_height / 3) * 2;
+            break;
+          case 8:
+            x = global.screen_width / 30;
+            y = (global.screen_height / 3) * 2;
+            break;
+          case 0:
+          default:
+            x = global.screen_width / 3;
+            y = global.screen_height / 3;
+        }
+      }
+      IBusManager._candidatePopup._dummyCursor.set_position(
+        Math.round(x),
+        Math.round(y)
+      );
+      if (IBusManager._candidatePopup.visible)
+        IBusManager._candidatePopup.setPosition(
+          IBusManager._candidatePopup._dummyCursor,
+          0
+        );
+      if (this._remember) this._hasSetRember = true;
+    }
+
+    destroy() {
+      if (this._setDummyCursorGeometryOrig)
+        IBusManager._candidatePopup._setDummyCursorGeometry =
+          this._setDummyCursorGeometryOrig;
+    }
+  }
+);
+
 const IBusClickSwitch = GObject.registerClass(
   {
     Properties: {
@@ -1109,6 +1246,16 @@ const IBusReposition = GObject.registerClass(
       if (mask) return GLib.SOURCE_CONTINUE;
       this._location_handler = null;
       global.display.set_cursor(Meta.Cursor.DEFAULT);
+      let state = new Map(
+        Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack())
+      );
+      let [boxX, boxY] = CandidatePopup._dummyCursor.get_position();
+      state.set("x", boxX);
+      state.set("y", boxY);
+      gsettings.set_value(
+        Fields.CANDBOXPOS,
+        new GLib.Variant("a{su}", Object.fromEntries(state))
+      );
       return GLib.SOURCE_REMOVE;
     }
 
@@ -1468,6 +1615,13 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      usecandstill: GObject.param_spec_boolean(
+        "usecandstill",
+        "usecandstill",
+        "usecandstill",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class Extensions extends GObject.Object {
@@ -1590,6 +1744,12 @@ const Extensions = GObject.registerClass(
         Fields.USECANDRIGHTSWITCH,
         this,
         "usecandrightswitch",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USECANDSTILL,
+        this,
+        "usecandstill",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -1749,6 +1909,17 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    set usecandstill(usecandstill) {
+      if (usecandstill) {
+        if (this._usecandstill) return;
+        this._usecandstill = new IBusNotFollowCaret();
+      } else {
+        if (!this._usecandstill) return;
+        this._usecandstill.destroy();
+        delete this._usecandstill;
+      }
+    }
+
     set menuibusemoji(menuibusemoji) {
       if (menuibusemoji) {
         if (this._menuibusemoji) return;
@@ -1902,6 +2073,7 @@ const Extensions = GObject.registerClass(
       this.usetray = true;
       this.usetraysswitch = false;
       this.usecandrightswitch = false;
+      this.usecandstill = false;
       this.menuibusemoji = false;
       this.menuextpref = false;
       this.menuibuspref = false;

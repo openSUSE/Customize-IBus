@@ -57,6 +57,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_use_candidate_animation = this._checkMaker(
         _("Candidates popup animation")
       );
+      this._field_use_candidate_still = this._checkMaker(
+        _("Fix Candidate box")
+      );
 
       this._field_use_tray_source_switch_key = this._checkMaker(
         _("Directly switch source with click")
@@ -75,6 +78,11 @@ const CustomizeIBus = GObject.registerClass(
       this._field_orientation = this._comboMaker([
         _("Vertical"),
         _("Horizontal"),
+      ]);
+
+      this._field_candidate_remember_position = this._comboMaker([
+        _("Don't Remember Position"),
+        _("Remember Last Position"),
       ]);
 
       this._field_remember_input = this._comboMaker([
@@ -101,6 +109,18 @@ const CustomizeIBus = GObject.registerClass(
       this._field_candidate_right_click = this._comboMaker([
         _("Open Menu"),
         _("Switch Source"),
+      ]);
+
+      this._field_candidate_still_position = this._comboMaker([
+        _("Center"),
+        _("Center-Left"),
+        _("Top-Left"),
+        _("Top-Center"),
+        _("Top-Right"),
+        _("Center-Right"),
+        _("Bottom-Right"),
+        _("Bottom-Center"),
+        _("Bottom-Left"),
       ]);
 
       this._field_bg_mode = this._comboMaker([
@@ -267,6 +287,11 @@ const CustomizeIBus = GObject.registerClass(
         this._field_candidate_right_click
       );
       this._ibus_basic._add(
+        this._field_use_candidate_still,
+        this._field_candidate_remember_position,
+        this._field_candidate_still_position
+      );
+      this._ibus_basic._add(
         this._field_use_custom_font,
         this._field_custom_font
       );
@@ -409,6 +434,10 @@ const CustomizeIBus = GObject.registerClass(
           this._field_candidate_right_click.set_sensitive(widget.active);
         }
       );
+      this._field_use_candidate_still.connect("notify::active", (widget) => {
+        this._field_candidate_remember_position.set_sensitive(widget.active);
+        this._field_candidate_still_position.set_sensitive(widget.active);
+      });
       this._field_use_tray_source_switch_key.connect(
         "notify::active",
         (widget) => {
@@ -576,6 +605,12 @@ const CustomizeIBus = GObject.registerClass(
       this._field_candidate_right_click.set_sensitive(
         this._field_use_candidate_right_click.active
       );
+      this._field_candidate_remember_position.set_sensitive(
+        this._field_use_candidate_still.active
+      );
+      this._field_candidate_still_position.set_sensitive(
+        this._field_use_candidate_still.active
+      );
       this._field_use_tray_source_switch_key.set_sensitive(
         this._field_use_tray.active
       );
@@ -690,6 +725,18 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.USECANDSTILL,
+        this._field_use_candidate_still,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.CANDSTILLPOS,
+        this._field_candidate_still_position,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.USETRAYSSWITCH,
         this._field_use_tray_source_switch_key,
         "active",
@@ -698,6 +745,12 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.TRAYSSWITCHKEY,
         this._field_tray_source_switch_key,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.REMCANDPOS,
+        this._field_candidate_remember_position,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1103,7 +1156,20 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, font, ASCII mode auto-switch when windows are switched by users, and also re-position candidate by dragging when input."
+            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, and also re-position candidate by dragging when input."
+          ),
+        }),
+        0,
+        expanderFrame.grid._row++,
+        1,
+        1
+      );
+      expanderFrame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            '<span size="small"><b>Note:</b> If <b>fix candidate box</b> is enabled, you can set the candidate box position with 9 options. Recommend to <b>enable drag to re-position candidate</b> at the same time so that you can rearrange the position at any time, and remember candidate position forever after reposition if you set to <b>remember last position</b>, and restore at next login.</span>'
           ),
         }),
         0,
@@ -1117,6 +1183,19 @@ const CustomizeIBus = GObject.registerClass(
           wrap: true,
           label: _(
             "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is enabled, and you have set to <b>Remember Input State</b>, every opened APP's input mode will be remembered if you have switched the input source manually in the APP's window, and the newly-opened APP will follow the configuration. APP's Input State will be remembered forever.</span>"
+          ),
+        }),
+        0,
+        expanderFrame.grid._row++,
+        1,
+        1
+      );
+      expanderFrame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            '<span size="small"><b>Note:</b> If you <b>enable drag to re-position candidate</b>, and if <b>fix candidate box</b> is enabled, your rearranged position will last until the end of this session. If not the rearranged position will only last for the specific input.</span>'
           ),
         }),
         0,
