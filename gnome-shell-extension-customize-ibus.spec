@@ -1,4 +1,4 @@
-%global commit 8ece98a2db246bde5f05d76f8aad4be3856089e4
+%global commit 4d8914d1985af42167cc085bd22ec64d057e7637
 %global extension_version 50
 %global date 20210525
 %global shell_version 40.0
@@ -46,7 +46,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-50.20210525git8ece98a
+* Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-50.20210525git4d8914d
 - Add open menu for candidate right click
 
 * Sun May 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-48.20210523git8ece98a
