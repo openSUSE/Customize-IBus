@@ -189,10 +189,28 @@
         <default>false</default>
         <summary>use candidate popup box right click</summary>
     </key>
-        <key type="u" name="candidate-box-right-click-func">
+    <key type="u" name="candidate-box-right-click-func">
         <default>0</default>
         <range min="0" max="1"/>
         <summary>candidate popup box right click function</summary>
+    </key>
+    <key type="b" name="use-candidate-still">
+        <default>false</default>
+        <summary>use candidate popup box not follow caret</summary>
+    </key>
+    <key type="u" name="candidate-still-position">
+        <default>0</default>
+        <range min="0" max="8"/>
+        <summary>candidate popup box position for not follow caret</summary>
+    </key>
+    <key type="u" name="remember-candidate-position">
+        <default>1</default>
+        <range min="0" max="1"/>
+        <summary>remember last session's candidate popup box position</summary>
+    </key>
+    <key type="a{su}" name="candidate-box-position">
+        <default>[]</default>
+        <summary>last remembered candidate box position</summary>
     </key>
   </schema>
 </schemalist>

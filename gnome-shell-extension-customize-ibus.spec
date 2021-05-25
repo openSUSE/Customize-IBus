@@ -1,5 +1,5 @@
 %global commit 75701c833cc20b3bebc8fe765f9ca7306d435942
-%global extension_version 50
+%global extension_version 52
 %global date 20210525
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
@@ -46,6 +46,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-52.20210525git75701c8
+- Add feature for fixing candidate box
+
 * Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-50.20210525git75701c8
 - Add open menu for candidate right click
 - Add click Input Source Indicator to switch source

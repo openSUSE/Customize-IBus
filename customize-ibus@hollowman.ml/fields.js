@@ -52,4 +52,8 @@ var Fields = {
   TRAYSSWITCHKEY: "tray-source-switch-click-key",
   USECANDRIGHTSWITCH: "use-candidate-box-right-click",
   CANDRIGHTFUNC: "candidate-box-right-click-func",
+  USECANDSTILL: "use-candidate-still",
+  CANDSTILLPOS: "candidate-still-position",
+  REMCANDPOS: "remember-candidate-position",
+  CANDBOXPOS: "candidate-box-position",
 };
