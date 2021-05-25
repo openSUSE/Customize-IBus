@@ -1,4 +1,4 @@
-%global commit 75701c833cc20b3bebc8fe765f9ca7306d435942 
+%global commit 75701c833cc20b3bebc8fe765f9ca7306d435942
 %global extension_version 50
 %global date 20210525
 %global shell_version 40.0
