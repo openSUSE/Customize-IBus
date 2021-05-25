@@ -246,7 +246,6 @@ const IBusInputSourceIndicater = GObject.registerClass(
         if (this._buttonRightPressID)
           this.disconnect(this._buttonRightPressID),
             (this._buttonRightPressID = 0);
-        this.reactive = false;
       }
     }
 
@@ -331,7 +330,6 @@ const IBusInputSourceIndicater = GObject.registerClass(
         GLib.source_remove(this._location_handler),
           (this._location_handler = 0);
       }
-      this.reactive = false;
       this._relativePosX = null;
       this._relativePosY = null;
     }
