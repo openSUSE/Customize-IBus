@@ -3,12 +3,12 @@
   "version": "50.0.0",
   "description": "Full customization of appearance, behavior, system tray and input source indicator for IBus.",
   "dependencies": {
-    "eslint": "^7.25.0",
+    "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.4.0",
     "husky": "^6.0.0",
-    "lint-staged": "^10.5.4",
-    "prettier": "^2.2.1"
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.0"
   },
   "scripts": {
     "lint": "eslint .",
