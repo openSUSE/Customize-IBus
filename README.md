@@ -159,7 +159,7 @@ background-size: cover;
 - [x] V44: 重构拖拽移动功能使其更健壮。
 - [x] V46: 修复一些 BUGs，增加右键关闭指示器功能。
 - [x] V48: 增加候选框右击切换输入源；支持显示或隐藏托盘图标，直接点击托盘切换输入源。
-- [x] V50: 增加候选框右击打开菜单。
+- [x] V50: 增加候选框右击打开菜单，点击输入指示器切换菜单功能。
 
 ## 致谢
 
@@ -311,7 +311,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V44: Refactor dragging to move feature to make it more robust.
 - [x] V46: Fix several BUGs. Add right click to close source indicator.
 - [x] V48: Add right click candidate box to switch input source. Support show or hide tray icon, directly click tray icon to switch input source.
-- [x] V50: Add open menu for candidate right click.
+- [x] V50: Add open menu for candidate right click, and click Input Source Indicator to switch source.
 
 ## Acknowledgements
 

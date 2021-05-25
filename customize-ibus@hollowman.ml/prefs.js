@@ -92,6 +92,11 @@ const CustomizeIBus = GObject.registerClass(
         _("Right"),
       ]);
 
+      this._field_indicator_left_click = this._comboMaker([
+        _("Drag to Move"),
+        _("Switch Source"),
+      ]);
+
       this._field_candidate_right_click = this._comboMaker([
         _("Open Menu"),
         _("Switch Source"),
@@ -151,10 +156,12 @@ const CustomizeIBus = GObject.registerClass(
       this._field_use_indicator = new Gtk.Switch();
       this._field_indicator_only_toggle = new Gtk.Switch();
       this._field_indicator_only_in_ASCII = new Gtk.Switch();
-      this._field_indicator_reposition = new Gtk.Switch();
       this._field_indicator_right_close = new Gtk.Switch();
 
       let adjustment = this._createAdjustment(Fields.INPUTINDHID);
+      this._field_indicator_enable_left_click = this._checkMaker(
+        _("Enable Indicater left click")
+      );
       this._field_indicator_enable_autohide = this._checkMaker(
         _("Enable Indicater auto hide timeout (unit: seconds)")
       );
@@ -332,16 +339,16 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_only_in_ASCII
       );
       this._ibus_indicator._add(
-        this._switchLabelMaker(_("Enable drag to re-position indicator")),
-        this._field_indicator_reposition
-      );
-      this._ibus_indicator._add(
         this._switchLabelMaker(_("Enable right click to close indicator")),
         this._field_indicator_right_close
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicater popup animation")),
         this._field_indicator_animation
+      );
+      this._ibus_indicator._add(
+        this._field_indicator_enable_left_click,
+        this._field_indicator_left_click
       );
       this._ibus_indicator._add(
         this._field_indicator_enable_autohide,
@@ -435,22 +442,18 @@ const CustomizeIBus = GObject.registerClass(
       this._field_ibus_exit.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSEXIT, widget.active);
       });
-      this._field_indicator_enable_autohide.connect(
-        "notify::active",
-        (widget) => {
-          this._field_indicator_hide_time.set_sensitive(widget.active);
-          ibusGsettings.set_boolean(Fields.USEINDAUTOHID, widget.active);
-        }
-      );
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
         this._field_indicator_only_in_ASCII.set_sensitive(widget.active);
-        this._field_indicator_reposition.set_sensitive(widget.active);
         this._field_indicator_right_close.set_sensitive(widget.active);
         this._field_indicator_animation.set_sensitive(widget.active);
+        this._field_indicator_left_click.set_sensitive(
+          this._field_indicator_enable_left_click.active && widget.active
+        );
         this._field_indicator_hide_time.set_sensitive(
           this._field_indicator_enable_autohide.active && widget.active
         );
+        this._field_indicator_enable_left_click.set_sensitive(widget.active);
         this._field_indicator_enable_autohide.set_sensitive(widget.active);
         ibusGsettings.set_boolean(Fields.USEINPUTIND, widget.active);
       });
@@ -463,9 +466,20 @@ const CustomizeIBus = GObject.registerClass(
           ibusGsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
         }
       );
-      this._field_indicator_reposition.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.INPUTINDMOVE, widget.active);
-      });
+      this._field_indicator_enable_left_click.connect(
+        "notify::active",
+        (widget) => {
+          this._field_indicator_left_click.set_sensitive(widget.active);
+          ibusGsettings.set_boolean(Fields.USEINPUTINDLCLK, widget.active);
+        }
+      );
+      this._field_indicator_enable_autohide.connect(
+        "notify::active",
+        (widget) => {
+          this._field_indicator_hide_time.set_sensitive(widget.active);
+          ibusGsettings.set_boolean(Fields.USEINDAUTOHID, widget.active);
+        }
+      );
       this._field_indicator_right_close.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.INPUTINDRIGC, widget.active);
       });
@@ -570,21 +584,25 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_only_in_ASCII.set_sensitive(
         this._field_use_indicator.active
       );
-      this._field_indicator_reposition.set_sensitive(
-        this._field_use_indicator.active
-      );
       this._field_indicator_right_close.set_sensitive(
         this._field_use_indicator.active
       );
       this._field_indicator_animation.set_sensitive(
         this._field_use_indicator.active
       );
-      this._field_indicator_enable_autohide.set_sensitive(
-        this._field_use_indicator.active
+      this._field_indicator_left_click.set_sensitive(
+        this._field_use_indicator.active &&
+          this._field_indicator_enable_left_click.active
       );
       this._field_indicator_hide_time.set_sensitive(
         this._field_use_indicator.active &&
           this._field_indicator_enable_autohide.active
+      );
+      this._field_indicator_enable_left_click.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_enable_autohide.set_sensitive(
+        this._field_use_indicator.active
       );
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
@@ -799,8 +817,14 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
-        Fields.INPUTINDMOVE,
-        this._field_indicator_reposition,
+        Fields.USEINPUTINDLCLK,
+        this._field_indicator_enable_left_click,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDLCLICK,
+        this._field_indicator_left_click,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1185,7 +1209,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, drag to re-position indicator, mouse right click to close indicator, popup animation, enable autohide and auto hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, popup animation, mouse left click to switch input source or drag to move indicator, enable autohide and auto hide timeout (in seconds)."
           ),
         }),
         0,

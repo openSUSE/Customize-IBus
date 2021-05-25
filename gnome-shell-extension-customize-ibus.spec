@@ -48,6 +48,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %changelog
 * Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-50.20210525git4d8914d
 - Add open menu for candidate right click
+- Add click Input Source Indicator to switch source
 
 * Sun May 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-48.20210523git8ece98a
 - Add right click candidate box to switch input source. 

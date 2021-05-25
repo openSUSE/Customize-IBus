@@ -1,6 +1,7 @@
 gnome-shell-extension-customize-ibus (50) mx; urgency=medium
 
   * v50: Add open menu for candidate right click
+  Add click Input Source Indicator to switch source
 
  -- Hollow Man <hollowman@hollowman.ml>  Tue, 25 May 2021 10:48:47 +0800
 
