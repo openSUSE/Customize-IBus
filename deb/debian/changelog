@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (50) mx; urgency=medium
+
+  * v50: Add open menu for candidate right click
+
+ -- Hollow Man <hollowman@hollowman.ml>  Tue, 25 May 2021 10:48:47 +0800
+
 gnome-shell-extension-customize-ibus (48) mx; urgency=medium
 
   * v48: Add right click candidate box to switch input source. 

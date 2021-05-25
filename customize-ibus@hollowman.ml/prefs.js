@@ -61,6 +61,10 @@ const CustomizeIBus = GObject.registerClass(
         _("Directly switch source with click")
       );
 
+      this._field_use_candidate_right_click = this._checkMaker(
+        _("Candidate box right click")
+      );
+
       this._restart_ibus = new Gtk.Button({
         label: _("Start/Restart IBus"),
         hexpand: true,
@@ -86,6 +90,11 @@ const CustomizeIBus = GObject.registerClass(
       this._field_tray_source_switch_key = this._comboMaker([
         _("Left"),
         _("Right"),
+      ]);
+
+      this._field_candidate_right_click = this._comboMaker([
+        _("Open Menu"),
+        _("Switch Source"),
       ]);
 
       this._field_bg_mode = this._comboMaker([
@@ -131,7 +140,6 @@ const CustomizeIBus = GObject.registerClass(
         label:
           "<b>" + _("IBus Version: ") + "</b>" + _("unknown (installed ?)"),
       });
-      this._field_candidate_right_click = new Gtk.Switch();
       this._field_candidate_reposition = new Gtk.Switch();
       this._field_use_tray = new Gtk.Switch();
       this._field_ibus_emoji = new Gtk.Switch();
@@ -247,6 +255,10 @@ const CustomizeIBus = GObject.registerClass(
         this._field_candidate_animation
       );
       this._ibus_basic._add(
+        this._field_use_candidate_right_click,
+        this._field_candidate_right_click
+      );
+      this._ibus_basic._add(
         this._field_use_custom_font,
         this._field_custom_font
       );
@@ -254,12 +266,6 @@ const CustomizeIBus = GObject.registerClass(
         this._field_enable_ASCII,
         this._field_remember_input,
         this._field_unkown_state
-      );
-      this._ibus_basic._add(
-        this._switchLabelMaker(
-          _("Enable candidate box right click to switch source")
-        ),
-        this._field_candidate_right_click
       );
       this._ibus_basic._add(
         this._switchLabelMaker(_("Enable drag to re-position candidate")),
@@ -383,6 +389,12 @@ const CustomizeIBus = GObject.registerClass(
           this._field_candidate_animation.set_sensitive(widget.active);
         }
       );
+      this._field_use_candidate_right_click.connect(
+        "notify::active",
+        (widget) => {
+          this._field_candidate_right_click.set_sensitive(widget.active);
+        }
+      );
       this._field_use_tray_source_switch_key.connect(
         "notify::active",
         (widget) => {
@@ -404,9 +416,6 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._field_ibus_emoji.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.MENUIBUSEMOJI, widget.active);
-      });
-      this._field_candidate_right_click.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.USECANDRIGHTSWITCH, widget.active);
       });
       this._field_candidate_reposition.connect("notify::active", (widget) => {
         ibusGsettings.set_boolean(Fields.USEREPOSITION, widget.active);
@@ -539,6 +548,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_candidate_animation.set_sensitive(
         this._field_use_candidate_animation.active
       );
+      this._field_candidate_right_click.set_sensitive(
+        this._field_use_candidate_right_click.active
+      );
       this._field_use_tray_source_switch_key.set_sensitive(
         this._field_use_tray.active
       );
@@ -637,6 +649,18 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.USECANDRIGHTSWITCH,
+        this._field_use_candidate_right_click,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.CANDRIGHTFUNC,
+        this._field_candidate_right_click,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.USETRAYSSWITCH,
         this._field_use_tray_source_switch_key,
         "active",
@@ -711,12 +735,6 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.MENUIBUSEMOJI,
         this._field_ibus_emoji,
-        "active",
-        Gio.SettingsBindFlags.DEFAULT
-      );
-      gsettings.bind(
-        Fields.USECANDRIGHTSWITCH,
-        this._field_candidate_right_click,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1058,7 +1076,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, font, ASCII mode auto-switch when windows are switched by users, right click input window to get input source switched, and also re-position candidate by dragging when input."
+            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, font, ASCII mode auto-switch when windows are switched by users, and also re-position candidate by dragging when input."
           ),
         }),
         0,

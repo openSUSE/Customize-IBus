@@ -5,8 +5,6 @@
 "use strict";
 
 const Main = imports.ui.main;
-const Panel = imports.ui.panel;
-const PanelMenu = imports.ui.panelMenu;
 const {
   Clutter,
   Gio,
@@ -855,30 +853,83 @@ const IBusOrientation = GObject.registerClass(
 );
 
 const IBusClickSwitch = GObject.registerClass(
+  {
+    Properties: {
+      switchfunction: GObject.param_spec_uint(
+        "switchfunction",
+        "switchfunction",
+        "switchfunction",
+        0,
+        1,
+        0,
+        GObject.ParamFlags.READWRITE
+      ),
+    },
+  },
   class IBusClickSwitch extends GObject.Object {
     _init() {
       super._init();
+      gsettings.bind(
+        Fields.CANDRIGHTFUNC,
+        this,
+        "switchfunction",
+        Gio.SettingsBindFlags.GET
+      );
       CandidatePopup.reactive = true;
+      this._mouseCandidateEnterID = CandidateArea.connect(
+        "enter-event",
+        (actor, event) => {
+          this._mouseInCandidate = true;
+        }
+      );
+      this._mouseCandidateLeaveID = CandidateArea.connect(
+        "leave-event",
+        (actor, event) => {
+          this._mouseInCandidate = false;
+        }
+      );
       this._buttonPressID = CandidatePopup.connect(
         "button-press-event",
         (actor, event) => {
           if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
-            Atspi.generate_keyboard_event(
-              Gdk.keyval_from_name("KP_Enter"),
-              null,
-              Atspi.KeySynthType.PRESS | Atspi.KeySynthType.SYM
-            );
-            CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
-            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+            if (!this._mouseInCandidate || !this._clickSwitch) {
+              Atspi.generate_keyboard_event(
+                Gdk.keyval_from_name("KP_Enter"),
+                null,
+                Atspi.KeySynthType.PRESS | Atspi.KeySynthType.SYM
+              );
+              CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
+            }
+            if (this._clickSwitch) {
+              IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+            } else {
+              InputSourceIndicator.menu.open(
+                InputSourceIndicator.menu.activeMenu
+                  ? BoxPointer.PopupAnimation.FADE
+                  : BoxPointer.PopupAnimation.FULL
+              );
+              Main.panel.menuManager.ignoreRelease();
+            }
           }
         }
       );
+    }
+
+    set switchfunction(switchfunction) {
+      this._clickSwitch = switchfunction == 0 ? false : true;
     }
 
     destroy() {
       if (this._buttonPressID)
         CandidatePopup.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
+      if (this._mouseCandidateEnterID)
+        CandidateArea.disconnect(this._mouseCandidateEnterID),
+          (this._mouseCandidateEnterID = 0);
+      if (this._mouseCandidateLeaveID)
+        CandidateArea.disconnect(this._mouseCandidateLeaveID),
+          (this._mouseCandidateLeaveID = 0);
+      delete this.candidateBoxesID;
     }
   }
 );

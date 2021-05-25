@@ -1,6 +1,6 @@
 %global commit 8ece98a2db246bde5f05d76f8aad4be3856089e4
-%global extension_version 48
-%global date 20210523
+%global extension_version 50
+%global date 20210525
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -46,6 +46,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-50.20210525git8ece98a
+- Add open menu for candidate right click
+
 * Sun May 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-48.20210523git8ece98a
 - Add right click candidate box to switch input source. 
 - Support show or hide tray icon, directly click tray icon to switch input source.
