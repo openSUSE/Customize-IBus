@@ -1,4 +1,4 @@
-%global commit 437198b8261abcf962f3b6850059241ec8c8192e
+%global commit c52cd9f56943b749ced4a186366eb5af8a02b3e6
 %global extension_version 54
 %global date 20210530
 %global shell_version 40.0
@@ -46,7 +46,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sun May 30 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-54.20210530git437198b
+* Sun May 30 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-54.20210530gitc52cd9f
 - Fix support for ibus-rime of candidate box right click and indicator.
 
 * Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-52.20210525git437198b
