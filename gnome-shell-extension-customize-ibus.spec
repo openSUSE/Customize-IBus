@@ -1,6 +1,6 @@
 %global commit 437198b8261abcf962f3b6850059241ec8c8192e
-%global extension_version 52
-%global date 20210525
+%global extension_version 54
+%global date 20210530
 %global shell_version 40.0
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -46,12 +46,15 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sun May 30 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-54.20210530git437198b
+- Fix support for ibus-rime of candidate box right click and indicator.
+
 * Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-52.20210525git437198b
-- Add feature for fixing candidate box
+- Add feature for fixing candidate box.
 
 * Tue May 25 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-50.20210525git75701c8
-- Add open menu for candidate right click
-- Add click Input Source Indicator to switch source
+- Add open menu for candidate right click.
+- Add click Input Source Indicator to switch source.
 
 * Sun May 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-48.20210523git8ece98a
 - Add right click candidate box to switch input source. 
@@ -105,11 +108,11 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 - Modify theme load logic so that now we don't need to reload GNOME-Shell to change IBus themes.
 
 * Sun Apr 18 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-13.20210418git6c2a9b3
-- Fix bugs, make it suitable for RPM installization 
+- Fix bugs, make it suitable for RPM installization.
 
 * Thu Apr 15 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-12.20210415gitab4f6cf
-- Fix bugs, make it suitable for RPM installization 
+- Fix bugs, make it suitable for RPM installization.
 
 * Sat Apr 10 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-12.20210410gitd31ef3e
-- Initial Fedora package
+- Initial Fedora package.
 

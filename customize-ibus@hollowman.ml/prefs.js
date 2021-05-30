@@ -28,6 +28,7 @@ const CustomizeIBus = GObject.registerClass(
   class CustomizeIBus extends Gtk.ScrolledWindow {
     _init() {
       super._init({
+        height_request: 720,
         hscrollbar_policy: Gtk.PolicyType.NEVER,
       });
 
@@ -974,7 +975,7 @@ const CustomizeIBus = GObject.registerClass(
 
       frame._add = (x, y, z, a) => {
         const boxrow = new Gtk.ListBoxRow({
-          activatable: true,
+          activatable: false,
           selectable: false,
         });
         const hbox = new Gtk.Box();
@@ -1014,6 +1015,7 @@ const CustomizeIBus = GObject.registerClass(
         column_spacing: 18,
         row_homogeneous: false,
         column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
       });
 
       frame.grid._row = 0;
@@ -1088,7 +1090,7 @@ const CustomizeIBus = GObject.registerClass(
         new Gtk.Label({
           use_markup: true,
           label: _(
-            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b>@openSUSE</b>.</span>'
+            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE/mentoring/issues/158">@openSUSE</a></b>.</span>'
           ),
         }),
         0,

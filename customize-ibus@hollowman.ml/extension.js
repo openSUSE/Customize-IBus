@@ -380,6 +380,12 @@ const IBusInputSourceIndicater = GObject.registerClass(
           }
         }
       );
+      this._registerPropertyID = panelService.connect(
+        "register-properties",
+        (engineName, prop) => {
+          this._inputIndicatorLabel.text = this._getInputLabel();
+        }
+      );
     }
 
     _setDummyCursorGeometry(x, y, w, h) {
@@ -451,6 +457,9 @@ const IBusInputSourceIndicater = GObject.registerClass(
       if (this._updatePropertyID)
         this._panelService.disconnect(this._updatePropertyID),
           (this._updatePropertyID = 0);
+      if (this._registerPropertyID)
+        this._panelService.disconnect(this._registerPropertyID),
+          (this._registerPropertyID = 0);
     }
 
     destroy() {
@@ -1079,7 +1088,7 @@ const IBusClickSwitch = GObject.registerClass(
           if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
             if (!this._mouseInCandidate || !this._clickSwitch) {
               Atspi.generate_keyboard_event(
-                Gdk.keyval_from_name("KP_Enter"),
+                Gdk.keyval_from_name("Return"),
                 null,
                 Atspi.KeySynthType.PRESS | Atspi.KeySynthType.SYM
               );
