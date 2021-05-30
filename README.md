@@ -17,7 +17,7 @@
 
 (English version is down below)
 
-### 注意：如果后期无重大 BUG 的话，v51 将是支持 GNOME 3.38 的最后一个版本
+### 注意：如果后期无重大 BUG 的话，v53 将是支持 GNOME 3.38 的最后一个版本
 
 深度定制 IBus 的外观、行为、系统托盘以及输入指示。
 
@@ -38,7 +38,7 @@ git clone https://github.com/HollowMan6/Customize-IBus.git
 cd Customize-IBus && make install
 ```
 
-如果你使用 Arch Linux, 也可使用 AUR 安装为系统插件:
+如果你使用 Arch Linux，也可使用 AUR 安装为系统插件:
 
 ```bash
 yay -S gnome-shell-extension-customize-ibus
@@ -109,7 +109,7 @@ IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合�
 
 ### _提示：_
 
-1. 在 Fedora 33、Ubuntu 21.04 和 Manjaro 21.0.2, GNOME-shell 3.38 中(v3,v5,v9,v11,v14,v15,v17,v19,v21,v23,v25,v27,v29,v31,v35,v37,v39,v41,v43,v45,v47,v49,v51)通过了测试。
+1. 在 Fedora 33、Ubuntu 21.04 和 Manjaro 21.0.2，GNOME-shell 3.38 中(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53)通过了测试。
 2. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 3. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
@@ -162,6 +162,7 @@ background-size: cover;
 - [x] V47: 增加候选框右击切换输入源；支持显示或隐藏托盘图标，直接点击托盘切换输入源。
 - [x] V49: 增加候选框右击打开菜单，点击输入指示器切换菜单功能。
 - [x] V51: 增加固定候选框功能。
+- [x] V53: 修复对于 ibus-rime 的候选框右击和指示器的支持。
 
 ## 致谢
 
@@ -173,7 +174,7 @@ _该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/ope
 
 # Customize IBus
 
-### Note: If no severe bug was found later, v51 will be the last version that support GNOME 3.38.
+### Note: If no severe bug was found later, v53 will be the last version that support GNOME 3.38.
 
 Full customization of appearance, behavior, system tray and input source indicator for IBus.
 
@@ -263,7 +264,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 
 ### _NOTE:_
 
-1. Tested on Fedora 33, Ubuntu 21.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51).
+1. Tested on Fedora 33, Ubuntu 21.04 and Manjaro 21.0.2, GNOME-shell 3.38(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53).
 2. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
 3. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
 
@@ -316,6 +317,7 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V47: Add right click candidate box to switch input source. Support show or hide tray icon, directly click tray icon to switch input source.
 - [x] V49: Add open menu for candidate right click, and click Input Source Indicator to switch source.
 - [x] V51: Add feature for fixing candidate box.
+- [x] V53: Fix support for ibus-rime of candidate box right click and indicator.
 
 ## Acknowledgements
 

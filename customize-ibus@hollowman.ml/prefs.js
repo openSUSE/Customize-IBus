@@ -29,6 +29,7 @@ const CustomizeIBus = GObject.registerClass(
     _init() {
       super._init({
         hscrollbar_policy: Gtk.PolicyType.NEVER,
+        height_request: 720,
       });
 
       this._bulidWidget();
@@ -1011,6 +1012,7 @@ const CustomizeIBus = GObject.registerClass(
         column_spacing: 18,
         row_homogeneous: false,
         column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
       });
 
       frame.grid._row = 0;
@@ -1091,7 +1093,7 @@ const CustomizeIBus = GObject.registerClass(
         new Gtk.Label({
           use_markup: true,
           label: _(
-            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b>@openSUSE</b>.</span>'
+            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE/mentoring/issues/158">@openSUSE</a></b>.</span>'
           ),
         }),
         0,

@@ -3,8 +3,8 @@
 
 pkgname=gnome-shell-extension-customize-ibus
 _pkgname=Customize-IBus
-_commit=1d9f51d00de0d1f0b6a2fb7c02849108de495336
-pkgver=51
+_commit=88dd567f3b27bd6679e2ec7e0a901e8b72334579
+pkgver=53
 pkgrel=1
 epoch=0
 pkgdesc="Full customization of appearance, behavior, system tray and input source indicator for IBus."

@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (53) mx; urgency=medium
+
+  * v53: Fix support for ibus-rime of candidate box right click and indicator.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Sun, 30 May 2021 21:47:57 +0800
+
 gnome-shell-extension-customize-ibus (51) mx; urgency=medium
 
   * v51: Add feature for fixing candidate box.
