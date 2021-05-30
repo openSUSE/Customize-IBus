@@ -3,7 +3,7 @@
 
 pkgname=gnome-shell-extension-customize-ibus
 _pkgname=Customize-IBus
-_commit=88dd567f3b27bd6679e2ec7e0a901e8b72334579
+_commit=c1bc1fe50d5fb8a3d91bfc0b3755a4961599e712
 pkgver=53
 pkgrel=1
 epoch=0
