@@ -290,7 +290,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 关于
 
-![](https://img-blog.csdnimg.cn/20210530224228282.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210605110138495.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ## 非GNOME桌面
 ### 自定义IBus主题
