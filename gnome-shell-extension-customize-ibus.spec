@@ -46,7 +46,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 
 %changelog
 * Sat Jun 05 2021 Hollow Man <hollowman@hollowman.ml> - 54.20210605gitd0c74ee
-- Fix support for ibus-rime of candidate box right click and indicator.
+- Merge 3.38 into 40, make some changes for UI.
 
 * Sun May 30 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-54.20210530gitc52cd9f
 - Fix support for ibus-rime of candidate box right click and indicator.
