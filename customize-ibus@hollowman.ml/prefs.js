@@ -12,6 +12,8 @@ const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 
 const gsettings = ExtensionUtils.getSettings();
 const Fields = Me.imports.fields.Fields;
+const Config = imports.misc.config;
+const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
 const ibusGsettings = new Gio.Settings({
   schema_id: "org.freedesktop.ibus.panel",
 });
@@ -28,7 +30,7 @@ const CustomizeIBus = GObject.registerClass(
   class CustomizeIBus extends Gtk.ScrolledWindow {
     _init() {
       super._init({
-        height_request: 720,
+        height_request: 780,
         hscrollbar_policy: Gtk.PolicyType.NEVER,
       });
 
@@ -36,6 +38,7 @@ const CustomizeIBus = GObject.registerClass(
       this._bulidUI();
       this._bindValues();
       this._syncStatus();
+      if (ShellVersion < 40) this.show_all();
     }
 
     _bulidWidget() {
@@ -192,9 +195,14 @@ const CustomizeIBus = GObject.registerClass(
         hexpand: true,
       });
 
-      this._field_custom_font = new Gtk.FontButton({
-        font: gsettings.get_string(Fields.CUSTOMFONT),
-      });
+      if (ShellVersion < 40)
+        this._field_custom_font = new Gtk.FontButton({
+          font_name: gsettings.get_string(Fields.CUSTOMFONT),
+        });
+      else
+        this._field_custom_font = new Gtk.FontButton({
+          font: gsettings.get_string(Fields.CUSTOMFONT),
+        });
 
       const filter = new Gtk.FileFilter();
       filter.add_pixbuf_formats();
@@ -274,7 +282,8 @@ const CustomizeIBus = GObject.registerClass(
 
     _bulidUI() {
       this._notebook = new Gtk.Notebook();
-      this.set_child(this._notebook);
+      if (ShellVersion < 40) this.add(this._notebook);
+      else this.set_child(this._notebook);
 
       this._ibus_basic = this._listFrameMaker(_("General"));
       this._ibus_basic._add(this._field_enable_orien, this._field_orientation);
@@ -376,10 +385,22 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_enable_left_click,
         this._field_indicator_left_click
       );
-      this._ibus_indicator._add(
-        this._field_indicator_enable_autohide,
-        this._field_indicator_hide_time
-      );
+      if (ShellVersion < 40) {
+        let hbox = new Gtk.Box();
+        hbox.pack_start(this._field_indicator_enable_autohide, true, true, 4);
+        hbox.pack_start(this._field_indicator_hide_time, true, true, 4);
+        this._ibus_indicator.grid.attach(
+          hbox,
+          0,
+          this._ibus_indicator.grid._row++,
+          1,
+          1
+        );
+      } else
+        this._ibus_indicator._add(
+          this._field_indicator_enable_autohide,
+          this._field_indicator_hide_time
+        );
       this._indicatorHelpPage(this._ibus_indicator);
 
       this._ibus_theme = this._listFrameMaker(_("Theme"));
@@ -548,7 +569,9 @@ const CustomizeIBus = GObject.registerClass(
         gsettings.set_string(Fields.CUSTOMBG, dlg.get_file().get_path());
       });
       this._logoPicker.connect("clicked", () => {
-        this._fileChooser.transient_for = this.get_root();
+        if (ShellVersion < 40)
+          this._fileChooser.transient_for = this.get_toplevel();
+        else this._fileChooser.transient_for = this.get_root();
         this._fileChooser.show();
       });
       this._restart_ibus.connect("clicked", () => {
@@ -563,7 +586,9 @@ const CustomizeIBus = GObject.registerClass(
         gsettings.set_string(Fields.CUSTOMBGDARK, dlg.get_file().get_path());
       });
       this._logoDarkPicker.connect("clicked", () => {
-        this._fileDarkChooser.transient_for = this.get_root();
+        if (ShellVersion < 40)
+          this._fileDarkChooser.transient_for = this.get_toplevel();
+        else this._fileDarkChooser.transient_for = this.get_root();
         this._fileDarkChooser.show();
       });
       this._cssFileChooser.connect("response", (dlg, response) => {
@@ -571,7 +596,9 @@ const CustomizeIBus = GObject.registerClass(
         gsettings.set_string(Fields.CUSTOMTHEME, dlg.get_file().get_path());
       });
       this._cssPicker.connect("clicked", () => {
-        this._cssFileChooser.transient_for = this.get_root();
+        if (ShellVersion < 40)
+          this._cssFileChooser.transient_for = this.get_toplevel();
+        else this._cssFileChooser.transient_for = this.get_root();
         this._cssFileChooser.show();
       });
       this._cssDarkFileChooser.connect("response", (dlg, response) => {
@@ -582,7 +609,9 @@ const CustomizeIBus = GObject.registerClass(
         );
       });
       this._cssDarkPicker.connect("clicked", () => {
-        this._cssDarkFileChooser.transient_for = this.get_root();
+        if (ShellVersion < 40)
+          this._cssDarkFileChooser.transient_for = this.get_toplevel();
+        else this._cssDarkFileChooser.transient_for = this.get_root();
         this._cssDarkFileChooser.show();
       });
 
@@ -762,12 +791,18 @@ const CustomizeIBus = GObject.registerClass(
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
-      gsettings.bind(
-        Fields.CUSTOMFONT,
-        this._field_custom_font,
-        "font",
-        Gio.SettingsBindFlags.DEFAULT
-      );
+      if (ShellVersion < 40)
+        this._field_custom_font.connect("font-set", (widget) => {
+          ibusGsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
+          gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
+        });
+      else
+        gsettings.bind(
+          Fields.CUSTOMFONT,
+          this._field_custom_font,
+          "font",
+          Gio.SettingsBindFlags.DEFAULT
+        );
       gsettings.bind(
         Fields.USECUSTOMBG,
         this._field_use_custom_bg,
@@ -955,36 +990,45 @@ const CustomizeIBus = GObject.registerClass(
         margin_top: 10,
       });
 
-      box.append(frame);
+      if (ShellVersion < 40) box.add(frame);
+      else box.append(frame);
       this._notebook.append_page(box, new Gtk.Label({ label: lbl }));
 
       frame.grid = new Gtk.Grid({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
         hexpand: true,
-        row_spacing: 12,
-        column_spacing: 18,
         row_homogeneous: false,
         column_homogeneous: false,
       });
 
       frame.grid._row = 0;
-      frame.set_child(frame.grid);
+      if (ShellVersion < 40) frame.add(frame.grid);
+      else frame.set_child(frame.grid);
 
       frame._add = (x, y, z, a) => {
         const boxrow = new Gtk.ListBoxRow({
-          activatable: false,
+          activatable: true,
           selectable: false,
         });
-        const hbox = new Gtk.Box();
-        boxrow.set_child(hbox);
-        hbox.set_spacing(4);
-        hbox.append(x);
-        if (y) hbox.append(y);
-        if (z) hbox.append(z);
-        if (a) hbox.append(a);
+        const hbox = new Gtk.Box({
+          margin_start: 10,
+          margin_end: 10,
+          margin_top: 10,
+          margin_bottom: 10,
+        });
+        if (ShellVersion < 40) boxrow.add(hbox);
+        else boxrow.set_child(hbox);
+        if (ShellVersion < 40) {
+          hbox.pack_start(x, true, true, 4);
+          if (y) hbox.pack_start(y, false, false, 4);
+          if (z) hbox.pack_start(z, false, false, 4);
+          if (a) hbox.pack_start(a, false, false, 4);
+        } else {
+          hbox.set_spacing(4);
+          hbox.append(x);
+          if (y) hbox.append(y);
+          if (z) hbox.append(z);
+          if (a) hbox.append(a);
+        }
         frame.grid.attach(boxrow, 0, frame.grid._row++, 1, 1);
       };
       return frame;
@@ -1002,7 +1046,8 @@ const CustomizeIBus = GObject.registerClass(
         margin_top: 10,
       });
 
-      box.append(frame);
+      if (ShellVersion < 40) box.add(frame);
+      else box.append(frame);
       this._notebook.append_page(box, new Gtk.Label({ label: _("About") }));
 
       frame.grid = new Gtk.Grid({
@@ -1019,19 +1064,36 @@ const CustomizeIBus = GObject.registerClass(
       });
 
       frame.grid._row = 0;
-      frame.set_child(frame.grid);
+      if (ShellVersion < 40) frame.add(frame.grid);
+      else frame.set_child(frame.grid);
 
       var version = _("unknown (self-build ?)");
       if (Me.metadata.version !== undefined) {
         version = Me.metadata.version.toString();
       }
-      let logo = Gtk.Image.new_from_pixbuf(
-        GdkPixbuf.Pixbuf.new_from_file(
-          GLib.build_filenamev([Me.dir.get_path(), "img", "logo.png"])
-        )
-      );
-      logo.set_pixel_size(80);
-      frame.grid.attach(logo, 0, frame.grid._row++, 1, 1);
+      if (ShellVersion < 40) {
+        frame.grid.attach(
+          new Gtk.Image({
+            pixbuf: GdkPixbuf.Pixbuf.new_from_file_at_size(
+              GLib.build_filenamev([Me.dir.get_path(), "img", "logo.png"]),
+              80,
+              80
+            ),
+          }),
+          0,
+          frame.grid._row++,
+          1,
+          1
+        );
+      } else {
+        let logo = Gtk.Image.new_from_pixbuf(
+          GdkPixbuf.Pixbuf.new_from_file(
+            GLib.build_filenamev([Me.dir.get_path(), "img", "logo.png"])
+          )
+        );
+        logo.set_pixel_size(80);
+        frame.grid.attach(logo, 0, frame.grid._row++, 1, 1);
+      }
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
@@ -1138,9 +1200,11 @@ const CustomizeIBus = GObject.registerClass(
         column_spacing: 18,
         row_homogeneous: false,
         column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
       });
       expanderFrame.grid._row = 0;
-      expanderFrame.set_child(expanderFrame.grid);
+      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
+      else expanderFrame.set_child(expanderFrame.grid);
 
       let expander = new Gtk.Expander({
         use_markup: true,
@@ -1218,9 +1282,11 @@ const CustomizeIBus = GObject.registerClass(
         column_spacing: 18,
         row_homogeneous: false,
         column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
       });
       expanderFrame.grid._row = 0;
-      expanderFrame.set_child(expanderFrame.grid);
+      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
+      else expanderFrame.set_child(expanderFrame.grid);
 
       let expander = new Gtk.Expander({
         use_markup: true,
@@ -1273,9 +1339,11 @@ const CustomizeIBus = GObject.registerClass(
         column_spacing: 18,
         row_homogeneous: false,
         column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
       });
       expanderFrame.grid._row = 0;
-      expanderFrame.set_child(expanderFrame.grid);
+      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
+      else expanderFrame.set_child(expanderFrame.grid);
 
       let expander = new Gtk.Expander({
         use_markup: true,
@@ -1314,9 +1382,11 @@ const CustomizeIBus = GObject.registerClass(
         column_spacing: 18,
         row_homogeneous: false,
         column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
       });
       expanderFrame.grid._row = 0;
-      expanderFrame.set_child(expanderFrame.grid);
+      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
+      else expanderFrame.set_child(expanderFrame.grid);
 
       let expander = new Gtk.Expander({
         use_markup: true,
@@ -1394,9 +1464,11 @@ const CustomizeIBus = GObject.registerClass(
         column_spacing: 18,
         row_homogeneous: false,
         column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
       });
       expanderFrame.grid._row = 0;
-      expanderFrame.set_child(expanderFrame.grid);
+      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
+      else expanderFrame.set_child(expanderFrame.grid);
 
       let expander = new Gtk.Expander({
         use_markup: true,

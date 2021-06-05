@@ -1,13 +1,12 @@
 %global commit c52cd9f56943b749ced4a186366eb5af8a02b3e6
-%global extension_version 54
-%global date 20210530
-%global shell_version 40.0
+%global extension_version 55
+%global date 20210605
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           gnome-shell-extension-customize-ibus
-Version:        %{shell_version}
+Version:        %{extension_version}
 Release:        %{extension_version}.%{date}git%{shortcommit}%{?dist}
 Summary:        Customize IBus extension for GNOME Shell
 
@@ -20,7 +19,7 @@ BuildRequires:	gettext
 BuildRequires:	glib2-devel
 BuildRequires:  make
 
-Requires:       gnome-shell >= %{shell_version}
+Requires:       gnome-shell
 Requires:       gnome-tweaks
 
 %description
@@ -46,6 +45,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sat Jun 05 2021 Hollow Man <hollowman@hollowman.ml> - 54.20210605gitc52cd9f
+- Fix support for ibus-rime of candidate box right click and indicator.
+
 * Sun May 30 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-54.20210530gitc52cd9f
 - Fix support for ibus-rime of candidate box right click and indicator.
 

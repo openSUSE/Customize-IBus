@@ -5,8 +5,18 @@
 "use strict";
 
 const Main = imports.ui.main;
-const { Clutter, Gio, GLib, Meta, IBus, Pango, St, Atspi, Gdk, GObject } =
-  imports.gi;
+const {
+  Clutter,
+  Gio,
+  GLib,
+  Meta,
+  IBus,
+  Pango,
+  St,
+  Atspi,
+  Gdk,
+  GObject,
+} = imports.gi;
 
 const BoxPointer = imports.ui.boxpointer;
 const Keyboard = imports.ui.status.keyboard;
@@ -886,8 +896,9 @@ const IBusOrientation = GObject.registerClass(
   class IBusOrientation extends GObject.Object {
     _init() {
       super._init();
-      this._originalSetOrientation =
-        CandidateArea.setOrientation.bind(CandidateArea);
+      this._originalSetOrientation = CandidateArea.setOrientation.bind(
+        CandidateArea
+      );
       CandidateArea.setOrientation = () => {};
       gsettings.bind(
         Fields.ORIENTATION,
@@ -1040,8 +1051,7 @@ const IBusNotFollowCaret = GObject.registerClass(
 
     destroy() {
       if (this._setDummyCursorGeometryOrig)
-        IBusManager._candidatePopup._setDummyCursorGeometry =
-          this._setDummyCursorGeometryOrig;
+        IBusManager._candidatePopup._setDummyCursorGeometry = this._setDummyCursorGeometryOrig;
     }
   }
 );
@@ -1224,8 +1234,7 @@ const IBusReposition = GObject.registerClass(
         let gap = themeNode.get_length("-boxpointer-gap");
         let [, , , natHeight] = CandidatePopup.get_preferred_size();
         let sourceTopLeft = CandidatePopup._sourceExtents.get_top_left();
-        let sourceBottomRight =
-          CandidatePopup._sourceExtents.get_bottom_right();
+        let sourceBottomRight = CandidatePopup._sourceExtents.get_bottom_right();
         switch (CandidatePopup._arrowSide) {
           case St.Side.TOP:
             CandidatePopup._relativePosY +=
