@@ -1,4 +1,4 @@
-%global commit 67d99619fa64cb13dee80efa7fe49c1267eb76b4
+%global commit 535959c32c001e14522b743d05f89db62da69c56
 %global extension_version 56
 %global date 20210606
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sun Jun 06 2021 Hollow Man <hollowman@hollowman.ml> - 20210606git67d9961
+* Sun Jun 06 2021 Hollow Man <hollowman@hollowman.ml> - 20210606git535959c
 - UI changes. Add restoring default settings option. Clean codebase.
 
 * Sat Jun 05 2021 Hollow Man <hollowman@hollowman.ml> - 54.20210605gitd0c74ee
