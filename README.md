@@ -75,21 +75,48 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 所有版本的 Linux 都可以通过 [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) 下载相关安装包后安装。
 
-## 输入源指示器
+## 功能
+
+支持自定义：
+
+- 候选框方向
+- 候选框动画
+- 右键单击候选框以切换输入源或打开任务栏菜单
+- 固定候选框使其不跟随光标以及设定固定位置
+- 候选框字体
+- 输入模式根据应用记忆并自动切换
+- 拖拽移动候选框
+- 系统任务栏托盘显示和交互设置
+  - 显示或隐藏托盘图标
+  - 直接点击托盘图标切换输入源
+  - 添加额外菜单
+- 输入源指示器及其显示和交互设置
+  - 启用指示器
+  - 仅在切换输入法时指示
+  - 仅在英文输入时指示
+  - 右击指示器来将其隐藏
+  - 指示器显示动画
+  - 左击指示器以拖拽移动或者切换输入源
+  - 启用自动隐藏以及配置自动隐藏时延
+- 皮肤样式主题（提供的或者从 GNOME Shell 主题中提取的样式表，参见扩展的帮助部分来获取更多指导）
+- 候选框背景图片及其显示样式
+- 主题和背景图片跟随 GNOME 夜灯
+
+### 输入源指示器
 
 ![](img/indicator.gif)
 
-## 动画
+### 动画
 
 开启滑动:
 
 ![](img/animation.gif)
 
-## 拖拽移动
+### 拖拽移动
 
 ![](img/reposition.gif)
 
-## 使用用户主题来更改 IBus 皮肤的实现
+### 使用用户主题来更改 IBus 皮肤的实现
 
 该功能已经被拆分，生成 IBus 皮肤样式表功能迁移到了[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
 
@@ -101,17 +128,16 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 **注：** 如你的 IBus 样式表在应用后作出了更改，请关闭并重新开启对应`自定义主题`来使其生效。
 
-### IBus Tweaker 中的主题
+#### IBus Tweaker 中的主题
 
 IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合集[仿微软 Microsoft](https://github.com/HollowMan6/IBus-Theme-Hub/tree/main/%E4%BB%BF%E5%BE%AE%E8%BD%AFMicrosoft)，欢迎下载使用!
 
-### _提示：_
+#### _提示：_
 
-1. 在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55)中通过了测试。
-2. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
-3. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
+1. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
+2. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
-## 更改 IBus 背景图片的实现
+### 更改 IBus 背景图片的实现
 
 在[修复 Unity8-Wood 主题对 IBus 背景支持](https://github.com/openSUSE/mentoring/issues/158#issuecomment-813837436)时发现为`.candidate-popup-content`增加如下样式：
 
@@ -133,7 +159,7 @@ background-size: cover;
 
 **注：** 请确保背景图片始终可以访问，如你的图片存放在可移动设备，系统默认不挂载，每次手动挂载后请关闭并重新开启对应`自定义背景`来使其生效。
 
-## 备忘
+## 日志
 
 - [x] 从[ibus-tweaker](https://github.com/tuberry/ibus-tweaker)中导入，去除与 IBus 无关功能。
 - [x] 从用户主题中读取 IBus 相关样式
@@ -163,14 +189,16 @@ background-size: cover;
 - [x] V52: 增加固定候选框功能。
 - [x] V54: 修复对于 ibus-rime 的候选框右击和指示器的支持。
 - [x] V55: 将 3.38 和 40 合并在一起；更改一些 UI。
+- [x] V56: 更改 UI；增加恢复默认设置选项；清理代码。
+
+在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56)中通过了测试。
 
 ## 致谢
 
 1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
 2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
-3. [background-logo](https://pagure.io/background-logo-extension)
 
-_该项目是谷歌编程之夏 (GSoC) 2021 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_
+_该项目是[谷歌编程之夏 (GSoC) 2021](https://summerofcode.withgoogle.com/projects/#5505085183885312) 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_
 
 # Customize IBus
 
@@ -230,21 +258,48 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 All versions of Linux can download related packages through [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) and then make installation.
 
-## Input Source Indicator
+## Features
+
+Support Customization of:
+
+- Candidate Box Orientation
+- Candidate Box Animation
+- Right-click Candidate Box to Switch the Input Mode or Open the Tray Menu
+- Fix Candidate Box to Not Follow the Caret and Set Fixed Position
+- Candidate Box Font
+- Input Mode Remember and Auto-switch by APP
+- Drag Candidate Box to Reposition
+- System Tray Menus and Interaction Settings
+  - Show or Hide Tray Icon
+  - Directly Click Tray Icon to Switch Input Mode
+  - Add Additional Menu
+- Input Source Indicator Appearance and Interaction Settings
+  - Enable Indicator
+  - Only Indicate when Switching Input Mode
+  - Only Indicate when Using ASCII Input Mode
+  - Right-click Indicator to Hide
+  - Indicator Animation
+  - Left-click Indicator to Drag to Move Indicator or Switch Input Mode
+  - Enable Auto-hide Indicator and Configure Auto-hide Timeout
+- Theme (Stylesheet Provided or Extracted from GNOME Shell Themes, Refer to Help Instructions in Extension for More)
+- Candidate Box Background and its Displaying Style
+- Theme and Background Picture Follow GNOME Night Light Mode
+
+### Input Source Indicator
 
 ![](img/indicator.gif)
 
-## Animation
+### Animation
 
 With Slide enabled:
 
 ![](img/animation.gif)
 
-## Drag to Reposition
+### Drag to Reposition
 
 ![](img/reposition.gif)
 
-## Realization of Customizing IBus with User Theme
+### Realization of Customizing IBus with User Theme
 
 This function has been separated, generating IBus theme stylesheet has been moved to [IBus-Theme](https://github.com/HollowMan6/IBus-Theme).
 
@@ -256,17 +311,16 @@ When only one of the light theme and dark theme is turned on, the extension will
 
 **Note:** If your IBus style sheet has changed after application, please close and reopen the corresponding `custom IME theme` to make it effective.
 
-### Themes in IBus Tweaker
+#### Themes in IBus Tweaker
 
 Themes in IBus Tweaker have been converted by me as IBus theme stylesheets collection [仿微软 Microsoft](https://github.com/HollowMan6/IBus-Theme-Hub/tree/main/%E4%BB%BF%E5%BE%AE%E8%BD%AFMicrosoft), you are welcomed to use it!
 
-### _NOTE:_
+#### _NOTE:_
 
-1. Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55).
-2. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please also use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
-3. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
+1. For users who don't use GNOME but other desktop environments like KDE, XFCE, etc., please use another project of mine [IBus-Theme](https://github.com/HollowMan6/IBus-Theme) to use a different GTK theme for IBus.
+2. If not for debugging, please DO NOT add any classes that's not started with `.candidate-*` into IBus stylesheet to prevent from disturbing system themes.
 
-## Realization of Modifying IBus Background Picture
+### Realization of Modifying IBus Background Picture
 
 During [fixing Unity8-Wood theme and add support for IBus Background](https://github.com/openSUSE/mentoring/issues/158#issuecomment-813837436), I found that if I add the following style for class `.candidate-popup-content`：
 
@@ -288,7 +342,7 @@ When only one of the light background and dark background is turned on, the exte
 
 **Note:** Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn't mount it by default, please close and reopen the corresponding `Use custom background` to make it effective after manually mounting.
 
-## To-do
+## Changelog
 
 - [x] Import from [ibus-tweaker](https://github.com/tuberry/ibus-tweaker) and remove features unrelated to IBus.
 - [x] Read from user themes and apply only for IBus.
@@ -318,13 +372,15 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V52: Add feature for fixing candidate box.
 - [x] V54: Fix support for ibus-rime of candidate box right click and indicator.
 - [x] V55: Merge 3.38 into 40, make some changes for UI.
+- [x] V56: UI changes. Add restoring default settings option. Clean codebase.
+
+Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56).
 
 ## Acknowledgements
 
 1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
 2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
-3. [background-logo](https://pagure.io/background-logo-extension)
 
-_This project is part of the achievement of the Google Summer of Code 2021 at [OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)._
+_This project is part of the achievement of the [Google Summer of Code 2021](https://summerofcode.withgoogle.com/projects/#5505085183885312) at [OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)._
 
 [ego]: https://extensions.gnome.org/extension/4112/customize-ibus/

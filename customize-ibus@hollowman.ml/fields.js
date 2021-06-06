@@ -9,8 +9,6 @@ var Fields = {
   CUSTOMFONT: "custom-font",
   CUSTOMBG: "custom-bg",
   CUSTOMBGDARK: "custom-bg-dark",
-  INPUTONLIST: "input-on-list",
-  INPUTOFFLIST: "input-off-list",
   CUSTOMTHEME: "custom-theme",
   ENABLECUSTOMTHEME: "enable-custom-theme",
   CUSTOMTHEMENIGHT: "custom-theme-dark",

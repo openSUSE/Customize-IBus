@@ -138,11 +138,11 @@
         <summary>input state indicator popup animation</summary>
     </key>
     <key type="b" name="use-indicator-auto-hide">
-        <default>false</default>
+        <default>true</default>
         <summary>enable input indicator auto hide</summary>
     </key>
     <key type="u" name="input-indicator-hide-time">
-        <default>2</default>
+        <default>1</default>
         <range min="1" max="5"/>
         <summary>input state indicator hide time</summary>
     </key>

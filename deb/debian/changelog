@@ -1,8 +1,14 @@
+gnome-shell-extension-customize-ibus (56) mx; urgency=medium
+
+  * v56: UI changes. Add restoring default settings option. Clean codebase.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Sun, 06 Jun 2021 16:48:39 +0800
+
 gnome-shell-extension-customize-ibus (55) mx; urgency=medium
 
   * v55: Merge 3.38 into 40, make some changes for UI.
 
- -- Hollow Man <hollowman@hollowman.ml>  Sun, 30 May 2021 21:02:28 +0800
+ -- Hollow Man <hollowman@hollowman.ml>  Sat, 05 Jun 2021 12:29:31 +0800
 
 gnome-shell-extension-customize-ibus (54) mx; urgency=medium
 

@@ -14,9 +14,6 @@ const gsettings = ExtensionUtils.getSettings();
 const Fields = Me.imports.fields.Fields;
 const Config = imports.misc.config;
 const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
-const ibusGsettings = new Gio.Settings({
-  schema_id: "org.freedesktop.ibus.panel",
-});
 
 function buildPrefsWidget() {
   return new CustomizeIBus();
@@ -38,6 +35,7 @@ const CustomizeIBus = GObject.registerClass(
       this._bulidUI();
       this._bindValues();
       this._syncStatus();
+      this._buildHeaderBar();
       if (ShellVersion < 40) this.show_all();
     }
 
@@ -74,6 +72,12 @@ const CustomizeIBus = GObject.registerClass(
 
       this._restart_ibus = new Gtk.Button({
         label: _("Start/Restart IBus"),
+        hexpand: true,
+        halign: Gtk.Align.CENTER,
+      });
+
+      this._reset_extension = new Gtk.Button({
+        label: _("Restore Default Settings"),
         hexpand: true,
         halign: Gtk.Align.CENTER,
       });
@@ -386,7 +390,12 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_left_click
       );
       if (ShellVersion < 40) {
-        let hbox = new Gtk.Box();
+        let hbox = new Gtk.Box({
+          margin_start: 10,
+          margin_end: 10,
+          margin_top: 10,
+          margin_bottom: 10,
+        });
         hbox.pack_start(this._field_indicator_enable_autohide, true, true, 4);
         hbox.pack_start(this._field_indicator_hide_time, true, true, 4);
         this._ibus_indicator.grid.attach(
@@ -470,28 +479,28 @@ const CustomizeIBus = GObject.registerClass(
         this._field_ibus_version.set_sensitive(widget.active);
         this._field_ibus_restart.set_sensitive(widget.active);
         this._field_ibus_exit.set_sensitive(widget.active);
-        ibusGsettings.set_boolean(Fields.USETRAY, widget.active);
+        gsettings.set_boolean(Fields.USETRAY, widget.active);
       });
       this._field_ibus_emoji.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.MENUIBUSEMOJI, widget.active);
+        gsettings.set_boolean(Fields.MENUIBUSEMOJI, widget.active);
       });
       this._field_candidate_reposition.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.USEREPOSITION, widget.active);
+        gsettings.set_boolean(Fields.USEREPOSITION, widget.active);
       });
       this._field_extension_entry.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.MENUEXTPREF, widget.active);
+        gsettings.set_boolean(Fields.MENUEXTPREF, widget.active);
       });
       this._field_ibus_preference.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.MENUIBUSPREF, widget.active);
+        gsettings.set_boolean(Fields.MENUIBUSPREF, widget.active);
       });
       this._field_ibus_version.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.MENUIBUSVER, widget.active);
+        gsettings.set_boolean(Fields.MENUIBUSVER, widget.active);
       });
       this._field_ibus_restart.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.MENUIBUSREST, widget.active);
+        gsettings.set_boolean(Fields.MENUIBUSREST, widget.active);
       });
       this._field_ibus_exit.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.MENUIBUSEXIT, widget.active);
+        gsettings.set_boolean(Fields.MENUIBUSEXIT, widget.active);
       });
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
@@ -506,62 +515,59 @@ const CustomizeIBus = GObject.registerClass(
         );
         this._field_indicator_enable_left_click.set_sensitive(widget.active);
         this._field_indicator_enable_autohide.set_sensitive(widget.active);
-        ibusGsettings.set_boolean(Fields.USEINPUTIND, widget.active);
+        gsettings.set_boolean(Fields.USEINPUTIND, widget.active);
       });
       this._field_indicator_only_toggle.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.INPUTINDTOG, widget.active);
+        gsettings.set_boolean(Fields.INPUTINDTOG, widget.active);
       });
       this._field_indicator_only_in_ASCII.connect(
         "notify::active",
         (widget) => {
-          ibusGsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
+          gsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
         }
       );
       this._field_indicator_enable_left_click.connect(
         "notify::active",
         (widget) => {
           this._field_indicator_left_click.set_sensitive(widget.active);
-          ibusGsettings.set_boolean(Fields.USEINPUTINDLCLK, widget.active);
+          gsettings.set_boolean(Fields.USEINPUTINDLCLK, widget.active);
         }
       );
       this._field_indicator_enable_autohide.connect(
         "notify::active",
         (widget) => {
           this._field_indicator_hide_time.set_sensitive(widget.active);
-          ibusGsettings.set_boolean(Fields.USEINDAUTOHID, widget.active);
+          gsettings.set_boolean(Fields.USEINDAUTOHID, widget.active);
         }
       );
       this._field_indicator_right_close.connect("notify::active", (widget) => {
-        ibusGsettings.set_boolean(Fields.INPUTINDRIGC, widget.active);
+        gsettings.set_boolean(Fields.INPUTINDRIGC, widget.active);
       });
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
-        ibusGsettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
+        gsettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
       });
       this._field_use_custom_bg.connect("notify::active", (widget) => {
         this._logoPicker.set_sensitive(widget.active);
         this._field_bg_mode.set_sensitive(widget.active);
         this._field_bg_repeat_mode.set_sensitive(widget.active);
-        ibusGsettings.set_boolean(Fields.USECUSTOMBG, widget.active);
+        gsettings.set_boolean(Fields.USECUSTOMBG, widget.active);
       });
       this._field_use_custom_bg_dark.connect("notify::active", (widget) => {
         this._logoDarkPicker.set_sensitive(widget.active);
         this._field_bg_dark_mode.set_sensitive(widget.active);
         this._field_bg_dark_repeat_mode.set_sensitive(widget.active);
-        ibusGsettings.set_boolean(Fields.USECUSTOMBGDARK, widget.active);
+        gsettings.set_boolean(Fields.USECUSTOMBGDARK, widget.active);
       });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
         this._cssPicker.set_sensitive(widget.active);
-        ibusGsettings.set_boolean(Fields.ENABLECUSTOMTHEME, widget.active);
+        gsettings.set_boolean(Fields.ENABLECUSTOMTHEME, widget.active);
       });
       this._field_enable_custom_theme_dark.connect(
         "notify::active",
         (widget) => {
           this._cssDarkPicker.set_sensitive(widget.active);
-          ibusGsettings.set_boolean(
-            Fields.ENABLECUSTOMTHEMENIGHT,
-            widget.active
-          );
+          gsettings.set_boolean(Fields.ENABLECUSTOMTHEMENIGHT, widget.active);
         }
       );
       this._fileChooser.connect("response", (dlg, response) => {
@@ -580,6 +586,9 @@ const CustomizeIBus = GObject.registerClass(
           new Date().getTime().toString()
         );
         this._updateIBusVersion();
+      });
+      this._reset_extension.connect("clicked", () => {
+        this._resetExtension();
       });
       this._fileDarkChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
@@ -793,7 +802,6 @@ const CustomizeIBus = GObject.registerClass(
       );
       if (ShellVersion < 40)
         this._field_custom_font.connect("font-set", (widget) => {
-          ibusGsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
           gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
         });
       else
@@ -1111,6 +1119,7 @@ const CustomizeIBus = GObject.registerClass(
         1,
         1
       );
+      frame.grid.attach(this._reset_extension, 0, frame.grid._row++, 1, 1);
       frame.grid.attach(
         new Gtk.Label({
           label:
@@ -1547,7 +1556,63 @@ const CustomizeIBus = GObject.registerClass(
       return c;
     }
 
-    on_destroy() {
+    _buildHeaderBar() {
+      GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
+        this.toplevel = this.get_toplevel();
+        this.headerBar = this.toplevel.get_titlebar();
+        let helpButton = new Gtk.LinkButton({
+          uri: _(
+            "http://fanyi.baidu.com/transpage?query=https%3A%2F%2Fblog.csdn.net%2Fqq_18572023%2Farticle%2Fdetails%2F116331601&from=zh&to=en&source=url&render=1"
+          ),
+          image: new Gtk.Image({
+            gicon: new Gio.ThemedIcon({ name: "dialog-information-symbolic" }),
+            icon_size: Gtk.IconSize.BUTTON,
+            visible: true,
+          }),
+          visible: true,
+        });
+        this.headerBar.pack_start(helpButton);
+        this.headerBar.set_title(_("Customize IBus"));
+        return GLib.SOURCE_REMOVE;
+      });
+    }
+
+    _resetExtension() {
+      let dialog = new Gtk.MessageDialog({
+        transient_for: this.get_toplevel ? this.get_toplevel() : this,
+        modal: true,
+        message_type: Gtk.MessageType.WARNING,
+      });
+      dialog.set_default_response(Gtk.ResponseType.OK);
+      dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL);
+      dialog.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK);
+      dialog.set_markup(
+        "<big><b>" + _("Reset All Settings to Default?") + "</b></big>"
+      );
+      dialog.get_message_area().pack_start(
+        new Gtk.Label({
+          wrap: true,
+          justify: 3,
+          use_markup: true,
+          label: _("This will discard all the current configurations!"),
+        }),
+        true,
+        true,
+        0
+      );
+      dialog.connect("response", (dialog, id) => {
+        if (id != Gtk.ResponseType.OK) {
+          dialog.destroy();
+          return;
+        }
+        for (var field in Fields)
+          if (field != "IBUSRESTTIME") gsettings.reset(Fields[field]);
+        dialog.destroy();
+      });
+      if (ShellVersion < 40) dialog.show_all();
+    }
+
+    destroy() {
       if (this._fileChooser) this._fileChooser.destroy();
       this._fileChooser = null;
       if (this._fileDarkChooser) this._fileDarkChooser.destroy();

@@ -1,13 +1,13 @@
 %global commit d0c74ee48c24f392536d2ec5f5cc8ad5f7243d35
-%global extension_version 55
-%global date 20210605
+%global extension_version 56
+%global date 20210606
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           gnome-shell-extension-customize-ibus
 Version:        %{extension_version}
-Release:        %{extension_version}.%{date}git%{shortcommit}%{?dist}
+Release:        %{date}git%{shortcommit}%{?dist}
 Summary:        Customize IBus extension for GNOME Shell
 
 License:        GPL-3.0+
@@ -45,6 +45,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sun Jun 06 2021 Hollow Man <hollowman@hollowman.ml> - 20210606gitd0c74ee
+- UI changes. Add restoring default settings option. Clean codebase.
+
 * Sat Jun 05 2021 Hollow Man <hollowman@hollowman.ml> - 54.20210605gitd0c74ee
 - Merge 3.38 into 40, make some changes for UI.
 

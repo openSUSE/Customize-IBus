@@ -19,8 +19,7 @@ const {
 } = imports.gi;
 
 const BoxPointer = imports.ui.boxpointer;
-const Keyboard = imports.ui.status.keyboard;
-const InputSourceManager = Keyboard.getInputSourceManager();
+const InputSourceManager = imports.ui.status.keyboard.getInputSourceManager();
 const InputSourceIndicator = Main.panel.statusArea.keyboard;
 const IBusManager = imports.misc.ibusManager.getIBusManager();
 const CandidatePopup = IBusManager._candidatePopup;
@@ -32,6 +31,7 @@ const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
+
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INDICATORANI = ["NONE", "SLIDE", "FADE", "FULL"];
@@ -87,7 +87,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
         "useindautohid",
         "useindautohid",
         "useindautohid",
-        false,
+        true,
         GObject.ParamFlags.WRITABLE
       ),
       inputindhid: GObject.param_spec_uint(
@@ -96,7 +96,7 @@ const IBusInputSourceIndicater = GObject.registerClass(
         "inputindhid",
         1,
         5,
-        2,
+        1,
         GObject.ParamFlags.WRITABLE
       ),
       useinputindlclk: GObject.param_spec_boolean(
@@ -946,18 +946,11 @@ const IBusNotFollowCaret = GObject.registerClass(
   class IBusNotFollowCaret extends GObject.Object {
     _init() {
       super._init();
-      this._setDummyCursorGeometryOrig =
-        IBusManager._candidatePopup._setDummyCursorGeometry;
-      IBusManager._candidatePopup._setDummyCursorGeometry = (x, y, w, h) => {
-        IBusManager._candidatePopup._dummyCursor.set_size(
-          Math.round(w),
-          Math.round(h)
-        );
-        if (IBusManager._candidatePopup.visible)
-          IBusManager._candidatePopup.setPosition(
-            IBusManager._candidatePopup._dummyCursor,
-            0
-          );
+      this._setDummyCursorGeometryOrig = CandidatePopup._setDummyCursorGeometry;
+      CandidatePopup._setDummyCursorGeometry = (x, y, w, h) => {
+        CandidatePopup._dummyCursor.set_size(Math.round(w), Math.round(h));
+        if (CandidatePopup.visible)
+          CandidatePopup.setPosition(CandidatePopup._dummyCursor, 0);
       };
       gsettings.bind(
         Fields.CANDSTILLPOS,
@@ -1037,21 +1030,15 @@ const IBusNotFollowCaret = GObject.registerClass(
             y = global.screen_height / 3;
         }
       }
-      IBusManager._candidatePopup._dummyCursor.set_position(
-        Math.round(x),
-        Math.round(y)
-      );
-      if (IBusManager._candidatePopup.visible)
-        IBusManager._candidatePopup.setPosition(
-          IBusManager._candidatePopup._dummyCursor,
-          0
-        );
+      CandidatePopup._dummyCursor.set_position(Math.round(x), Math.round(y));
+      if (CandidatePopup.visible)
+        CandidatePopup.setPosition(CandidatePopup._dummyCursor, 0);
       if (this._remember) this._hasSetRember = true;
     }
 
     destroy() {
       if (this._setDummyCursorGeometryOrig)
-        IBusManager._candidatePopup._setDummyCursorGeometry = this._setDummyCursorGeometryOrig;
+        CandidatePopup._setDummyCursorGeometry = this._setDummyCursorGeometryOrig;
     }
   }
 );
@@ -1317,7 +1304,7 @@ const IBusAnimation = GObject.registerClass(
   class IBusAnimation extends GObject.Object {
     _init() {
       super._init();
-      this._openOrig = IBusManager._candidatePopup.open;
+      this._openOrig = CandidatePopup.open;
       gsettings.bind(
         Fields.CANDANIMATION,
         this,
@@ -1330,31 +1317,22 @@ const IBusAnimation = GObject.registerClass(
       const openOrig = this._openOrig;
       if (INDICATORANI[animation] === "NONE") this.destroy();
       else if (INDICATORANI[animation] === "FADE")
-        IBusManager._candidatePopup.open = () => {
-          openOrig.call(
-            IBusManager._candidatePopup,
-            BoxPointer.PopupAnimation.FADE
-          );
+        CandidatePopup.open = () => {
+          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.FADE);
         };
       else if (INDICATORANI[animation] === "SLIDE")
-        IBusManager._candidatePopup.open = () => {
-          openOrig.call(
-            IBusManager._candidatePopup,
-            BoxPointer.PopupAnimation.SLIDE
-          );
+        CandidatePopup.open = () => {
+          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.SLIDE);
         };
       else if (INDICATORANI[animation] === "FULL")
-        IBusManager._candidatePopup.open = () => {
-          openOrig.call(
-            IBusManager._candidatePopup,
-            BoxPointer.PopupAnimation.FULL
-          );
+        CandidatePopup.open = () => {
+          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.FULL);
         };
     }
 
     destroy() {
       if (this._openOrig);
-      IBusManager._candidatePopup.open = this._openOrig;
+      CandidatePopup.open = this._openOrig;
     }
   }
 );
