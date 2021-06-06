@@ -27,7 +27,7 @@ const CustomizeIBus = GObject.registerClass(
   class CustomizeIBus extends Gtk.ScrolledWindow {
     _init() {
       super._init({
-        height_request: 780,
+        height_request: 480,
         hscrollbar_policy: Gtk.PolicyType.NEVER,
       });
 
@@ -59,7 +59,7 @@ const CustomizeIBus = GObject.registerClass(
         _("Candidates popup animation")
       );
       this._field_use_candidate_still = this._checkMaker(
-        _("Fix Candidate box")
+        _("Fix candidate box")
       );
 
       this._field_use_tray_source_switch_key = this._checkMaker(
@@ -188,10 +188,10 @@ const CustomizeIBus = GObject.registerClass(
 
       let adjustment = this._createAdjustment(Fields.INPUTINDHID);
       this._field_indicator_enable_left_click = this._checkMaker(
-        _("Enable Indicater left click")
+        _("Enable indicater left click")
       );
       this._field_indicator_enable_autohide = this._checkMaker(
-        _("Enable Indicater auto hide timeout (unit: seconds)")
+        _("Enable indicater auto hide timeout (unit: seconds)")
       );
       this._field_indicator_hide_time = new Gtk.Scale({
         adjustment,
@@ -285,7 +285,9 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _bulidUI() {
-      this._notebook = new Gtk.Notebook();
+      this._notebook = new Gtk.Notebook({
+        enable_popup: true,
+      });
       if (ShellVersion < 40) this.add(this._notebook);
       else this.set_child(this._notebook);
 
@@ -314,7 +316,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_unkown_state
       );
       this._ibus_basic._add(
-        this._switchLabelMaker(_("Enable drag to re-position candidate")),
+        this._switchLabelMaker(_("Enable drag to reposition candidate box")),
         this._field_candidate_reposition
       );
       this._basicHelpPage(this._ibus_basic);
@@ -343,11 +345,11 @@ const CustomizeIBus = GObject.registerClass(
         this._field_ibus_emoji
       );
       this._ibus_tray._add(
-        this._switchLabelMaker(_("This extension's preferences")),
+        this._switchLabelMaker(_("This Extension's Preferences")),
         this._field_extension_entry
       );
       this._ibus_tray._add(
-        this._switchLabelMaker(_("IBus preferences")),
+        this._switchLabelMaker(_("IBus Preferences")),
         this._field_ibus_preference
       );
       this._ibus_tray._add(
@@ -1025,13 +1027,14 @@ const CustomizeIBus = GObject.registerClass(
         });
         if (ShellVersion < 40) boxrow.add(hbox);
         else boxrow.set_child(hbox);
+        let spacing = 4;
         if (ShellVersion < 40) {
-          hbox.pack_start(x, true, true, 4);
-          if (y) hbox.pack_start(y, false, false, 4);
-          if (z) hbox.pack_start(z, false, false, 4);
-          if (a) hbox.pack_start(a, false, false, 4);
+          hbox.pack_start(x, true, true, spacing);
+          if (y) hbox.pack_start(y, false, false, spacing);
+          if (z) hbox.pack_start(z, false, false, spacing);
+          if (a) hbox.pack_start(a, false, false, spacing);
         } else {
-          hbox.set_spacing(4);
+          hbox.set_spacing(spacing);
           hbox.append(x);
           if (y) hbox.append(y);
           if (z) hbox.append(z);
@@ -1079,11 +1082,12 @@ const CustomizeIBus = GObject.registerClass(
       if (Me.metadata.version !== undefined) {
         version = Me.metadata.version.toString();
       }
+      let iconFile = GLib.build_filenamev([Me.dir.get_path(), "img", "logo.png"]);
       if (ShellVersion < 40) {
         frame.grid.attach(
           new Gtk.Image({
             pixbuf: GdkPixbuf.Pixbuf.new_from_file_at_size(
-              GLib.build_filenamev([Me.dir.get_path(), "img", "logo.png"]),
+              iconFile,
               80,
               80
             ),
@@ -1095,9 +1099,7 @@ const CustomizeIBus = GObject.registerClass(
         );
       } else {
         let logo = Gtk.Image.new_from_pixbuf(
-          GdkPixbuf.Pixbuf.new_from_file(
-            GLib.build_filenamev([Me.dir.get_path(), "img", "logo.png"])
-          )
+          GdkPixbuf.Pixbuf.new_from_file(iconFile)
         );
         logo.set_pixel_size(80);
         frame.grid.attach(logo, 0, frame.grid._row++, 1, 1);
@@ -1228,7 +1230,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, and also re-position candidate by dragging when input."
+            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, and also reposition candidate box by dragging when input."
           ),
         }),
         0,
@@ -1241,7 +1243,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If <b>fix candidate box</b> is enabled, you can set the candidate box position with 9 options. Recommend to <b>enable drag to re-position candidate</b> at the same time so that you can rearrange the position at any time, and remember candidate position forever after reposition if you set to <b>remember last position</b>, and restore at next login.</span>'
+            '<span size="small"><b>Note:</b> If <b>fix candidate box</b> is enabled, you can set the candidate box position with 9 options. Recommend to <b>enable drag to reposition candidate box</b> at the same time so that you can rearrange the position at any time. Will remember candidate position forever after reposition if you set to <b>remember last position</b>, and restore at next login.</span>'
           ),
         }),
         0,
@@ -1267,7 +1269,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If you <b>enable drag to re-position candidate</b>, and if <b>fix candidate box</b> is enabled, your rearranged position will last until the end of this session. If not the rearranged position will only last for the specific input.</span>'
+            '<span size="small"><b>Note:</b> If you <b>enable drag to reposition candidate box</b>, and if <b>fix candidate box</b> is enabled, your rearranged position will last until the end of this session. If not the rearranged position will only last for the specific input.</span>'
           ),
         }),
         0,
@@ -1436,7 +1438,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b><i>Warning:</i> If not for debugging, please DO NOT add any classes that\'s not started with <i>.candidate-*</i> into IBus stylesheet to prevent from disturbing system themes.</b></span>'
+            '<span size="small"><b><i>Warning:</i> If not for debugging, please DO NOT add any classes that\'s not started with <i>.candidate-*</i> into IBus stylesheet to prevent from corrupting system themes.</b></span>'
           ),
         }),
         0,
@@ -1449,7 +1451,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If your IBus stylesheet has changed after application, please close and reopen the corresponding <b>custom IME theme</b> to make it effective.</span>'
+            '<span size="small"><b>Note:</b> If your IBus stylesheet has changed after application, please disable and then enable the corresponding <b>custom IME theme</b> again to make it effective.</span>'
           ),
         }),
         0,
@@ -1518,7 +1520,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn\'t mount it by default, please close and reopen the corresponding <b>Use custom background</b> to make it effective after manually mounting.</span>'
+            '<span size="small"><b>Note:</b> Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn\'t mount it by default, please disable and then enable the corresponding <b>Use custom background</b> again to make it effective after manually mounting.</span>'
           ),
         }),
         0,
@@ -1558,48 +1560,67 @@ const CustomizeIBus = GObject.registerClass(
 
     _buildHeaderBar() {
       GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
-        this.toplevel = this.get_toplevel();
+        if (ShellVersion < 40)
+          this.toplevel = this.get_toplevel();
+        else
+          this.toplevel = this.get_root();
         this.headerBar = this.toplevel.get_titlebar();
-        let helpButton = new Gtk.LinkButton({
-          uri: _(
-            "http://fanyi.baidu.com/transpage?query=https%3A%2F%2Fblog.csdn.net%2Fqq_18572023%2Farticle%2Fdetails%2F116331601&from=zh&to=en&source=url&render=1"
-          ),
-          image: new Gtk.Image({
-            gicon: new Gio.ThemedIcon({ name: "dialog-information-symbolic" }),
-            icon_size: Gtk.IconSize.BUTTON,
+        let uri = _("https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/HollowMan6/Customize-IBus/blob/main/GUIDE_CN.md");
+        var helpButton;
+        if (ShellVersion < 40)
+          helpButton = new Gtk.LinkButton({
+            uri,
+            image: new Gtk.Image({
+              gicon: new Gio.ThemedIcon({ name: "dialog-information-symbolic" }),
+              icon_size: Gtk.IconSize.BUTTON,
+              visible: true,
+            }),
             visible: true,
-          }),
-          visible: true,
-        });
+          });
+        else 
+          helpButton = new Gtk.LinkButton({
+            uri,
+            icon_name: "dialog-information-symbolic",
+            visible: true,
+          });
         this.headerBar.pack_start(helpButton);
-        this.headerBar.set_title(_("Customize IBus"));
+        this.toplevel.set_title(_("Customize IBus"));
         return GLib.SOURCE_REMOVE;
       });
     }
 
     _resetExtension() {
+      var transient_for;
+      if (ShellVersion < 40)
+        transient_for = this.get_toplevel ? this.get_toplevel() : this;
+      else
+        transient_for = this.get_root ? this.get_root() : this
       let dialog = new Gtk.MessageDialog({
-        transient_for: this.get_toplevel ? this.get_toplevel() : this,
-        modal: true,
-        message_type: Gtk.MessageType.WARNING,
-      });
+          transient_for,
+          modal: true,
+          message_type: Gtk.MessageType.WARNING,
+        });
       dialog.set_default_response(Gtk.ResponseType.OK);
-      dialog.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL);
-      dialog.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK);
+      dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+      dialog.add_button(_("OK"), Gtk.ResponseType.OK);
       dialog.set_markup(
         "<big><b>" + _("Reset All Settings to Default?") + "</b></big>"
       );
-      dialog.get_message_area().pack_start(
-        new Gtk.Label({
-          wrap: true,
-          justify: 3,
-          use_markup: true,
-          label: _("This will discard all the current configurations!"),
-        }),
-        true,
-        true,
-        0
-      );
+      let message = new Gtk.Label({
+        wrap: true,
+        justify: 3,
+        use_markup: true,
+        label: _("This will discard all the current configurations!"),
+      })
+      if (ShellVersion < 40)
+        dialog.get_message_area().pack_start(
+          message,
+          true,
+          true,
+          0
+        );
+      else
+        dialog.get_message_area().append(message);
       dialog.connect("response", (dialog, id) => {
         if (id != Gtk.ResponseType.OK) {
           dialog.destroy();
@@ -1610,6 +1631,7 @@ const CustomizeIBus = GObject.registerClass(
         dialog.destroy();
       });
       if (ShellVersion < 40) dialog.show_all();
+      else dialog.show()
     }
 
     destroy() {

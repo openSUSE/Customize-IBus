@@ -496,7 +496,7 @@ const IBusAutoSwitch = GObject.registerClass(
         "unknown",
         0,
         2,
-        2,
+        0,
         GObject.ParamFlags.READWRITE
       ),
       remember: GObject.param_spec_uint(

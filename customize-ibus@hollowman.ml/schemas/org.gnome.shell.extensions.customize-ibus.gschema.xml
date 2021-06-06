@@ -43,7 +43,7 @@
         <summary>custom theme dark</summary>
     </key>
     <key type="u" name="unkown-ascii-state">
-        <default>2</default>
+        <default>0</default>
         <range min="0" max="2"/>
         <summary>input state of a new unknown window</summary>
     </key>
