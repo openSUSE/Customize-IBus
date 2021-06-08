@@ -1,4 +1,4 @@
-%global commit 535959c32c001e14522b743d05f89db62da69c56
+%global commit 51c8ca52b240ccf293b5cdce70b37ee9d0c61d20
 %global extension_version 57
 %global date 20210608
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Tue Jun 08 2021 Hollow Man <hollowman@hollowman.ml> - 20210608git535959c
+* Tue Jun 08 2021 Hollow Man <hollowman@hollowman.ml> - 20210608git51c8ca5
 - Add feature for exporting and restoring settings from file.
 
 * Sun Jun 06 2021 Hollow Man <hollowman@hollowman.ml> - 20210606git535959c
