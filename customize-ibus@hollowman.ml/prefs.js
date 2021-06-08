@@ -615,9 +615,9 @@ const CustomizeIBus = GObject.registerClass(
       this._reset_extension.connect("clicked", () => {
         this._resetExtension();
       });
+      const dconfFilter = new Gtk.FileFilter();
+      dconfFilter.add_pattern("*.dconf");
       this._import_settings.connect("clicked", () => {
-        const dconfFilter = new Gtk.FileFilter();
-        dconfFilter.add_pattern("*.dconf");
         this._showFileChooser(
           _("Import Settings from File"),
           {
@@ -661,6 +661,7 @@ const CustomizeIBus = GObject.registerClass(
           _("Export Current Settings"),
           {
             action: Gtk.FileChooserAction.SAVE,
+            filter: dconfFilter,
           },
           _("Save"),
           (filename) => {
