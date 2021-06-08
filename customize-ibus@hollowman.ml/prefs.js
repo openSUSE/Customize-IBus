@@ -616,9 +616,14 @@ const CustomizeIBus = GObject.registerClass(
         this._resetExtension();
       });
       this._import_settings.connect("clicked", () => {
+        const dconfFilter = new Gtk.FileFilter();
+        dconfFilter.add_pattern("*.dconf");
         this._showFileChooser(
           _("Import Settings from File"),
-          { action: Gtk.FileChooserAction.OPEN },
+          {
+            action: Gtk.FileChooserAction.OPEN,
+            filter: dconfFilter,
+          },
           _("Open"),
           (filename) => {
             if (filename && GLib.file_test(filename, GLib.FileTest.EXISTS)) {
