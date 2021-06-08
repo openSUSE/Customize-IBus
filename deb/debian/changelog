@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (57) mx; urgency=medium
+
+  * v57: Add feature for exporting and restoring settings from file.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Tue, 08 Jun 2021 21:58:15 +0800
+
 gnome-shell-extension-customize-ibus (56) mx; urgency=medium
 
   * v56: UI changes. Add restoring default settings option. Clean codebase.

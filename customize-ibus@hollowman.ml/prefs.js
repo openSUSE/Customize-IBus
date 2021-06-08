@@ -14,6 +14,7 @@ const gsettings = ExtensionUtils.getSettings();
 const Fields = Me.imports.fields.Fields;
 const Config = imports.misc.config;
 const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
+const SCHEMA_PATH = "/org/gnome/shell/extensions/customize-ibus/";
 
 function buildPrefsWidget() {
   return new CustomizeIBus();
@@ -23,11 +24,21 @@ function init() {
   ExtensionUtils.initTranslations();
 }
 
+function mergeObjects(main, bck) {
+  for (var prop in bck) {
+    if (!main.hasOwnProperty(prop) && bck.hasOwnProperty(prop)) {
+      main[prop] = bck[prop];
+    }
+  }
+
+  return main;
+}
+
 const CustomizeIBus = GObject.registerClass(
   class CustomizeIBus extends Gtk.ScrolledWindow {
     _init() {
       super._init({
-        height_request: 480,
+        height_request: 550,
         hscrollbar_policy: Gtk.PolicyType.NEVER,
       });
 
@@ -78,6 +89,18 @@ const CustomizeIBus = GObject.registerClass(
 
       this._reset_extension = new Gtk.Button({
         label: _("Restore Default Settings"),
+        hexpand: true,
+        halign: Gtk.Align.CENTER,
+      });
+
+      this._export_settings = new Gtk.Button({
+        label: _("Export Current Settings"),
+        hexpand: true,
+        halign: Gtk.Align.CENTER,
+      });
+
+      this._import_settings = new Gtk.Button({
+        label: _("Import Settings from File"),
         hexpand: true,
         halign: Gtk.Align.CENTER,
       });
@@ -592,6 +615,65 @@ const CustomizeIBus = GObject.registerClass(
       this._reset_extension.connect("clicked", () => {
         this._resetExtension();
       });
+      this._import_settings.connect("clicked", () => {
+        this._showFileChooser(
+          _("Import Settings from File"),
+          { action: Gtk.FileChooserAction.OPEN },
+          _("Open"),
+          (filename) => {
+            if (filename && GLib.file_test(filename, GLib.FileTest.EXISTS)) {
+              let settingsFile = Gio.File.new_for_path(filename);
+              let [, pid, stdin, stdout, stderr] = GLib.spawn_async_with_pipes(
+                null,
+                ["dconf", "load", SCHEMA_PATH],
+                null,
+                GLib.SpawnFlags.SEARCH_PATH | GLib.SpawnFlags.DO_NOT_REAP_CHILD,
+                null
+              );
+
+              stdin = new Gio.UnixOutputStream({ fd: stdin, close_fd: true });
+              GLib.close(stdout);
+              GLib.close(stderr);
+
+              // // Disable and then re-enable extension
+              // let [ , , , retCode] = GLib.spawn_command_line_sync('gnome-extensions disable ' + Me.uuid);
+              // if (retCode == 0) {
+              //     GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, () => GLib.spawn_command_line_sync('gnome-extensions disable ' + Me.uuid));
+              // }
+
+              stdin.splice(
+                settingsFile.read(null),
+                Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
+                  Gio.OutputStreamSpliceFlags.CLOSE_TARGET,
+                null
+              );
+            }
+          }
+        );
+      });
+      this._export_settings.connect("clicked", () => {
+        this._showFileChooser(
+          _("Export Current Settings"),
+          {
+            action: Gtk.FileChooserAction.SAVE,
+            do_overwrite_confirmation: true,
+          },
+          _("Save"),
+          (filename) => {
+            if (!filename.endsWith(".dconf")) filename += ".dconf";
+            let file = Gio.file_new_for_path(filename);
+            let raw = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
+            let out = Gio.BufferedOutputStream.new_sized(raw, 4096);
+
+            out.write_all(
+              GLib.spawn_command_line_sync("dconf dump " + SCHEMA_PATH)[1],
+              null
+            );
+            out.close(null);
+          },
+          true
+        );
+      });
       this._fileDarkChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
         gsettings.set_string(Fields.CUSTOMBGDARK, dlg.get_file().get_path());
@@ -1082,15 +1164,15 @@ const CustomizeIBus = GObject.registerClass(
       if (Me.metadata.version !== undefined) {
         version = Me.metadata.version.toString();
       }
-      let iconFile = GLib.build_filenamev([Me.dir.get_path(), "img", "logo.png"]);
+      let iconFile = GLib.build_filenamev([
+        Me.dir.get_path(),
+        "img",
+        "logo.png",
+      ]);
       if (ShellVersion < 40) {
         frame.grid.attach(
           new Gtk.Image({
-            pixbuf: GdkPixbuf.Pixbuf.new_from_file_at_size(
-              iconFile,
-              80,
-              80
-            ),
+            pixbuf: GdkPixbuf.Pixbuf.new_from_file_at_size(iconFile, 80, 80),
           }),
           0,
           frame.grid._row++,
@@ -1121,7 +1203,30 @@ const CustomizeIBus = GObject.registerClass(
         1,
         1
       );
-      frame.grid.attach(this._reset_extension, 0, frame.grid._row++, 1, 1);
+      const boxrow = new Gtk.ListBoxRow({
+        activatable: true,
+        selectable: false,
+      });
+      const hbox = new Gtk.Box({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+      });
+      if (ShellVersion < 40) boxrow.add(hbox);
+      else boxrow.set_child(hbox);
+      let spacing = 4;
+      if (ShellVersion < 40) {
+        hbox.pack_start(this._reset_extension, false, false, spacing);
+        hbox.pack_start(this._export_settings, false, false, spacing);
+        hbox.pack_start(this._import_settings, false, false, spacing);
+      } else {
+        hbox.set_spacing(spacing);
+        hbox.append(this._reset_extension);
+        hbox.append(this._export_settings);
+        hbox.append(this._import_settings);
+      }
+      frame.grid.attach(boxrow, 0, frame.grid._row++, 1, 1);
       frame.grid.attach(
         new Gtk.Label({
           label:
@@ -1559,25 +1664,27 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _buildHeaderBar() {
-      GLib.timeout_add(GLib.PRIORITY_DEFAULT, 0, () => {
-        if (ShellVersion < 40)
-          this.toplevel = this.get_toplevel();
-        else
-          this.toplevel = this.get_root();
+      this.connect("realize", () => {
+        if (ShellVersion < 40) this.toplevel = this.get_toplevel();
+        else this.toplevel = this.get_root();
         this.headerBar = this.toplevel.get_titlebar();
-        let uri = _("https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/HollowMan6/Customize-IBus/blob/main/GUIDE_CN.md");
+        let uri = _(
+          "https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/HollowMan6/Customize-IBus/blob/main/GUIDE_CN.md"
+        );
         var helpButton;
         if (ShellVersion < 40)
           helpButton = new Gtk.LinkButton({
             uri,
             image: new Gtk.Image({
-              gicon: new Gio.ThemedIcon({ name: "dialog-information-symbolic" }),
+              gicon: new Gio.ThemedIcon({
+                name: "dialog-information-symbolic",
+              }),
               icon_size: Gtk.IconSize.BUTTON,
               visible: true,
             }),
             visible: true,
           });
-        else 
+        else
           helpButton = new Gtk.LinkButton({
             uri,
             icon_name: "dialog-information-symbolic",
@@ -1589,17 +1696,45 @@ const CustomizeIBus = GObject.registerClass(
       });
     }
 
+    _showFileChooser(title, params, acceptBtn, acceptHandler, setDefaultName) {
+      var transient_for;
+      if (ShellVersion < 40)
+        transient_for = this.get_toplevel ? this.get_toplevel() : this;
+      else transient_for = this.get_root ? this.get_root() : this;
+      let dialog = new Gtk.FileChooserDialog(
+        mergeObjects({ title: title, transient_for: transient_for }, params)
+      );
+      if (setDefaultName)
+        dialog.set_current_name(
+          "Customize_IBus_Settings_" +
+            new Date().getTime().toString() +
+            ".dconf"
+        );
+      dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
+      dialog.add_button(acceptBtn, Gtk.ResponseType.ACCEPT);
+
+      dialog.show();
+
+      dialog.connect("response", (dialog, id) => {
+        if (id != Gtk.ResponseType.ACCEPT) {
+          dialog.destroy();
+          return;
+        }
+        acceptHandler.call(this, dialog.get_file().get_path());
+        dialog.destroy();
+      });
+    }
+
     _resetExtension() {
       var transient_for;
       if (ShellVersion < 40)
         transient_for = this.get_toplevel ? this.get_toplevel() : this;
-      else
-        transient_for = this.get_root ? this.get_root() : this
+      else transient_for = this.get_root ? this.get_root() : this;
       let dialog = new Gtk.MessageDialog({
-          transient_for,
-          modal: true,
-          message_type: Gtk.MessageType.WARNING,
-        });
+        transient_for,
+        modal: true,
+        message_type: Gtk.MessageType.WARNING,
+      });
       dialog.set_default_response(Gtk.ResponseType.OK);
       dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
       dialog.add_button(_("OK"), Gtk.ResponseType.OK);
@@ -1611,16 +1746,10 @@ const CustomizeIBus = GObject.registerClass(
         justify: 3,
         use_markup: true,
         label: _("This will discard all the current configurations!"),
-      })
+      });
       if (ShellVersion < 40)
-        dialog.get_message_area().pack_start(
-          message,
-          true,
-          true,
-          0
-        );
-      else
-        dialog.get_message_area().append(message);
+        dialog.get_message_area().pack_start(message, true, true, 0);
+      else dialog.get_message_area().append(message);
       dialog.connect("response", (dialog, id) => {
         if (id != Gtk.ResponseType.OK) {
           dialog.destroy();
@@ -1631,7 +1760,7 @@ const CustomizeIBus = GObject.registerClass(
         dialog.destroy();
       });
       if (ShellVersion < 40) dialog.show_all();
-      else dialog.show()
+      else dialog.show();
     }
 
     destroy() {

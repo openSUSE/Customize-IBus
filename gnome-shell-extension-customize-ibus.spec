@@ -1,6 +1,6 @@
 %global commit 535959c32c001e14522b743d05f89db62da69c56
-%global extension_version 56
-%global date 20210606
+%global extension_version 57
+%global date 20210608
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -45,6 +45,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Tue Jun 08 2021 Hollow Man <hollowman@hollowman.ml> - 20210608git535959c
+- Add feature for exporting and restoring settings from file.
+
 * Sun Jun 06 2021 Hollow Man <hollowman@hollowman.ml> - 20210606git535959c
 - UI changes. Add restoring default settings option. Clean codebase.
 
