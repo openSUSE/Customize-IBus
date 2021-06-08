@@ -628,7 +628,7 @@ const CustomizeIBus = GObject.registerClass(
           (filename) => {
             if (filename && GLib.file_test(filename, GLib.FileTest.EXISTS)) {
               let settingsFile = Gio.File.new_for_path(filename);
-              let [, pid, stdin, stdout, stderr] = GLib.spawn_async_with_pipes(
+              let [, , stdin, stdout, stderr] = GLib.spawn_async_with_pipes(
                 null,
                 ["dconf", "load", SCHEMA_PATH],
                 null,
