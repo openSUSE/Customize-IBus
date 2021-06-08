@@ -656,7 +656,6 @@ const CustomizeIBus = GObject.registerClass(
           _("Export Current Settings"),
           {
             action: Gtk.FileChooserAction.SAVE,
-            do_overwrite_confirmation: true,
           },
           _("Save"),
           (filename) => {
