@@ -69,7 +69,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 点击`候选框右击`左侧的复选框来进行选中，即可支持在使用IBus输入法时右键点击候选框进行相关操作。点击右侧进行选择，支持设定为打开菜单或者切换输入源。
 
-点击`固定候选框`左侧的复选框来进行选中，即可支持固定候选框。点击右侧进行选择。支持设定9种方位，推荐同时启用`拖拽移动候选框`从而可以随时移动候选框位置，并且当选择`记住最后位置`时可以永远记住你上次拖拽的位置，并且在下次登陆时恢复。
+点击`固定候选框`左侧的复选框来进行选中，即可支持固定候选框。点击右侧进行选择。支持设定9种方位，推荐同时启用`拖拽移动候选框`从而可以随时移动候选框位置。当选择`记住最后位置`时，可以永远记住你上次拖拽的位置，并且在下次登陆时恢复。
 
 点击`自定义字体`左侧的复选框来进行选中，即可支持配置IBus输入法候选框中文字的字体和字号。点击右侧，打开字体选择器，弹出的对话框中上部可以选择你想要的字体，下部可以选择字号，点击选择确认修改。
 ![](https://img-blog.csdnimg.cn/20210606205306464.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -290,13 +290,17 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 关于
 
-在任何时候，你都可以点击左上角的图标打开此指南。
+在任何时候，你都可以点击左上角的图标打开此指南：
+![](https://img-blog.csdnimg.cn/20210608234629180.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-![](https://img-blog.csdnimg.cn/20210606205809745.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
+![](https://img-blog.csdnimg.cn/2021060823470918.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-点击`恢复默认设置`，确认之后可以将此插件进行初始化操作。
+点击`导出当前设置`，你可以选择将当前设置导出为`*.dconf`文件。默认文件名为`Customize_IBus_Settings_[当前时间].dconf`：
+![](https://img-blog.csdnimg.cn/20210608234818722.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-![](https://img-blog.csdnimg.cn/20210606210045591.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+点击`文件导入设置`，你可以选择将从刚刚保存的设置文件进行导入操作：
+![](https://img-blog.csdnimg.cn/20210608235116110.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 ## 非GNOME桌面
 ### 自定义IBus主题
