@@ -1,3 +1,10 @@
+gnome-shell-extension-customize-ibus (58) mx; urgency=medium
+
+  * v58: Add icons for opening files directly from Prefs.
+  Change *.dconf into *.ini for configurations files.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Wed, 09 Jun 2021 23:57:26 +0800
+
 gnome-shell-extension-customize-ibus (57) mx; urgency=medium
 
   * v57: Add feature for exporting and restoring settings from file.

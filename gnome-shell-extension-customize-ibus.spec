@@ -1,6 +1,6 @@
 %global commit 23c4f00d1c8d8a41de35c6594d760a6e7440a8e7
-%global extension_version 57
-%global date 20210608
+%global extension_version 58
+%global date 20210609
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -45,6 +45,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Wed Jun 09 2021 Hollow Man <hollowman@hollowman.ml> - 20210609git23c4f00
+- Add icons for opening files directly from Prefs.
+- Change *.dconf into *.ini for configurations files.
+
 * Tue Jun 08 2021 Hollow Man <hollowman@hollowman.ml> - 20210608git23c4f00
 - Add feature for exporting and restoring settings from file.
 
