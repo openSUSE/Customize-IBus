@@ -1,4 +1,4 @@
-%global commit 23c4f00d1c8d8a41de35c6594d760a6e7440a8e7
+%global commit 21eb1ac3dc10d3b0baa1585690458cbd41cabe51
 %global extension_version 58
 %global date 20210609
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Wed Jun 09 2021 Hollow Man <hollowman@hollowman.ml> - 20210609git23c4f00
+* Wed Jun 09 2021 Hollow Man <hollowman@hollowman.ml> - 20210609git21eb1ac
 - Add icons for opening files directly from Prefs.
 - Change *.dconf into *.ini for configurations files.
 
