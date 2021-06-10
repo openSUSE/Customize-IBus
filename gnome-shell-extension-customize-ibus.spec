@@ -1,4 +1,4 @@
-%global commit 21eb1ac3dc10d3b0baa1585690458cbd41cabe51
+%global commit bceba6806f925247975fd070da2993bfdc340420
 %global extension_version 59
 %global date 20210610
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Thu Jun 10 2021 Hollow Man <hollowman@hollowman.ml> - 20210610git21eb1ac
+* Thu Jun 10 2021 Hollow Man <hollowman@hollowman.ml> - 20210610gitbceba68
 - Add fix IME list order function.
 
 * Wed Jun 09 2021 Hollow Man <hollowman@hollowman.ml> - 20210609git21eb1ac

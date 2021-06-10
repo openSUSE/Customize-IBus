@@ -9,7 +9,7 @@ pkgbase = gnome-shell-extension-customize-ibus
 	makedepends = gettext
 	makedepends = glib2
 	makedepends = make
-	source = https://github.com/HollowMan6/Customize-IBus/archive/21eb1ac3dc10d3b0baa1585690458cbd41cabe51/Customize-IBus-21eb1ac3dc10d3b0baa1585690458cbd41cabe51.tar.gz
+	source = https://github.com/HollowMan6/Customize-IBus/archive/bceba6806f925247975fd070da2993bfdc340420/Customize-IBus-bceba6806f925247975fd070da2993bfdc340420.tar.gz
 	sha512sums = SKIP
 
 pkgname = gnome-shell-extension-customize-ibus
