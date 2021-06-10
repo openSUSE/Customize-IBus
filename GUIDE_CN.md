@@ -326,10 +326,12 @@ sudo apt install gnome-shell-extension-customize-ibus
 - **裁剪 + 不重复/重复(等效)**：
   ![](https://img-blog.csdnimg.cn/20210503124907786.png)
 
-### 设置恢复默认值与备份
+### 关于
+在任何时候，你都可以点击左上角的图标打开此指南：
+![](https://img-blog.csdnimg.cn/20210611002558946.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
-![](https://img-blog.csdnimg.cn/202106100100171.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210611002724130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -365,16 +367,12 @@ use-indicator-left-click=true
 use-indicator-reposition=true
 use-popup-animation=true
 use-tray-click-source-switch=true
-
 ```
 
 点击`文件导入设置`，你可以选择将从刚刚保存的设置文件进行导入操作：
 ![](https://img-blog.csdnimg.cn/20210610010202175.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-### 关于
-![](https://img-blog.csdnimg.cn/20210610005941671.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
-
-注：在任何时候，你都可以点击左上角的图标打开此指南。
+你还可以选择打开其他官方自定义设置进行进一步的自定义操作。
 
 ## 非 GNOME 桌面
 
