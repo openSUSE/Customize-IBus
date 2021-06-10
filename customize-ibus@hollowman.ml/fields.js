@@ -43,6 +43,7 @@ var Fields = {
   USECANDANIM: "use-popup-animation",
   CANDANIMATION: "candidate-popup-animation",
   USEREPOSITION: "use-candidate-reposition",
+  FIXIMELIST: "fix-ime-list",
   USEINPUTINDLCLK: "use-indicator-left-click",
   INPUTINDLCLICK: "indicator-left-click-func",
   USETRAY: "use-tray",

@@ -197,6 +197,7 @@ const CustomizeIBus = GObject.registerClass(
           "<b>" + _("IBus Version: ") + "</b>" + _("unknown (installed ?)"),
       });
       this._field_candidate_reposition = new Gtk.Switch();
+      this._field_fix_ime_list = new Gtk.Switch();
       this._field_use_tray = new Gtk.Switch();
       this._field_ibus_emoji = new Gtk.Switch();
       this._field_extension_entry = new Gtk.Switch();
@@ -379,6 +380,10 @@ const CustomizeIBus = GObject.registerClass(
         this._field_unkown_state
       );
       this._ibus_basic._add(
+        this._switchLabelMaker(_("Fix IME List order")),
+        this._field_fix_ime_list
+      );
+      this._ibus_basic._add(
         this._switchLabelMaker(_("Enable drag to reposition candidate box")),
         this._field_candidate_reposition
       );
@@ -558,6 +563,9 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._field_candidate_reposition.connect("notify::active", (widget) => {
         gsettings.set_boolean(Fields.USEREPOSITION, widget.active);
+      });
+      this._field_fix_ime_list.connect("notify::active", (widget) => {
+        gsettings.set_boolean(Fields.FIXIMELIST, widget.active);
       });
       this._field_extension_entry.connect("notify::active", (widget) => {
         gsettings.set_boolean(Fields.MENUEXTPREF, widget.active);
@@ -1010,6 +1018,12 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.FIXIMELIST,
+        this._field_fix_ime_list,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.USETRAY,
         this._field_use_tray,
         "active",
@@ -1403,7 +1417,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, and also reposition candidate box by dragging when input."
+            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, fix IME list order when switching, and also reposition candidate box by dragging when input."
           ),
         }),
         0,

@@ -10,6 +10,7 @@ const {
   Gio,
   GLib,
   Meta,
+  Shell,
   IBus,
   Pango,
   St,
@@ -20,6 +21,7 @@ const {
 
 const BoxPointer = imports.ui.boxpointer;
 const InputSourceManager = imports.ui.status.keyboard.getInputSourceManager();
+const InputSourcePopup = imports.ui.status.keyboard.InputSourcePopup;
 const InputSourceIndicator = Main.panel.statusArea.keyboard;
 const IBusManager = imports.misc.ibusManager.getIBusManager();
 const CandidatePopup = IBusManager._candidatePopup;
@@ -1287,6 +1289,262 @@ const IBusReposition = GObject.registerClass(
   }
 );
 
+const IBusFixIMEList = GObject.registerClass(
+  class IBusFixIMEList extends GObject.Object {
+    _init() {
+      super._init();
+      // Solution Provided by
+      // https://github.com/AlynxZhou/gnome-shell-extension-fixed-ime-list/blob/master/extension.js
+
+      // A dirty hack to stop updating the annoying MRU IME list.
+      InputSourceManager._currentInputSourceChangedOrig =
+        InputSourceManager._currentInputSourceChanged;
+      InputSourceManager._currentInputSourceChanged = function (newSource) {
+        let oldSource;
+        [oldSource, this._currentSource] = [this._currentSource, newSource];
+
+        this.emit("current-source-changed", oldSource);
+        this._changePerWindowSource();
+      };
+
+      // I don't know why they use hard coded 0 or last
+      // when they have `_selectedIndex` here!
+      // Maybe they never consider to use it as a initial parameter.
+      // Anyway this is another dirty hack to let InputSourcePopup init
+      // with `selectedIndex`.
+      // Actually this is inherited from SwitcherPopup,
+      // but I don't want to change other parts' behavior.
+      InputSourcePopup.prototype._initialSelectionOrig =
+        InputSourcePopup.prototype._initialSelection;
+      InputSourcePopup.prototype._initialSelection = function (
+        backward,
+        _binding
+      ) {
+        if (backward) {
+          this._select(this._previous());
+        } else if (this._items.length === 1) {
+          this._select(0);
+        } else {
+          this._select(this._next());
+        }
+      };
+
+      // A dirty hack to let InputSourcePopup starts from current source
+      // instead of 0.
+      InputSourceManager._switchInputSourceOrig =
+        InputSourceManager._switchInputSource;
+      InputSourceManager._switchInputSource = function (
+        display,
+        window,
+        binding
+      ) {
+        if (this._mruSources.length < 2) {
+          return;
+        }
+
+        // HACK: Fall back on simple input source switching since we
+        // can't show a popup switcher while a GrabHelper grab is in
+        // effect without considerable work to consolidate the usage
+        // of pushModal/popModal and grabHelper. See
+        // https://bugzilla.gnome.org/show_bug.cgi?id=695143 .
+        if (Main.actionMode === Shell.ActionMode.POPUP) {
+          // _modifiersSwitcher() always starts from current source,
+          // so we don't hook it.
+          this._modifiersSwitcher();
+          return;
+        }
+
+        let popup = new InputSourcePopup(
+          this._mruSources,
+          this._keybindingAction,
+          this._keybindingActionBackward
+        );
+        // By default InputSourcePopup starts at 0, this is ok for MRU.
+        // But we need to set popup current index to current source.
+        // I think it's OK to start from 0 if we don't have current source.
+        if (this._currentSource != null) {
+          popup._selectedIndex = this._mruSources.indexOf(this._currentSource);
+        }
+
+        if (
+          !popup.show(
+            binding.is_reversed(),
+            binding.get_name(),
+            binding.get_mask()
+          )
+        ) {
+          popup.fadeAndDestroy();
+        }
+      };
+
+      // A dirty hack because iBus will set content type with a password entry,
+      // which will call reload before unlock and after extension enable
+      // so the active source changed before extension enable.
+      // We need to restore what we have before locking.
+      // TODO: Still some problem, there should be a better way.
+      InputSourceManager.reloadOrig = InputSourceManager.reload;
+      InputSourceManager.reload = function () {
+        this._reloading = true;
+        this._keyboardManager.setKeyboardOptions(
+          this._settings.keyboardOptions
+        );
+        this._inputSourcesChanged();
+        // _inputSourcesChanged() will active the first one so we must
+        // restore after it.
+        if (
+          this.activeSource != null &&
+          this._currentSource != this.activeSource
+        ) {
+          this.activeSource.activate(true);
+          // We only restore once.
+          this.activeSource = null;
+        }
+        this._reloading = false;
+      };
+
+      // A dirty hack to stop loading MRU IME list from settings.
+      // This is needed for restoring the user's sequence in settings when enabling.
+      InputSourceManager._updateMruSourcesOrig =
+        InputSourceManager._updateMruSources;
+      InputSourceManager._updateMruSources = function () {
+        let sourcesList = [];
+        for (let i in this._inputSources) {
+          sourcesList.push(this._inputSources[i]);
+        }
+
+        this._keyboardManager.setUserLayouts(
+          sourcesList.map((x) => {
+            return x.xkbId;
+          })
+        );
+
+        if (!this._disableIBus && this._mruSourcesBackup) {
+          this._mruSources = this._mruSourcesBackup;
+          this._mruSourcesBackup = null;
+        }
+
+        let mruSources = [];
+        this._mruSources = mruSources.concat(sourcesList);
+      };
+
+      // A dirty hack to stop updating MRU settings.
+      // Because we stop updating MRU sources, and I don't want to touch settings.
+      InputSourceManager._updateMruSettingsOrig =
+        InputSourceManager._updateMruSettings;
+      InputSourceManager._updateMruSettings = function () {
+        // If IBus is not ready we don't have a full picture of all
+        // the available sources, so don't update the setting
+        if (!this._ibusReady) {
+          return;
+        }
+
+        // If IBus is temporarily disabled, don't update the setting
+        if (this._disableIBus) {
+          return;
+        }
+      };
+
+      // Reloading keybindings is needed because we changed the bound callback.
+      Main.wm.removeKeybinding("switch-input-source");
+      InputSourceManager._keybindingAction = Main.wm.addKeybinding(
+        "switch-input-source",
+        new Gio.Settings({ schema_id: "org.gnome.desktop.wm.keybindings" }),
+        Meta.KeyBindingFlags.NONE,
+        Shell.ActionMode.ALL,
+        InputSourceManager._switchInputSource.bind(InputSourceManager)
+      );
+      Main.wm.removeKeybinding("switch-input-source-backward");
+      InputSourceManager._keybindingActionBackward = Main.wm.addKeybinding(
+        "switch-input-source-backward",
+        new Gio.Settings({ schema_id: "org.gnome.desktop.wm.keybindings" }),
+        Meta.KeyBindingFlags.IS_REVERSED,
+        Shell.ActionMode.ALL,
+        InputSourceManager._switchInputSource.bind(InputSourceManager)
+      );
+
+      // The input source list may already be messed.
+      // So we restore it.
+      InputSourceManager._mruSources = [];
+      InputSourceManager._mruSourcesBackup = null;
+      InputSourceManager._updateMruSources();
+    }
+
+    destroy() {
+      if (
+        InputSourceManager._currentInputSourceChangedOrig instanceof Function
+      ) {
+        InputSourceManager._currentInputSourceChanged =
+          InputSourceManager._currentInputSourceChangedOrig;
+        InputSourceManager._currentInputSourceChangedOrig = undefined;
+      }
+
+      if (
+        InputSourcePopup.prototype._initialSelectionOrig instanceof Function
+      ) {
+        InputSourcePopup.prototype._initialSelection =
+          InputSourcePopup.prototype._initialSelectionOrig;
+        InputSourcePopup.prototype._initialSelectionOrig = undefined;
+      }
+
+      if (InputSourceManager._switchInputSourceOrig instanceof Function) {
+        InputSourceManager._switchInputSourceSources =
+          InputSourceManager._switchInputSourceOrig;
+        InputSourceManager._switchInputSourceOrig = undefined;
+      }
+
+      if (InputSourceManager.reloadOrig instanceof Function) {
+        InputSourceManager.reload = InputSourceManager.reloadOrig;
+        InputSourceManager.reloadOrig = undefined;
+      }
+
+      if (InputSourceManager._updateMruSourcesOrig instanceof Function) {
+        InputSourceManager._updateMruSources =
+          InputSourceManager._updateMruSourcesOrig;
+        InputSourceManager._updateMruSourcesOrig = undefined;
+      }
+
+      if (InputSourceManager._updateMruSettingsOrig instanceof Function) {
+        InputSourceManager._updateMruSettings =
+          InputSourceManager._updateMruSettingsOrig;
+        InputSourceManager._updateMruSettingsOrig = undefined;
+      }
+
+      // Bind to the original function.
+      Main.wm.removeKeybinding("switch-input-source");
+      InputSourceManager._keybindingAction = Main.wm.addKeybinding(
+        "switch-input-source",
+        new Gio.Settings({ schema_id: "org.gnome.desktop.wm.keybindings" }),
+        Meta.KeyBindingFlags.NONE,
+        Shell.ActionMode.ALL,
+        InputSourceManager._switchInputSource.bind(InputSourceManager)
+      );
+      Main.wm.removeKeybinding("switch-input-source-backward");
+      InputSourceManager._keybindingActionBackward = Main.wm.addKeybinding(
+        "switch-input-source-backward",
+        new Gio.Settings({ schema_id: "org.gnome.desktop.wm.keybindings" }),
+        Meta.KeyBindingFlags.IS_REVERSED,
+        Shell.ActionMode.ALL,
+        InputSourceManager._switchInputSource.bind(InputSourceManager)
+      );
+
+      // Load the MRU list from settings.
+      InputSourceManager._mruSources = [];
+      InputSourceManager._mruSourcesBackup = null;
+      InputSourceManager._updateMruSources();
+      // Save active source before lock screen.
+      this.activeSource = InputSourceManager._currentSource;
+      // InputSourcePopup assume the first one is selected,
+      // so we re-activate current source to make it the first.
+      if (
+        InputSourceManager._currentSource != null &&
+        InputSourceManager._mruSources[0] !== InputSourceManager._currentSource
+      ) {
+        InputSourceManager._currentSource.activate(true);
+      }
+    }
+  }
+);
+
 const IBusAnimation = GObject.registerClass(
   {
     Properties: {
@@ -1590,6 +1848,13 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      fiximelist: GObject.param_spec_boolean(
+        "fiximelist",
+        "fiximelist",
+        "fiximelist",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
       usetray: GObject.param_spec_boolean(
         "usetray",
         "usetray",
@@ -1722,6 +1987,12 @@ const Extensions = GObject.registerClass(
         Fields.USEREPOSITION,
         this,
         "reposition",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.FIXIMELIST,
+        this,
+        "fiximelist",
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
@@ -1879,6 +2150,18 @@ const Extensions = GObject.registerClass(
         delete this._reposition;
       }
     }
+
+    set fiximelist(fiximelist) {
+      if (fiximelist) {
+        if (this._fiximelist) return;
+        this._fiximelist = new IBusFixIMEList();
+      } else {
+        if (!this._fiximelist) return;
+        this._fiximelist.destroy();
+        delete this._fiximelist;
+      }
+    }
+
     set usetray(usetray) {
       InputSourceIndicator.container.visible = usetray;
     }
@@ -2066,6 +2349,7 @@ const Extensions = GObject.registerClass(
       this.useinputind = false;
       this.animation = false;
       this.reposition = false;
+      this.fiximelist = false;
       this.usetray = true;
       this.usetraysswitch = false;
       this.usecandrightswitch = false;

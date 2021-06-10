@@ -85,6 +85,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 - 固定候选框使其不跟随光标以及设定固定位置
 - 候选框字体
 - 输入模式根据应用记忆并自动切换
+- 固定输入法列表顺序
 - 拖拽移动候选框
 - 系统任务栏托盘显示和交互设置
   - 显示或隐藏托盘图标
@@ -115,6 +116,18 @@ sudo apt install gnome-shell-extension-customize-ibus
 ### 拖拽移动
 
 ![](img/reposition.gif)
+
+### 固定输入法列表顺序
+
+在切换输入法时指示的每次显示顺序都固定而不是从中间开始依次循环。
+
+应用前:
+![](img/fix-IME-list-before.gif)
+
+应用后:
+![](img/fix-IME-list-after.gif)
+
+导入自 [Fixed IME List](https://extensions.gnome.org/extension/3663/fixed-ime-list/)，更多增加此功能的原因请参考这里： https://github.com/AlynxZhou/gnome-shell-extension-fixed-ime-list#why
 
 ### 使用用户主题来更改 IBus 皮肤的实现
 
@@ -192,13 +205,15 @@ background-size: cover;
 - [x] V56: 更改 UI；增加恢复默认设置选项；清理代码。
 - [x] V57: 增加功能，可以备份和恢复当前设置到文件中。
 - [x] V58: 增加图标，使得可以直接从设置面板打开文件；将设置备份文件扩展名从*.dconf 改为*.ini。
+- [x] V59: 增加固定输入法列表顺序的功能。
 
-在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58)中通过了测试。
+在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59)中通过了测试。
 
 ## 致谢
 
 1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
 2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
+3. [fixed-ime-list](https://github.com/AlynxZhou/gnome-shell-extension-fixed-ime-list)
 
 _该项目是[谷歌编程之夏 (GSoC) 2021](https://summerofcode.withgoogle.com/projects/#5505085183885312) 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_
 
@@ -270,6 +285,7 @@ Support Customization of:
 - Fix Candidate Box to Not Follow the Caret and Set Fixed Position
 - Candidate Box Font
 - Input Mode Remember and Auto-switch by APP
+- Fix IME List Order
 - Drag Candidate Box to Reposition
 - System Tray Menus and Interaction Settings
   - Show or Hide Tray Icon
@@ -300,6 +316,18 @@ With Slide enabled:
 ### Drag to Reposition
 
 ![](img/reposition.gif)
+
+### Fix IME List Order
+
+When switching input methods, the order of indicator displaying is fixed instead of cycling from the middle.
+
+Before:
+![](img/fix-IME-list-before.gif)
+
+After:
+![](img/fix-IME-list-after.gif)
+
+Imported from [Fixed IME List](https://extensions.gnome.org/extension/3663/fixed-ime-list/), more reasons for this feature can be found here: https://github.com/AlynxZhou/gnome-shell-extension-fixed-ime-list#why
 
 ### Realization of Customizing IBus with User Theme
 
@@ -376,14 +404,16 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V55: Merge 3.38 into 40, make some changes for UI.
 - [x] V56: UI changes. Add restoring default settings option. Clean codebase.
 - [x] V57: Add feature for exporting and restoring settings from file.
-- [x] V58: Add icons for opening files directly from Prefs. Change *.dconf into *.ini for configurations files.
+- [x] V58: Add icons for opening files directly from Prefs. Change _.dconf into _.ini for configurations files.
+- [x] V59: Add fix IME list order function.
 
-Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58).
+Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59).
 
 ## Acknowledgements
 
 1. [ibus-font-setting](https://extensions.gnome.org/extension/1121/ibus-font-setting/)
 2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
+3. [fixed-ime-list](https://github.com/AlynxZhou/gnome-shell-extension-fixed-ime-list)
 
 _This project is part of the achievement of the [Google Summer of Code 2021](https://summerofcode.withgoogle.com/projects/#5505085183885312) at [OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)._
 

@@ -1,6 +1,6 @@
 %global commit 21eb1ac3dc10d3b0baa1585690458cbd41cabe51
-%global extension_version 58
-%global date 20210609
+%global extension_version 59
+%global date 20210610
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -45,6 +45,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Thu Jun 10 2021 Hollow Man <hollowman@hollowman.ml> - 20210610git21eb1ac
+- Add fix IME list order function.
+
 * Wed Jun 09 2021 Hollow Man <hollowman@hollowman.ml> - 20210609git21eb1ac
 - Add icons for opening files directly from Prefs.
 - Change *.dconf into *.ini for configurations files.

@@ -159,6 +159,10 @@
         <default>false</default>
         <summary>use candidate reposition by drag</summary>
     </key>
+    <key type="b" name="fix-ime-list">
+        <default>false</default>
+        <summary>fix IME list</summary>
+    </key>
     <key type="b" name="use-indicator-left-click">
         <default>false</default>
         <summary>use indicator left click</summary>

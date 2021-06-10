@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (59) mx; urgency=medium
+
+  * v59: Add fix IME list order function.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Wed, 10 Jun 2021 17:26:08 +0800
+
 gnome-shell-extension-customize-ibus (58) mx; urgency=medium
 
   * v58: Add icons for opening files directly from Prefs.
