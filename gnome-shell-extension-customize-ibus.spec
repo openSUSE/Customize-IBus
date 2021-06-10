@@ -1,4 +1,4 @@
-%global commit bceba6806f925247975fd070da2993bfdc340420
+%global commit 8900c0cc6e2adb3660cc2083a3339430f5c831c6
 %global extension_version 59
 %global date 20210610
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Thu Jun 10 2021 Hollow Man <hollowman@hollowman.ml> - 20210610gitbceba68
+* Thu Jun 10 2021 Hollow Man <hollowman@hollowman.ml> - 20210610git8900c0c
 - Add fix IME list order function and buttons to start official customization settings.
 
 * Wed Jun 09 2021 Hollow Man <hollowman@hollowman.ml> - 20210609git21eb1ac
