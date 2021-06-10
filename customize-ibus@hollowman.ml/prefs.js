@@ -223,6 +223,18 @@ const CustomizeIBus = GObject.registerClass(
         hexpand: true,
       });
 
+      this._field_open_system_settings = new Gtk.Button({
+        label: _("GNOME Settings"),
+        hexpand: true,
+        halign: Gtk.Align.CENTER,
+      });
+
+      this._field_open_ibus_pref = new Gtk.Button({
+        label: _("IBus Preference"),
+        hexpand: true,
+        halign: Gtk.Align.CENTER,
+      });
+
       if (ShellVersion < 40)
         this._field_custom_font = new Gtk.FontButton({
           font_name: gsettings.get_string(Fields.CUSTOMFONT),
@@ -380,7 +392,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_unkown_state
       );
       this._ibus_basic._add(
-        this._switchLabelMaker(_("Fix IME List order")),
+        this._switchLabelMaker(_("Fix IME list order")),
         this._field_fix_ime_list
       );
       this._ibus_basic._add(
@@ -737,6 +749,14 @@ const CustomizeIBus = GObject.registerClass(
           },
           true
         );
+      });
+      this._field_open_system_settings.connect("clicked", () => {
+        if (ShellVersion < 40)
+          GLib.spawn_command_line_async("gnome-control-center region");
+        else GLib.spawn_command_line_async("gnome-control-center keyboard");
+      });
+      this._field_open_ibus_pref.connect("clicked", () => {
+        GLib.spawn_command_line_async("ibus-setup");
       });
       this._fileDarkChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
@@ -1285,30 +1305,6 @@ const CustomizeIBus = GObject.registerClass(
         1,
         1
       );
-      const boxrow = new Gtk.ListBoxRow({
-        activatable: true,
-        selectable: false,
-      });
-      const hbox = new Gtk.Box({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-      });
-      if (ShellVersion < 40) boxrow.add(hbox);
-      else boxrow.set_child(hbox);
-      let spacing = 4;
-      if (ShellVersion < 40) {
-        hbox.pack_start(this._reset_extension, false, false, spacing);
-        hbox.pack_start(this._export_settings, false, false, spacing);
-        hbox.pack_start(this._import_settings, false, false, spacing);
-      } else {
-        hbox.set_spacing(spacing);
-        hbox.append(this._reset_extension);
-        hbox.append(this._export_settings);
-        hbox.append(this._import_settings);
-      }
-      frame.grid.attach(boxrow, 0, frame.grid._row++, 1, 1);
       frame.grid.attach(
         new Gtk.Label({
           label:
@@ -1358,6 +1354,87 @@ const CustomizeIBus = GObject.registerClass(
         1,
         1
       );
+      let expanderFrame = new Gtk.Frame({
+        margin_top: 10,
+      });
+      expanderFrame.grid = new Gtk.Grid({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        hexpand: true,
+        row_spacing: 12,
+        column_spacing: 18,
+        row_homogeneous: false,
+        column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
+      });
+      expanderFrame.grid._row = 0;
+      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
+      else expanderFrame.set_child(expanderFrame.grid);
+      frame.grid.attach(expanderFrame, 0, frame.grid._row++, 1, 1);
+      const boxrow = new Gtk.ListBoxRow({
+        activatable: true,
+        selectable: false,
+      });
+      const hbox = new Gtk.Box({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+      });
+      if (ShellVersion < 40) boxrow.add(hbox);
+      else boxrow.set_child(hbox);
+      let spacing = 4;
+      if (ShellVersion < 40) {
+        hbox.pack_start(this._reset_extension, false, false, spacing);
+        hbox.pack_start(this._export_settings, false, false, spacing);
+        hbox.pack_start(this._import_settings, false, false, spacing);
+      } else {
+        hbox.set_spacing(spacing);
+        hbox.append(this._reset_extension);
+        hbox.append(this._export_settings);
+        hbox.append(this._import_settings);
+      }
+      expanderFrame.grid.attach(boxrow, 0, expanderFrame.grid._row++, 1, 1);
+      expanderFrame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          hexpand: true,
+          halign: Gtk.Align.CENTER,
+          label: "<b>" + _("Other official customization settings") + "</b>",
+        }),
+        0,
+        expanderFrame.grid._row++,
+        1,
+        1
+      );
+      const boxrow1 = new Gtk.ListBoxRow({
+        activatable: true,
+        selectable: false,
+      });
+      const hbox1 = new Gtk.Box({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+      });
+      if (ShellVersion < 40) boxrow1.add(hbox1);
+      else boxrow1.set_child(hbox1);
+      if (ShellVersion < 40) {
+        hbox1.pack_start(
+          this._field_open_system_settings,
+          false,
+          false,
+          spacing
+        );
+        hbox1.pack_start(this._field_open_ibus_pref, false, false, spacing);
+      } else {
+        hbox1.set_spacing(spacing);
+        hbox1.append(this._field_open_system_settings);
+        hbox1.append(this._field_open_ibus_pref);
+      }
+      expanderFrame.grid.attach(boxrow1, 0, expanderFrame.grid._row++, 1, 1);
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,

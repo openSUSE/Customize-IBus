@@ -1,6 +1,6 @@
 gnome-shell-extension-customize-ibus (59) mx; urgency=medium
 
-  * v59: Add fix IME list order function.
+  * v59: Add fix IME list order function and buttons to start official customization settings.
 
  -- Hollow Man <hollowman@hollowman.ml>  Wed, 10 Jun 2021 17:26:08 +0800
 

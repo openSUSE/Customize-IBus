@@ -46,7 +46,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 
 %changelog
 * Thu Jun 10 2021 Hollow Man <hollowman@hollowman.ml> - 20210610gitbceba68
-- Add fix IME list order function.
+- Add fix IME list order function and buttons to start official customization settings.
 
 * Wed Jun 09 2021 Hollow Man <hollowman@hollowman.ml> - 20210609git21eb1ac
 - Add icons for opening files directly from Prefs.
