@@ -68,7 +68,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 常规
 
-![](https://img-blog.csdnimg.cn/20210606205137274.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210610220009941.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置 IBus 输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
@@ -85,6 +85,16 @@ sudo apt install gnome-shell-extension-customize-ibus
 ![](https://img-blog.csdnimg.cn/20210606205306464.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`自动切换源`左侧的复选框来进行选中，即可支持配置窗口切换时输入法默认切换语言。点击最右侧进行选择，支持设定为中文或者英文，如果选择保持则保持切换窗口时输入法状态不变。在右侧你还可以选择是否记住输入状态。当记住输入状态被启用时，那么你在一个应用中手动切换了输入源，则该应用的输入源模式将会被自动记住。另外，新打开的应用将会遵循你的输入源配置，应用的输入状态将会永远被记住。
+
+点击`固定输入法列表`右侧的开关即可开启或关闭此功能。
+
+如果你系统中使用多种输入法，在使用键盘切换输入法时（通常是`Win + Space`），屏幕上默认显示的输入法排序会依次为最近使用的输入法。开启此功能可以修改为输入法的设置配置先后顺序。
+
+关闭时：
+![](https://img-blog.csdnimg.cn/20210610220655414.gif)
+
+开启时：
+![](https://img-blog.csdnimg.cn/20210610220720652.gif)
 
 点击`拖拽移动候选框`右侧的开关即可开启或关闭此功能。
 
@@ -316,10 +326,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 - **裁剪 + 不重复/重复(等效)**：
   ![](https://img-blog.csdnimg.cn/20210503124907786.png)
 
-### 关于
-
-在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/20210610005941671.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+### 设置恢复默认值与备份
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
 ![](https://img-blog.csdnimg.cn/202106100100171.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -327,8 +334,47 @@ sudo apt install gnome-shell-extension-customize-ibus
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
+示例设置导出文件内容：
+```ini
+[/]
+candidate-box-position={'x': uint32 371, 'y': 326}
+custom-bg='/home/hollowman/图片/light.jpg'
+custom-bg-dark='/home/hollowman/图片/dark.jpg'
+custom-theme='/home/hollowman/stylesheet-light.css'
+custom-theme-dark='/home/hollowman/stylesheet-dark.css'
+enable-custom-theme=true
+enable-custom-theme-dark=true
+enable-orientation=true
+fix-ime-list=true
+ibus-restart-time='1622033006489'
+indicator-left-click-func=uint32 1
+input-indicator-right-close=true
+input-mode-list={'undefined': false, '': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false}
+input-mode-remember=uint32 0
+menu-ibus-emoji=true
+menu-ibus-exit=true
+menu-ibus-preference=true
+menu-ibus-restart=true
+menu-ibus-version=true
+use-candidate-box-right-click=true
+use-candidate-reposition=true
+use-custom-bg=true
+use-custom-bg-dark=true
+use-custom-font=true
+use-indicator-left-click=true
+use-indicator-reposition=true
+use-popup-animation=true
+use-tray-click-source-switch=true
+
+```
+
 点击`文件导入设置`，你可以选择将从刚刚保存的设置文件进行导入操作：
 ![](https://img-blog.csdnimg.cn/20210610010202175.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+
+### 关于
+![](https://img-blog.csdnimg.cn/20210610005941671.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+
+注：在任何时候，你都可以点击左上角的图标打开此指南。
 
 ## 非 GNOME 桌面
 
