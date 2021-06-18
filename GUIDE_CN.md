@@ -68,7 +68,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 常规
 
-![](https://img-blog.csdnimg.cn/20210610220009941.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210619004824511.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置 IBus 输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
@@ -101,6 +101,8 @@ sudo apt install gnome-shell-extension-customize-ibus
 示例开启`拖拽移动候选框`：
 ![](https://img-blog.csdnimg.cn/20210510123119831.gif)
 
+点击`候选框调页按钮`右侧的开关即可显示或隐藏候选框调页按钮。
+
 ### 托盘
 
 ![](https://img-blog.csdnimg.cn/20210606205406511.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -115,9 +117,9 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 指示
 
-![](https://img-blog.csdnimg.cn/20210606205502257.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210619005028200.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`，`启用右击关闭指示器`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。你还可以`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 0.1。
+这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`，`启用右击关闭指示器`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。还支持设定指示器字体。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。你还可以`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 0.1。
 
 示例动画：
 ![](https://img-blog.csdnimg.cn/20210507111902567.gif)
@@ -328,10 +330,10 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 关于
 在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/20210611002558946.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210619005340931.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
-![](https://img-blog.csdnimg.cn/20210611002724130.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210619005246124.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)

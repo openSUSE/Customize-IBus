@@ -87,6 +87,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 - 输入模式根据应用记忆并自动切换
 - 固定输入法列表顺序
 - 拖拽移动候选框
+- 显示或隐藏候选框调页按钮
 - 系统任务栏托盘显示和交互设置
   - 显示或隐藏托盘图标
   - 直接点击托盘图标切换输入源
@@ -97,6 +98,7 @@ sudo apt install gnome-shell-extension-customize-ibus
   - 仅在英文输入时指示
   - 右击指示器来将其隐藏
   - 指示器显示动画
+  - 自定义字体
   - 左击指示器以拖拽移动或者切换输入源
   - 启用自动隐藏以及配置自动隐藏时延
 - 皮肤样式主题（提供的或者从 GNOME Shell 主题中提取的样式表，参见扩展的帮助部分来获取更多指导）
@@ -288,6 +290,7 @@ Support Customization of:
 - Input Mode Remember and Auto-switch by APP
 - Fix IME List Order
 - Drag Candidate Box to Reposition
+- Show or Hide Candidate Box Page Buttons
 - System Tray Menus and Interaction Settings
   - Show or Hide Tray Icon
   - Directly Click Tray Icon to Switch Input Mode
@@ -298,6 +301,7 @@ Support Customization of:
   - Only Indicate when Using ASCII Input Mode
   - Right-click Indicator to Hide
   - Indicator Animation
+  - Customize Font
   - Left-click Indicator to Drag to Move Indicator or Switch Input Mode
   - Enable Auto-hide Indicator and Configure Auto-hide Timeout
 - Theme (Stylesheet Provided or Extracted from GNOME Shell Themes, Refer to Help Instructions in Extension for More)
