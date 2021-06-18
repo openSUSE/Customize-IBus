@@ -1,4 +1,4 @@
-%global commit 8900c0cc6e2adb3660cc2083a3339430f5c831c6
+%global commit b6e507b70c62afa54c9306c6b99e040237cfbfd4
 %global extension_version 60
 %global date 20210618
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Fri Jun 18 2021 Hollow Man <hollowman@hollowman.ml> - 20210618git8900c0c
+* Fri Jun 18 2021 Hollow Man <hollowman@hollowman.ml> - 20210618gitb6e507b
 - Add customize font for indicator.
 - Add show or hide candidate box page buttons.
 - Improve on showing background. 
