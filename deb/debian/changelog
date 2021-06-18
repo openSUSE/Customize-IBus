@@ -1,3 +1,11 @@
+gnome-shell-extension-customize-ibus (60) mx; urgency=medium
+
+  * v60: Add customize font for indicator.
+  Add show or hide candidate box page buttons.
+  Improve on showing background. 
+
+ -- Hollow Man <hollowman@hollowman.ml>  Fri, 18 Jun 2021 23:34:44 +0800
+
 gnome-shell-extension-customize-ibus (59) mx; urgency=medium
 
   * v59: Add fix IME list order function and buttons to start official customization settings.

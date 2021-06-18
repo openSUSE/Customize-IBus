@@ -120,6 +120,10 @@
         <default>""</default>
         <summary>last ibus manually restart time</summary>
     </key>
+    <key type="b" name="use-candidate-buttons">
+        <default>true</default>
+        <summary>use candidate box page buttons</summary>
+    </key>
     <key type="b" name="use-input-indicator">
         <default>true</default>
         <summary>use input state indicator</summary>
@@ -175,6 +179,14 @@
     <key type="b" name="input-indicator-right-close">
         <default>false</default>
         <summary>use indicator mouse right click to close</summary>
+    </key>
+    <key type="b" name="use-indicator-custom-font">
+        <default>false</default>
+        <summary>use indicator custom font</summary>
+    </key>
+    <key type="s" name="indicator-custom-font">
+        <default>"Sans 16"</default>
+        <summary>indicator custom font</summary>
     </key>
     <key type="b" name="use-tray">
         <default>true</default>

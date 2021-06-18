@@ -124,6 +124,20 @@ const IBusInputSourceIndicater = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      inputindusef: GObject.param_spec_boolean(
+        "inputindusef",
+        "inputindusef",
+        "inputindusef",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      fontname: GObject.param_spec_string(
+        "fontname",
+        "fontname",
+        "font name",
+        "Sans 16",
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class IBusInputSourceIndicater extends BoxPointer.BoxPointer {
@@ -210,6 +224,18 @@ const IBusInputSourceIndicater = GObject.registerClass(
         "inputindlclick",
         Gio.SettingsBindFlags.GET
       );
+      gsettings.bind(
+        Fields.INPUTINDUSEF,
+        this,
+        "inputindusef",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDCUSTOMFONT,
+        this,
+        "fontname",
+        Gio.SettingsBindFlags.GET
+      );
     }
 
     set inputindtog(inputindtog) {
@@ -259,6 +285,40 @@ const IBusInputSourceIndicater = GObject.registerClass(
     set inputindlclick(inputindlclick) {
       this.leftClickFunction = inputindlclick;
       this._update_lclick();
+    }
+
+    set inputindusef(inputindusef) {
+      this.useCustomFont = inputindusef;
+      this._update_font();
+    }
+
+    set fontname(fontname) {
+      this.fontName = fontname;
+      this._update_font();
+    }
+
+    _update_font() {
+      if (this.useCustomFont) {
+        let offset = 3; // the fonts-size difference between index and candidate
+        let desc = Pango.FontDescription.from_string(this.fontName);
+        let get_weight = () => {
+          try {
+            return desc.get_weight();
+          } catch (e) {
+            return parseInt(e.message);
+          }
+        }; // hack for Pango.Weight enumeration exception (eg: 290) in some fonts
+        this.set_style(
+          'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
+            get_weight(),
+            desc.get_family(),
+            desc.get_size() / Pango.SCALE - offset,
+            Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
+          )
+        );
+      } else {
+        this.set_style("");
+      }
     }
 
     _update_lclick() {
@@ -858,17 +918,16 @@ const IBusBGSetting = GObject.registerClass(
         if (this._bgPic) {
           global.log(_("loading background for IBus:") + this._bgPic);
           this._candidateBox.set_style(
-            'background: url("%s"); background-repeat: %s; background-size: %s;'.format(
+            'background: url("%s"); background-repeat: %s; background-size: %s; box-shadow: none;'.format(
               this._bgPic,
               this._bgRepeatMode,
               this._bgMode
             )
           );
-          this._candidateBox.add_style_class_name("candidate-box");
+          this._candidateBox.add_style_class_name("candidate-popup-content");
         } else {
           global.log(_("remove custom background for IBus"));
           this._candidateBox.set_style("");
-          this._candidateBox.remove_style_class_name("candidate-box");
         }
       }
     }
@@ -1883,6 +1942,13 @@ const Extensions = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      usebuttons: GObject.param_spec_boolean(
+        "usebuttons",
+        "usebuttons",
+        "usebuttons",
+        true,
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class Extensions extends GObject.Object {
@@ -2017,6 +2083,12 @@ const Extensions = GObject.registerClass(
         Fields.USECANDSTILL,
         this,
         "usecandstill",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USEBUTTONS,
+        this,
+        "usebuttons",
         Gio.SettingsBindFlags.GET
       );
     }
@@ -2301,6 +2373,12 @@ const Extensions = GObject.registerClass(
       this._not_extension_first_start = true;
     }
 
+    set usebuttons(usebuttons) {
+      CandidateArea._buttonBox.visible = usebuttons;
+      CandidateArea._previousButton.visible = usebuttons;
+      CandidateArea._nextButton.visible = usebuttons;
+    }
+
     _MenuIBusEmoji() {
       Main.overview.hide();
       Util.spawn(["ibus", "emoji"]);
@@ -2351,6 +2429,7 @@ const Extensions = GObject.registerClass(
       this.reposition = false;
       this.fiximelist = false;
       this.usetray = true;
+      this.usebuttons = true;
       this.usetraysswitch = false;
       this.usecandrightswitch = false;
       this.usecandstill = false;

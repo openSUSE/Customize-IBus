@@ -1,6 +1,6 @@
 %global commit 8900c0cc6e2adb3660cc2083a3339430f5c831c6
-%global extension_version 59
-%global date 20210610
+%global extension_version 60
+%global date 20210618
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -45,6 +45,11 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Fri Jun 18 2021 Hollow Man <hollowman@hollowman.ml> - 20210618git8900c0c
+- Add customize font for indicator.
+- Add show or hide candidate box page buttons.
+- Improve on showing background. 
+
 * Thu Jun 10 2021 Hollow Man <hollowman@hollowman.ml> - 20210610git8900c0c
 - Add fix IME list order function and buttons to start official customization settings.
 

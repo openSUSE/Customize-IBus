@@ -81,6 +81,10 @@ const CustomizeIBus = GObject.registerClass(
         _("Candidate box right click")
       );
 
+      this._field_indicator_use_custom_font = this._checkMaker(
+        _("Use custom font")
+      );
+
       this._restart_ibus = new Gtk.Button({
         label: _("Start/Restart IBus"),
         hexpand: true,
@@ -196,6 +200,7 @@ const CustomizeIBus = GObject.registerClass(
         label:
           "<b>" + _("IBus Version: ") + "</b>" + _("unknown (installed ?)"),
       });
+      this._field_candidate_buttons = new Gtk.Switch();
       this._field_candidate_reposition = new Gtk.Switch();
       this._field_fix_ime_list = new Gtk.Switch();
       this._field_use_tray = new Gtk.Switch();
@@ -242,6 +247,15 @@ const CustomizeIBus = GObject.registerClass(
       else
         this._field_custom_font = new Gtk.FontButton({
           font: gsettings.get_string(Fields.CUSTOMFONT),
+        });
+
+      if (ShellVersion < 40)
+        this._field_indicator_custom_font = new Gtk.FontButton({
+          font_name: gsettings.get_string(Fields.INPUTINDCUSTOMFONT),
+        });
+      else
+        this._field_indicator_custom_font = new Gtk.FontButton({
+          font: gsettings.get_string(Fields.INPUTINDCUSTOMFONT),
         });
 
       const filter = new Gtk.FileFilter();
@@ -399,6 +413,10 @@ const CustomizeIBus = GObject.registerClass(
         this._switchLabelMaker(_("Enable drag to reposition candidate box")),
         this._field_candidate_reposition
       );
+      this._ibus_basic._add(
+        this._switchLabelMaker(_("Candidate box page buttons")),
+        this._field_candidate_buttons
+      );
       this._basicHelpPage(this._ibus_basic);
 
       this._ibus_tray = this._listFrameMaker(_("Tray"));
@@ -466,6 +484,10 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicater popup animation")),
         this._field_indicator_animation
+      );
+      this._ibus_indicator._add(
+        this._field_indicator_use_custom_font,
+        this._field_indicator_custom_font
       );
       this._ibus_indicator._add(
         this._field_indicator_enable_left_click,
@@ -576,6 +598,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_candidate_reposition.connect("notify::active", (widget) => {
         gsettings.set_boolean(Fields.USEREPOSITION, widget.active);
       });
+      this._field_candidate_buttons.connect("notify::active", (widget) => {
+        gsettings.set_boolean(Fields.USEBUTTONS, widget.active);
+      });
       this._field_fix_ime_list.connect("notify::active", (widget) => {
         gsettings.set_boolean(Fields.FIXIMELIST, widget.active);
       });
@@ -605,6 +630,10 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_hide_time.set_sensitive(
           this._field_indicator_enable_autohide.active && widget.active
         );
+        this._field_indicator_custom_font.set_sensitive(
+          this._field_indicator_use_custom_font.active && widget.active
+        );
+        this._field_indicator_use_custom_font.set_sensitive(widget.active);
         this._field_indicator_enable_left_click.set_sensitive(widget.active);
         this._field_indicator_enable_autohide.set_sensitive(widget.active);
         gsettings.set_boolean(Fields.USEINPUTIND, widget.active);
@@ -635,6 +664,13 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_right_close.connect("notify::active", (widget) => {
         gsettings.set_boolean(Fields.INPUTINDRIGC, widget.active);
       });
+      this._field_indicator_use_custom_font.connect(
+        "notify::active",
+        (widget) => {
+          this._field_indicator_custom_font.set_sensitive(widget.active);
+          gsettings.set_boolean(Fields.INPUTINDUSEF, widget.active);
+        }
+      );
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
         gsettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
@@ -846,6 +882,13 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_enable_autohide.set_sensitive(
         this._field_use_indicator.active
       );
+      this._field_indicator_custom_font.set_sensitive(
+        this._field_use_indicator.active &&
+          this._field_indicator_use_custom_font.active
+      );
+      this._field_indicator_use_custom_font.set_sensitive(
+        this._field_use_indicator.active
+      );
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
       this._field_bg_dark_mode.set_sensitive(
@@ -990,6 +1033,23 @@ const CustomizeIBus = GObject.registerClass(
           Gio.SettingsBindFlags.DEFAULT
         );
       gsettings.bind(
+        Fields.INPUTINDUSEF,
+        this._field_indicator_use_custom_font,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      if (ShellVersion < 40)
+        this._field_indicator_custom_font.connect("font-set", (widget) => {
+          gsettings.set_string(Fields.INPUTINDCUSTOMFONT, widget.font_name);
+        });
+      else
+        gsettings.bind(
+          Fields.INPUTINDCUSTOMFONT,
+          this._field_indicator_custom_font,
+          "font",
+          Gio.SettingsBindFlags.DEFAULT
+        );
+      gsettings.bind(
         Fields.USECUSTOMBG,
         this._field_use_custom_bg,
         "active",
@@ -1034,6 +1094,12 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.USEREPOSITION,
         this._field_candidate_reposition,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.USEBUTTONS,
+        this._field_candidate_buttons,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1494,7 +1560,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, fix IME list order when switching, and also reposition candidate box by dragging when input."
+            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons."
           ),
         }),
         0,
@@ -1633,7 +1699,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, popup animation, mouse left click to switch input source or drag to move indicator, enable autohide and auto hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, popup animation, font, mouse left click to switch input source or drag to move indicator, enable autohide and auto hide timeout (in seconds)."
           ),
         }),
         0,
