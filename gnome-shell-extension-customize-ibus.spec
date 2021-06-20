@@ -1,6 +1,6 @@
 %global commit b6e507b70c62afa54c9306c6b99e040237cfbfd4
-%global extension_version 60
-%global date 20210618
+%global extension_version 61
+%global date 20210620
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -45,6 +45,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sun Jun 20 2021 Hollow Man <hollowman@hollowman.ml> - 20210620gitb6e507b
+- Add scroll on candidates box to switch among pages or candidates.
+- Add scroll on indicator to switch input source.
+
 * Fri Jun 18 2021 Hollow Man <hollowman@hollowman.ml> - 20210618gitb6e507b
 - Add customize font for indicator.
 - Add show or hide candidate box page buttons.

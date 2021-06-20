@@ -82,6 +82,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 - 候选框方向
 - 候选框动画
 - 右键单击候选框以切换输入源或打开任务栏菜单
+- 候选框上滚动以切换页面或候选词
 - 固定候选框使其不跟随光标以及设定固定位置
 - 候选框字体
 - 输入模式根据应用记忆并自动切换
@@ -97,6 +98,7 @@ sudo apt install gnome-shell-extension-customize-ibus
   - 仅在切换输入法时指示
   - 仅在英文输入时指示
   - 右击指示器来将其隐藏
+  - 指示器上滚动来切换输入源
   - 指示器显示动画
   - 自定义字体
   - 左击指示器以拖拽移动或者切换输入源
@@ -209,8 +211,9 @@ background-size: cover;
 - [x] V58: 增加图标，使得可以直接从设置面板打开文件；将设置备份文件扩展名从*.dconf 改为*.ini。
 - [x] V59: 增加固定输入法列表顺序的功能和启动官方自定义设置的按钮。
 - [x] V60: 为指示器增加自定义字体功能；增加显示或隐藏候选框调页按钮配置；优化背景显示功能。
+- [x] V61: 增加候选框上滚动以切换页面或候选词，指示器上滚动来切换输入源。
 
-在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60)中通过了测试。
+在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61)中通过了测试。
 
 ## 致谢
 
@@ -285,6 +288,7 @@ Support Customization of:
 - Candidate Box Orientation
 - Candidate Box Animation
 - Right-click Candidate Box to Switch the Input Mode or Open the Tray Menu
+- Scroll on Candidate Box to Switch among Pages or Candidates
 - Fix Candidate Box to Not Follow the Caret and Set Fixed Position
 - Candidate Box Font
 - Input Mode Remember and Auto-switch by APP
@@ -300,6 +304,7 @@ Support Customization of:
   - Only Indicate when Switching Input Mode
   - Only Indicate when Using ASCII Input Mode
   - Right-click Indicator to Hide
+  - Scroll on Indicator to Switch Input Mode
   - Indicator Animation
   - Customize Font
   - Left-click Indicator to Drag to Move Indicator or Switch Input Mode
@@ -412,8 +417,9 @@ When only one of the light background and dark background is turned on, the exte
 - [x] V58: Add icons for opening files directly from Prefs. Change _.dconf into _.ini for configurations files.
 - [x] V59: Add fix IME list order function and buttons to start official customization settings.
 - [x] V60: Add customize font for indicator. Add show or hide candidate box page buttons. Improve on showing background.
+- [x] V61: Add scroll on candidates box to switch among pages or candidates, scroll on indicator to switch input source.
 
-Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60).
+Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61).
 
 ## Acknowledgements
 

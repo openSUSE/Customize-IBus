@@ -92,6 +92,11 @@
         <range min="0" max="1"/>
         <summary>remember window input state</summary>
     </key>
+    <key type="u" name="candidate-scroll-mode">
+        <default>1</default>
+        <range min="0" max="1"/>
+        <summary>candidate scroll mode</summary>
+    </key>
     <key type="b" name="menu-ibus-emoji">
         <default>false</default>
         <summary>show copy ibus emoji in tray menu</summary>
@@ -124,6 +129,10 @@
         <default>true</default>
         <summary>use candidate box page buttons</summary>
     </key>
+    <key type="b" name="use-candidate-scroll">
+        <default>false</default>
+        <summary>use candidate box scroll</summary>
+    </key>
     <key type="b" name="use-input-indicator">
         <default>true</default>
         <summary>use input state indicator</summary>
@@ -135,6 +144,10 @@
     <key type="b" name="input-indicator-only-use-ascii">
         <default>false</default>
         <summary>use input indicator only when using ASCII mode</summary>
+    </key>
+    <key type="b" name="input-indicator-use-scroll">
+        <default>false</default>
+        <summary>use input indicator scroll to switch input source</summary>
     </key>
     <key type="u" name="input-indicator-animation">
         <default>3</default>

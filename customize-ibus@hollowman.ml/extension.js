@@ -76,6 +76,13 @@ const IBusInputSourceIndicater = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      inputindscroll: GObject.param_spec_boolean(
+        "inputindscroll",
+        "inputindscroll",
+        "inputindscroll",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
       inputindanim: GObject.param_spec_uint(
         "inputindanim",
         "inputindanim",
@@ -189,6 +196,12 @@ const IBusInputSourceIndicater = GObject.registerClass(
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
+        Fields.INPUTINDSCROLL,
+        this,
+        "inputindscroll",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
         Fields.INPUTINDANIM,
         this,
         "inputindanim",
@@ -246,6 +259,10 @@ const IBusInputSourceIndicater = GObject.registerClass(
       this.onlyASCII = inputindASCII;
     }
 
+    set inputindscroll(inputindscroll) {
+      this.use_scroll = inputindscroll;
+    }
+
     set inputindanim(inputindanim) {
       this.animation = INDICATORANI[inputindanim];
     }
@@ -297,8 +314,18 @@ const IBusInputSourceIndicater = GObject.registerClass(
       this._update_font();
     }
 
+    vfunc_scroll_event(scrollEvent) {
+      switch (scrollEvent.direction) {
+        case Clutter.ScrollDirection.UP:
+        case Clutter.ScrollDirection.DOWN:
+          IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+          break;
+      }
+      return Clutter.EVENT_PROPAGATE;
+    }
+
     _update_font() {
-      if (this.useCustomFont) {
+      if (this.useCustomFont && this.fontName) {
         let offset = 3; // the fonts-size difference between index and candidate
         let desc = Pango.FontDescription.from_string(this.fontName);
         let get_weight = () => {
@@ -725,6 +752,61 @@ const IBusFontSetting = GObject.registerClass(
         x._candidateLabel.set_style("");
         x._indexLabel.set_style("");
       });
+    }
+  }
+);
+
+const IBusScroll = GObject.registerClass(
+  {
+    Properties: {
+      scrollmode: GObject.param_spec_uint(
+        "scrollmode",
+        "scrollmode",
+        "scroll mode",
+        0,
+        1,
+        1,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusScroll extends GObject.Object {
+    _init() {
+      super._init();
+      gsettings.bind(
+        Fields.SCROLLMODE,
+        this,
+        "scrollmode",
+        Gio.SettingsBindFlags.GET
+      );
+    }
+
+    set scrollmode(scrollmode) {
+      if (scrollmode) this.destroy();
+      else this.scroll_page();
+    }
+
+    scroll_page() {
+      this._scrollID = CandidateArea.connect(
+        "scroll-event",
+        (actor, scrollEvent) => {
+          switch (scrollEvent.get_scroll_direction()) {
+            case Clutter.ScrollDirection.UP:
+              CandidateArea.emit("previous-page");
+              CandidateArea.emit("cursor-down");
+              break;
+            case Clutter.ScrollDirection.DOWN:
+              CandidateArea.emit("next-page");
+              CandidateArea.emit("cursor-up");
+              break;
+          }
+        }
+      );
+    }
+
+    destroy() {
+      if (this._scrollID)
+        CandidateArea.disconnect(this._scrollID), (this._scrollID = 0);
     }
   }
 );
@@ -1949,6 +2031,13 @@ const Extensions = GObject.registerClass(
         true,
         GObject.ParamFlags.WRITABLE
       ),
+      usescroll: GObject.param_spec_boolean(
+        "usescroll",
+        "usescroll",
+        "usescroll",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
     },
   },
   class Extensions extends GObject.Object {
@@ -2091,6 +2180,12 @@ const Extensions = GObject.registerClass(
         "usebuttons",
         Gio.SettingsBindFlags.GET
       );
+      gsettings.bind(
+        Fields.USESCROLL,
+        this,
+        "usescroll",
+        Gio.SettingsBindFlags.GET
+      );
     }
 
     set input(input) {
@@ -2209,6 +2304,17 @@ const Extensions = GObject.registerClass(
         if (!this._animation) return;
         this._animation.destroy();
         delete this._animation;
+      }
+    }
+
+    set usescroll(usescroll) {
+      if (usescroll) {
+        if (this._usescroll) return;
+        this._usescroll = new IBusScroll();
+      } else {
+        if (!this._usescroll) return;
+        this._usescroll.destroy();
+        delete this._usescroll;
       }
     }
 
@@ -2426,6 +2532,7 @@ const Extensions = GObject.registerClass(
       this.themenight = false;
       this.useinputind = false;
       this.animation = false;
+      this.usescroll = false;
       this.reposition = false;
       this.fiximelist = false;
       this.usetray = true;

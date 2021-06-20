@@ -38,7 +38,7 @@ const CustomizeIBus = GObject.registerClass(
   class CustomizeIBus extends Gtk.ScrolledWindow {
     _init() {
       super._init({
-        height_request: 550,
+        height_request: 600,
         hscrollbar_policy: Gtk.PolicyType.NEVER,
       });
 
@@ -63,6 +63,9 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._field_use_custom_bg_dark = this._checkMaker(
         _("Use custom dark background")
+      );
+      this._field_use_candidate_scroll = this._checkMaker(
+        _("Candidates scroll")
       );
       this._field_enable_ASCII = this._checkMaker(_("Auto switch ASCII mode"));
       this._field_enable_orien = this._checkMaker(_("Candidates orientation"));
@@ -122,6 +125,11 @@ const CustomizeIBus = GObject.registerClass(
       this._field_remember_input = this._comboMaker([
         _("Don't Remember State"),
         _("Remember Input State"),
+      ]);
+
+      this._field_candidate_scroll_mode = this._comboMaker([
+        _("Change Page"),
+        _("Change Candidate"),
       ]);
 
       this._field_unkown_state = this._comboMaker([
@@ -214,6 +222,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_only_toggle = new Gtk.Switch();
       this._field_indicator_only_in_ASCII = new Gtk.Switch();
       this._field_indicator_right_close = new Gtk.Switch();
+      this._field_indicator_scroll = new Gtk.Switch();
 
       let adjustment = this._createAdjustment(Fields.INPUTINDHID);
       this._field_indicator_enable_left_click = this._checkMaker(
@@ -392,6 +401,10 @@ const CustomizeIBus = GObject.registerClass(
         this._field_candidate_right_click
       );
       this._ibus_basic._add(
+        this._field_use_candidate_scroll,
+        this._field_candidate_scroll_mode
+      );
+      this._ibus_basic._add(
         this._field_use_candidate_still,
         this._field_candidate_remember_position,
         this._field_candidate_still_position
@@ -482,6 +495,10 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_right_close
       );
       this._ibus_indicator._add(
+        this._switchLabelMaker(_("Enable scroll to switch input source")),
+        this._field_indicator_scroll
+      );
+      this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicater popup animation")),
         this._field_indicator_animation
       );
@@ -563,6 +580,9 @@ const CustomizeIBus = GObject.registerClass(
           this._field_candidate_animation.set_sensitive(widget.active);
         }
       );
+      this._field_use_candidate_scroll.connect("notify::active", (widget) => {
+        this._field_candidate_scroll_mode.set_sensitive(widget.active);
+      });
       this._field_use_candidate_right_click.connect(
         "notify::active",
         (widget) => {
@@ -623,6 +643,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_only_toggle.set_sensitive(widget.active);
         this._field_indicator_only_in_ASCII.set_sensitive(widget.active);
         this._field_indicator_right_close.set_sensitive(widget.active);
+        this._field_indicator_scroll.set_sensitive(widget.active);
         this._field_indicator_animation.set_sensitive(widget.active);
         this._field_indicator_left_click.set_sensitive(
           this._field_indicator_enable_left_click.active && widget.active
@@ -663,6 +684,9 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._field_indicator_right_close.connect("notify::active", (widget) => {
         gsettings.set_boolean(Fields.INPUTINDRIGC, widget.active);
+      });
+      this._field_indicator_scroll.connect("notify::active", (widget) => {
+        gsettings.set_boolean(Fields.INPUTINDSCROLL, widget.active);
       });
       this._field_indicator_use_custom_font.connect(
         "notify::active",
@@ -834,6 +858,9 @@ const CustomizeIBus = GObject.registerClass(
       this._field_candidate_animation.set_sensitive(
         this._field_use_candidate_animation.active
       );
+      this._field_candidate_scroll_mode.set_sensitive(
+        this._field_use_candidate_scroll.active
+      );
       this._field_candidate_right_click.set_sensitive(
         this._field_use_candidate_right_click.active
       );
@@ -863,6 +890,9 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_indicator.active
       );
       this._field_indicator_right_close.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_scroll.set_sensitive(
         this._field_use_indicator.active
       );
       this._field_indicator_animation.set_sensitive(
@@ -958,6 +988,18 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.CANDANIMATION,
         this._field_candidate_animation,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.USESCROLL,
+        this._field_use_candidate_scroll,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.SCROLLMODE,
+        this._field_candidate_scroll_mode,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1178,6 +1220,12 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.INPUTINDRIGC,
         this._field_indicator_right_close,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDSCROLL,
+        this._field_indicator_scroll,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1560,7 +1608,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons."
+            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, scroll to switch among pages or candidates, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons."
           ),
         }),
         0,
@@ -1699,7 +1747,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, popup animation, font, mouse left click to switch input source or drag to move indicator, enable autohide and auto hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, enable autohide and auto hide timeout (in seconds)."
           ),
         }),
         0,

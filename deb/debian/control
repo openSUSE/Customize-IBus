@@ -3,7 +3,7 @@ Section: system
 Priority: optional
 Maintainer: Hollow Man <hollowman@hollowman.ml>
 Build-Depends: debhelper
-Standards-Version: 60
+Standards-Version: 61
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
 
 Package: gnome-shell-extension-customize-ibus

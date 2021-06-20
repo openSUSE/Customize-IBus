@@ -1,3 +1,10 @@
+gnome-shell-extension-customize-ibus (61) mx; urgency=medium
+
+  * v61: Add scroll on candidates box to switch among pages or candidates.
+  Add scroll on indicator to switch input source.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Sun, 20 Jun 2021 18:43:54 +0800
+
 gnome-shell-extension-customize-ibus (60) mx; urgency=medium
 
   * v60: Add customize font for indicator.
