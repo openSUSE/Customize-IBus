@@ -68,7 +68,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 常规
 
-![](https://img-blog.csdnimg.cn/20210619004824511.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210620212624833.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置 IBus 输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
@@ -78,6 +78,8 @@ sudo apt install gnome-shell-extension-customize-ibus
 ![](https://img-blog.csdnimg.cn/20210508195804482.gif)
 
 点击`候选框右击`左侧的复选框来进行选中，即可支持在使用 IBus 输入法时右键点击候选框进行相关操作。点击右侧进行选择，支持设定为打开菜单或者切换输入源。
+
+点击`候选框滚动`左侧的复选框来进行选中，即可支持在使用 IBus 输入法时在候选框上滚动鼠标进行相关的操作。点击右侧进行选择，支持设定为切换当前候选词或者页面。
 
 点击`固定候选框`左侧的复选框来进行选中，即可支持固定候选框。点击右侧进行选择。支持设定 9 种方位，推荐同时启用`拖拽移动候选框`从而可以随时移动候选框位置。当选择`记住最后位置`时，可以永远记住你上次拖拽的位置，并且在下次登陆时恢复。
 
@@ -117,9 +119,9 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 指示
 
-![](https://img-blog.csdnimg.cn/20210619005028200.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210620212932190.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`，`启用右击关闭指示器`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。还支持设定指示器字体。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。你还可以`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 0.1。
+这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`，`启用右击关闭指示器`，`启用滚动切换输入源`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。还支持设定指示器字体。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。你还可以`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 0.1。
 
 示例动画：
 ![](https://img-blog.csdnimg.cn/20210507111902567.gif)
@@ -330,10 +332,10 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 关于
 在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/20210619005340931.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210620213153945.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
-![](https://img-blog.csdnimg.cn/20210619005246124.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210620213248291.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -341,19 +343,26 @@ sudo apt install gnome-shell-extension-customize-ibus
 示例设置导出文件内容：
 ```ini
 [/]
-candidate-box-position={'x': uint32 371, 'y': 326}
+candidate-box-position={'x': uint32 583, 'y': 338}
+candidate-orientation=uint32 1
+candidate-scroll-mode=uint32 0
 custom-bg='/home/hollowman/图片/light.jpg'
 custom-bg-dark='/home/hollowman/图片/dark.jpg'
+custom-bg-mode=uint32 2
+custom-bg-repeat-mode=uint32 1
 custom-theme='/home/hollowman/stylesheet-light.css'
 custom-theme-dark='/home/hollowman/stylesheet-dark.css'
 enable-custom-theme=true
 enable-custom-theme-dark=true
 enable-orientation=true
 fix-ime-list=true
-ibus-restart-time='1622033006489'
-indicator-left-click-func=uint32 1
+ibus-restart-time='1624175579630'
+indicator-custom-font='文泉驿点阵正黑 Medium 16'
+indicator-left-click-func=uint32 0
+input-indicator-hide-time=uint32 1
 input-indicator-right-close=true
-input-mode-list={'undefined': false, '': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false}
+input-indicator-use-scroll=true
+input-mode-list={'undefined': false, '': false, 'qv2ray': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false}
 input-mode-remember=uint32 0
 menu-ibus-emoji=true
 menu-ibus-exit=true
@@ -361,12 +370,18 @@ menu-ibus-preference=true
 menu-ibus-restart=true
 menu-ibus-version=true
 use-candidate-box-right-click=true
+use-candidate-buttons=false
 use-candidate-reposition=true
+use-candidate-scroll=true
+use-candidate-still=false
 use-custom-bg=true
 use-custom-bg-dark=true
 use-custom-font=true
+use-indicator-auto-hide=true
+use-indicator-custom-font=true
 use-indicator-left-click=true
 use-indicator-reposition=true
+use-input-indicator=true
 use-popup-animation=true
 use-tray-click-source-switch=true
 ```
