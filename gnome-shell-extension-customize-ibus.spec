@@ -1,4 +1,4 @@
-%global commit b6e507b70c62afa54c9306c6b99e040237cfbfd4
+%global commit 29bd3df4a4b7e0a3a8af37954d881e76518d28fd
 %global extension_version 61
 %global date 20210620
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sun Jun 20 2021 Hollow Man <hollowman@hollowman.ml> - 20210620gitb6e507b
+* Sun Jun 20 2021 Hollow Man <hollowman@hollowman.ml> - 20210620git29bd3df
 - Add scroll on candidates box to switch among pages or candidates.
 - Add scroll on indicator to switch input source.
 
