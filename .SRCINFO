@@ -1,6 +1,6 @@
 pkgbase = gnome-shell-extension-customize-ibus
 	pkgdesc = Full customization of appearance, behavior, system tray and input source indicator for IBus.
-	pkgver = 61
+	pkgver = 62
 	pkgrel = 1
 	epoch = 0
 	url = https://extensions.gnome.org/extension/4112/customize-ibus/

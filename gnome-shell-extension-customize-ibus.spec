@@ -1,6 +1,6 @@
 %global commit 29bd3df4a4b7e0a3a8af37954d881e76518d28fd
-%global extension_version 61
-%global date 20210620
+%global extension_version 62
+%global date 20210626
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
@@ -45,6 +45,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git29bd3df
+- Fix settings sync problem with ibus-setup (preference).
+
 * Sun Jun 20 2021 Hollow Man <hollowman@hollowman.ml> - 20210620git29bd3df
 - Add scroll on candidates box to switch among pages or candidates.
 - Add scroll on indicator to switch input source.

@@ -33,6 +33,9 @@ const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
+const IBusSettings = new Gio.Settings({
+  schema_id: "org.freedesktop.ibus.panel",
+});
 
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
@@ -718,9 +721,17 @@ const IBusFontSetting = GObject.registerClass(
         "fontname",
         Gio.SettingsBindFlags.GET
       );
+      this._fontChangeID = IBusSettings.connect(
+        `changed::${Fields.CUSTOMFONT}`,
+        () => {
+          let value = IBusSettings.get_string(Fields.CUSTOMFONT);
+          gsettings.set_string(Fields.CUSTOMFONT, value);
+        }
+      );
     }
 
     set fontname(fontname) {
+      IBusSettings.set_string(Fields.CUSTOMFONT, fontname);
       let offset = 3; // the fonts-size difference between index and candidate
       let desc = Pango.FontDescription.from_string(fontname);
       let get_weight = () => {
@@ -752,6 +763,8 @@ const IBusFontSetting = GObject.registerClass(
         x._candidateLabel.set_style("");
         x._indexLabel.set_style("");
       });
+      if (this._fontChangeID)
+        IBusSettings.disconnect(this._fontChangeID), (this._fontChangeID = 0);
     }
   }
 );
@@ -1039,9 +1052,8 @@ const IBusOrientation = GObject.registerClass(
   class IBusOrientation extends GObject.Object {
     _init() {
       super._init();
-      this._originalSetOrientation = CandidateArea.setOrientation.bind(
-        CandidateArea
-      );
+      this._originalSetOrientation =
+        CandidateArea.setOrientation.bind(CandidateArea);
       CandidateArea.setOrientation = () => {};
       gsettings.bind(
         Fields.ORIENTATION,
@@ -1049,16 +1061,26 @@ const IBusOrientation = GObject.registerClass(
         "orientation",
         Gio.SettingsBindFlags.GET
       );
+      this._orienChangeID = IBusSettings.connect(
+        `changed::lookup-table-orientation`,
+        () => {
+          let value = IBusSettings.get_int("lookup-table-orientation");
+          gsettings.set_uint(Fields.ORIENTATION, 1 - value);
+        }
+      );
     }
 
     set orientation(orientation) {
       this._originalSetOrientation(
         orientation ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL
       );
+      IBusSettings.set_int("lookup-table-orientation", 1 - orientation);
     }
 
     destroy() {
       CandidateArea.setOrientation = this._originalSetOrientation;
+      if (this._orienChangeID)
+        IBusSettings.disconnect(this._orienChangeID), (this._orienChangeID = 0);
     }
   }
 );
@@ -1181,7 +1203,8 @@ const IBusNotFollowCaret = GObject.registerClass(
 
     destroy() {
       if (this._setDummyCursorGeometryOrig)
-        CandidatePopup._setDummyCursorGeometry = this._setDummyCursorGeometryOrig;
+        CandidatePopup._setDummyCursorGeometry =
+          this._setDummyCursorGeometryOrig;
     }
   }
 );
@@ -1364,7 +1387,8 @@ const IBusReposition = GObject.registerClass(
         let gap = themeNode.get_length("-boxpointer-gap");
         let [, , , natHeight] = CandidatePopup.get_preferred_size();
         let sourceTopLeft = CandidatePopup._sourceExtents.get_top_left();
-        let sourceBottomRight = CandidatePopup._sourceExtents.get_bottom_right();
+        let sourceBottomRight =
+          CandidatePopup._sourceExtents.get_bottom_right();
         switch (CandidatePopup._arrowSide) {
           case St.Side.TOP:
             CandidatePopup._relativePosY +=
@@ -2186,6 +2210,20 @@ const Extensions = GObject.registerClass(
         "usescroll",
         Gio.SettingsBindFlags.GET
       );
+      this._useFontChangeID = IBusSettings.connect(
+        `changed::${Fields.USECUSTOMFONT}`,
+        () => {
+          let value = IBusSettings.get_boolean(Fields.USECUSTOMFONT);
+          gsettings.set_boolean(Fields.USECUSTOMFONT, value);
+        }
+      );
+      this._useTrayChangeID = IBusSettings.connect(
+        `changed::show-icon-on-systray`,
+        () => {
+          let value = IBusSettings.get_boolean("show-icon-on-systray");
+          gsettings.set_boolean(Fields.USETRAY, value);
+        }
+      );
     }
 
     set input(input) {
@@ -2547,6 +2585,12 @@ const Extensions = GObject.registerClass(
       this.menuibusrest = false;
       this.menuibusexit = false;
       this._not_extension_first_start = false;
+      if (this._useFontChangeID)
+        IBusSettings.disconnect(this._useFontChangeID),
+          (this._useFontChangeID = 0);
+      if (this._useTrayChangeID)
+        IBusSettings.disconnect(this._useTrayChangeID),
+          (this._useTrayChangeID = 0);
     }
   }
 );

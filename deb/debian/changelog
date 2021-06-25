@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (62) mx; urgency=medium
+
+  * v62: Fix settings sync problem with ibus-setup (preference).
+
+ -- Hollow Man <hollowman@hollowman.ml>  Sat, 26 Jun 2021 00:39:24 +0800
+
 gnome-shell-extension-customize-ibus (61) mx; urgency=medium
 
   * v61: Add scroll on candidates box to switch among pages or candidates.

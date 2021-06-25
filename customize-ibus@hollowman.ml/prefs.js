@@ -14,6 +14,9 @@ const gsettings = ExtensionUtils.getSettings();
 const Fields = Me.imports.fields.Fields;
 const Config = imports.misc.config;
 const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
+const IBusSettings = new Gio.Settings({
+  schema_id: "org.freedesktop.ibus.panel",
+});
 const SCHEMA_PATH = "/org/gnome/shell/extensions/customize-ibus/";
 
 function buildPrefsWidget() {
@@ -610,34 +613,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_ibus_version.set_sensitive(widget.active);
         this._field_ibus_restart.set_sensitive(widget.active);
         this._field_ibus_exit.set_sensitive(widget.active);
-        gsettings.set_boolean(Fields.USETRAY, widget.active);
-      });
-      this._field_ibus_emoji.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.MENUIBUSEMOJI, widget.active);
-      });
-      this._field_candidate_reposition.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.USEREPOSITION, widget.active);
-      });
-      this._field_candidate_buttons.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.USEBUTTONS, widget.active);
-      });
-      this._field_fix_ime_list.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.FIXIMELIST, widget.active);
-      });
-      this._field_extension_entry.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.MENUEXTPREF, widget.active);
-      });
-      this._field_ibus_preference.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.MENUIBUSPREF, widget.active);
-      });
-      this._field_ibus_version.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.MENUIBUSVER, widget.active);
-      });
-      this._field_ibus_restart.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.MENUIBUSREST, widget.active);
-      });
-      this._field_ibus_exit.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.MENUIBUSEXIT, widget.active);
+        IBusSettings.set_boolean("show-icon-on-systray", widget.active);
       });
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
@@ -657,73 +633,54 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_use_custom_font.set_sensitive(widget.active);
         this._field_indicator_enable_left_click.set_sensitive(widget.active);
         this._field_indicator_enable_autohide.set_sensitive(widget.active);
-        gsettings.set_boolean(Fields.USEINPUTIND, widget.active);
       });
-      this._field_indicator_only_toggle.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.INPUTINDTOG, widget.active);
-      });
-      this._field_indicator_only_in_ASCII.connect(
-        "notify::active",
-        (widget) => {
-          gsettings.set_boolean(Fields.INPUTINDASCII, widget.active);
-        }
-      );
       this._field_indicator_enable_left_click.connect(
         "notify::active",
         (widget) => {
           this._field_indicator_left_click.set_sensitive(widget.active);
-          gsettings.set_boolean(Fields.USEINPUTINDLCLK, widget.active);
         }
       );
       this._field_indicator_enable_autohide.connect(
         "notify::active",
         (widget) => {
           this._field_indicator_hide_time.set_sensitive(widget.active);
-          gsettings.set_boolean(Fields.USEINDAUTOHID, widget.active);
         }
       );
-      this._field_indicator_right_close.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.INPUTINDRIGC, widget.active);
-      });
-      this._field_indicator_scroll.connect("notify::active", (widget) => {
-        gsettings.set_boolean(Fields.INPUTINDSCROLL, widget.active);
-      });
       this._field_indicator_use_custom_font.connect(
         "notify::active",
         (widget) => {
           this._field_indicator_custom_font.set_sensitive(widget.active);
-          gsettings.set_boolean(Fields.INPUTINDUSEF, widget.active);
         }
       );
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
-        gsettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
+        IBusSettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
+        IBusSettings.set_string(
+          Fields.CUSTOMFONT,
+          gsettings.get_string(Fields.CUSTOMFONT)
+        );
       });
       this._field_use_custom_bg.connect("notify::active", (widget) => {
         this._logoPicker.set_sensitive(widget.active);
         this._field_bg_mode.set_sensitive(widget.active);
         this._field_bg_repeat_mode.set_sensitive(widget.active);
         this._open_logo_button.set_sensitive(widget.active);
-        gsettings.set_boolean(Fields.USECUSTOMBG, widget.active);
       });
       this._field_use_custom_bg_dark.connect("notify::active", (widget) => {
         this._logoDarkPicker.set_sensitive(widget.active);
         this._field_bg_dark_mode.set_sensitive(widget.active);
         this._field_bg_dark_repeat_mode.set_sensitive(widget.active);
         this._open_logoDark_button.set_sensitive(widget.active);
-        gsettings.set_boolean(Fields.USECUSTOMBGDARK, widget.active);
       });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
         this._cssPicker.set_sensitive(widget.active);
         this._open_css_button.set_sensitive(widget.active);
-        gsettings.set_boolean(Fields.ENABLECUSTOMTHEME, widget.active);
       });
       this._field_enable_custom_theme_dark.connect(
         "notify::active",
         (widget) => {
           this._cssDarkPicker.set_sensitive(widget.active);
           this._open_cssDark_button.set_sensitive(widget.active);
-          gsettings.set_boolean(Fields.ENABLECUSTOMTHEMENIGHT, widget.active);
         }
       );
       this._fileChooser.connect("response", (dlg, response) => {
@@ -1066,14 +1023,16 @@ const CustomizeIBus = GObject.registerClass(
       if (ShellVersion < 40)
         this._field_custom_font.connect("font-set", (widget) => {
           gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
+          IBusSettings.set_string(Fields.CUSTOMFONT, widget.font_name);
         });
-      else
+      else {
         gsettings.bind(
           Fields.CUSTOMFONT,
           this._field_custom_font,
           "font",
           Gio.SettingsBindFlags.DEFAULT
         );
+      }
       gsettings.bind(
         Fields.INPUTINDUSEF,
         this._field_indicator_use_custom_font,
