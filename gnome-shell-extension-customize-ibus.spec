@@ -1,4 +1,4 @@
-%global commit 29bd3df4a4b7e0a3a8af37954d881e76518d28fd
+%global commit cf49f00fd95527d5f827ea8e69ddb1eec0f7bf7e
 %global extension_version 62
 %global date 20210626
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git29bd3df
+* Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626gitcf49f00
 - Fix settings sync problem with ibus-setup (preference).
 
 * Sun Jun 20 2021 Hollow Man <hollowman@hollowman.ml> - 20210620git29bd3df
