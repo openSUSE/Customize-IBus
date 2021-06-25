@@ -1021,10 +1021,12 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       if (ShellVersion < 40)
-        this._field_custom_font.connect("font-set", (widget) => {
-          gsettings.set_string(Fields.CUSTOMFONT, widget.font_name);
-          IBusSettings.set_string(Fields.CUSTOMFONT, widget.font_name);
-        });
+        gsettings.bind(
+          Fields.CUSTOMFONT,
+          this._field_custom_font,
+          "font_name",
+          Gio.SettingsBindFlags.DEFAULT
+        );
       else {
         gsettings.bind(
           Fields.CUSTOMFONT,
