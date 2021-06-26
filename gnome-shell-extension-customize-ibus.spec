@@ -1,5 +1,5 @@
 %global commit 75a6f7be0fecd86c8430f3876d4497e2e77a2649
-%global extension_version 62
+%global extension_version 63
 %global date 20210626
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/HollowMan6/Customize-IBus
@@ -13,10 +13,10 @@ Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0+
 URL:            %{forgeurl}
 Source0:        %{forgeurl}/archive/%{commit}/Customize-IBus-%{commit}.tar.gz
-BuildArch:	noarch
+BuildArch:      noarch
 
-BuildRequires:	gettext
-BuildRequires:	glib2-devel
+BuildRequires:  gettext
+BuildRequires:  glib2-devel
 BuildRequires:  make
 
 Requires:       gnome-shell
@@ -45,6 +45,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git75a6f7b
+- Fix to avoid tainting the GNOME Shell environment.
+
 * Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git75a6f7b
 - Fix settings sync problem with ibus-setup (preference).
 

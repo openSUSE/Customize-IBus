@@ -33,9 +33,6 @@ const gsettings = ExtensionUtils.getSettings();
 const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
-const IBusSettings = new Gio.Settings({
-  schema_id: "org.freedesktop.ibus.panel",
-});
 
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
@@ -58,9 +55,9 @@ const System = {
 const { loadInterfaceXML } = imports.misc.fileUtils;
 const ColorInterface = loadInterfaceXML(System.BUS_NAME);
 const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
-const ngsettings = new Gio.Settings({
-  schema: "org.gnome.settings-daemon.plugins.color",
-});
+
+var IBusSettings = null;
+var ngsettings = null;
 
 const IBusInputSourceIndicater = GObject.registerClass(
   {
@@ -2601,12 +2598,20 @@ const Extension = class Extension {
   }
 
   enable() {
+    IBusSettings = new Gio.Settings({
+      schema_id: "org.freedesktop.ibus.panel",
+    });
+    ngsettings = new Gio.Settings({
+      schema: "org.gnome.settings-daemon.plugins.color",
+    });
     this._ext = new Extensions();
   }
 
   disable() {
     this._ext.destroy();
     delete this._ext;
+    IBusSettings = null;
+    ngsettings = null;
   }
 };
 

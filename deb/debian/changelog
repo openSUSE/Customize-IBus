@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (63) mx; urgency=medium
+
+  * v63: Fix to avoid tainting the GNOME Shell environment.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Sat, 26 Jun 2021 13:42:15 +0800
+
 gnome-shell-extension-customize-ibus (62) mx; urgency=medium
 
   * v62: Fix settings sync problem with ibus-setup (preference).

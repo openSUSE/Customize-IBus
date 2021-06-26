@@ -14,9 +14,6 @@ const gsettings = ExtensionUtils.getSettings();
 const Fields = Me.imports.fields.Fields;
 const Config = imports.misc.config;
 const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
-const IBusSettings = new Gio.Settings({
-  schema_id: "org.freedesktop.ibus.panel",
-});
 const SCHEMA_PATH = "/org/gnome/shell/extensions/customize-ibus/";
 
 function buildPrefsWidget() {
@@ -54,6 +51,10 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _bulidWidget() {
+      this.ibus_settings = new Gio.Settings({
+        schema_id: "org.freedesktop.ibus.panel",
+      });
+
       this._field_enable_custom_theme = this._checkMaker(
         _("Custom IME light theme")
       );
@@ -613,7 +614,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_ibus_version.set_sensitive(widget.active);
         this._field_ibus_restart.set_sensitive(widget.active);
         this._field_ibus_exit.set_sensitive(widget.active);
-        IBusSettings.set_boolean("show-icon-on-systray", widget.active);
+        this.ibus_settings.set_boolean("show-icon-on-systray", widget.active);
       });
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
@@ -654,8 +655,8 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
-        IBusSettings.set_boolean(Fields.USECUSTOMFONT, widget.active);
-        IBusSettings.set_string(
+        this.ibus_settings.set_boolean(Fields.USECUSTOMFONT, widget.active);
+        this.ibus_settings.set_string(
           Fields.CUSTOMFONT,
           gsettings.get_string(Fields.CUSTOMFONT)
         );
@@ -1042,9 +1043,12 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       if (ShellVersion < 40)
-        this._field_indicator_custom_font.connect("font-set", (widget) => {
-          gsettings.set_string(Fields.INPUTINDCUSTOMFONT, widget.font_name);
-        });
+        gsettings.bind(
+          Fields.INPUTINDCUSTOMFONT,
+          this._field_indicator_custom_font,
+          "font_name",
+          Gio.SettingsBindFlags.DEFAULT
+        );
       else
         gsettings.bind(
           Fields.INPUTINDCUSTOMFONT,
