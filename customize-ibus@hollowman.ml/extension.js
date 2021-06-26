@@ -315,12 +315,13 @@ const IBusInputSourceIndicater = GObject.registerClass(
     }
 
     vfunc_scroll_event(scrollEvent) {
-      switch (scrollEvent.direction) {
-        case Clutter.ScrollDirection.UP:
-        case Clutter.ScrollDirection.DOWN:
-          IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-          break;
-      }
+      if(this.use_scroll)
+        switch (scrollEvent.direction) {
+          case Clutter.ScrollDirection.UP:
+          case Clutter.ScrollDirection.DOWN:
+            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+            break;
+        }
       return Clutter.EVENT_PROPAGATE;
     }
 

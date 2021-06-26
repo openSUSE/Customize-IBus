@@ -230,10 +230,10 @@ const CustomizeIBus = GObject.registerClass(
 
       let adjustment = this._createAdjustment(Fields.INPUTINDHID);
       this._field_indicator_enable_left_click = this._checkMaker(
-        _("Enable indicater left click")
+        _("Enable indicator left click")
       );
       this._field_indicator_enable_autohide = this._checkMaker(
-        _("Enable indicater auto hide timeout (unit: seconds)")
+        _("Enable indicator auto-hide timeout (unit: seconds)")
       );
       this._field_indicator_hide_time = new Gtk.Scale({
         adjustment,
@@ -503,7 +503,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_scroll
       );
       this._ibus_indicator._add(
-        this._switchLabelMaker(_("Indicater popup animation")),
+        this._switchLabelMaker(_("indicator popup animation")),
         this._field_indicator_animation
       );
       this._ibus_indicator._add(
@@ -1712,7 +1712,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator everytime you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, enable autohide and auto hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, enable auto-hide and auto-hide timeout (in seconds)."
           ),
         }),
         0,
@@ -1768,7 +1768,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "When light theme and dark theme are turned on at the same time, the IBus theme will automatically follow GNOME Night Light mode, use light theme when off, and use dark theme when on. When only one of the light theme and dark theme is turned on, the IBus theme will always use the theme that is turned on."
+            "When light theme and dark theme are turned on at the same time, the IBus theme will automatically follow GNOME Night Light mode, use light theme when off, and use dark theme when on. When only the light theme or dark theme is turned on, the IBus theme will always use the theme that is turned on."
           ),
         }),
         0,
@@ -1837,7 +1837,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Support customizing your IBus Input window background with a picture. It has a higher priority than theme defined background."
+            "Support customizing your IBus Input window background with a picture. It has a higher priority than the theme-defined background."
           ),
         }),
         0,
@@ -1850,7 +1850,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "When light background and dark background are turned on at the same time, the IBus background will automatically follow GNOME Night Light mode, use light background when off, and use dark background when on. When only one of the light background and dark background is turned on, the IBus background will always use the background that is turned on."
+            "When light background and dark background are turned on at the same time, the IBus background will automatically follow GNOME Night Light mode, use light background when off, and use dark background when on. When only the light background or dark background is turned on, the IBus background will always use the background that is turned on."
           ),
         }),
         0,
