@@ -1,4 +1,4 @@
-%global commit 75a6f7be0fecd86c8430f3876d4497e2e77a2649
+%global commit 7a4bd1ed37a96ba0e5df7a437b39c058a3119f58
 %global extension_version 63
 %global date 20210626
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git75a6f7b
+* Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git7a4bd1e
 - Fix to avoid tainting the GNOME Shell environment.
 
 * Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git75a6f7b
