@@ -1,4 +1,4 @@
-%global commit 7a4bd1ed37a96ba0e5df7a437b39c058a3119f58
+%global commit de29e48a8dda1fb5d7427a218c8c09513d2f32f1
 %global extension_version 64
 %global date 20210628
 %global uuid customize-ibus@hollowman.ml
@@ -45,7 +45,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Mon Jun 28 2021 Hollow Man <hollowman@hollowman.ml> - 20210628git7a4bd1e
+* Mon Jun 28 2021 Hollow Man <hollowman@hollowman.ml> - 20210628gitde29e48
 - Fix typos and indicator scroll settings control.
 
 * Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git7a4bd1e
