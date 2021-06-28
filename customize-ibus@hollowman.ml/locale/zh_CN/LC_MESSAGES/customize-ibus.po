@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: customize-ibus 63\n"
+"Project-Id-Version: customize-ibus 64\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-06-26 13:56+0800\n"
+"POT-Creation-Date: 2021-06-28 21:31+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:531
+#: extension.js:532
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服务连接成功！"
 
-#: extension.js:1011
+#: extension.js:1012
 msgid "loading background for IBus:"
 msgstr "正在为 IBus 加载背景:"
 
-#: extension.js:1021
+#: extension.js:1022
 msgid "remove custom background for IBus"
 msgstr "为 IBus 去除自定义背景"
 
@@ -539,11 +539,11 @@ msgstr ""
 #: prefs.js:1715
 msgid ""
 "Here you can set to show input source indicator, default is to show "
-"indicator every time you type, move caret or switch input source. You can set "
-"to show indicator only when switching input source. You can also set to only "
-"notify in ASCII mode, mouse right click to close indicator, scroll to switch "
-"input source, popup animation, font, mouse left click to switch input source "
-"or drag to move indicator, enable auto-hide and auto-hide timeout (in "
+"indicator every time you type, move caret or switch input source. You can "
+"set to show indicator only when switching input source. You can also set to "
+"only notify in ASCII mode, mouse right click to close indicator, scroll to "
+"switch input source, popup animation, font, mouse left click to switch input "
+"source or drag to move indicator, enable auto-hide and auto-hide timeout (in "
 "seconds)."
 msgstr ""
 "这里你可以选择开启输入源指示器，默认是当你打字、移动文字光标或者切换输入源时"
@@ -565,9 +565,8 @@ msgstr ""
 msgid ""
 "When light theme and dark theme are turned on at the same time, the IBus "
 "theme will automatically follow GNOME Night Light mode, use light theme when "
-"off, and use dark theme when on. When only the light theme or dark "
-"theme is turned on, the IBus theme will always use the theme that is turned "
-"on."
+"off, and use dark theme when on. When only the light theme or dark theme is "
+"turned on, the IBus theme will always use the theme that is turned on."
 msgstr ""
 "当浅色主题和深色主题同时开启时，IBus 主题将会自动跟随 GNOME 夜灯模式，关闭时"
 "使用浅色主题，开启时使用深色主题。当浅色主题和深色主题只有一个被开启时，扩展"
@@ -601,9 +600,9 @@ msgstr "支持使用图片来自定义 IBus 候选框背景，其具有比主题
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
-"light background when off, and use dark background when on. When only "
-"the light background or dark background is turned on, the IBus background "
-"will always use the background that is turned on."
+"light background when off, and use dark background when on. When only the "
+"light background or dark background is turned on, the IBus background will "
+"always use the background that is turned on."
 msgstr ""
 "当浅色背景和深色背景同时开启时，IBus 背景将会自动跟随 GNOME 夜灯模式，关闭时"
 "使用浅色背景，开启时使用深色背景。当浅色背景和深色背景只有一个被开启时，扩展"

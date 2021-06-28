@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (64) mx; urgency=medium
+
+  * v64: Fix typos and indicator scroll settings control.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Mon, 28 Jun 2021 21:22:52 +0800
+
 gnome-shell-extension-customize-ibus (63) mx; urgency=medium
 
   * v63: Fix to avoid tainting the GNOME Shell environment.
