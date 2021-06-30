@@ -44,7 +44,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "ssh://git@github.com:HollowMan6/Customize-IBus.git"
+    "url": "ssh://git@github.com:openSUSE/Customize-IBus.git"
   },
   "keywords": [
     "ibus",
@@ -53,7 +53,7 @@
   "author": "Hollow Man",
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/HollowMan6/Customize-IBus/issues"
+    "url": "https://github.com/openSUSE/Customize-IBus/issues"
   },
-  "homepage": "https://github.com/HollowMan6/Customize-IBus#readme"
+  "homepage": "https://github.com/openSUSE/Customize-IBus#readme"
 }

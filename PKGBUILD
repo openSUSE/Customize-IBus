@@ -12,7 +12,7 @@ arch=('any')
 url="https://extensions.gnome.org/extension/4112/customize-ibus/"
 license=('GPL-3.0+')
 makedepends=('gettext' 'glib2' 'make')
-source=("https://github.com/HollowMan6/Customize-IBus/archive/${_commit}/${_pkgname}-${_commit}.tar.gz")
+source=("https://github.com/openSUSE/Customize-IBus/archive/${_commit}/${_pkgname}-${_commit}.tar.gz")
 sha512sums=('SKIP')
 package() {
   _uuid='customize-ibus@hollowman.ml'

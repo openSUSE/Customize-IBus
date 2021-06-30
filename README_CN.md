@@ -1,19 +1,13 @@
 # 自定义 IBus
 
-[![last-commit](https://img.shields.io/github/last-commit/HollowMan6/Customize-IBus)](https://github.com/HollowMan6/Customize-IBus/graphs/commit-activity)
-[![release-date](https://img.shields.io/github/release-date/HollowMan6/Customize-IBus)](../../releases)
+[![last-commit](https://img.shields.io/github/last-commit/openSUSE/Customize-IBus)](https://github.com/openSUSE/Customize-IBus/graphs/commit-activity)
+[![release-date](https://img.shields.io/github/release-date/openSUSE/Customize-IBus)](../../releases)
 
-[![Followers](https://img.shields.io/github/followers/HollowMan6?style=social)](https://github.com/HollowMan6?tab=followers)
-[![watchers](https://img.shields.io/github/watchers/HollowMan6/Customize-IBus?style=social)](https://github.com/HollowMan6/Customize-IBus/watchers)
-[![stars](https://img.shields.io/github/stars/HollowMan6/Customize-IBus?style=social)](https://github.com/HollowMan6/Customize-IBus/stargazers)
-[![forks](https://img.shields.io/github/forks/HollowMan6/Customize-IBus?style=social)](https://github.com/HollowMan6/Customize-IBus/network/members)
-
-[![Open Source Love](https://img.shields.io/badge/-%E2%9D%A4%20Open%20Source-Green?style=flat-square&logo=Github&logoColor=white&link=https://hollowman6.github.io/fund.html)](https://hollowman6.github.io/fund.html)
 [![GPL Licence](https://img.shields.io/badge/license-GPL-blue)](https://opensource.org/licenses/GPL-3.0/)
-[![Repo-Size](https://img.shields.io/github/repo-size/HollowMan6/Customize-IBus.svg)](https://github.com/HollowMan6/Customize-IBus/archive/main.zip)
+[![Repo-Size](https://img.shields.io/github/repo-size/openSUSE/Customize-IBus.svg)](https://github.com/openSUSE/Customize-IBus/archive/main.zip)
 
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/HollowMan6/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/HollowMan6/Customize-IBus/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/HollowMan6/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/HollowMan6/Customize-IBus/context:javascript)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/context:javascript)
 
 [English](README.md)
 
@@ -32,7 +26,7 @@
 或者手动自行安装：
 
 ```bash
-git clone https://github.com/HollowMan6/Customize-IBus.git
+git clone https://github.com/openSUSE/Customize-IBus.git
 cd Customize-IBus && make install
 ```
 
@@ -47,7 +41,7 @@ yay -S gnome-shell-extension-customize-ibus
 [Fedora](../../tree/package-repo#fedora)也可使用 RPM Repository 安装为系统插件:
 
 ```bash
-wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+wget https://github.com/openSUSE/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
 sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 sudo dnf update
 sudo dnf install gnome-shell-extension-customize-ibus
@@ -56,7 +50,7 @@ sudo dnf install gnome-shell-extension-customize-ibus
 [OpenSUSE](../../tree/package-repo#opensuse)也可使用 RPM Repository 安装为系统插件:
 
 ```bash
-wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+wget https://github.com/openSUSE/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
 sudo mv customize-ibus-rpm.repo /etc/zypp/repos.d/
 sudo zypper refresh
 sudo zypper install gnome-shell-extension-customize-ibus
@@ -135,9 +129,9 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 使用用户主题来更改 IBus 皮肤的实现
 
-该功能已经被拆分，生成 IBus 皮肤样式表功能迁移到了[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
+该功能已经被拆分，生成 IBus 皮肤样式表功能迁移到了[IBus-Theme](https://github.com/openSUSE/IBus-Theme)。
 
-目前该扩展支持导入该工具生成的样式表。另外还支持[IBus-Theme-Hub](https://github.com/HollowMan6/IBus-Theme-Hub)中提供的 IBus 主题样式表文件。
+目前该扩展支持导入该工具生成的样式表。另外还支持[IBus-Theme-Hub](https://github.com/openSUSE/IBus-Theme-Hub)中提供的 IBus 主题样式表文件。
 
 当浅色主题和深色主题同时开启时，扩展将会自动跟随 GNOME 夜灯模式，关闭时使用浅色主题，开启时使用深色主题。
 
@@ -147,11 +141,11 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 #### IBus Tweaker 中的主题
 
-IBus Tweaker 中提供的主题已经被我制作成为 IBus 主题样式表合集[仿微软 Microsoft](https://github.com/HollowMan6/IBus-Theme-Hub/tree/main/%E4%BB%BF%E5%BE%AE%E8%BD%AFMicrosoft)，欢迎下载使用!
+IBus Tweaker 中提供的主题已经被制作成为 IBus 主题样式表合集[仿微软 Microsoft](https://github.com/openSUSE/IBus-Theme-Hub/tree/main/%E4%BB%BF%E5%BE%AE%E8%BD%AFMicrosoft)，欢迎下载使用!
 
 #### _提示：_
 
-1. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用我的另外一个项目[IBus-Theme](https://github.com/HollowMan6/IBus-Theme)。
+1. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用另外一个项目[IBus-Theme](https://github.com/openSUSE/IBus-Theme)。
 2. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
 ### 更改 IBus 背景图片的实现
@@ -224,4 +218,4 @@ background-size: cover;
 2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
 3. [fixed-ime-list](https://github.com/AlynxZhou/gnome-shell-extension-fixed-ime-list)
 
-_该项目是[谷歌编程之夏 (GSoC) 2021](https://summerofcode.withgoogle.com/projects/#5505085183885312) 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_
+_该项目是[@HollowMan6](https://github.com/HollowMan6)参与[谷歌编程之夏 (GSoC) 2021](https://summerofcode.withgoogle.com/projects/#5505085183885312) 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_

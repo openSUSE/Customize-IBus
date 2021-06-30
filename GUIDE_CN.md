@@ -13,7 +13,7 @@ CSDN 链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 或者
 
 ```bash
-git clone https://github.com/HollowMan6/Customize-IBus.git
+git clone https://github.com/openSUSE/Customize-IBus.git
 cd Customize-IBus && make install
 ```
 
@@ -30,7 +30,7 @@ yay -S gnome-shell-extension-customize-ibus
 - Fedora:
 
 ```bash
-wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+wget https://github.com/openSUSE/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
 sudo mv customize-ibus-rpm.repo /etc/yum.repos.d/
 sudo dnf update
 sudo dnf install gnome-shell-extension-customize-ibus
@@ -39,7 +39,7 @@ sudo dnf install gnome-shell-extension-customize-ibus
 - OpenSUSE:
 
 ```bash
-wget https://github.com/HollowMan6/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
+wget https://github.com/openSUSE/Customize-IBus/raw/package-repo/customize-ibus-rpm.repo
 sudo mv customize-ibus-rpm.repo /etc/zypp/repos.d/
 sudo zypper refresh
 sudo zypper install gnome-shell-extension-customize-ibus
@@ -134,7 +134,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 如果你已经选择了某个样式表，点击最右边的图标还可以直接打开查看该样式表。
 
-支持导入由 [IBus 主题工具](https://github.com/HollowMan6/IBus-Theme)生成的或者由[IBus 主题集合](https://github.com/HollowMan6/IBus-Theme-Hub)提供的样式表。
+支持导入由 [IBus 主题工具](https://github.com/openSUSE/IBus-Theme)生成的或者由[IBus 主题集合](https://github.com/openSUSE/IBus-Theme-Hub)提供的样式表。
 
 当浅色主题和深色主题同时开启时，IBus 主题将会自动跟随 GNOME 夜灯模式，关闭时使用浅色主题，开启时使用深色主题。当浅色主题和深色主题只有一个被开启时，扩展将会始终使用那个开启的主题。
 
@@ -144,7 +144,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 你可以到该网站下载更多 GNOME Shell 主题：[https://www.pling.com/s/Gnome/browse/cat/134/order/latest/](https://www.pling.com/s/Gnome/browse/cat/134/order/latest/) ，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
 
-[IBus 主题工具](https://github.com/HollowMan6/IBus-Theme)样式表生成借助于电脑上已经安装了的 GNOME Shell 主题进行 IBus 样式的提取，其提取步骤如下：
+[IBus 主题工具](https://github.com/openSUSE/IBus-Theme)样式表生成借助于电脑上已经安装了的 GNOME Shell 主题进行 IBus 样式的提取，其提取步骤如下：
 
 1. 参见下文中`非GNOME桌面` -> `自定义IBus主题` 步骤 1-3 来运行程序。
 
@@ -160,7 +160,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 /*
  由 IBus 主题工具生成
  工具作者： Hollow Man <hollowman@hollowman.ml>
- 工具源代码： https://github.com/HollowMan6/IBus-Theme
+ 工具源代码： https://github.com/openSUSE/IBus-Theme
  工具许可证： GPLv3
  样式表源文件： /usr/share/gnome-shell/theme/gnome-classic-high-contrast.css
 
@@ -293,7 +293,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 /* 文件结束 */
 ```
 
-你也可以直接到[IBus 主题集合](https://github.com/HollowMan6/IBus-Theme-Hub)，下载单独制作的 IBus 主题定义样式表文件。这里给出微软输入法风格的 IBus 主题样式表文件：[https://github.com/HollowMan6/IBus-Theme-Hub/tree/main/%E4%BB%BF%E5%BE%AE%E8%BD%AFMicrosoft](https://github.com/HollowMan6/IBus-Theme-Hub/tree/main/%E4%BB%BF%E5%BE%AE%E8%BD%AFMicrosoft)
+你也可以直接到[IBus 主题集合](https://github.com/openSUSE/IBus-Theme-Hub)，下载单独制作的 IBus 主题定义样式表文件。这里给出微软输入法风格的 IBus 主题样式表文件：[https://github.com/openSUSE/IBus-Theme-Hub/tree/main/%E4%BB%BF%E5%BE%AE%E8%BD%AFMicrosoft](https://github.com/openSUSE/IBus-Theme-Hub/tree/main/%E4%BB%BF%E5%BE%AE%E8%BD%AFMicrosoft)
 
 ### 背景
 
@@ -311,7 +311,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 你还可以设定背景图片显示模式，可以设定背景图片是否重复显示，以及显示方式为居中，铺满或者裁剪。
 
-示例各种图片显示模式（使用 128x128 的压缩后图片：[https://github.com/HollowMan6/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.png](https://github.com/HollowMan6/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.png) ）：
+示例各种图片显示模式（使用 128x128 的压缩后图片：[https://github.com/openSUSE/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.png](https://github.com/openSUSE/Customize-IBus/blob/main/customize-ibus%40hollowman.ml/img/logo.png) ）：
 
 ![](https://img-blog.csdnimg.cn/20210505155614345.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
@@ -401,20 +401,20 @@ use-tray-click-source-switch=true
 
 下列步骤可以更改 IBus 的 GTK 主题：
 
-1. 下载[IBus Theme Tools](https://github.com/HollowMan6/IBus-Theme)源代码仓库到本地。
+1. 下载[IBus Theme Tools](https://github.com/openSUSE/IBus-Theme)源代码仓库到本地。
 
 ```bash
-git clone https://github.com/HollowMan6/IBus-Theme.git
+git clone https://github.com/openSUSE/IBus-Theme.git
 cd IBus-Theme
 ```
 
-2. 赋予[IBus-Theme.py](https://github.com/HollowMan6/IBus-Theme/blob/main/IBus-Theme.py)可执行权限。
+2. 赋予[IBus-Theme.py](https://github.com/openSUSE/IBus-Theme/blob/main/IBus-Theme.py)可执行权限。
 
 ```bash
 chmod +x IBus-Theme.py
 ```
 
-3. 运行[IBus-Theme.py](https://github.com/HollowMan6/IBus-Theme/blob/main/IBus-Theme.py)。
+3. 运行[IBus-Theme.py](https://github.com/openSUSE/IBus-Theme/blob/main/IBus-Theme.py)。
 
 ```bash
 ./IBus-Theme.py

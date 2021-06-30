@@ -12,7 +12,7 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via https://github.com/HollowMan6/Customize-IBus/issues
+# Please submit bugfixes or comments via https://github.com/openSUSE/Customize-IBus/issues
 #
 
 
@@ -20,7 +20,7 @@
 %global extension_version 64
 %global date 20210628
 %global uuid customize-ibus@hollowman.ml
-%global forgeurl https://github.com/HollowMan6/Customize-IBus
+%global forgeurl https://github.com/openSUSE/Customize-IBus
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 
 Name:           gnome-shell-extension-customize-ibus
