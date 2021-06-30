@@ -63,7 +63,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Mon Jun 30 2021 Hollow Man <hollowman@hollowman.ml> - 20210630gitd59709e
+* Wed Jun 30 2021 Hollow Man <hollowman@hollowman.ml> - 20210630gitd59709e
 - Move project under openSUSE.
 
 * Mon Jun 28 2021 Hollow Man <hollowman@hollowman.ml> - 20210628gitde29e48
