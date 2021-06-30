@@ -134,7 +134,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 如果你已经选择了某个样式表，点击最右边的图标还可以直接打开查看该样式表。
 
-支持导入由 [IBus 主题工具](https://github.com/openSUSE/IBus-Theme)生成的或者由[IBus 主题集合](https://github.com/openSUSE/IBus-Theme-Hub)提供的样式表。
+支持导入由 [IBus 主题工具](https://github.com/openSUSE/IBus-Theme-Tools)生成的或者由[IBus 主题集合](https://github.com/openSUSE/IBus-Theme-Hub)提供的样式表。
 
 当浅色主题和深色主题同时开启时，IBus 主题将会自动跟随 GNOME 夜灯模式，关闭时使用浅色主题，开启时使用深色主题。当浅色主题和深色主题只有一个被开启时，扩展将会始终使用那个开启的主题。
 
@@ -144,7 +144,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 你可以到该网站下载更多 GNOME Shell 主题：[https://www.pling.com/s/Gnome/browse/cat/134/order/latest/](https://www.pling.com/s/Gnome/browse/cat/134/order/latest/) ，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
 
-[IBus 主题工具](https://github.com/openSUSE/IBus-Theme)样式表生成借助于电脑上已经安装了的 GNOME Shell 主题进行 IBus 样式的提取，其提取步骤如下：
+[IBus 主题工具](https://github.com/openSUSE/IBus-Theme-Tools)样式表生成借助于电脑上已经安装了的 GNOME Shell 主题进行 IBus 样式的提取，其提取步骤如下：
 
 1. 参见下文中`非GNOME桌面` -> `自定义IBus主题` 步骤 1-3 来运行程序。
 
@@ -160,7 +160,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 /*
  由 IBus 主题工具生成
  工具作者： Hollow Man <hollowman@hollowman.ml>
- 工具源代码： https://github.com/openSUSE/IBus-Theme
+ 工具源代码： https://github.com/openSUSE/IBus-Theme-Tools
  工具许可证： GPLv3
  样式表源文件： /usr/share/gnome-shell/theme/gnome-classic-high-contrast.css
 
@@ -401,20 +401,20 @@ use-tray-click-source-switch=true
 
 下列步骤可以更改 IBus 的 GTK 主题：
 
-1. 下载[IBus Theme Tools](https://github.com/openSUSE/IBus-Theme)源代码仓库到本地。
+1. 下载[IBus Theme Tools](https://github.com/openSUSE/IBus-Theme-Tools)源代码仓库到本地。
 
 ```bash
-git clone https://github.com/openSUSE/IBus-Theme.git
-cd IBus-Theme
+git clone https://github.com/openSUSE/IBus-Theme-Tools.git
+cd IBus-Theme-Tools
 ```
 
-2. 赋予[IBus-Theme.py](https://github.com/openSUSE/IBus-Theme/blob/main/IBus-Theme.py)可执行权限。
+2. 赋予[IBus-Theme.py](https://github.com/openSUSE/IBus-Theme-Tools/blob/main/IBus-Theme.py)可执行权限。
 
 ```bash
 chmod +x IBus-Theme.py
 ```
 
-3. 运行[IBus-Theme.py](https://github.com/openSUSE/IBus-Theme/blob/main/IBus-Theme.py)。
+3. 运行[IBus-Theme.py](https://github.com/openSUSE/IBus-Theme-Tools/blob/main/IBus-Theme.py)。
 
 ```bash
 ./IBus-Theme.py

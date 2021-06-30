@@ -129,7 +129,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 使用用户主题来更改 IBus 皮肤的实现
 
-该功能已经被拆分，生成 IBus 皮肤样式表功能迁移到了[IBus-Theme](https://github.com/openSUSE/IBus-Theme)。
+该功能已经被拆分，生成 IBus 皮肤样式表功能迁移到了[IBus-Theme-Tools](https://github.com/openSUSE/IBus-Theme-Tools)。
 
 目前该扩展支持导入该工具生成的样式表。另外还支持[IBus-Theme-Hub](https://github.com/openSUSE/IBus-Theme-Hub)中提供的 IBus 主题样式表文件。
 
@@ -145,7 +145,7 @@ IBus Tweaker 中提供的主题已经被制作成为 IBus 主题样式表合集[
 
 #### _提示：_
 
-1. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用另外一个项目[IBus-Theme](https://github.com/openSUSE/IBus-Theme)。
+1. 对于那些不使用 GNOME 而是使用如 KDE，XFCE 等桌面环境的用户，更改 IBus GTK 主题也请使用另外一个项目[IBus-Theme-Tools](https://github.com/openSUSE/IBus-Theme-Tools)。
 2. 如非调试需要，请勿在 IBus 主题样式表中加入非`.candidate-*`开头的类，以免干扰系统主题。
 
 ### 更改 IBus 背景图片的实现
