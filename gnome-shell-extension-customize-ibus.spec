@@ -1,3 +1,21 @@
+#
+# spec file for package gnome-shell-extension-customize-ibus
+#
+# Copyright (c) 2021 Hollow Man
+#
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. The license for this file, and modifications and additions to the
+# file, is the same license as for the pristine package itself (unless the
+# license for the pristine package is not an Open Source License, in which
+# case the license is the MIT License). An "Open Source License" is a
+# license that conforms to the Open Source Definition (Version 1.9)
+# published by the Open Source Initiative.
+
+# Please submit bugfixes or comments via https://github.com/HollowMan6/Customize-IBus/issues
+#
+
+
 %global commit de29e48a8dda1fb5d7427a218c8c09513d2f32f1
 %global extension_version 64
 %global date 20210628
@@ -10,7 +28,7 @@ Version:        %{extension_version}
 Release:        %{date}git%{shortcommit}%{?dist}
 Summary:        Customize IBus extension for GNOME Shell
 
-License:        GPL-3.0+
+License:        GPL-3.0-or-later
 URL:            %{forgeurl}
 Source0:        %{forgeurl}/archive/%{commit}/Customize-IBus-%{commit}.tar.gz
 BuildArch:      noarch
@@ -45,12 +63,6 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Mon Jun 28 2021 Hollow Man <hollowman@hollowman.ml> - 20210628gitde29e48
-- Fix typos and indicator scroll settings control.
-
-* Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git7a4bd1e
-- Fix to avoid tainting the GNOME Shell environment.
-
 * Sat Jun 26 2021 Hollow Man <hollowman@hollowman.ml> - 20210626git75a6f7b
 - Fix settings sync problem with ibus-setup (preference).
 
@@ -61,7 +73,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 * Fri Jun 18 2021 Hollow Man <hollowman@hollowman.ml> - 20210618gitb6e507b
 - Add customize font for indicator.
 - Add show or hide candidate box page buttons.
-- Improve on showing background. 
+- Improve on showing background.
 
 * Thu Jun 10 2021 Hollow Man <hollowman@hollowman.ml> - 20210610git8900c0c
 - Add fix IME list order function and buttons to start official customization settings.
@@ -90,7 +102,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 - Add click Input Source Indicator to switch source.
 
 * Sun May 23 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-48.20210523git8ece98a
-- Add right click candidate box to switch input source. 
+- Add right click candidate box to switch input source.
 - Support show or hide tray icon, directly click tray icon to switch input source.
 
 * Fri May 21 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-46.20210521gita9781aa
@@ -104,7 +116,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 - Add drag to move function.
 
 * Sat May 08 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-40.20210508git6b080f2
-- Fix input source indicator BUGS. 
+- Fix input source indicator BUGS.
 - Add IBus Input Popup Box animation customization feature.
 
 * Fri May 07 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-38.20210507gitf9aa797
@@ -148,4 +160,3 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 
 * Sat Apr 10 2021 Hollow Man <hollowman@hollowman.ml> - 40.0-12.20210410gitd31ef3e
 - Initial Fedora package.
-
