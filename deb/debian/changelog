@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (65) mx; urgency=medium
+
+  * v65: Move project under openSUSE.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Mon, 30 Jun 2021 22:25:30 +0800
+
 gnome-shell-extension-customize-ibus (64) mx; urgency=medium
 
   * v64: Fix typos and indicator scroll settings control.

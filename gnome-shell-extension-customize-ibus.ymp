@@ -26,6 +26,37 @@ Have a look at http://en.opensuse.org/Portal:Factory for more details.</descript
         <summary>Customize IBus extension for GNOME Shell</summary>
         <description>Full customization of appearance, behavior, system tray and input source indicator for IBus
 
+Support Customization of:
+* Candidate Box Orientation
+* Candidate Box Animation
+* Right-click Candidate Box to Switch the Input Mode or Open the Tray Menu
+* Scroll on Candidate Box to Switch among Pages or Candidates
+* Fix Candidate Box to Not Follow the Caret and Set Fixed Position
+* Candidate Box Font
+* Input Mode Remember and Auto-switch by APP
+* Fix IME List Order
+* Drag Candidate Box to Reposition
+* Show or Hide Candidate Box Page Buttons
+* System Tray Menus and Interaction Settings
+* * Show or Hide Tray Icon
+* * Directly Click Tray Icon to Switch Input Mode
+* * Add Additional Menu
+* Input Source Indicator Appearance and Interaction Settings
+* * Enable Indicator
+* * Only Indicate when Switching Input Mode
+* * Only Indicate when Using ASCII Input Mode
+* * Right-click Indicator to Hide
+* * Scroll on Indicator to Switch Input Mode
+* * Indicator Animation
+* * Customize Font
+* * Left-click Indicator to Drag to Move Indicator or Switch Input Mode
+* * Enable Auto-hide Indicator and Configure Auto-hide Timeout
+* Theme (Stylesheet Provided or Extracted from GNOME Shell Themes, Refer to Help Instructions in Extension for More)
+* Candidate Box Background and its Displaying Style
+* Theme and Background Picture Follow GNOME Night Light Mode
+
+User Guide: https://translate.google.com/translate?sl=zh-CN&amp;tl=en&amp;u=https://github.com/openSUSE/Customize-IBus/blob/main/GUIDE_CN.md</description>
+
 深度定制 IBus 的外观、行为、系统托盘以及输入指示
 
 支持自定义：
@@ -58,37 +89,6 @@ Have a look at http://en.opensuse.org/Portal:Factory for more details.</descript
 * 主题和背景图片跟随GNOME夜灯
 
 使用指南：https://blog.csdn.net/qq_18572023/article/details/116331601
-
-Support Customization of:
-* Candidate Box Orientation
-* Candidate Box Animation
-* Right-click Candidate Box to Switch the Input Mode or Open the Tray Menu
-* Scroll on Candidate Box to Switch among Pages or Candidates
-* Fix Candidate Box to Not Follow the Caret and Set Fixed Position
-* Candidate Box Font
-* Input Mode Remember and Auto-switch by APP
-* Fix IME List Order
-* Drag Candidate Box to Reposition
-* Show or Hide Candidate Box Page Buttons
-* System Tray Menus and Interaction Settings
-* * Show or Hide Tray Icon
-* * Directly Click Tray Icon to Switch Input Mode
-* * Add Additional Menu
-* Input Source Indicator Appearance and Interaction Settings
-* * Enable Indicator
-* * Only Indicate when Switching Input Mode
-* * Only Indicate when Using ASCII Input Mode
-* * Right-click Indicator to Hide
-* * Scroll on Indicator to Switch Input Mode
-* * Indicator Animation
-* * Customize Font
-* * Left-click Indicator to Drag to Move Indicator or Switch Input Mode
-* * Enable Auto-hide Indicator and Configure Auto-hide Timeout
-* Theme (Stylesheet Provided or Extracted from GNOME Shell Themes, Refer to Help Instructions in Extension for More)
-* Candidate Box Background and its Displaying Style
-* Theme and Background Picture Follow GNOME Night Light Mode
-
-User Guide: https://translate.google.com/translate?sl=zh-CN&amp;tl=en&amp;u=https://github.com/openSUSE/Customize-IBus/blob/main/GUIDE_CN.md</description>
       </item>
     </software>
   </group>
