@@ -16,7 +16,7 @@
 #
 
 
-%global commit 63bf7a0c017c285cbff4504ad381a9bad65cebb7
+%global commit d59709e89355ea2d315e6a6388d519e6c611ef6c
 %global extension_version 65
 %global date 20210630
 %global uuid customize-ibus@hollowman.ml
@@ -63,7 +63,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Mon Jun 30 2021 Hollow Man <hollowman@hollowman.ml> - 20210630git63bf7a0
+* Mon Jun 30 2021 Hollow Man <hollowman@hollowman.ml> - 20210630gitd59709e
 - Move project under openSUSE.
 
 * Mon Jun 28 2021 Hollow Man <hollowman@hollowman.ml> - 20210628gitde29e48
