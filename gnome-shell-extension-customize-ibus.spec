@@ -25,7 +25,7 @@
 
 Name:           gnome-shell-extension-customize-ibus
 Version:        %{extension_version}
-Release:        %{date}git%{shortcommit}%{?dist}
+Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 
 License:        GPL-3.0-or-later
@@ -45,7 +45,7 @@ Full customization of appearance, behavior, system tray and input source indicat
 深度定制 IBus 的外观、行为、系统托盘以及输入指示。
 
 %prep
-%%setup -q -n Customize-IBus-%{commit}
+%setup -q -n Customize-IBus-%{commit}
 
 %build
 make _build VERSION=%{extension_version}
