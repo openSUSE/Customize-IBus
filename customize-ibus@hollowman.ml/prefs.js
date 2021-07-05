@@ -1425,7 +1425,7 @@ const CustomizeIBus = GObject.registerClass(
         new Gtk.Label({
           use_markup: true,
           label: _(
-            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE/mentoring/issues/158">@openSUSE</a></b>.</span>'
+            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE">@openSUSE</a></b>.</span>'
           ),
         }),
         0,

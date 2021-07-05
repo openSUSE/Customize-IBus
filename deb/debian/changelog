@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (66) mx; urgency=medium
+
+  * v66: Add support for openSUSE Leap 15.3.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Mon, 06 Jul 2021 00:31:29 +0800
+
 gnome-shell-extension-customize-ibus (65) mx; urgency=medium
 
   * v65: Move project under openSUSE.

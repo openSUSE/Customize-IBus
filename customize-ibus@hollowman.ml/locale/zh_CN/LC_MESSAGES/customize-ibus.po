@@ -6,7 +6,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: customize-ibus 64\n"
+"Project-Id-Version: customize-ibus 66\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-06-30 22:23+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
@@ -435,12 +435,12 @@ msgstr ""
 msgid ""
 "<span size=\"small\">Sponsored by <a href=\"https://summerofcode.withgoogle."
 "com/projects/#5505085183885312\">Google Summer of Code 2021</a> <b><a href="
-"\"https://github.com/openSUSE/mentoring/issues/158\">@openSUSE</a></b>.</"
+"\"https://github.com/openSUSE\">@openSUSE</a></b>.</"
 "span>"
 msgstr ""
 "<span size=\"small\">受 <a href=\"https://summerofcode.withgoogle.com/"
 "projects/#5505085183885312\">2021谷歌编程之夏</a> <b><a href=\"https://"
-"github.com/openSUSE/mentoring/issues/158\">@openSUSE</a></b>资助。</span>"
+"github.com/openSUSE\">@openSUSE</a></b>资助。</span>"
 
 #: prefs.js:1484
 msgid "Other official customization settings"

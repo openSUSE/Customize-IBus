@@ -333,16 +333,18 @@ sudo apt install gnome-shell-extension-customize-ibus
   ![](https://img-blog.csdnimg.cn/20210503124907786.png)
 
 ### 关于
+
 在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/2021063023583087.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210706005232477.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
-![](https://img-blog.csdnimg.cn/20210630235921487.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210706005302872.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 示例设置导出文件内容：
+
 ```ini
 [/]
 candidate-box-position={'x': uint32 583, 'y': 338}

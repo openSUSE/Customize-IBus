@@ -24,8 +24,11 @@ const InputSourceManager = imports.ui.status.keyboard.getInputSourceManager();
 const InputSourcePopup = imports.ui.status.keyboard.InputSourcePopup;
 const InputSourceIndicator = Main.panel.statusArea.keyboard;
 const IBusManager = imports.misc.ibusManager.getIBusManager();
-const CandidatePopup = IBusManager._candidatePopup;
-const CandidateArea = CandidatePopup._candidateArea;
+if (IBusManager._candidatePopup._boxPointer)
+  var CandidatePopup = IBusManager._candidatePopup._boxPointer;
+else var CandidatePopup = IBusManager._candidatePopup;
+const CandidateArea = IBusManager._candidatePopup._candidateArea;
+const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Util = imports.misc.util;
@@ -394,8 +397,12 @@ const IBusInputSourceIndicater = GObject.registerClass(
         let themeNode = this.get_theme_node();
         let gap = themeNode.get_length("-boxpointer-gap");
         let [, , , natHeight] = this.get_preferred_size();
-        let sourceTopLeft = this._sourceExtents.get_top_left();
-        let sourceBottomRight = this._sourceExtents.get_bottom_right();
+        let sourceTopLeft = 0;
+        let sourceBottomRight = 0;
+        if (this._sourceExtents) {
+          sourceTopLeft = this._sourceExtents.get_top_left();
+          sourceBottomRight = this._sourceExtents.get_bottom_right();
+        }
         switch (this._arrowSide) {
           case St.Side.TOP:
             this._relativePosY +=
@@ -784,6 +791,10 @@ const IBusScroll = GObject.registerClass(
   class IBusScroll extends GObject.Object {
     _init() {
       super._init();
+      // Support for GNOME version less than 3.34
+      this._CandidateAreaActor = CandidateArea;
+      if (CandidateArea.actor) this._CandidateAreaActor = CandidateArea.actor;
+
       gsettings.bind(
         Fields.SCROLLMODE,
         this,
@@ -798,7 +809,7 @@ const IBusScroll = GObject.registerClass(
     }
 
     scroll_page() {
-      this._scrollID = CandidateArea.connect(
+      this._scrollID = this._CandidateAreaActor.connect(
         "scroll-event",
         (actor, scrollEvent) => {
           switch (scrollEvent.get_scroll_direction()) {
@@ -817,7 +828,8 @@ const IBusScroll = GObject.registerClass(
 
     destroy() {
       if (this._scrollID)
-        CandidateArea.disconnect(this._scrollID), (this._scrollID = 0);
+        this._CandidateAreaActor.disconnect(this._scrollID),
+          (this._scrollID = 0);
     }
   }
 );
@@ -1109,11 +1121,12 @@ const IBusNotFollowCaret = GObject.registerClass(
   class IBusNotFollowCaret extends GObject.Object {
     _init() {
       super._init();
-      this._setDummyCursorGeometryOrig = CandidatePopup._setDummyCursorGeometry;
-      CandidatePopup._setDummyCursorGeometry = (x, y, w, h) => {
-        CandidatePopup._dummyCursor.set_size(Math.round(w), Math.round(h));
+      this._setDummyCursorGeometryOrig =
+        IBusManager._candidatePopup._setDummyCursorGeometry;
+      IBusManager._candidatePopup._setDummyCursorGeometry = (x, y, w, h) => {
+        CandidateDummyCursor.set_size(Math.round(w), Math.round(h));
         if (CandidatePopup.visible)
-          CandidatePopup.setPosition(CandidatePopup._dummyCursor, 0);
+          CandidatePopup.setPosition(CandidateDummyCursor, 0);
       };
       gsettings.bind(
         Fields.CANDSTILLPOS,
@@ -1193,15 +1206,15 @@ const IBusNotFollowCaret = GObject.registerClass(
             y = global.screen_height / 3;
         }
       }
-      CandidatePopup._dummyCursor.set_position(Math.round(x), Math.round(y));
+      CandidateDummyCursor.set_position(Math.round(x), Math.round(y));
       if (CandidatePopup.visible)
-        CandidatePopup.setPosition(CandidatePopup._dummyCursor, 0);
+        CandidatePopup.setPosition(CandidateDummyCursor, 0);
       if (this._remember) this._hasSetRember = true;
     }
 
     destroy() {
       if (this._setDummyCursorGeometryOrig)
-        CandidatePopup._setDummyCursorGeometry =
+        IBusManager._candidatePopup._setDummyCursorGeometry =
           this._setDummyCursorGeometryOrig;
     }
   }
@@ -1355,7 +1368,7 @@ const IBusReposition = GObject.registerClass(
             event.get_state() & Clutter.ModifierType.BUTTON1_MASK &&
             !this._mouseInCandidate
           ) {
-            let [boxX, boxY] = CandidatePopup._dummyCursor.get_position();
+            let [boxX, boxY] = CandidateDummyCursor.get_position();
             let [mouseX, mouseY] = event.get_coords();
             CandidatePopup._relativePosX = mouseX - boxX;
             CandidatePopup._relativePosY = mouseY - boxY;
@@ -1384,9 +1397,12 @@ const IBusReposition = GObject.registerClass(
         let themeNode = CandidatePopup.get_theme_node();
         let gap = themeNode.get_length("-boxpointer-gap");
         let [, , , natHeight] = CandidatePopup.get_preferred_size();
-        let sourceTopLeft = CandidatePopup._sourceExtents.get_top_left();
-        let sourceBottomRight =
-          CandidatePopup._sourceExtents.get_bottom_right();
+        let sourceTopLeft = 0;
+        let sourceBottomRight = 0;
+        if (CandidatePopup._sourceExtents) {
+          sourceTopLeft = CandidatePopup._sourceExtents.get_top_left();
+          sourceBottomRight = CandidatePopup._sourceExtents.get_bottom_right();
+        }
         switch (CandidatePopup._arrowSide) {
           case St.Side.TOP:
             CandidatePopup._relativePosY +=
@@ -1402,11 +1418,11 @@ const IBusReposition = GObject.registerClass(
     }
 
     _move(x, y) {
-      CandidatePopup._dummyCursor.set_position(
+      CandidateDummyCursor.set_position(
         x - CandidatePopup._relativePosX,
         y - CandidatePopup._relativePosY
       );
-      CandidatePopup.setPosition(CandidatePopup._dummyCursor, 0);
+      CandidatePopup.setPosition(CandidateDummyCursor, 0);
     }
 
     _updatePos() {
@@ -1419,7 +1435,7 @@ const IBusReposition = GObject.registerClass(
       let state = new Map(
         Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack())
       );
-      let [boxX, boxY] = CandidatePopup._dummyCursor.get_position();
+      let [boxX, boxY] = CandidateDummyCursor.get_position();
       state.set("x", boxX);
       state.set("y", boxY);
       gsettings.set_value(
@@ -2528,7 +2544,10 @@ const Extensions = GObject.registerClass(
 
     _MenuExtPref() {
       Main.overview.hide();
-      ExtensionUtils.openPrefs(Me.metadata.uuid.toString());
+      if (ExtensionUtils.openPrefs)
+        ExtensionUtils.openPrefs(Me.metadata.uuid.toString());
+      else
+        Util.spawn(["gnome-extensions", "prefs", Me.metadata.uuid.toString()]);
     }
 
     _menuIBusPref() {
@@ -2599,6 +2618,15 @@ const Extension = class Extension {
   }
 
   enable() {
+    // Add support for GNOME less than 3.34
+    if (!Object.fromEntries)
+      Object.fromEntries = function (pairs) {
+        Array.from(pairs).reduce(
+          (acc, [key, value]) => Object.assign(acc, { [key]: value }),
+          {}
+        );
+      };
+
     IBusSettings = new Gio.Settings({
       schema_id: "org.freedesktop.ibus.panel",
     });

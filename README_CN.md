@@ -210,8 +210,9 @@ background-size: cover;
 - [x] V63: 修复污染 GNOME Shell 环境问题。
 - [x] V64: 修复英文拼写错误，指示器滚动控制。
 - [x] V65: 将项目转移至 openSUSE。
+- [x] V66: 增加对 openSUSE Leap 15.3 的支持。
 
-在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65)中通过了测试。
+在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)中通过了测试。
 
 ## 致谢
 
