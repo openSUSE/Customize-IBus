@@ -1928,7 +1928,7 @@ const CustomizeIBus = GObject.registerClass(
         else this.toplevel = this.get_root();
         this.headerBar = this.toplevel.get_titlebar();
         let uri = _(
-          "https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/openSUSE/Customize-IBus/blob/main/GUIDE_CN.md"
+          "https://github.com/openSUSE/Customize-IBus/blob/main/GUIDE.md"
         );
         let helpButton = this._iconButtonMaker(
           uri,

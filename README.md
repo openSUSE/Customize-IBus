@@ -13,7 +13,7 @@
 
 Full customization of appearance, behavior, system tray and input source indicator for IBus.
 
-[Customize IBus User Guide](https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/openSUSE/Customize-IBus/blob/main/GUIDE_CN.md)
+[Customize IBus User Guide](GUIDE.md)
 
 ![demo](img/demo-en.png)
 

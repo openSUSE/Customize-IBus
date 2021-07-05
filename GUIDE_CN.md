@@ -2,6 +2,8 @@
 
 CSDN 链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
+[English](GUIDE.md)
+
 ## GNOME 桌面
 
 首先请确保安装了用于自定义 IBus 的 GNOME Shell 扩展：[https://extensions.gnome.org/extension/4112/customize-ibus/](https://extensions.gnome.org/extension/4112/customize-ibus/)
@@ -386,7 +388,7 @@ use-popup-animation=true
 use-tray-click-source-switch=true
 ```
 
-点击`文件导入设置`，你可以选择将从刚刚保存的设置文件进行导入操作：
+点击`从文件导入`，你可以选择将从刚刚保存的设置文件进行导入操作：
 ![](https://img-blog.csdnimg.cn/20210610010202175.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 你还可以选择打开其他官方自定义设置进行进一步的自定义操作。

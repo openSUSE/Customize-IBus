@@ -622,9 +622,7 @@ msgstr ""
 "</b> 来使其生效。</span>"
 
 #: prefs.js:1931
-msgid ""
-"https://translate.google.com/translate?sl=zh-CN&tl=en&u=https://github.com/"
-"openSUSE/Customize-IBus/blob/main/GUIDE_CN.md"
+msgid "https://github.com/openSUSE/Customize-IBus/blob/main/GUIDE.md"
 msgstr "https://blog.csdn.net/qq_18572023/article/details/116331601"
 
 #: prefs.js:1955 prefs.js:1981
