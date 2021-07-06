@@ -791,7 +791,7 @@ const IBusScroll = GObject.registerClass(
   class IBusScroll extends GObject.Object {
     _init() {
       super._init();
-      // Support for GNOME version less than 3.34
+      // Support for GNOME version less than 3.36
       this._CandidateAreaActor = CandidateArea;
       if (CandidateArea.actor) this._CandidateAreaActor = CandidateArea.actor;
 
@@ -2618,10 +2618,10 @@ const Extension = class Extension {
   }
 
   enable() {
-    // Add support for GNOME less than 3.34
+    // Add support for GNOME less than 3.36
     if (!Object.fromEntries)
       Object.fromEntries = function (pairs) {
-        Array.from(pairs).reduce(
+        return Array.from(pairs).reduce(
           (acc, [key, value]) => Object.assign(acc, { [key]: value }),
           {}
         );
