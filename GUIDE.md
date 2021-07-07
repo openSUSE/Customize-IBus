@@ -338,10 +338,10 @@ Examples of various picture display modes (using 128x128 compressed pictures: [h
 ### About
 
 At any time, you can click on the icon in the upper left corner to open this guide:
-![](https://img-blog.csdnimg.cn/20210706004601932.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210707162424530.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 Click `Restore Default Settings`, after confirming, you can re-initialize the extension:
-![](https://img-blog.csdnimg.cn/20210705145903419.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210707162459592.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 Click `Export Current Settings`, you can choose to export the current settings as a `*.inifile`. The default file name is `Customize_IBus_Settings_[Current Time].ini`:
 ![](https://img-blog.csdnimg.cn/20210705150208339.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -400,7 +400,7 @@ You can also choose to open other official customize settings for further custom
 
 ## Non-GNOME desktop
 
-### Custom IBus theme
+### Customize IBus theme
 
 In non-GNOME Shell desktop environment, the display effect of IBus is determined by the current GTK theme.
 
@@ -437,6 +437,10 @@ Enter the IBus GTK theme you want to set, and then press `Enter`. (Note that the
 
 ### Customize IBus font size
 
+Recommend to directly change the font and font size settings in the IBus preferences (`ibus-setup`).
+
+Or:
+
 `$HOME/.config/gtk-3.0/settings.ini` defines the current GTK3 theme and font size.
 
 Example of the content of the file is as follows:
@@ -451,4 +455,23 @@ In the above content, `gtk-theme-name` specifies that the current GTK theme is `
 
 The IBus font and font size can be changed by modifying the above documents.
 
-Of course you can directly change the font and font size settings in the IBus preferences.
+### Customize IBus colors (Create a GTK theme)
+
+Create a GTK3 theme called `ibus-custom-theme` by running:
+
+```bash
+mkdir -p $HOME/.themes/ibus-custom-theme/gtk-3.0
+$EDITOR $HOME/.themes/ibus-custom-theme/gtk-3.0/gtk.css
+```
+
+then edit the file content. An example can be:
+
+```css
+* {
+  color: #0b141a; /* Font Color */
+  background-color: #ffffff; /* Background Color */
+  -gtk-secondary-caret-color: #d4d4d4; /* Highlight Background Color */
+}
+```
+
+After that, referring to the actions of the `Customize IBus theme` part, please select the theme `ibus-custom-theme` which you just created.

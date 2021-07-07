@@ -433,8 +433,8 @@ const IBusInputSourceIndicater = GObject.registerClass(
 
     _move(x, y) {
       this._dummyCursor.set_position(
-        x - this._relativePosX,
-        y - this._relativePosY
+        Math.round(x - this._relativePosX),
+        Math.round(y - this._relativePosY)
       );
       this.setPosition(this._dummyCursor, 0);
     }
@@ -611,6 +611,7 @@ const IBusAutoSwitch = GObject.registerClass(
     _init() {
       super._init();
       this._bindSettings();
+      this._tmpWindow = null;
       this._overviewHiddenID = Main.overview.connect(
         "hidden",
         this._onWindowChanged.bind(this)
@@ -793,7 +794,7 @@ const IBusScroll = GObject.registerClass(
       super._init();
       // Support for GNOME version less than 3.36
       this._CandidateAreaActor = CandidateArea;
-      if (CandidateArea.actor) this._CandidateAreaActor = CandidateArea.actor;
+      if (!(CandidateArea instanceof St.BoxLayout)) this._CandidateAreaActor = CandidateArea.actor;
 
       gsettings.bind(
         Fields.SCROLLMODE,
@@ -1244,13 +1245,16 @@ const IBusClickSwitch = GObject.registerClass(
         Gio.SettingsBindFlags.GET
       );
       CandidatePopup.reactive = true;
-      this._mouseCandidateEnterID = CandidateArea.connect(
+      this._CandidateAreaActor = CandidateArea;
+      if (!(CandidateArea instanceof St.BoxLayout)) this._CandidateAreaActor = CandidateArea.actor;
+
+      this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
         "enter-event",
         (actor, event) => {
           this._mouseInCandidate = true;
         }
       );
-      this._mouseCandidateLeaveID = CandidateArea.connect(
+      this._mouseCandidateLeaveID = this._CandidateAreaActor.connect(
         "leave-event",
         (actor, event) => {
           this._mouseInCandidate = false;
@@ -1292,10 +1296,10 @@ const IBusClickSwitch = GObject.registerClass(
         CandidatePopup.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
       if (this._mouseCandidateEnterID)
-        CandidateArea.disconnect(this._mouseCandidateEnterID),
+        this._CandidateAreaActor.disconnect(this._mouseCandidateEnterID),
           (this._mouseCandidateEnterID = 0);
       if (this._mouseCandidateLeaveID)
-        CandidateArea.disconnect(this._mouseCandidateLeaveID),
+        this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
           (this._mouseCandidateLeaveID = 0);
       delete this.candidateBoxesID;
     }
@@ -1381,13 +1385,17 @@ const IBusReposition = GObject.registerClass(
           }
         }
       );
-      this._mouseCandidateEnterID = CandidateArea.connect(
+
+      this._CandidateAreaActor = CandidateArea;
+      if (!(CandidateArea instanceof St.BoxLayout)) this._CandidateAreaActor = CandidateArea.actor;
+
+      this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
         "enter-event",
         (actor, event) => {
           this._mouseInCandidate = true;
         }
       );
-      this._mouseCandidateLeaveID = CandidateArea.connect(
+      this._mouseCandidateLeaveID = this._CandidateAreaActor.connect(
         "leave-event",
         (actor, event) => {
           this._mouseInCandidate = false;
@@ -1419,8 +1427,8 @@ const IBusReposition = GObject.registerClass(
 
     _move(x, y) {
       CandidateDummyCursor.set_position(
-        x - CandidatePopup._relativePosX,
-        y - CandidatePopup._relativePosY
+        Math.round(x - CandidatePopup._relativePosX),
+        Math.round(y - CandidatePopup._relativePosY)
       );
       CandidatePopup.setPosition(CandidateDummyCursor, 0);
     }
@@ -1457,10 +1465,10 @@ const IBusReposition = GObject.registerClass(
           (this._location_handler = 0);
       }
       if (this._mouseCandidateEnterID)
-        CandidateArea.disconnect(this._mouseCandidateEnterID),
+        this._CandidateAreaActor.disconnect(this._mouseCandidateEnterID),
           (this._mouseCandidateEnterID = 0);
       if (this._mouseCandidateLeaveID)
-        CandidateArea.disconnect(this._mouseCandidateLeaveID),
+        this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
           (this._mouseCandidateLeaveID = 0);
       CandidatePopup._relativePosX = null;
       CandidatePopup._relativePosY = null;
@@ -1768,8 +1776,8 @@ const IBusAnimation = GObject.registerClass(
     }
 
     destroy() {
-      if (this._openOrig);
-      CandidatePopup.open = this._openOrig;
+      if (this._openOrig)
+        CandidatePopup.open = this._openOrig;
     }
   }
 );
@@ -1867,6 +1875,30 @@ const IBusThemeManager = GObject.registerClass(
       this._changeTheme(toEnable);
     }
 
+    loadTheme(newStylesheet) {
+      let themeContext = St.ThemeContext.get_for_stage(global.stage);
+      let previousTheme = themeContext.get_theme();
+  
+      let theme = new St.Theme({
+        application_stylesheet: Main._cssStylesheet,
+        default_stylesheet: Main._getDefaultStylesheet(),
+      });
+  
+      if (previousTheme) {
+        let customStylesheets = previousTheme.get_custom_stylesheets();
+
+        for (let i = 0; i < customStylesheets.length; i++)
+          // Fix support for GNOME less than 3.36
+          if (customStylesheets[i] && customStylesheets[i].get_path() != this._prevCssStylesheet)
+            theme.load_stylesheet(customStylesheets[i]);
+      }
+
+      if (newStylesheet)
+        theme.load_stylesheet(Gio.File.new_for_path(newStylesheet));
+
+      themeContext.set_theme(theme);
+  }
+
     // Load stylesheet
     _changeTheme(toEnable = true) {
       this._atNight = this._night && this._light;
@@ -1875,8 +1907,6 @@ const IBusThemeManager = GObject.registerClass(
 
       let themeContext = St.ThemeContext.get_for_stage(global.stage);
       let theme = themeContext.get_theme();
-      if (this._prevCssStylesheet)
-        theme.unload_stylesheet(Gio.File.new_for_path(this._prevCssStylesheet));
       if (
         this._stylesheet &&
         enabled &&
@@ -1884,7 +1914,7 @@ const IBusThemeManager = GObject.registerClass(
         (!this._atNight || !enabledNight)
       ) {
         global.log(_("loading light user theme for IBus:") + this._stylesheet);
-        theme.load_stylesheet(Gio.File.new_for_path(this._stylesheet));
+        this.loadTheme(this._stylesheet);
         this._prevCssStylesheet = this._stylesheet;
       } else if (
         this._stylesheetNight &&
@@ -1895,10 +1925,11 @@ const IBusThemeManager = GObject.registerClass(
         global.log(
           _("loading dark user theme for IBus:") + this._stylesheetNight
         );
-        theme.load_stylesheet(Gio.File.new_for_path(this._stylesheetNight));
+        this.loadTheme(this._stylesheetNight);
         this._prevCssStylesheet = this._stylesheetNight;
       } else {
         global.log(_("loading default theme for IBus"));
+        this.loadTheme();
         this._prevCssStylesheet = "";
       }
     }

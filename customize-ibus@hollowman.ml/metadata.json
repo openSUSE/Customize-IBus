@@ -8,5 +8,5 @@
   "shell-version": ["3.34", "3.36", "3.38", "40.0", "40"],
   "url": "https://github.com/openSUSE/Customize-IBus",
   "uuid": "customize-ibus@hollowman.ml",
-  "version": 66
+  "version": 67
 }

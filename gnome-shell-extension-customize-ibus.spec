@@ -17,7 +17,7 @@
 
 
 %global commit 2fef696c61a70a72226e4a458854863bc2538033
-%global extension_version 66
+%global extension_version 67
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 
@@ -61,6 +61,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Wed Jul 07 2021 Hollow Man <hollowman@hollowman.ml> - 67
+- Further fix support for openSUSE Leap 15.3.
+
 * Tue Jul 06 2021 Hollow Man <hollowman@hollowman.ml> - 66
 - Add support for openSUSE Leap 15.3.
 

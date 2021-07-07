@@ -335,10 +335,10 @@ sudo apt install gnome-shell-extension-customize-ibus
 ### 关于
 
 在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/20210706005232477.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210707161743175.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
-![](https://img-blog.csdnimg.cn/20210706005302872.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/20210707161814473.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -434,6 +434,10 @@ chmod +x IBus-Theme.py
 
 ### 自定义 IBus 字体字号
 
+推荐直接更改 IBus 首选项(`ibus-setup`)中的字体和字号设置。
+
+或者：
+
 `$HOME/.config/gtk-3.0/settings.ini`文件定义了当前的 GTK3 主题及字体字号。
 
 该文件的部分内容示例如下：
@@ -448,4 +452,23 @@ gtk-font-name=更纱黑体 SC 12
 
 可通过修改上述文件实现改变 GTK 主题字体和字号的目的。
 
-当然你可以直接更改 IBus 首选项中的字体和字号设置。
+### 自定义 IBus 色调（创建一个GTK主题）
+
+创建一个名为`ibus-custom-theme`的GTK3主题，运行：
+
+```bash
+mkdir -p $HOME/.themes/ibus-custom-theme/gtk-3.0
+$EDITOR $HOME/.themes/ibus-custom-theme/gtk-3.0/gtk.css
+```
+
+然后进行文件内容的编辑，文件内容示例：
+
+```css
+* {
+  color: #0b141a; /* 字体颜色 */
+  background-color: #ffffff; /* 背景颜色 */
+  -gtk-secondary-caret-color: #d4d4d4; /* 高亮背景颜色 */
+}
+```
+
+然后参照上面`自定义 IBus 主题`部分的操作，选择刚刚创建的`ibus-custom-theme`主题即可。
