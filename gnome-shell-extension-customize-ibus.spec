@@ -16,7 +16,7 @@
 #
 
 
-%global commit 2fef696c61a70a72226e4a458854863bc2538033
+%global commit 3b596f4037d5aaf532c006c1f16415077ecb3d3f
 %global extension_version 67
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
