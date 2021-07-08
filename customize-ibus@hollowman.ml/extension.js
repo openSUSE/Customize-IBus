@@ -1905,8 +1905,6 @@ const IBusThemeManager = GObject.registerClass(
       let enabled = gsettings.get_boolean(Fields.ENABLECUSTOMTHEME);
       let enabledNight = gsettings.get_boolean(Fields.ENABLECUSTOMTHEMENIGHT);
 
-      let themeContext = St.ThemeContext.get_for_stage(global.stage);
-      let theme = themeContext.get_theme();
       if (
         this._stylesheet &&
         enabled &&
