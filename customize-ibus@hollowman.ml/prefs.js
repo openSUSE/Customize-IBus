@@ -1683,7 +1683,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, scroll to switch among pages or candidates, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons."
+            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, scroll to switch among pages or candidates, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, candidate box opacity, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons."
           ),
         }),
         0,
@@ -1822,7 +1822,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, enable auto-hide and auto-hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable auto-hide and auto-hide timeout (in seconds)."
           ),
         }),
         0,
