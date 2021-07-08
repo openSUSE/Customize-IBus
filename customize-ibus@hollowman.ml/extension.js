@@ -61,6 +61,8 @@ const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
 
 var IBusSettings = null;
 var ngsettings = null;
+var opacityStyle = "";
+var fontStyle = "";
 
 const IBusInputSourceIndicator = GObject.registerClass(
   {
@@ -831,14 +833,14 @@ const IBusFontSetting = GObject.registerClass(
           return parseInt(e.message);
         }
       }; // hack for Pango.Weight enumeration exception (eg: 290) in some fonts
-      CandidatePopup.set_style(
+      fontStyle =
         'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
           get_weight(),
           desc.get_family(),
           desc.get_size() / Pango.SCALE - offset,
           Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
-        )
-      );
+        );
+      CandidatePopup.set_style(fontStyle + opacityStyle);
       CandidateArea._candidateBoxes.forEach((x) => {
         x._candidateLabel.set_style(
           "font-size: %dpt;".format(desc.get_size() / Pango.SCALE)
@@ -848,7 +850,8 @@ const IBusFontSetting = GObject.registerClass(
     }
 
     destroy() {
-      CandidatePopup.set_style("");
+      fontStyle = "";
+      CandidatePopup.set_style(fontStyle + opacityStyle);
       CandidateArea._candidateBoxes.forEach((x) => {
         x._candidateLabel.set_style("");
         x._indexLabel.set_style("");
@@ -896,11 +899,12 @@ const IBusOpacity = GObject.registerClass(
       for (let i in candidate_child) candidate_child[i].set_opacity(opacity);
 
       // To get the theme color and modify its opacity
-      CandidatePopup.set_style("");
+      opacityStyle = "";
+      CandidatePopup.set_style(fontStyle + opacityStyle);
       let themeNode = CandidatePopup.get_theme_node();
       let backgroundColor = themeNode.get_color("-arrow-background-color");
       let borderColor = themeNode.get_color("-arrow-border-color");
-      CandidatePopup.set_style(
+      opacityStyle =
         "-arrow-background-color: rgba(%d, %d, %d, %f); -arrow-border-color: rgba(%d, %d, %d, %f);".format(
           backgroundColor.red,
           backgroundColor.green,
@@ -910,8 +914,8 @@ const IBusOpacity = GObject.registerClass(
           borderColor.green,
           borderColor.blue,
           opacity / 255
-        )
-      );
+        );
+      CandidatePopup.set_style(fontStyle + opacityStyle);
     }
 
     destroy() {
@@ -923,7 +927,8 @@ const IBusOpacity = GObject.registerClass(
           candidate_child[i].set_opacity(this._child_opacity[i]);
       }
 
-      CandidatePopup.set_style("");
+      opacityStyle = "";
+      CandidatePopup.set_style(fontStyle + opacityStyle);
     }
   }
 );
@@ -2862,6 +2867,8 @@ const Extension = class Extension {
     delete this._ext;
     IBusSettings = null;
     ngsettings = null;
+    opacityStyle = "";
+    fontStyle = "";
   }
 };
 
