@@ -9,6 +9,14 @@
         <default>false</default>
         <summary>use custom font</summary>
     </key>
+    <key type="b" name="use-candidate-opacity">
+        <default>false</default>
+        <summary>use custom candidate box opacity</summary>
+    </key>
+    <key type="b" name="use-indicator-opacity">
+        <default>false</default>
+        <summary>use custom indicator box opacity</summary>
+    </key>
     <key type="b" name="use-custom-bg">
         <default>false</default>
         <summary>use custom background</summary>
@@ -66,6 +74,16 @@
     <key type="s" name="custom-bg-dark">
         <default>""</default>
         <summary>custom dark background</summary>
+    </key>
+    <key type="u" name="candidate-opacity">
+        <default>255</default>
+        <range min="0" max="255"/>
+        <summary>candidate opacity value</summary>
+    </key>
+    <key type="u" name="indicator-opacity">
+        <default>255</default>
+        <range min="0" max="255"/>
+        <summary>indicator opacity value</summary>
     </key>
     <key type="u" name="custom-bg-mode">
         <default>2</default>

@@ -90,6 +90,8 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 点击`自动切换源`左侧的复选框来进行选中，即可支持配置窗口切换时输入法默认切换语言。点击最右侧进行选择，支持设定为中文或者英文，如果选择保持则保持切换窗口时输入法状态不变。在右侧你还可以选择是否记住输入状态。当记住输入状态被启用时，那么你在一个应用中手动切换了输入源，则该应用的输入源模式将会被自动记住。另外，新打开的应用将会遵循你的输入源配置，应用的输入状态将会永远被记住。
 
+点击`候选框透明`左侧的复选框来进行选中，即可支持配置候选框透明度。滑动最右侧按钮进行透明度的设定，范围为 0 到 255,步进为 1。
+
 点击`固定输入法列表`右侧的开关即可开启或关闭此功能。
 
 如果你系统中使用多种输入法，在使用键盘切换输入法时（通常是`Win + Space`），屏幕上默认显示的输入法排序会依次为最近使用的输入法。开启此功能可以修改为输入法的设置配置先后顺序。
@@ -123,7 +125,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ![](https://img-blog.csdnimg.cn/20210620212932190.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`，`启用右击关闭指示器`，`启用滚动切换输入源`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。还支持设定指示器字体。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。你还可以`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 0.1。
+这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`，`启用右击关闭指示器`，`启用滚动切换输入源`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。还支持设定指示器字体。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。另外可以设定`指示器透明度`，支持设定值为 0 到 255，设定步进为 1。你还可以`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 1。
 
 示例动画：
 ![](https://img-blog.csdnimg.cn/20210507111902567.gif)
@@ -347,26 +349,29 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ```ini
 [/]
-candidate-box-position={'x': uint32 583, 'y': 338}
-candidate-orientation=uint32 1
+candidate-box-position={'x': uint32 0, 'y': 0}
+candidate-opacity=uint32 210
+candidate-orientation=uint32 0
 candidate-scroll-mode=uint32 0
 custom-bg='/home/hollowman/图片/light.jpg'
 custom-bg-dark='/home/hollowman/图片/dark.jpg'
 custom-bg-mode=uint32 2
 custom-bg-repeat-mode=uint32 1
-custom-theme='/home/hollowman/stylesheet-light.css'
+custom-font='Sans 16'
+custom-theme='/home/hollowman/stylesheet.css'
 custom-theme-dark='/home/hollowman/stylesheet-dark.css'
 enable-custom-theme=true
 enable-custom-theme-dark=true
 enable-orientation=true
 fix-ime-list=true
-ibus-restart-time='1624175579630'
-indicator-custom-font='文泉驿点阵正黑 Medium 16'
+ibus-restart-time='1625063857427'
+indicator-custom-font='Sans Bold 16'
 indicator-left-click-func=uint32 0
-input-indicator-hide-time=uint32 1
+indicator-opacity=uint32 210
+input-indicator-hide-time=uint32 2
 input-indicator-right-close=true
 input-indicator-use-scroll=true
-input-mode-list={'undefined': false, '': false, 'qv2ray': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false}
+input-mode-list={'undefined': true, '': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false, 'org.gnome.shell.extensions': true}
 input-mode-remember=uint32 0
 menu-ibus-emoji=true
 menu-ibus-exit=true
@@ -375,6 +380,7 @@ menu-ibus-restart=true
 menu-ibus-version=true
 use-candidate-box-right-click=true
 use-candidate-buttons=false
+use-candidate-opacity=true
 use-candidate-reposition=true
 use-candidate-scroll=true
 use-candidate-still=false
@@ -384,9 +390,11 @@ use-custom-font=true
 use-indicator-auto-hide=true
 use-indicator-custom-font=true
 use-indicator-left-click=true
+use-indicator-opacity=true
 use-indicator-reposition=true
 use-input-indicator=true
 use-popup-animation=true
+use-tray=true
 use-tray-click-source-switch=true
 ```
 
@@ -452,9 +460,9 @@ gtk-font-name=更纱黑体 SC 12
 
 可通过修改上述文件实现改变 GTK 主题字体和字号的目的。
 
-### 自定义 IBus 色调（创建一个GTK主题）
+### 自定义 IBus 色调（创建一个 GTK 主题）
 
-创建一个名为`ibus-custom-theme`的GTK3主题，运行：
+创建一个名为`ibus-custom-theme`的 GTK3 主题，运行：
 
 ```bash
 mkdir -p $HOME/.themes/ibus-custom-theme/gtk-3.0

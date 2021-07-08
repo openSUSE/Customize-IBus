@@ -92,6 +92,8 @@ At item `Use custom font`, select the check box on the left to enable configurat
 
 At item `Auto switch ASCII mode`, select the check box on the left to enable configuration of switching ASCII mode when switching windows, Click on the far right to select. It supports setting to make ASCII mode on and off, or just keep to remain current mode. You can also set to remember input state or not on the near right. If you have set to `Remember Input State`, every opened APP's input mode will be remembered if you have switched the input source manually in the APP's window, and the newly-opened APP will follow the configuration. APP's Input State will be remembered forever.
 
+At item `Candidate box opacity`, select the check box on the left to enable configuration of the opacity in the IBus candidate box. Slide the right button to configure opacity ranging from 0 to 255 step 1.
+
 At item `Fix IME list order`, click the switch on the right to turn this feature on or off.
 
 If you use multiple input methods in your system, when you use the keyboard shortcut to switch input methods (usually `Win + Space`), the input method displayed by default on the screen will be sorted by the most recently used input method. Turn on this feature to modify the order of input methods as fixed.
@@ -125,8 +127,8 @@ You can also start or restart IBus by pressing the top button:
 
 ![](https://img-blog.csdnimg.cn/2021070514192626.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-Here you can set to `Use input source indicator`, default is to show indicator every time you type, move caret or switch input source. You can set to `Indicate only when switching input source` by clicking the switch on the right. You can also set to `Indicate only when using ASCII mode`, `Right click to close indicator`, `Scroll to switch input source`, `Indicator popup animation` supporting `None`, `Slide`, `Fade`, `All`. Also support to `Use custom font`, `Enable indicator left click` to switch input source or drag to move indicator, `Enable indicator auto-hide timeout (unit: seconds)` and auto-hide timeout (in "
-"seconds) supporting to set the hidden delay in the range of 1 second to 5 seconds, and the setting step is 0.1.
+Here you can set to `Use input source indicator`, default is to show indicator every time you type, move caret or switch input source. You can set to `Indicate only when switching input source` by clicking the switch on the right. You can also set to `Indicate only when using ASCII mode`, `Right click to close indicator`, `Scroll to switch input source`, `Indicator popup animation` supporting `None`, `Slide`, `Fade`, `All`. Also support to `Use custom font`, `Enable indicator left click` to switch input source or drag to move indicator, set `Indicator opacity` supporting range of 0 to 255, and the setting step is 1, `Enable indicator auto-hide timeout (unit: seconds)` and auto-hide timeout (in "
+"seconds) supporting to set the hidden delay in the range of 1 second to 5 seconds, and the setting step is 1.
 
 Example animation:
 ![](https://img-blog.csdnimg.cn/20210507111902567.gif)
@@ -350,26 +352,29 @@ Example settings export file content:
 
 ```ini
 [/]
-candidate-box-position={'x': uint32 583, 'y': 338}
-candidate-orientation=uint32 1
+candidate-box-position={'x': uint32 0, 'y': 0}
+candidate-opacity=uint32 210
+candidate-orientation=uint32 0
 candidate-scroll-mode=uint32 0
 custom-bg='/home/hollowman/图片/light.jpg'
 custom-bg-dark='/home/hollowman/图片/dark.jpg'
 custom-bg-mode=uint32 2
 custom-bg-repeat-mode=uint32 1
-custom-theme='/home/hollowman/stylesheet-light.css'
+custom-font='Sans 16'
+custom-theme='/home/hollowman/stylesheet.css'
 custom-theme-dark='/home/hollowman/stylesheet-dark.css'
 enable-custom-theme=true
 enable-custom-theme-dark=true
 enable-orientation=true
 fix-ime-list=true
-ibus-restart-time='1624175579630'
-indicator-custom-font='文泉驿点阵正黑 Medium 16'
+ibus-restart-time='1625063857427'
+indicator-custom-font='Sans Bold 16'
 indicator-left-click-func=uint32 0
-input-indicator-hide-time=uint32 1
+indicator-opacity=uint32 210
+input-indicator-hide-time=uint32 2
 input-indicator-right-close=true
 input-indicator-use-scroll=true
-input-mode-list={'undefined': false, '': false, 'qv2ray': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false}
+input-mode-list={'undefined': true, '': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false, 'org.gnome.shell.extensions': true}
 input-mode-remember=uint32 0
 menu-ibus-emoji=true
 menu-ibus-exit=true
@@ -378,6 +383,7 @@ menu-ibus-restart=true
 menu-ibus-version=true
 use-candidate-box-right-click=true
 use-candidate-buttons=false
+use-candidate-opacity=true
 use-candidate-reposition=true
 use-candidate-scroll=true
 use-candidate-still=false
@@ -387,9 +393,11 @@ use-custom-font=true
 use-indicator-auto-hide=true
 use-indicator-custom-font=true
 use-indicator-left-click=true
+use-indicator-opacity=true
 use-indicator-reposition=true
 use-input-indicator=true
 use-popup-animation=true
+use-tray=true
 use-tray-click-source-switch=true
 ```
 

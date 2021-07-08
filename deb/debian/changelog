@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (68) mx; urgency=medium
+
+  * v68: Add functionality to modify opacity.
+
+ -- Hollow Man <hollowman@hollowman.ml>  Fri, 09 Jul 2021 02:22:28 +0800
+
 gnome-shell-extension-customize-ibus (67) mx; urgency=medium
 
   * v67: Further fix support for openSUSE Leap 15.3.

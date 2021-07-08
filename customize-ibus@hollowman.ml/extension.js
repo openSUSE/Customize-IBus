@@ -62,7 +62,7 @@ const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
 var IBusSettings = null;
 var ngsettings = null;
 
-const IBusInputSourceIndicater = GObject.registerClass(
+const IBusInputSourceIndicator = GObject.registerClass(
   {
     Properties: {
       inputindtog: GObject.param_spec_boolean(
@@ -111,6 +111,22 @@ const IBusInputSourceIndicater = GObject.registerClass(
         1,
         GObject.ParamFlags.WRITABLE
       ),
+      useindopacity: GObject.param_spec_boolean(
+        "useindopacity",
+        "useindopacity",
+        "useindopacity",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      indopacity: GObject.param_spec_uint(
+        "indopacity",
+        "indopacity",
+        "indopacity",
+        0,
+        255,
+        255,
+        GObject.ParamFlags.WRITABLE
+      ),
       useinputindlclk: GObject.param_spec_boolean(
         "useinputindlclk",
         "useinputindlclk",
@@ -150,10 +166,11 @@ const IBusInputSourceIndicater = GObject.registerClass(
       ),
     },
   },
-  class IBusInputSourceIndicater extends BoxPointer.BoxPointer {
+  class IBusInputSourceIndicator extends BoxPointer.BoxPointer {
     _init() {
       super._init(St.Side.TOP);
-      this._bindSettings();
+      this.font_style = "";
+      this.opacity_style = "";
       this.visible = false;
       this.style_class = "candidate-popup-boxpointer";
       this._dummyCursor = new St.Widget({ opacity: 0 });
@@ -169,6 +186,14 @@ const IBusInputSourceIndicater = GObject.registerClass(
         visible: true,
       });
       box.add(this._inputIndicatorLabel);
+
+      this._child_opacity = [];
+      let candidate_child = this.bin.get_children();
+      for (let i in candidate_child) {
+        this._child_opacity.push(candidate_child[i].get_opacity());
+      }
+
+      this._bindSettings();
 
       this._panelService = null;
       this._overviewHiddenID = Main.overview.connect(
@@ -208,6 +233,18 @@ const IBusInputSourceIndicater = GObject.registerClass(
         Fields.INPUTINDANIM,
         this,
         "inputindanim",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USEINDOPACITY,
+        this,
+        "useindopacity",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INDOPACITY,
+        this,
+        "indopacity",
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
@@ -278,6 +315,16 @@ const IBusInputSourceIndicater = GObject.registerClass(
       this.hideTime = inputindhid;
     }
 
+    set useindopacity(useindopacity) {
+      this._use_opacity = useindopacity;
+      this._update_opacity();
+    }
+
+    set indopacity(indopacity) {
+      this._opacity = indopacity;
+      this._update_opacity();
+    }
+
     set inputindrigc(inputindrigc) {
       if (inputindrigc) {
         this.reactive = true;
@@ -339,16 +386,53 @@ const IBusInputSourceIndicater = GObject.registerClass(
             return parseInt(e.message);
           }
         }; // hack for Pango.Weight enumeration exception (eg: 290) in some fonts
-        this.set_style(
+        this.font_style =
           'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
             get_weight(),
             desc.get_family(),
             desc.get_size() / Pango.SCALE - offset,
             Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
-          )
-        );
+          );
+        this.set_style(this.opacity_style + this.font_style);
       } else {
-        this.set_style("");
+        this.font_style = "";
+        this.set_style(this.opacity_style + this.font_style);
+      }
+    }
+
+    _update_opacity() {
+      if (this._use_opacity) {
+        let candidate_child = this.bin.get_children();
+        for (let i in candidate_child)
+          candidate_child[i].set_opacity(this._opacity);
+
+        // To get the theme color and modify its opacity
+        this.opacity_style = "";
+        this.set_style(this.opacity_style + this.font_style);
+        let themeNode = this.get_theme_node();
+        let backgroundColor = themeNode.get_color("-arrow-background-color");
+        let borderColor = themeNode.get_color("-arrow-border-color");
+        this.opacity_style =
+          "-arrow-background-color: rgba(%d, %d, %d, %f); -arrow-border-color: rgba(%d, %d, %d, %f);".format(
+            backgroundColor.red,
+            backgroundColor.green,
+            backgroundColor.blue,
+            this._opacity / 255,
+            borderColor.red,
+            borderColor.green,
+            borderColor.blue,
+            this._opacity / 255
+          );
+        this.set_style(this.opacity_style + this.font_style);
+      } else {
+        if (this._child_opacity) {
+          let candidate_child = this.bin.get_children();
+          for (let i in candidate_child)
+            candidate_child[i].set_opacity(this._child_opacity[i]);
+        }
+
+        this.opacity_style = "";
+        this.set_style(this.opacity_style + this.font_style);
       }
     }
 
@@ -775,6 +859,75 @@ const IBusFontSetting = GObject.registerClass(
   }
 );
 
+const IBusOpacity = GObject.registerClass(
+  {
+    Properties: {
+      opacity: GObject.param_spec_uint(
+        "opacity",
+        "opacity",
+        "opacity",
+        0,
+        255,
+        255,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusOpacity extends GObject.Object {
+    _init() {
+      super._init();
+      this._area_opacity = CandidateArea.get_opacity();
+      this._child_opacity = [];
+      let candidate_child = CandidatePopup.bin.get_children();
+      for (let i in candidate_child) {
+        this._child_opacity.push(candidate_child[i].get_opacity());
+      }
+      gsettings.bind(
+        Fields.CANDOPACITY,
+        this,
+        "opacity",
+        Gio.SettingsBindFlags.GET
+      );
+    }
+
+    set opacity(opacity) {
+      CandidateArea.set_opacity(opacity);
+      let candidate_child = CandidatePopup.bin.get_children();
+      for (let i in candidate_child) candidate_child[i].set_opacity(opacity);
+
+      // To get the theme color and modify its opacity
+      CandidatePopup.set_style("");
+      let themeNode = CandidatePopup.get_theme_node();
+      let backgroundColor = themeNode.get_color("-arrow-background-color");
+      let borderColor = themeNode.get_color("-arrow-border-color");
+      CandidatePopup.set_style(
+        "-arrow-background-color: rgba(%d, %d, %d, %f); -arrow-border-color: rgba(%d, %d, %d, %f);".format(
+          backgroundColor.red,
+          backgroundColor.green,
+          backgroundColor.blue,
+          opacity / 255,
+          borderColor.red,
+          borderColor.green,
+          borderColor.blue,
+          opacity / 255
+        )
+      );
+    }
+
+    destroy() {
+      global.log(this._area_opacity);
+      if (this._area_opacity) CandidateArea.set_opacity(this._area_opacity);
+      if (this._child_opacity) {
+        let candidate_child = CandidatePopup.bin.get_children();
+        for (let i in candidate_child)
+          candidate_child[i].set_opacity(this._child_opacity[i]);
+      }
+
+      CandidatePopup.set_style("");
+    }
+  }
+);
+
 const IBusScroll = GObject.registerClass(
   {
     Properties: {
@@ -794,7 +947,8 @@ const IBusScroll = GObject.registerClass(
       super._init();
       // Support for GNOME version less than 3.36
       this._CandidateAreaActor = CandidateArea;
-      if (!(CandidateArea instanceof St.BoxLayout)) this._CandidateAreaActor = CandidateArea.actor;
+      if (!(CandidateArea instanceof St.BoxLayout))
+        this._CandidateAreaActor = CandidateArea.actor;
 
       gsettings.bind(
         Fields.SCROLLMODE,
@@ -1246,7 +1400,8 @@ const IBusClickSwitch = GObject.registerClass(
       );
       CandidatePopup.reactive = true;
       this._CandidateAreaActor = CandidateArea;
-      if (!(CandidateArea instanceof St.BoxLayout)) this._CandidateAreaActor = CandidateArea.actor;
+      if (!(CandidateArea instanceof St.BoxLayout))
+        this._CandidateAreaActor = CandidateArea.actor;
 
       this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
         "enter-event",
@@ -1387,7 +1542,8 @@ const IBusReposition = GObject.registerClass(
       );
 
       this._CandidateAreaActor = CandidateArea;
-      if (!(CandidateArea instanceof St.BoxLayout)) this._CandidateAreaActor = CandidateArea.actor;
+      if (!(CandidateArea instanceof St.BoxLayout))
+        this._CandidateAreaActor = CandidateArea.actor;
 
       this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
         "enter-event",
@@ -1776,8 +1932,7 @@ const IBusAnimation = GObject.registerClass(
     }
 
     destroy() {
-      if (this._openOrig)
-        CandidatePopup.open = this._openOrig;
+      if (this._openOrig) CandidatePopup.open = this._openOrig;
     }
   }
 );
@@ -1878,18 +2033,21 @@ const IBusThemeManager = GObject.registerClass(
     loadTheme(newStylesheet) {
       let themeContext = St.ThemeContext.get_for_stage(global.stage);
       let previousTheme = themeContext.get_theme();
-  
+
       let theme = new St.Theme({
         application_stylesheet: Main._cssStylesheet,
         default_stylesheet: Main._getDefaultStylesheet(),
       });
-  
+
       if (previousTheme) {
         let customStylesheets = previousTheme.get_custom_stylesheets();
 
         for (let i = 0; i < customStylesheets.length; i++)
           // Fix support for GNOME less than 3.36
-          if (customStylesheets[i] && customStylesheets[i].get_path() != this._prevCssStylesheet)
+          if (
+            customStylesheets[i] &&
+            customStylesheets[i].get_path() != this._prevCssStylesheet
+          )
             theme.load_stylesheet(customStylesheets[i]);
       }
 
@@ -1897,7 +2055,7 @@ const IBusThemeManager = GObject.registerClass(
         theme.load_stylesheet(Gio.File.new_for_path(newStylesheet));
 
       themeContext.set_theme(theme);
-  }
+    }
 
     // Load stylesheet
     _changeTheme(toEnable = true) {
@@ -1930,6 +2088,15 @@ const IBusThemeManager = GObject.registerClass(
         this.loadTheme();
         this._prevCssStylesheet = "";
       }
+      // To update theme color opacity
+      gsettings.set_uint(
+        Fields.CANDOPACITY,
+        gsettings.get_uint(Fields.CANDOPACITY)
+      );
+      gsettings.set_uint(
+        Fields.INDOPACITY,
+        gsettings.get_uint(Fields.INDOPACITY)
+      );
     }
   }
 );
@@ -1941,6 +2108,13 @@ const Extensions = GObject.registerClass(
         "font",
         "font",
         "font",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      opacity: GObject.param_spec_boolean(
+        "opacity",
+        "opacity",
+        "opacity",
         false,
         GObject.ParamFlags.WRITABLE
       ),
@@ -2126,6 +2300,12 @@ const Extensions = GObject.registerClass(
         "font",
         Gio.SettingsBindFlags.GET
       );
+      gsettings.bind(
+        Fields.USECANDOPACITY,
+        this,
+        "opacity",
+        Gio.SettingsBindFlags.GET
+      );
       gsettings.bind(Fields.USECUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
       gsettings.bind(
         Fields.USECUSTOMBGDARK,
@@ -2291,6 +2471,17 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    set opacity(opacity) {
+      if (opacity) {
+        if (this._opacity) return;
+        this._opacity = new IBusOpacity();
+      } else {
+        if (!this._opacity) return;
+        this._opacity.destroy();
+        delete this._opacity;
+      }
+    }
+
     set bg(bg) {
       this._bgLight = bg;
       if (bg) {
@@ -2369,7 +2560,7 @@ const Extensions = GObject.registerClass(
     set useinputind(useinputind) {
       if (useinputind) {
         if (this._useinputind) return;
-        this._useinputind = new IBusInputSourceIndicater();
+        this._useinputind = new IBusInputSourceIndicator();
       } else {
         if (!this._useinputind) return;
         this._useinputind.destroy();
@@ -2610,6 +2801,7 @@ const Extensions = GObject.registerClass(
       this.bg = false;
       this.bgdark = false;
       this.font = false;
+      this.opacity = false;
       this.input = false;
       this.orien = false;
       this.theme = false;

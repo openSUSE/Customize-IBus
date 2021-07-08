@@ -17,7 +17,7 @@
 
 
 %global commit 643e927cffde0c2b6f4928500fb2b182b8f54427
-%global extension_version 67
+%global extension_version 68
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 
@@ -61,6 +61,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Fri Jul 09 2021 Hollow Man <hollowman@hollowman.ml> - 68
+- Add functionality to modify opacity.
+
 * Wed Jul 07 2021 Hollow Man <hollowman@hollowman.ml> - 67
 - Further fix support for openSUSE Leap 15.3.
 

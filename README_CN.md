@@ -80,6 +80,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 - 固定候选框使其不跟随光标以及设定固定位置
 - 候选框字体
 - 输入模式根据应用记忆并自动切换
+- 更改候选框透明度
 - 固定输入法列表顺序
 - 拖拽移动候选框
 - 显示或隐藏候选框调页按钮
@@ -96,6 +97,7 @@ sudo apt install gnome-shell-extension-customize-ibus
   - 指示器显示动画
   - 自定义字体
   - 左击指示器以拖拽移动或者切换输入源
+  - 更改透明度
   - 启用自动隐藏以及配置自动隐藏时延
 - 皮肤样式主题（提供的或者从 GNOME Shell 主题中提取的样式表，参见扩展的帮助部分来获取更多指导）
 - 候选框背景图片及其显示样式
@@ -212,8 +214,9 @@ background-size: cover;
 - [x] V65: 将项目转移至 openSUSE。
 - [x] V66: 增加对 openSUSE Leap 15.3 的支持。
 - [x] V67: 进一步修复对 openSUSE Leap 15.3 的支持。
+- [x] V68: 增加更改透明度功能。
 
-在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)，3.34，3.36，3.38 和 40(v67)中通过了测试。
+在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)，3.34，3.36，3.38 和 40(v67，v68)中通过了测试。
 
 ## 致谢
 

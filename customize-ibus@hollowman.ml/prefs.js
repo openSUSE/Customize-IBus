@@ -92,6 +92,17 @@ const CustomizeIBus = GObject.registerClass(
         _("Use custom font")
       );
 
+      let adjustment = this._createAdjustment(Fields.CANDOPACITY, 1);
+      this._field_use_candidate_opacity = this._checkMaker(
+        _("Candidate box opacity")
+      );
+      this._field_candidate_opacity = new Gtk.Scale({
+        adjustment,
+        digits: 0,
+        draw_value: true,
+        hexpand: true,
+      });
+
       this._restart_ibus = new Gtk.Button({
         label: _("Start/Restart IBus"),
         hexpand: true,
@@ -228,15 +239,26 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_right_close = new Gtk.Switch();
       this._field_indicator_scroll = new Gtk.Switch();
 
-      let adjustment = this._createAdjustment(Fields.INPUTINDHID);
       this._field_indicator_enable_left_click = this._checkMaker(
         _("Enable indicator left click")
       );
+      adjustment = this._createAdjustment(Fields.INDOPACITY, 1);
+      this._field_indicator_use_opacity = this._checkMaker(
+        _("Indicator opacity")
+      );
+      this._field_indicator_opacity = new Gtk.Scale({
+        adjustment,
+        digits: 0,
+        draw_value: true,
+        hexpand: true,
+      });
+      adjustment = this._createAdjustment(Fields.INPUTINDHID, 1);
       this._field_indicator_enable_autohide = this._checkMaker(
         _("Enable indicator auto-hide timeout (unit: seconds)")
       );
       this._field_indicator_hide_time = new Gtk.Scale({
         adjustment,
+        digits: 0,
         draw_value: true,
         hexpand: true,
       });
@@ -422,6 +444,28 @@ const CustomizeIBus = GObject.registerClass(
         this._field_remember_input,
         this._field_unkown_state
       );
+      if (ShellVersion < 40) {
+        let hbox = new Gtk.Box({
+          margin_start: 10,
+          margin_end: 10,
+          margin_top: 10,
+          margin_bottom: 10,
+        });
+        hbox.pack_start(this._field_use_candidate_opacity, true, true, 4);
+        hbox.pack_start(this._field_candidate_opacity, true, true, 4);
+        this._ibus_basic.grid.attach(
+          hbox,
+          0,
+          this._ibus_basic.grid._row++,
+          1,
+          1
+        );
+      } else {
+        this._ibus_basic._add(
+          this._field_use_candidate_opacity,
+          this._field_candidate_opacity
+        );
+      }
       this._ibus_basic._add(
         this._switchLabelMaker(_("Fix IME list order")),
         this._field_fix_ime_list
@@ -514,6 +558,27 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_enable_left_click,
         this._field_indicator_left_click
       );
+      if (ShellVersion < 40) {
+        let hbox = new Gtk.Box({
+          margin_start: 10,
+          margin_end: 10,
+          margin_top: 10,
+          margin_bottom: 10,
+        });
+        hbox.pack_start(this._field_indicator_use_opacity, true, true, 4);
+        hbox.pack_start(this._field_indicator_opacity, true, true, 4);
+        this._ibus_indicator.grid.attach(
+          hbox,
+          0,
+          this._ibus_indicator.grid._row++,
+          1,
+          1
+        );
+      } else
+        this._ibus_indicator._add(
+          this._field_indicator_use_opacity,
+          this._field_indicator_opacity
+        );
       if (ShellVersion < 40) {
         let hbox = new Gtk.Box({
           margin_start: 10,
@@ -625,6 +690,9 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_left_click.set_sensitive(
           this._field_indicator_enable_left_click.active && widget.active
         );
+        this._field_indicator_opacity.set_sensitive(
+          this._field_indicator_use_opacity.active && widget.active
+        );
         this._field_indicator_hide_time.set_sensitive(
           this._field_indicator_enable_autohide.active && widget.active
         );
@@ -633,6 +701,7 @@ const CustomizeIBus = GObject.registerClass(
         );
         this._field_indicator_use_custom_font.set_sensitive(widget.active);
         this._field_indicator_enable_left_click.set_sensitive(widget.active);
+        this._field_indicator_use_opacity.set_sensitive(widget.active);
         this._field_indicator_enable_autohide.set_sensitive(widget.active);
       });
       this._field_indicator_enable_left_click.connect(
@@ -641,6 +710,9 @@ const CustomizeIBus = GObject.registerClass(
           this._field_indicator_left_click.set_sensitive(widget.active);
         }
       );
+      this._field_indicator_use_opacity.connect("notify::active", (widget) => {
+        this._field_indicator_opacity.set_sensitive(widget.active);
+      });
       this._field_indicator_enable_autohide.connect(
         "notify::active",
         (widget) => {
@@ -660,6 +732,9 @@ const CustomizeIBus = GObject.registerClass(
           Fields.CUSTOMFONT,
           gsettings.get_string(Fields.CUSTOMFONT)
         );
+      });
+      this._field_use_candidate_opacity.connect("notify::active", (widget) => {
+        this._field_candidate_opacity.set_sensitive(widget.active);
       });
       this._field_use_custom_bg.connect("notify::active", (widget) => {
         this._logoPicker.set_sensitive(widget.active);
@@ -860,11 +935,18 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_indicator.active &&
           this._field_indicator_enable_left_click.active
       );
+      this._field_indicator_opacity.set_sensitive(
+        this._field_use_indicator.active &&
+          this._field_indicator_use_opacity.active
+      );
       this._field_indicator_hide_time.set_sensitive(
         this._field_use_indicator.active &&
           this._field_indicator_enable_autohide.active
       );
       this._field_indicator_enable_left_click.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_use_opacity.set_sensitive(
         this._field_use_indicator.active
       );
       this._field_indicator_enable_autohide.set_sensitive(
@@ -878,6 +960,9 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_indicator.active
       );
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
+      this._field_candidate_opacity.set_sensitive(
+        this._field_use_candidate_opacity.active
+      );
       this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
       this._field_bg_dark_mode.set_sensitive(
         this._field_use_custom_bg_dark.active
@@ -1012,6 +1097,18 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.UNKNOWNSTATE,
         this._field_unkown_state,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.USECANDOPACITY,
+        this._field_use_candidate_opacity,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.CANDOPACITY,
+        this._field_candidate_opacity,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1201,6 +1298,18 @@ const CustomizeIBus = GObject.registerClass(
         Gio.SettingsBindFlags.DEFAULT
       );
       gsettings.bind(
+        Fields.USEINDOPACITY,
+        this._field_indicator_use_opacity,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INDOPACITY,
+        this._field_indicator_opacity,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
         Fields.USEINDAUTOHID,
         this._field_indicator_enable_autohide,
         "active",
@@ -1235,7 +1344,7 @@ const CustomizeIBus = GObject.registerClass(
       this._updateIBusVersion();
     }
 
-    _createAdjustment(key) {
+    _createAdjustment(key, step_increment) {
       let schemaKey = gsettings.settings_schema.get_key(key);
       let [type, variant] = schemaKey.get_range().deep_unpack();
       if (type !== "range")
@@ -1244,6 +1353,7 @@ const CustomizeIBus = GObject.registerClass(
       let adj = new Gtk.Adjustment({
         lower,
         upper,
+        step_increment,
       });
       gsettings.bind(key, adj, "value", Gio.SettingsBindFlags.DEFAULT);
       return adj;

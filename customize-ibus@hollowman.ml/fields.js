@@ -7,6 +7,10 @@
 var Fields = {
   ASCIIMODE: "ascii-mode",
   CUSTOMFONT: "custom-font",
+  USECANDOPACITY: "use-candidate-opacity",
+  CANDOPACITY: "candidate-opacity",
+  USEINDOPACITY: "use-indicator-opacity",
+  INDOPACITY: "indicator-opacity",
   CUSTOMBG: "custom-bg",
   CUSTOMBGDARK: "custom-bg-dark",
   CUSTOMTHEME: "custom-theme",
