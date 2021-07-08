@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: customize-ibus 68\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-09 02:52+0800\n"
+"POT-Creation-Date: 2021-07-09 02:56+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -21,51 +21,51 @@ msgstr ""
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服务连接成功！"
 
-#: extension.js:1184
+#: extension.js:1183
 msgid "loading background for IBus:"
 msgstr "正在为 IBus 加载背景:"
 
-#: extension.js:1194
+#: extension.js:1193
 msgid "remove custom background for IBus"
 msgstr "为 IBus 去除自定义背景"
 
-#: extension.js:2077
+#: extension.js:2076
 msgid "loading light user theme for IBus:"
 msgstr "正在为 IBus 加载浅色用户主题:"
 
-#: extension.js:2087
+#: extension.js:2086
 msgid "loading dark user theme for IBus:"
 msgstr "正在为 IBus 加载深色用户主题:"
 
-#: extension.js:2092
+#: extension.js:2091
 msgid "loading default theme for IBus"
 msgstr "正在为 IBus 加载当前系统主题"
 
-#: extension.js:2661
+#: extension.js:2660
 msgid "Copy Emoji"
 msgstr "复制 Emoji"
 
-#: extension.js:2676 prefs.js:1483 prefs.js:2048
+#: extension.js:2675 prefs.js:1483 prefs.js:2048
 msgid "Customize IBus"
 msgstr "自定义 IBus"
 
-#: extension.js:2691 prefs.js:511
+#: extension.js:2690 prefs.js:511
 msgid "IBus Preferences"
 msgstr "IBus 首选项"
 
-#: extension.js:2706 extension.js:2787 prefs.js:515
+#: extension.js:2705 extension.js:2786 prefs.js:515
 msgid "IBus Version"
 msgstr "IBus 版本"
 
-#: extension.js:2721
+#: extension.js:2720
 msgid "Restart"
 msgstr "重新启动"
 
-#: extension.js:2736
+#: extension.js:2735
 msgid "Quit"
 msgstr "退出"
 
-#: extension.js:2752
+#: extension.js:2751
 msgid "Successfully triggered a restart for IBus"
 msgstr "成功触发一次 IBus 的重新启动"
 

@@ -919,7 +919,6 @@ const IBusOpacity = GObject.registerClass(
     }
 
     destroy() {
-      global.log(this._area_opacity);
       if (this._area_opacity) CandidateArea.set_opacity(this._area_opacity);
       if (this._child_opacity) {
         let candidate_child = CandidatePopup.bin.get_children();
