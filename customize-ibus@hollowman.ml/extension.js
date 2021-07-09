@@ -2091,13 +2091,27 @@ const IBusThemeManager = GObject.registerClass(
         this._prevCssStylesheet = "";
       }
       // To update theme color opacity
+      let origCandOpacity = gsettings.get_uint(Fields.CANDOPACITY)
+      let tempCandOpacity = 255;
+      if (tempCandOpacity === origCandOpacity) tempCandOpacity -= 1;
       gsettings.set_uint(
         Fields.CANDOPACITY,
-        gsettings.get_uint(Fields.CANDOPACITY)
+        tempCandOpacity
+      );
+      gsettings.set_uint(
+        Fields.CANDOPACITY,
+        origCandOpacity
+      );
+      let origIndOpacity = gsettings.get_uint(Fields.INDOPACITY)
+      let tempIndOpacity = 255;
+      if (tempIndOpacity === origIndOpacity) tempIndOpacity -= 1;
+      gsettings.set_uint(
+        Fields.INDOPACITY,
+        tempIndOpacity
       );
       gsettings.set_uint(
         Fields.INDOPACITY,
-        gsettings.get_uint(Fields.INDOPACITY)
+        origIndOpacity
       );
     }
   }
