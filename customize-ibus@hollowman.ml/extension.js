@@ -403,7 +403,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
     }
 
     _update_opacity() {
-      if (this._use_opacity) {
+      if (this._use_opacity && this._opacity) {
         let candidate_child = this.bin.get_children();
         for (let i in candidate_child)
           candidate_child[i].set_opacity(this._opacity);
@@ -879,7 +879,12 @@ const IBusOpacity = GObject.registerClass(
   class IBusOpacity extends GObject.Object {
     _init() {
       super._init();
-      this._area_opacity = CandidateArea.get_opacity();
+      // Support for GNOME version less than 3.36
+      this._CandidateAreaActor = CandidateArea;
+      if (!(CandidateArea instanceof St.BoxLayout))
+        this._CandidateAreaActor = CandidateArea.actor;
+
+      this._area_opacity = this._CandidateAreaActor.get_opacity();
       this._child_opacity = [];
       let candidate_child = CandidatePopup.bin.get_children();
       for (let i in candidate_child) {
@@ -894,7 +899,7 @@ const IBusOpacity = GObject.registerClass(
     }
 
     set opacity(opacity) {
-      CandidateArea.set_opacity(opacity);
+      this._CandidateAreaActor.set_opacity(opacity);
       let candidate_child = CandidatePopup.bin.get_children();
       for (let i in candidate_child) candidate_child[i].set_opacity(opacity);
 
@@ -919,7 +924,7 @@ const IBusOpacity = GObject.registerClass(
     }
 
     destroy() {
-      if (this._area_opacity) CandidateArea.set_opacity(this._area_opacity);
+      if (this._area_opacity) this._CandidateAreaActor.set_opacity(this._area_opacity);
       if (this._child_opacity) {
         let candidate_child = CandidatePopup.bin.get_children();
         for (let i in candidate_child)
@@ -1571,17 +1576,19 @@ const IBusReposition = GObject.registerClass(
           sourceTopLeft = CandidatePopup._sourceExtents.get_top_left();
           sourceBottomRight = CandidatePopup._sourceExtents.get_bottom_right();
         }
-        switch (CandidatePopup._arrowSide) {
-          case St.Side.TOP:
-            CandidatePopup._relativePosY +=
-              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
-            break;
-          case St.Side.BOTTOM:
-            CandidatePopup._relativePosY -=
-              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
-            break;
+        if (CandidatePopup._relativePosY) {
+          switch (CandidatePopup._arrowSide) {
+            case St.Side.TOP:
+              CandidatePopup._relativePosY +=
+                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+              break;
+            case St.Side.BOTTOM:
+              CandidatePopup._relativePosY -=
+                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+              break;
+          }
+          this._updatePos();
         }
-        this._updatePos();
       });
     }
 
