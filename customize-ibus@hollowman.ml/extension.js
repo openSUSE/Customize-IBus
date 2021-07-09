@@ -413,16 +413,11 @@ const IBusInputSourceIndicator = GObject.registerClass(
         this.set_style(this.opacity_style + this.font_style);
         let themeNode = this.get_theme_node();
         let backgroundColor = themeNode.get_color("-arrow-background-color");
-        let borderColor = themeNode.get_color("-arrow-border-color");
         this.opacity_style =
-          "-arrow-background-color: rgba(%d, %d, %d, %f); -arrow-border-color: rgba(%d, %d, %d, %f);".format(
+          "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
             backgroundColor.red,
             backgroundColor.green,
             backgroundColor.blue,
-            this._opacity / 255,
-            borderColor.red,
-            borderColor.green,
-            borderColor.blue,
             this._opacity / 255
           );
         this.set_style(this.opacity_style + this.font_style);
@@ -908,23 +903,19 @@ const IBusOpacity = GObject.registerClass(
       CandidatePopup.set_style(fontStyle + opacityStyle);
       let themeNode = CandidatePopup.get_theme_node();
       let backgroundColor = themeNode.get_color("-arrow-background-color");
-      let borderColor = themeNode.get_color("-arrow-border-color");
       opacityStyle =
         "-arrow-background-color: rgba(%d, %d, %d, %f); -arrow-border-color: rgba(%d, %d, %d, %f);".format(
           backgroundColor.red,
           backgroundColor.green,
           backgroundColor.blue,
-          opacity / 255,
-          borderColor.red,
-          borderColor.green,
-          borderColor.blue,
           opacity / 255
         );
       CandidatePopup.set_style(fontStyle + opacityStyle);
     }
 
     destroy() {
-      if (this._area_opacity) this._CandidateAreaActor.set_opacity(this._area_opacity);
+      if (this._area_opacity)
+        this._CandidateAreaActor.set_opacity(this._area_opacity);
       if (this._child_opacity) {
         let candidate_child = CandidatePopup.bin.get_children();
         for (let i in candidate_child)
