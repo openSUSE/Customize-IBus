@@ -904,7 +904,7 @@ const IBusOpacity = GObject.registerClass(
       let themeNode = CandidatePopup.get_theme_node();
       let backgroundColor = themeNode.get_color("-arrow-background-color");
       opacityStyle =
-        "-arrow-background-color: rgba(%d, %d, %d, %f); -arrow-border-color: rgba(%d, %d, %d, %f);".format(
+        "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
           backgroundColor.red,
           backgroundColor.green,
           backgroundColor.blue,
