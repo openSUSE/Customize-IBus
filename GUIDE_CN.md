@@ -414,6 +414,13 @@ use-tray-click-source-switch=true
 下列步骤可以更改 IBus 的 GTK 主题：
 
 1. 首先安装[ibus-theme-tools](https://github.com/openSUSE/IBus-Theme-Tools)：
+
+推荐使用pip安装：
+```bash
+pip install ibus-theme-tools
+```
+
+你也可以手动进行安装：
 ```bash
 git clone https://github.com/openSUSE/IBus-Theme-Tools.git
 cd IBus-Theme-Tools && python3 setup.py install

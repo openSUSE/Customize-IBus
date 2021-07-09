@@ -417,6 +417,13 @@ You can download more GTK3/4 themes from this website: [https://www.gnome-look.o
 The following steps can change the GTK theme of IBus:
 
 1. First, Install [ibus-theme-tools](https://github.com/openSUSE/IBus-Theme-Tools):
+
+Recommend to use pip to install:
+```bash
+pip install ibus-theme-tools
+```
+
+You can also install manually:
 ```bash
 git clone https://github.com/openSUSE/IBus-Theme-Tools.git
 cd IBus-Theme-Tools && python3 setup.py install
