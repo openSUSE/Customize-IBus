@@ -153,7 +153,7 @@ You can download more GNOME Shell themes from this website: [https://www.pling.c
 
 The [IBus theme tool](https://github.com/openSUSE/IBus-Theme-Tools) style sheet generation uses the GNOME Shell theme that has been installed on the computer to extract the IBus style. The extraction steps are as follows:
 
-1. Refer to the following part: `Non-GNOME Desktop` -> `Customize IBus Theme` steps 1-3 to run the program.
+1. Refer to the following part: `Non-GNOME Desktop` -> `Customize IBus Theme` steps 1-2 to run the program.
 
 2. Enter the number of the IBus-related GNOME Shell theme style you want to export, and press `Enter`.
    ![](https://img-blog.csdnimg.cn/20210705151334983.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -416,29 +416,25 @@ You can download more GTK3/4 themes from this website: [https://www.gnome-look.o
 
 The following steps can change the GTK theme of IBus:
 
-1. Download the [IBus Theme Tools](https://github.com/openSUSE/IBus-Theme-Tools) source code repository to the local.
-
+1. First, Install [ibus-theme-tools](https://github.com/openSUSE/IBus-Theme-Tools):
 ```bash
 git clone https://github.com/openSUSE/IBus-Theme-Tools.git
-cd IBus-Theme-Tools
+cd IBus-Theme-Tools && python3 setup.py install
 ```
 
-2. Give IBus-Theme.py executable permission.
-
+If you use Arch Linux, you can also use AUR to install as a system extension:
 ```bash
-chmod +x IBus-Theme.py
+yay -S ibus-theme-tools
 ```
 
-3. Run [IBus-Theme.py](https://github.com/openSUSE/IBus-Theme-Tools/blob/main/IBus-Theme.py).
+[![](https://img-blog.csdnimg.cn/20210502152203849.png)](https://aur.archlinux.org/packages/ibus-theme-tools/)
 
-```bash
-./IBus-Theme.py
-```
+2. Then run `ibus-theme-tools` in the terminal.
 
-4. Enter `1`, choose to change the GTK theme of IBus, and press `Enter`.
+3. Enter `1`, choose to change the GTK theme of IBus, and press `Enter`.
    ![](https://img-blog.csdnimg.cn/20210705152119277.png)
 
-Enter the IBus GTK theme you want to set, and then press `Enter`. (Note that the theme name ends with `:dark` is the dark mode of the theme)
+4. Enter the IBus GTK theme you want to set, and then press `Enter`. (Note that the theme name ends with `:dark` is the dark mode of the theme)
 ![](https://img-blog.csdnimg.cn/20210705152358519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 5. If there is no error message, the setting action should be successful. Now when using the IBus input method, you can see that the theme has been changed into the GTK theme you set, and it will not become invalid after restarting, because the automatic theme switching command has been added to your startup directory `$HOME/.config/autostart/`.

@@ -150,7 +150,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 [IBus 主题工具](https://github.com/openSUSE/IBus-Theme-Tools)样式表生成借助于电脑上已经安装了的 GNOME Shell 主题进行 IBus 样式的提取，其提取步骤如下：
 
-1. 参见下文中`非GNOME桌面` -> `自定义IBus主题` 步骤 1-3 来运行程序。
+1. 参见下文中`非GNOME桌面` -> `自定义IBus主题` 步骤 1-2 来运行程序。
 
 2. 输入你想要导出的 IBus 相关 GNOME Shell 主题样式，并按下回车。
    ![](https://img-blog.csdnimg.cn/2021050119011780.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -413,32 +413,28 @@ use-tray-click-source-switch=true
 
 下列步骤可以更改 IBus 的 GTK 主题：
 
-1. 下载[IBus Theme Tools](https://github.com/openSUSE/IBus-Theme-Tools)源代码仓库到本地。
-
+1. 首先安装[ibus-theme-tools](https://github.com/openSUSE/IBus-Theme-Tools)：
 ```bash
 git clone https://github.com/openSUSE/IBus-Theme-Tools.git
-cd IBus-Theme-Tools
+cd IBus-Theme-Tools && python3 setup.py install
 ```
 
-2. 赋予[IBus-Theme.py](https://github.com/openSUSE/IBus-Theme-Tools/blob/main/IBus-Theme.py)可执行权限。
-
+如果你使用 Arch Linux, 也可使用 AUR 安装为系统插件:
 ```bash
-chmod +x IBus-Theme.py
+yay -S ibus-theme-tools
 ```
 
-3. 运行[IBus-Theme.py](https://github.com/openSUSE/IBus-Theme-Tools/blob/main/IBus-Theme.py)。
+[![](https://img-blog.csdnimg.cn/20210502152203849.png)](https://aur.archlinux.org/packages/ibus-theme-tools/)
 
-```bash
-./IBus-Theme.py
-```
+2. 然后在终端中运行`ibus-theme-tools`。
 
-4. 输入 1，选择更改 IBus 的 GTK 主题，并回车。
+3. 输入 1，选择更改 IBus 的 GTK 主题，并回车。
    ![](https://img-blog.csdnimg.cn/20210501171451308.png)
 
-5. 输入你想要设定的 IBus GTK 主题，并按下回车。（注意，主题名后标`:dark`的为该款主题的暗色风格模式）
+4. 输入你想要设定的 IBus GTK 主题，并按下回车。（注意，主题名后标`:dark`的为该款主题的暗色风格模式）
    ![](https://img-blog.csdnimg.cn/20210501171651552.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-6. 若无任何错误提示，则设定成功。现在使用 IBus 输入法你可以看到主题已经换成了你设定的 GTK 主题，并且重启之后也不会失效，因为自动切换主题命令已经加入了你的自启动目录`$HOME/.config/autostart/`中。
+5. 若无任何错误提示，则设定成功。现在使用 IBus 输入法你可以看到主题已经换成了你设定的 GTK 主题，并且重启之后也不会失效，因为自动切换主题命令已经加入了你的自启动目录`$HOME/.config/autostart/`中。
 
 ### 自定义 IBus 字体字号
 
