@@ -6,9 +6,9 @@ Installed-Size: 257
 Depends: gnome-shell, gnome-tweaks
 Filename: ./gnome-shell-extension-customize-ibus_68_all.deb
 Size: 62698
-MD5sum: 6ccc9d32766c145ebcbc0dcf431348da
-SHA1: 3f3184c431bb6db0bda23c867834c764cb5da872
-SHA256: edc71ee84659dadd6e105270fd52a99ca55c34cf7973f9e3cf3afd8f0067cb67
+MD5sum: 7117720d25117cbe85394522a6641508
+SHA1: 16ace1faa3f962b6349ca5f6f96cf7021859b121
+SHA256: edee8715de90e2ae6f78d5936e43e17e7c33ea024b4f470c69af79bbafa56694
 Section: system
 Priority: optional
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
