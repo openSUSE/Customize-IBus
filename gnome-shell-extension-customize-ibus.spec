@@ -17,26 +17,21 @@
 
 
 %global commit 350f8cd1668a341258d45b285a60df8359dd26b8
-%global extension_version 68
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
-
 Name:           gnome-shell-extension-customize-ibus
-Version:        %{extension_version}
+Version:        68
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
-
 License:        GPL-3.0-or-later
 URL:            %{forgeurl}
 Source0:        %{forgeurl}/archive/%{commit}/Customize-IBus-%{commit}.tar.gz
-BuildArch:      noarch
-
 BuildRequires:  gettext
 BuildRequires:  glib2-devel
 BuildRequires:  make
-
 Requires:       gnome-shell
 Requires:       gnome-tweaks
+BuildArch:      noarch
 
 %description
 Full customization of appearance, behavior, system tray and input source indicator for IBus.
@@ -46,7 +41,7 @@ Full customization of appearance, behavior, system tray and input source indicat
 %setup -q -n Customize-IBus-%{commit}
 
 %build
-make _build VERSION=%{extension_version}
+%make_build _build VERSION=%{version}
 
 %install
 mkdir -p %{buildroot}/%{_datadir}/gnome-shell/extensions
