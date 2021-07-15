@@ -63,6 +63,7 @@ clean:
 	-rm -fR $(MSGPOS:.po=.mo)
 	-rm -fR $(MSGPOS:.po=.po~)
 	-rm -fR deb/usr
+	-rm -fR *.upload
 
 $(SCMCPL): $(SCMXML)
 	glib-compile-schemas ./$(UUID)/schemas/
@@ -111,9 +112,16 @@ mergepo: potfile pofile
 		rm -fR $(MSGPOT); \
 		rm -fR $(MSGDIR)/*po~
 
-deb: _build
+debprepare: _build
 	mv _build deb
-	cd deb; dpkg-buildpackage
+
+deb: debprepare
+	cd deb; dpkg-buildpackage -F
+
+ppa: debprepare
+	cd deb; \
+		dpkg-buildpackage -S;
+	dput $(NAME) *source.changes
 
 rpm:
 	if [ ! -d "~/rpmbuild" ]; then rpmdev-setuptree; fi
