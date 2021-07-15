@@ -65,6 +65,8 @@ sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
 
+[Ubuntu PPA](https://launchpad.net/~hollowman86/+archive/ubuntu/customize-ibus)
+
 All versions of Linux can download related packages through [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) and then make installation.
 
 ## Features
