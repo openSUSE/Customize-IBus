@@ -438,13 +438,26 @@ yay -S ibus-theme-tools
 
 2. Then run `ibus-theme-tools` in the terminal.
 
-3. Enter `1`, choose to change the GTK theme of IBus, and press `Enter`.
-   ![](https://img-blog.csdnimg.cn/20210705152119277.png)
+3. Enter `1`, choose to extract an IBus-related GTK theme, and press `Enter`.
+   ![](https://img-blog.csdnimg.cn/4c85f813461249eda1bb8069ea5f1229.png)
 
-4. Enter the IBus GTK theme you want to set, and then press `Enter`. (Note that the theme name ends with `:dark` is the dark mode of the theme)
-![](https://img-blog.csdnimg.cn/20210705152358519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+4. Enter the IBus GTK theme you want to extract, and then press `Enter`. (Note that the theme name ends with `:dark` is the dark mode of the theme)
+   ![](https://img-blog.csdnimg.cn/ce601d1c31564d429894d106a683452b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-5. If there is no error message, the setting action should be successful. Now when using the IBus input method, you can see that the theme has been changed into the GTK theme you set, and it will not become invalid after restarting, because the automatic theme switching command has been added to your startup directory `$HOME/.config/autostart/`.
+5. Enter the system GTK you want to mix, and then press `Enter`.
+   ![](https://img-blog.csdnimg.cn/94756a8e9afa404a92c32a9be9c1f01a.png)
+
+6. Select whether to add a customized background image for IBus panel, if you need press `2` and then press `Enter`.
+   ![](https://img-blog.csdnimg.cn/6e65c62d3ed744df886ecdeee3571eae.png)
+
+7. Enter the picture address：
+   ![](https://img-blog.csdnimg.cn/1d167b6884da443f9260406d03ecb4a3.png)
+
+8. Then choose repeat and sizing modes, and set background border radius (unit: `px`).
+   ![](https://img-blog.csdnimg.cn/8b332c7350db4489bb500815859ded91.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+
+9.  If there is no error message, the setting action should be successful. Then you can choose the GTK theme that just generated in the system theme settings to apply the previous choices.
+   ![](https://img-blog.csdnimg.cn/2b99d19a5171402e9ba466917b72525b.png)
 
 ### Customize IBus font size
 

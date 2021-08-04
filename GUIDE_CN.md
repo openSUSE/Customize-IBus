@@ -435,13 +435,26 @@ yay -S ibus-theme-tools
 
 2. 然后在终端中运行`ibus-theme-tools`。
 
-3. 输入 1，选择更改 IBus 的 GTK 主题，并回车。
-   ![](https://img-blog.csdnimg.cn/20210501171451308.png)
+3. 输入 1，选择提取 IBus 相关的 GTK 主题，并回车。
+   ![](https://img-blog.csdnimg.cn/0c9ba2cc18a4410096b9049b3896b6e4.png)
 
-4. 输入你想要设定的 IBus GTK 主题，并按下回车。（注意，主题名后标`:dark`的为该款主题的暗色风格模式）
-   ![](https://img-blog.csdnimg.cn/20210501171651552.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+4. 输入你想要为 IBus 提取的 GTK 主题，并按下回车。（注意，主题名后标`:dark`的为该款主题的暗色风格模式）
+   ![](https://img-blog.csdnimg.cn/a59a108818e743c8b0de1dede29e079d.png)
 
-5. 若无任何错误提示，则设定成功。现在使用 IBus 输入法你可以看到主题已经换成了你设定的 GTK 主题，并且重启之后也不会失效，因为自动切换主题命令已经加入了你的自启动目录`$HOME/.config/autostart/`中。
+5. 输入你想要的系统 GTK 主题来进行混搭，并按下回车。
+   ![](https://img-blog.csdnimg.cn/f2d2f03e185f44c0baf3ecf00c0b9fb3.png)
+
+6. 来选择是否需要为 IBus 面板添加一个背景图片，需要则输入 2 并按下回车。
+   ![](https://img-blog.csdnimg.cn/8bea1ace13e34c6694e63d1632e0480f.png)
+
+7. 输入图片地址：
+   ![](https://img-blog.csdnimg.cn/9b295974d7cc403aaf98804a752a43f0.png)
+
+8. 然后依次选择重复和大小模式，并输入想设置的图片圆角半径（单位为`px`）。
+   ![](https://img-blog.csdnimg.cn/90549130d37f4f45b85d7d00e1cd824f.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+
+9.  若无任何错误提示，则设定成功。随后你就可以在系统主题设置中选择该生成的主题来应用刚才的设置。
+   ![](https://img-blog.csdnimg.cn/f6f36df22d684518b4c15b9877ffb11a.png)
 
 ### 自定义 IBus 字体字号
 
