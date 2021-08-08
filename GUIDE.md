@@ -175,9 +175,9 @@ Example export file:
  https://extensions.gnome.org/extension/4112/customize-ibus/
  to change IBus theme by selecting this file.
 
- If you make any changes to this content after applying this file in above extension, 
- for Customize IBus Extension before v68, please disable and then enable 
- 'custom IME theme' again to make the changes take effect.
+ If you make any changes to this content after applying this file in above extension,
+ for Customize IBus Extension before v68, please disable and then enable 'custom IME theme'
+ again to make the changes take effect.
 
  Starting from v69, support stylesheets hot reload, CSS changes reflecting in real-time.
 */

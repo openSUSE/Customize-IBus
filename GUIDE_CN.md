@@ -174,6 +174,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
  如你的 IBus 样式表在应用后作出了更改，Customize IBus 扩展版本
  为 v68 之前的请关闭并重新开启对应`自定义主题`来使其生效。
+ 
 
  从 v69 开始，支持样式表热重载, CSS 的变化会实时地体现出来。
 */
