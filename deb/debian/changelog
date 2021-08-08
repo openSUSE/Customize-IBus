@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (69) hirsute; urgency=medium
+
+  * v69: Add support for theme style sheets hot reload.
+
+ -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Sun, 08 Jul 2021 14:54:43 +0800
+
 gnome-shell-extension-customize-ibus (68) hirsute; urgency=medium
 
   * v68: Add functionality to modify opacity.

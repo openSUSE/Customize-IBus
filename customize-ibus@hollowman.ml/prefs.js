@@ -1904,7 +1904,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If your IBus stylesheet has changed after application, please disable and then enable the corresponding <b>custom IME theme</b> again to make it effective.</span>'
+            '<span size="small"><b>Note:</b> Support stylesheets hot reload, CSS changes reflecting in real-time.</span>'
           ),
         }),
         0,

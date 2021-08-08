@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: customize-ibus 68\n"
+"Project-Id-Version: customize-ibus 69\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-09 11:48+0800\n"
+"POT-Creation-Date: 2021-08-08 15:13+0800\n"
 "PO-Revision-Date: 2021-03-27 16:22+0800\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -21,51 +21,51 @@ msgstr ""
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服务连接成功！"
 
-#: extension.js:1179
+#: extension.js:1178
 msgid "loading background for IBus:"
 msgstr "正在为 IBus 加载背景:"
 
-#: extension.js:1189
+#: extension.js:1188
 msgid "remove custom background for IBus"
 msgstr "为 IBus 去除自定义背景"
 
-#: extension.js:2074
+#: extension.js:2085
 msgid "loading light user theme for IBus:"
 msgstr "正在为 IBus 加载浅色用户主题:"
 
-#: extension.js:2084
+#: extension.js:2095
 msgid "loading dark user theme for IBus:"
 msgstr "正在为 IBus 加载深色用户主题:"
 
-#: extension.js:2089
+#: extension.js:2100
 msgid "loading default theme for IBus"
 msgstr "正在为 IBus 加载当前系统主题"
 
-#: extension.js:2672
+#: extension.js:2671
 msgid "Copy Emoji"
 msgstr "复制 Emoji"
 
-#: extension.js:2687 prefs.js:1483 prefs.js:2048
+#: extension.js:2686 prefs.js:1483 prefs.js:2048
 msgid "Customize IBus"
 msgstr "自定义 IBus"
 
-#: extension.js:2702 prefs.js:511
+#: extension.js:2701 prefs.js:511
 msgid "IBus Preferences"
 msgstr "IBus 首选项"
 
-#: extension.js:2717 extension.js:2798 prefs.js:515
+#: extension.js:2716 extension.js:2797 prefs.js:515
 msgid "IBus Version"
 msgstr "IBus 版本"
 
-#: extension.js:2732
+#: extension.js:2731
 msgid "Restart"
 msgstr "重新启动"
 
-#: extension.js:2747
+#: extension.js:2746
 msgid "Quit"
 msgstr "退出"
 
-#: extension.js:2763
+#: extension.js:2762
 msgid "Successfully triggered a restart for IBus"
 msgstr "成功触发一次 IBus 的重新启动"
 
@@ -591,12 +591,11 @@ msgstr ""
 
 #: prefs.js:1907
 msgid ""
-"<span size=\"small\"><b>Note:</b> If your IBus stylesheet has changed after "
-"application, please disable and then enable the corresponding <b>custom IME "
-"theme</b> again to make it effective.</span>"
+"<span size=\"small\"><b>Note:</b> Support stylesheets hot reload, CSS "
+"changes reflecting in real-time.</span>"
 msgstr ""
-"<span size=\"small\"><b>注：</b> 如你的 IBus 样式表在应用后作出了更改，请关闭"
-"并重新开启对应 <b>自定义主题</b>来使其生效。</span>"
+"<span size=\"small\"><b>注：</b> 支持样式表热重载, CSS 的变化会实时地体现出"
+"来。</span>"
 
 #: prefs.js:1950
 msgid ""

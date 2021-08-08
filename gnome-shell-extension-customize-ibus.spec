@@ -16,11 +16,11 @@
 #
 
 
-%global commit 350f8cd1668a341258d45b285a60df8359dd26b8
+%global commit dc172130a0d14009311b3ddfe3caaf967fe7b6a5
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        68
+Version:        69
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,6 +56,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Fri Jul 09 2021 Hollow Man <hollowman@hollowman.ml> - 69
+- Add support for theme style sheets hot reload.
+
 * Fri Jul 09 2021 Hollow Man <hollowman@hollowman.ml> - 68
 - Add functionality to modify opacity.
 

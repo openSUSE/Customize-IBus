@@ -903,13 +903,12 @@ const IBusOpacity = GObject.registerClass(
       CandidatePopup.set_style(fontStyle + opacityStyle);
       let themeNode = CandidatePopup.get_theme_node();
       let backgroundColor = themeNode.get_color("-arrow-background-color");
-      opacityStyle =
-        "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
-          backgroundColor.red,
-          backgroundColor.green,
-          backgroundColor.blue,
-          opacity / 255
-        );
+      opacityStyle = "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
+        backgroundColor.red,
+        backgroundColor.green,
+        backgroundColor.blue,
+        opacity / 255
+      );
       CandidatePopup.set_style(fontStyle + opacityStyle);
     }
 
@@ -2028,10 +2027,6 @@ const IBusThemeManager = GObject.registerClass(
       delete this._proxy;
     }
 
-    _changeThemeDark(toEnable = true) {
-      this._changeTheme(toEnable);
-    }
-
     loadTheme(newStylesheet) {
       let themeContext = St.ThemeContext.get_for_stage(global.stage);
       let previousTheme = themeContext.get_theme();
@@ -2053,8 +2048,18 @@ const IBusThemeManager = GObject.registerClass(
             theme.load_stylesheet(customStylesheets[i]);
       }
 
-      if (newStylesheet)
-        theme.load_stylesheet(Gio.File.new_for_path(newStylesheet));
+      if (newStylesheet) {
+        let file = Gio.File.new_for_path(newStylesheet);
+        this._styleSheetMonitor = file.monitor_file(
+          Gio.FileMonitorFlags.NONE,
+          null
+        );
+        this._styleSheetMonitorID = this._styleSheetMonitor.connect(
+          "changed",
+          this._changeTheme.bind(this)
+        );
+        if (file.query_exists(null)) theme.load_stylesheet(file);
+      }
 
       themeContext.set_theme(theme);
     }
@@ -2064,6 +2069,12 @@ const IBusThemeManager = GObject.registerClass(
       this._atNight = this._night && this._light;
       let enabled = gsettings.get_boolean(Fields.ENABLECUSTOMTHEME);
       let enabledNight = gsettings.get_boolean(Fields.ENABLECUSTOMTHEMENIGHT);
+
+      if (this._styleSheetMonitorID) {
+        this._styleSheetMonitor.disconnect(this._styleSheetMonitorID),
+          (this._styleSheetMonitorID = 0);
+        this._styleSheetMonitor.cancel();
+      }
 
       if (
         this._stylesheet &&
@@ -2094,25 +2105,13 @@ const IBusThemeManager = GObject.registerClass(
       let origCandOpacity = gsettings.get_uint(Fields.CANDOPACITY);
       let tempCandOpacity = 255;
       if (tempCandOpacity === origCandOpacity) tempCandOpacity -= 1;
-      gsettings.set_uint(
-        Fields.CANDOPACITY,
-        tempCandOpacity
-      );
-      gsettings.set_uint(
-        Fields.CANDOPACITY,
-        origCandOpacity
-      );
+      gsettings.set_uint(Fields.CANDOPACITY, tempCandOpacity);
+      gsettings.set_uint(Fields.CANDOPACITY, origCandOpacity);
       let origIndOpacity = gsettings.get_uint(Fields.INDOPACITY);
       let tempIndOpacity = 255;
       if (tempIndOpacity === origIndOpacity) tempIndOpacity -= 1;
-      gsettings.set_uint(
-        Fields.INDOPACITY,
-        tempIndOpacity
-      );
-      gsettings.set_uint(
-        Fields.INDOPACITY,
-        origIndOpacity
-      );
+      gsettings.set_uint(Fields.INDOPACITY, tempIndOpacity);
+      gsettings.set_uint(Fields.INDOPACITY, origIndOpacity);
     }
   }
 );
