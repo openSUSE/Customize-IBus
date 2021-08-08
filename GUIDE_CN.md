@@ -132,7 +132,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 主题
 
-![](https://img-blog.csdnimg.cn/20210610005656296.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/29bca5b29c36477b9c3a79a1950d0ea1.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 同常规部分，单击左侧复选框选中来进行功能的启用，单击右侧进行 IBus 主题样式表选择。
 
@@ -144,7 +144,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 如非调试需要，请勿在 IBus 主题样式表中加入非 <i>.candidate-\*</i> 开头的类，以免干扰系统主题。
 
-如你的 IBus 样式表在应用后作出了更改，请关闭并重新开启对应`自定义主题`来使其生效。
+~~如你的 IBus 样式表在应用后作出了更改，请关闭并重新开启对应`自定义主题`来使其生效。~~ 从 v69 开始，支持样式表热重载, CSS 的变化会实时地体现出来。
 
 你可以到该网站下载更多 GNOME Shell 主题：[https://www.pling.com/s/Gnome/browse/cat/134/order/latest/](https://www.pling.com/s/Gnome/browse/cat/134/order/latest/) ，下载完成之后将其放在`$HOME/.themes/`目录下即可完成安装。
 
@@ -172,8 +172,10 @@ sudo apt install gnome-shell-extension-customize-ibus
  https://extensions.gnome.org/extension/4112/customize-ibus/
  来通过选定此文件改变IBus主题。
 
- 如果你在以上扩展中应用了此文件后对此文件内容作出了改变，
- 请关闭并重新开启'自定义主题'来使改变生效。
+ 如你的 IBus 样式表在应用后作出了更改，Customize IBus 扩展版本
+ 为 v68 之前的请关闭并重新开启对应`自定义主题`来使其生效。
+
+ 从 v69 开始，支持样式表热重载, CSS 的变化会实时地体现出来。
 */
 
 /*
@@ -337,10 +339,10 @@ sudo apt install gnome-shell-extension-customize-ibus
 ### 关于
 
 在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/20210709113238113.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/941a4eac939c41a7a2b26a3b167d761b.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
-![](https://img-blog.csdnimg.cn/202107091133234.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/36f86d92996e4f8890422d0b248d9dae.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)

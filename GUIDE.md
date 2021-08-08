@@ -135,7 +135,7 @@ Example animation:
 
 ### Theme
 
-![](https://img-blog.csdnimg.cn/20210705143028877.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/07d2e5b4b63a4afd88fd2134f640b0d4.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 Same as the general part, select the check box on the left to enable the configuration, and click on the right to select the IBus theme style sheet.
 
@@ -147,7 +147,7 @@ When light theme and dark theme are turned on at the same time, the IBus theme w
 
 If not for debugging, please DO NOT add any classes that's not started with <i>.candidate-\*</i> into IBus stylesheet to prevent from corrupting system themes.
 
-If your IBus stylesheet has changed after application, please disable and then enable the corresponding `custom IME theme` again to make it effective.
+~~If your IBus style sheet has changed after application, please close and reopen the corresponding `custom IME theme` to make it effective.~~ Starting from v69, now this extension support stylesheets hot reload, CSS changes will reflect in real-time.
 
 You can download more GNOME Shell themes from this website: [https://www.pling.com/s/Gnome/browse/cat/134/order/latest/](https://www.pling.com/s/Gnome/browse/cat/134/order/latest/), then put it under the `$HOME/.themes/` directory to complete the installation.
 
@@ -176,7 +176,10 @@ Example export file:
  to change IBus theme by selecting this file.
 
  If you make any changes to this content after applying this file in above extension, 
- please disable and then enable 'custom IME theme' again to make the changes take effect.
+ for Customize IBus Extension before v68, please disable and then enable 
+ 'custom IME theme' again to make the changes take effect.
+
+ Starting from v69, support stylesheets hot reload, CSS changes reflecting in real-time.
 */
 
 /*
@@ -340,10 +343,10 @@ Examples of various picture display modes (using 128x128 compressed pictures: [h
 ### About
 
 At any time, you can click on the icon in the upper left corner to open this guide:
-![](https://img-blog.csdnimg.cn/20210709105521726.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/5bf790a282e84b8aab246c86a0b3c4f1.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 Click `Restore Default Settings`, after confirming, you can re-initialize the extension:
-![](https://img-blog.csdnimg.cn/20210709105557910.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/0cc81f61ed324626b074642b840085bb.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 Click `Export Current Settings`, you can choose to export the current settings as a `*.inifile`. The default file name is `Customize_IBus_Settings_[Current Time].ini`:
 ![](https://img-blog.csdnimg.cn/20210705150208339.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
