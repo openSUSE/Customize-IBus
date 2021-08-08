@@ -1,15 +1,15 @@
 Package: gnome-shell-extension-customize-ibus
-Version: 68
+Version: 69
 Architecture: all
-Maintainer: Hollow Man <hollowman@hollowman.ml>
-Installed-Size: 257
+Maintainer: Hollow Man (Domain Address) <hollowman@hollowman.ml>
+Installed-Size: 291
 Depends: gnome-shell, gnome-tweaks
-Filename: ./gnome-shell-extension-customize-ibus_68_all.deb
-Size: 62758
-MD5sum: 52ba3698ab9182465ef5e7c7df0cae65
-SHA1: a62918632e38ee5309704c8a9db9ec7409ff690c
-SHA256: a5f325cc4ad5ebdc2365603d6f626af448251ddf9b439ec9cc792a3bba52c3a4
-Section: system
+Filename: ./gnome-shell-extension-customize-ibus_69_all.deb
+Size: 75560
+MD5sum: 38b6452088cb1addc1f57f571143d94c
+SHA1: 391baf2c2bf7fefef9873e196c9654fc5e0bbc9f
+SHA256: 018ade3b8673962decca02405a9d35732cf6851328d2b590e3a39ce36cd28c65
+Section: gnome
 Priority: optional
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
 Description: Full customization of appearance, behavior, system tray and input source indicator for IBus.
