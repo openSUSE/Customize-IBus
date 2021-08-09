@@ -77,12 +77,12 @@
     </key>
     <key type="u" name="candidate-opacity">
         <default>255</default>
-        <range min="0" max="255"/>
+        <range min="1" max="255"/>
         <summary>candidate opacity value</summary>
     </key>
     <key type="u" name="indicator-opacity">
         <default>255</default>
-        <range min="0" max="255"/>
+        <range min="1" max="255"/>
         <summary>indicator opacity value</summary>
     </key>
     <key type="u" name="custom-bg-mode">

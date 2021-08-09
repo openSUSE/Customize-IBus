@@ -413,13 +413,15 @@ const IBusInputSourceIndicator = GObject.registerClass(
         this.set_style(this.opacity_style + this.font_style);
         let themeNode = this.get_theme_node();
         let backgroundColor = themeNode.get_color("-arrow-background-color");
-        this.opacity_style =
-          "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
-            backgroundColor.red,
-            backgroundColor.green,
-            backgroundColor.blue,
-            this._opacity / 255
-          );
+        if (backgroundColor.alpha != 0) {
+          this.opacity_style =
+            "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
+              backgroundColor.red,
+              backgroundColor.green,
+              backgroundColor.blue,
+              this._opacity / 255
+            );
+        }
         this.set_style(this.opacity_style + this.font_style);
       } else {
         if (this._child_opacity) {
@@ -903,12 +905,14 @@ const IBusOpacity = GObject.registerClass(
       CandidatePopup.set_style(fontStyle + opacityStyle);
       let themeNode = CandidatePopup.get_theme_node();
       let backgroundColor = themeNode.get_color("-arrow-background-color");
-      opacityStyle = "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
-        backgroundColor.red,
-        backgroundColor.green,
-        backgroundColor.blue,
-        opacity / 255
-      );
+      if (backgroundColor.alpha != 0) {
+        opacityStyle = "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
+          backgroundColor.red,
+          backgroundColor.green,
+          backgroundColor.blue,
+          opacity / 255
+        );
+      }
       CandidatePopup.set_style(fontStyle + opacityStyle);
     }
 
