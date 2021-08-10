@@ -403,6 +403,10 @@ const IBusInputSourceIndicator = GObject.registerClass(
     }
 
     _update_opacity() {
+      if (this._themeContextChangedID)
+        this._themeContext.disconnect(this._themeContextChangedID),
+          (this._themeContextChangedID = 0);
+
       if (this._use_opacity && this._opacity) {
         let candidate_child = this.bin.get_children();
         for (let i in candidate_child)
@@ -423,6 +427,11 @@ const IBusInputSourceIndicator = GObject.registerClass(
             );
         }
         this.set_style(this.opacity_style + this.font_style);
+        this._themeContext = St.ThemeContext.get_for_stage(global.stage);
+        this._themeContextChangedID = this._themeContext.connect(
+          "changed",
+          this._update_opacity.bind(this)
+        );
       } else {
         if (this._child_opacity) {
           let candidate_child = this.bin.get_children();
@@ -896,9 +905,19 @@ const IBusOpacity = GObject.registerClass(
     }
 
     set opacity(opacity) {
-      this._CandidateAreaActor.set_opacity(opacity);
+      this._opacity = opacity;
+      this._update_opacity();
+    }
+
+    _update_opacity() {
+      if (this._themeContextChangedID)
+        this._themeContext.disconnect(this._themeContextChangedID),
+          (this._themeContextChangedID = 0);
+
+      this._CandidateAreaActor.set_opacity(this._opacity);
       let candidate_child = CandidatePopup.bin.get_children();
-      for (let i in candidate_child) candidate_child[i].set_opacity(opacity);
+      for (let i in candidate_child)
+        candidate_child[i].set_opacity(this._opacity);
 
       // To get the theme color and modify its opacity
       opacityStyle = "";
@@ -910,10 +929,15 @@ const IBusOpacity = GObject.registerClass(
           backgroundColor.red,
           backgroundColor.green,
           backgroundColor.blue,
-          opacity / 255
+          this._opacity / 255
         );
       }
       CandidatePopup.set_style(fontStyle + opacityStyle);
+      this._themeContext = St.ThemeContext.get_for_stage(global.stage);
+      this._themeContextChangedID = this._themeContext.connect(
+        "changed",
+        this._update_opacity.bind(this)
+      );
     }
 
     destroy() {
@@ -925,6 +949,9 @@ const IBusOpacity = GObject.registerClass(
           candidate_child[i].set_opacity(this._child_opacity[i]);
       }
 
+      if (this._themeContextChangedID)
+        this._themeContext.disconnect(this._themeContextChangedID),
+          (this._themeContextChangedID = 0);
       opacityStyle = "";
       CandidatePopup.set_style(fontStyle + opacityStyle);
     }
@@ -2105,17 +2132,6 @@ const IBusThemeManager = GObject.registerClass(
         this.loadTheme();
         this._prevCssStylesheet = "";
       }
-      // To update theme color opacity
-      let origCandOpacity = gsettings.get_uint(Fields.CANDOPACITY);
-      let tempCandOpacity = 255;
-      if (tempCandOpacity === origCandOpacity) tempCandOpacity -= 1;
-      gsettings.set_uint(Fields.CANDOPACITY, tempCandOpacity);
-      gsettings.set_uint(Fields.CANDOPACITY, origCandOpacity);
-      let origIndOpacity = gsettings.get_uint(Fields.INDOPACITY);
-      let tempIndOpacity = 255;
-      if (tempIndOpacity === origIndOpacity) tempIndOpacity -= 1;
-      gsettings.set_uint(Fields.INDOPACITY, tempIndOpacity);
-      gsettings.set_uint(Fields.INDOPACITY, origIndOpacity);
     }
   }
 );
