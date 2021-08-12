@@ -8,11 +8,11 @@ const { Gio, Gtk, GObject, GLib, IBus, GdkPixbuf } = imports.gi;
 
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = ExtensionUtils.getCurrentExtension();
-const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
-
 const gsettings = ExtensionUtils.getSettings();
 const Fields = Me.imports.fields.Fields;
 const Config = imports.misc.config;
+const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
+
 const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
 const SCHEMA_PATH = "/org/gnome/shell/extensions/customize-ibus/";
 
@@ -270,7 +270,7 @@ const CustomizeIBus = GObject.registerClass(
       });
 
       this._field_open_ibus_pref = new Gtk.Button({
-        label: _("IBus Preference"),
+        label: _("IBus Preferences"),
         hexpand: true,
         halign: Gtk.Align.CENTER,
       });
@@ -547,7 +547,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_scroll
       );
       this._ibus_indicator._add(
-        this._switchLabelMaker(_("indicator popup animation")),
+        this._switchLabelMaker(_("Indicator popup animation")),
         this._field_indicator_animation
       );
       this._ibus_indicator._add(
@@ -781,6 +781,32 @@ const CustomizeIBus = GObject.registerClass(
       });
       const dconfFilter = new Gtk.FileFilter();
       dconfFilter.add_pattern("*.ini");
+      /* About */
+      // Export Current Settings
+      this._export_settings.connect("clicked", () => {
+        this._showFileChooser(
+          _("Export Current Settings"),
+          {
+            action: Gtk.FileChooserAction.SAVE,
+            filter: dconfFilter,
+          },
+          _("Save"),
+          (filename) => {
+            if (!filename.endsWith(".ini")) filename += ".ini";
+            let file = Gio.file_new_for_path(filename);
+            let raw = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
+            let out = Gio.BufferedOutputStream.new_sized(raw, 4096);
+
+            out.write_all(
+              GLib.spawn_command_line_sync("dconf dump " + SCHEMA_PATH)[1],
+              null
+            );
+            out.close(null);
+          },
+          true
+        );
+      });
+      // Import Settings from file
       this._import_settings.connect("clicked", () => {
         this._showFileChooser(
           _("Import Settings from File"),
@@ -820,34 +846,13 @@ const CustomizeIBus = GObject.registerClass(
           }
         );
       });
-      this._export_settings.connect("clicked", () => {
-        this._showFileChooser(
-          _("Export Current Settings"),
-          {
-            action: Gtk.FileChooserAction.SAVE,
-            filter: dconfFilter,
-          },
-          _("Save"),
-          (filename) => {
-            if (!filename.endsWith(".ini")) filename += ".ini";
-            let file = Gio.file_new_for_path(filename);
-            let raw = file.replace(null, false, Gio.FileCreateFlags.NONE, null);
-            let out = Gio.BufferedOutputStream.new_sized(raw, 4096);
-
-            out.write_all(
-              GLib.spawn_command_line_sync("dconf dump " + SCHEMA_PATH)[1],
-              null
-            );
-            out.close(null);
-          },
-          true
-        );
-      });
+      // GNOME Settings
       this._field_open_system_settings.connect("clicked", () => {
         if (ShellVersion < 40)
           GLib.spawn_command_line_async("gnome-control-center region");
         else GLib.spawn_command_line_async("gnome-control-center keyboard");
       });
+      // IBus Preferences
       this._field_open_ibus_pref.connect("clicked", () => {
         GLib.spawn_command_line_async("ibus-setup");
       });
@@ -2077,6 +2082,8 @@ const CustomizeIBus = GObject.registerClass(
       });
     }
 
+    /* About */
+    // Restore Default Settings
     _resetExtension() {
       var transient_for;
       if (ShellVersion < 40)

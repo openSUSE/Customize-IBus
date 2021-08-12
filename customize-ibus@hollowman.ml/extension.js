@@ -4,7 +4,7 @@
 
 "use strict";
 
-const Main = imports.ui.main;
+/* Constant Variables */
 const {
   Clutter,
   Gio,
@@ -19,6 +19,21 @@ const {
   GObject,
 } = imports.gi;
 
+const Main = imports.ui.main;
+const ExtensionUtils = imports.misc.extensionUtils;
+const Util = imports.misc.util;
+const gsettings = ExtensionUtils.getSettings();
+const Me = ExtensionUtils.getCurrentExtension();
+const { loadInterfaceXML } = imports.misc.fileUtils;
+const System = {
+  LIGHT: "night-light-enabled",
+  PROPERTY: "g-properties-changed",
+  BUS_NAME: "org.gnome.SettingsDaemon.Color",
+  OBJECT_PATH: "/org/gnome/SettingsDaemon/Color",
+};
+const ColorInterface = loadInterfaceXML(System.BUS_NAME);
+const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
+
 const BoxPointer = imports.ui.boxpointer;
 const InputSourceManager = imports.ui.status.keyboard.getInputSourceManager();
 const InputSourcePopup = imports.ui.status.keyboard.InputSourcePopup;
@@ -30,13 +45,8 @@ else var CandidatePopup = IBusManager._candidatePopup;
 const CandidateArea = IBusManager._candidatePopup._candidateArea;
 const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Util = imports.misc.util;
-const gsettings = ExtensionUtils.getSettings();
-const Me = ExtensionUtils.getCurrentExtension();
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
-
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INDICATORANI = ["NONE", "SLIDE", "FADE", "FULL"];
@@ -49,917 +59,201 @@ const BGMODESACTIONS = {
   Zoom: "cover",
 };
 
-const System = {
-  LIGHT: "night-light-enabled",
-  PROPERTY: "g-properties-changed",
-  BUS_NAME: "org.gnome.SettingsDaemon.Color",
-  OBJECT_PATH: "/org/gnome/SettingsDaemon/Color",
-};
-const { loadInterfaceXML } = imports.misc.fileUtils;
-const ColorInterface = loadInterfaceXML(System.BUS_NAME);
-const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
-
 var IBusSettings = null;
 var ngsettings = null;
 var opacityStyle = "";
 var fontStyle = "";
 
-const IBusInputSourceIndicator = GObject.registerClass(
+/* General */
+// Candidates orientation
+const IBusOrientation = GObject.registerClass(
   {
     Properties: {
-      inputindtog: GObject.param_spec_boolean(
-        "inputindtog",
-        "inputindtog",
-        "inputindtog",
-        false,
+      orientation: GObject.param_spec_uint(
+        "orientation",
+        "orientation",
+        "orientation",
+        0,
+        1,
+        1,
         GObject.ParamFlags.WRITABLE
       ),
-      inputindASCII: GObject.param_spec_boolean(
-        "inputindASCII",
-        "inputindASCII",
-        "inputindASCII",
-        false,
-        GObject.ParamFlags.WRITABLE
-      ),
-      inputindscroll: GObject.param_spec_boolean(
-        "inputindscroll",
-        "inputindscroll",
-        "inputindscroll",
-        false,
-        GObject.ParamFlags.WRITABLE
-      ),
-      inputindanim: GObject.param_spec_uint(
-        "inputindanim",
-        "inputindanim",
-        "inputindanim",
+    },
+  },
+  class IBusOrientation extends GObject.Object {
+    _init() {
+      super._init();
+      this._originalSetOrientation =
+        CandidateArea.setOrientation.bind(CandidateArea);
+      CandidateArea.setOrientation = () => {};
+      gsettings.bind(
+        Fields.ORIENTATION,
+        this,
+        "orientation",
+        Gio.SettingsBindFlags.GET
+      );
+      this._orienChangeID = IBusSettings.connect(
+        `changed::lookup-table-orientation`,
+        () => {
+          let value = IBusSettings.get_int("lookup-table-orientation");
+          gsettings.set_uint(Fields.ORIENTATION, 1 - value);
+        }
+      );
+    }
+
+    set orientation(orientation) {
+      this._originalSetOrientation(
+        orientation ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL
+      );
+      IBusSettings.set_int("lookup-table-orientation", 1 - orientation);
+    }
+
+    destroy() {
+      CandidateArea.setOrientation = this._originalSetOrientation;
+      if (this._orienChangeID)
+        IBusSettings.disconnect(this._orienChangeID), (this._orienChangeID = 0);
+    }
+  }
+);
+
+// Candidates popup animation
+const IBusAnimation = GObject.registerClass(
+  {
+    Properties: {
+      animation: GObject.param_spec_uint(
+        "animation",
+        "animation",
+        "animation",
         0,
         3,
-        1,
-        GObject.ParamFlags.READWRITE
-      ),
-      useindautohid: GObject.param_spec_boolean(
-        "useindautohid",
-        "useindautohid",
-        "useindautohid",
-        true,
-        GObject.ParamFlags.WRITABLE
-      ),
-      inputindhid: GObject.param_spec_uint(
-        "inputindhid",
-        "inputindhid",
-        "inputindhid",
-        1,
-        5,
-        1,
-        GObject.ParamFlags.WRITABLE
-      ),
-      useindopacity: GObject.param_spec_boolean(
-        "useindopacity",
-        "useindopacity",
-        "useindopacity",
-        false,
-        GObject.ParamFlags.WRITABLE
-      ),
-      indopacity: GObject.param_spec_uint(
-        "indopacity",
-        "indopacity",
-        "indopacity",
-        0,
-        255,
-        255,
-        GObject.ParamFlags.WRITABLE
-      ),
-      useinputindlclk: GObject.param_spec_boolean(
-        "useinputindlclk",
-        "useinputindlclk",
-        "useinputindlclk",
-        false,
-        GObject.ParamFlags.WRITABLE
-      ),
-      inputindlclick: GObject.param_spec_uint(
-        "inputindlclick",
-        "inputindlclick",
-        "inputindlclick",
-        0,
-        1,
-        0,
-        GObject.ParamFlags.WRITABLE
-      ),
-      inputindrigc: GObject.param_spec_boolean(
-        "inputindrigc",
-        "inputindrigc",
-        "inputindrigc",
-        false,
-        GObject.ParamFlags.WRITABLE
-      ),
-      inputindusef: GObject.param_spec_boolean(
-        "inputindusef",
-        "inputindusef",
-        "inputindusef",
-        false,
-        GObject.ParamFlags.WRITABLE
-      ),
-      fontname: GObject.param_spec_string(
-        "fontname",
-        "fontname",
-        "font name",
-        "Sans 16",
+        3,
         GObject.ParamFlags.WRITABLE
       ),
     },
   },
-  class IBusInputSourceIndicator extends BoxPointer.BoxPointer {
+  class IBusAnimation extends GObject.Object {
     _init() {
-      super._init(St.Side.TOP);
-      this.font_style = "";
-      this.opacity_style = "";
-      this.visible = false;
-      this.style_class = "candidate-popup-boxpointer";
-      this._dummyCursor = new St.Widget({ opacity: 0 });
-      Main.layoutManager.uiGroup.add_actor(this._dummyCursor);
-      Main.layoutManager.addChrome(this);
-      let box = new St.BoxLayout({
-        style_class: "candidate-popup-content",
-        vertical: true,
-      });
-      this.bin.set_child(box);
-      this._inputIndicatorLabel = new St.Label({
-        style_class: "candidate-popup-text",
-        visible: true,
-      });
-      box.add(this._inputIndicatorLabel);
-
-      this._child_opacity = [];
-      let candidate_child = this.bin.get_children();
-      for (let i in candidate_child) {
-        this._child_opacity.push(candidate_child[i].get_opacity());
-      }
-
-      this._bindSettings();
-
-      this._panelService = null;
-      this._overviewHiddenID = Main.overview.connect(
-        "hidden",
-        this._onWindowChanged.bind(this)
-      );
-      this._overviewShowingID = Main.overview.connect(
-        "showing",
-        this._onWindowChanged.bind(this)
-      );
-      this._onWindowChangedID = global.display.connect(
-        "notify::focus-window",
-        this._onWindowChanged.bind(this)
-      );
-    }
-
-    _bindSettings() {
+      super._init();
+      this._openOrig = CandidatePopup.open;
       gsettings.bind(
-        Fields.INPUTINDTOG,
+        Fields.CANDANIMATION,
         this,
-        "inputindtog",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INPUTINDASCII,
-        this,
-        "inputindASCII",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INPUTINDSCROLL,
-        this,
-        "inputindscroll",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INPUTINDANIM,
-        this,
-        "inputindanim",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.USEINDOPACITY,
-        this,
-        "useindopacity",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INDOPACITY,
-        this,
-        "indopacity",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.USEINDAUTOHID,
-        this,
-        "useindautohid",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INPUTINDHID,
-        this,
-        "inputindhid",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INPUTINDRIGC,
-        this,
-        "inputindrigc",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.USEINPUTINDLCLK,
-        this,
-        "useinputindlclk",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INPUTINDLCLICK,
-        this,
-        "inputindlclick",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INPUTINDUSEF,
-        this,
-        "inputindusef",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.INPUTINDCUSTOMFONT,
-        this,
-        "fontname",
+        "animation",
         Gio.SettingsBindFlags.GET
       );
     }
 
-    set inputindtog(inputindtog) {
-      this.onlyOnToggle = inputindtog;
-    }
-
-    set inputindASCII(inputindASCII) {
-      this.onlyASCII = inputindASCII;
-    }
-
-    set inputindscroll(inputindscroll) {
-      this.use_scroll = inputindscroll;
-    }
-
-    set inputindanim(inputindanim) {
-      this.animation = INDICATORANI[inputindanim];
-    }
-
-    set useindautohid(useindautohid) {
-      this.enableAutoHide = useindautohid;
-    }
-
-    set inputindhid(inputindhid) {
-      this.hideTime = inputindhid;
-    }
-
-    set useindopacity(useindopacity) {
-      this._use_opacity = useindopacity;
-      this._update_opacity();
-    }
-
-    set indopacity(indopacity) {
-      this._opacity = indopacity;
-      this._update_opacity();
-    }
-
-    set inputindrigc(inputindrigc) {
-      if (inputindrigc) {
-        this.reactive = true;
-        this._buttonRightPressID = this.connect(
-          "button-press-event",
-          (actor, event) => {
-            if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
-              this._inSetPosMode = false;
-              this.close(BoxPointer.PopupAnimation[this.animation]);
-            }
-          }
-        );
-      } else {
-        if (this._buttonRightPressID)
-          this.disconnect(this._buttonRightPressID),
-            (this._buttonRightPressID = 0);
-      }
-    }
-
-    set useinputindlclk(useinputindlclk) {
-      this.enableLeftClick = useinputindlclk;
-      this._update_lclick();
-    }
-
-    set inputindlclick(inputindlclick) {
-      this.leftClickFunction = inputindlclick;
-      this._update_lclick();
-    }
-
-    set inputindusef(inputindusef) {
-      this.useCustomFont = inputindusef;
-      this._update_font();
-    }
-
-    set fontname(fontname) {
-      this.fontName = fontname;
-      this._update_font();
-    }
-
-    vfunc_scroll_event(scrollEvent) {
-      if (this.use_scroll)
-        switch (scrollEvent.direction) {
-          case Clutter.ScrollDirection.UP:
-          case Clutter.ScrollDirection.DOWN:
-            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-            break;
-        }
-      return Clutter.EVENT_PROPAGATE;
-    }
-
-    _update_font() {
-      if (this.useCustomFont && this.fontName) {
-        let scale = 15 / 16; // the fonts-size difference between index and candidate
-        let desc = Pango.FontDescription.from_string(this.fontName);
-        let get_weight = () => {
-          try {
-            return desc.get_weight();
-          } catch (e) {
-            return parseInt(e.message);
-          }
-        }; // hack for Pango.Weight enumeration exception (eg: 290) in some fonts
-        this.font_style =
-          'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
-            get_weight(),
-            desc.get_family(),
-            (desc.get_size() / Pango.SCALE) * scale,
-            Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
-          );
-        this.set_style(this.opacity_style + this.font_style);
-      } else {
-        this.font_style = "";
-        this.set_style(this.opacity_style + this.font_style);
-      }
-    }
-
-    _update_opacity() {
-      if (this._themeContextChangedID)
-        this._themeContext.disconnect(this._themeContextChangedID),
-          (this._themeContextChangedID = 0);
-
-      if (this._use_opacity && this._opacity) {
-        let candidate_child = this.bin.get_children();
-        for (let i in candidate_child)
-          candidate_child[i].set_opacity(this._opacity);
-
-        // To get the theme color and modify its opacity
-        this.opacity_style = "";
-        this.set_style(this.opacity_style + this.font_style);
-        let themeNode = this.get_theme_node();
-        let backgroundColor = themeNode.get_color("-arrow-background-color");
-        if (backgroundColor.alpha != 0) {
-          this.opacity_style =
-            "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
-              backgroundColor.red,
-              backgroundColor.green,
-              backgroundColor.blue,
-              this._opacity / 255
-            );
-        }
-        this.set_style(this.opacity_style + this.font_style);
-        this._themeContext = St.ThemeContext.get_for_stage(global.stage);
-        this._themeContextChangedID = this._themeContext.connect(
-          "changed",
-          this._update_opacity.bind(this)
-        );
-      } else {
-        if (this._child_opacity) {
-          let candidate_child = this.bin.get_children();
-          for (let i in candidate_child)
-            candidate_child[i].set_opacity(this._child_opacity[i]);
-        }
-
-        this.opacity_style = "";
-        this.set_style(this.opacity_style + this.font_style);
-      }
-    }
-
-    _update_lclick() {
-      this._destroy_lclick();
-      if (this.enableLeftClick)
-        if (this.leftClickFunction) {
-          this._use_switch();
-        } else {
-          this._use_move();
-        }
-    }
-
-    _use_switch() {
-      this.reactive = true;
-      this._buttonPressID = this.connect(
-        "button-press-event",
-        (actor, event) => {
-          if (event.get_state() & Clutter.ModifierType.BUTTON1_MASK) {
-            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-          }
-        }
-      );
-    }
-
-    _use_move() {
-      this.reactive = true;
-      this._buttonPressID = this.connect(
-        "button-press-event",
-        (actor, event) => {
-          if (event.get_state() & Clutter.ModifierType.BUTTON1_MASK) {
-            let [boxX, boxY] = this._dummyCursor.get_position();
-            let [mouseX, mouseY] = event.get_coords();
-            this._relativePosX = mouseX - boxX;
-            this._relativePosY = mouseY - boxY;
-            global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
-            this._location_handler = GLib.timeout_add(
-              GLib.PRIORITY_DEFAULT,
-              10,
-              this._updatePos.bind(this)
-            );
-          }
-        }
-      );
-      this._sideChangeID = this.connect("arrow-side-changed", () => {
-        let themeNode = this.get_theme_node();
-        let gap = themeNode.get_length("-boxpointer-gap");
-        let [, , , natHeight] = this.get_preferred_size();
-        let sourceTopLeft = 0;
-        let sourceBottomRight = 0;
-        if (this._sourceExtents) {
-          sourceTopLeft = this._sourceExtents.get_top_left();
-          sourceBottomRight = this._sourceExtents.get_bottom_right();
-        }
-        switch (this._arrowSide) {
-          case St.Side.TOP:
-            this._relativePosY +=
-              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
-            break;
-          case St.Side.BOTTOM:
-            this._relativePosY -=
-              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
-            break;
-        }
-        this._updatePos();
-      });
-    }
-
-    _destroy_lclick() {
-      if (this._buttonPressID)
-        this.disconnect(this._buttonPressID), (this._buttonPressID = 0);
-      if (this._sideChangeID)
-        this.disconnect(this._sideChangeID), (this._sideChangeID = 0);
-      if (this._location_handler) {
-        global.display.set_cursor(Meta.Cursor.DEFAULT);
-        GLib.source_remove(this._location_handler),
-          (this._location_handler = 0);
-      }
-      this._relativePosX = null;
-      this._relativePosY = null;
-    }
-
-    _move(x, y) {
-      this._dummyCursor.set_position(
-        Math.round(x - this._relativePosX),
-        Math.round(y - this._relativePosY)
-      );
-      this.setPosition(this._dummyCursor, 0);
-    }
-
-    _updatePos() {
-      let [mouse_x, mouse_y, mask] = global.get_pointer();
-      this._move(mouse_x, mouse_y);
-      mask &= Clutter.ModifierType.BUTTON1_MASK;
-      if (mask) return GLib.SOURCE_CONTINUE;
-      this._location_handler = null;
-      global.display.set_cursor(Meta.Cursor.DEFAULT);
-      return GLib.SOURCE_REMOVE;
-    }
-
-    _connectPanelService(panelService) {
-      this._panelService = panelService;
-      if (!panelService) return;
-
-      this._setCursorLocationID = panelService.connect(
-        "set-cursor-location",
-        (ps, x, y, w, h) => {
-          this._setDummyCursorGeometry(x, y, w, h);
-        }
-      );
-      try {
-        this._setCursorLocationRelativeID = panelService.connect(
-          "set-cursor-location-relative",
-          (ps, x, y, w, h) => {
-            if (!global.display.focus_window) return;
-            let window = global.display.focus_window.get_compositor_private();
-            this._setDummyCursorGeometry(window.x + x, window.y + y, w, h);
-          }
-        );
-      } catch (e) {
-        // Only recent IBus versions have support for this signal
-        // which is used for wayland clients. In order to work
-        // with older IBus versions we can silently ignore the
-        // signal's absence.
-      }
-      this._focusOutID = panelService.connect("focus-out", () => {
-        this._inSetPosMode = false;
-        this.close(BoxPointer.PopupAnimation[this.animation]);
-      });
-      this._updatePropertyID = panelService.connect(
-        "update-property",
-        (engineName, prop) => {
-          if (prop.get_key() == INPUTMODE) {
-            this._inputIndicatorLabel.text = this._getInputLabel();
-            this._updateVisibility(true);
-          }
-        }
-      );
-      this._registerPropertyID = panelService.connect(
-        "register-properties",
-        (engineName, prop) => {
-          this._inputIndicatorLabel.text = this._getInputLabel();
-        }
-      );
-    }
-
-    _setDummyCursorGeometry(x, y, w, h) {
-      this._dummyCursor.set_position(Math.round(x), Math.round(y));
-      this._dummyCursor.set_size(Math.round(w), Math.round(h));
-      this.setPosition(this._dummyCursor, 0);
-      this._updateVisibility();
-    }
-
-    _updateVisibility(sourceToggle = false) {
-      this.visible = !CandidatePopup.visible;
-      if (this.onlyOnToggle) this.visible = this.onlyOnToggle && sourceToggle;
-      if (this.onlyASCII)
-        if (!ASCIIMODES.includes(this._inputIndicatorLabel.text))
-          this.visible = false;
-      if (this._lastTimeOut) {
-        GLib.source_remove(this._lastTimeOut);
-        this._lastTimeOut = null;
-      }
-      if (this.visible) {
-        this.setPosition(this._dummyCursor, 0);
-        this.open(BoxPointer.PopupAnimation[this.animation]);
-        this.get_parent().set_child_above_sibling(this, null);
-        if (this.enableAutoHide)
-          this._lastTimeOut = GLib.timeout_add_seconds(
-            GLib.PRIORITY_DEFAULT,
-            this.hideTime,
-            () => {
-              this._inSetPosMode = false;
-              this.close(BoxPointer.PopupAnimation[this.animation]);
-              this._lastTimeOut = null;
-              return GLib.SOURCE_REMOVE;
-            }
-          );
-      } else {
-        this._inSetPosMode = false;
-        this.close(BoxPointer.PopupAnimation[this.animation]);
-      }
-    }
-
-    _onWindowChanged() {
-      if (IBusManager._panelService !== this._panelService) {
-        this._connectPanelService(IBusManager._panelService);
-        global.log(_("IBus panel service connected!"));
-        this._inputIndicatorLabel.text = this._getInputLabel();
-      }
-    }
-
-    _getInputLabel() {
-      const labels = InputSourceIndicator._indicatorLabels;
-      return labels[InputSourceManager.currentSource.index].get_text();
-    }
-
-    _destroy_indicator() {
-      this._inSetPosMode = false;
-      this.close(BoxPointer.PopupAnimation[this.animation]);
-      this._destroy_lclick();
-      if (this._buttonRightPressID)
-        this.disconnect(this._buttonRightPressID),
-          (this._buttonRightPressID = 0);
-      if (this._setCursorLocationID)
-        this._panelService.disconnect(this._setCursorLocationID),
-          (this._setCursorLocationID = 0);
-      if (this._setCursorLocationRelativeID)
-        this._panelService.disconnect(this._setCursorLocationRelativeID),
-          (this._setCursorLocationRelativeID = 0);
-      if (this._focusOutID)
-        this._panelService.disconnect(this._focusOutID), (this._focusOutID = 0);
-      if (this._updatePropertyID)
-        this._panelService.disconnect(this._updatePropertyID),
-          (this._updatePropertyID = 0);
-      if (this._registerPropertyID)
-        this._panelService.disconnect(this._registerPropertyID),
-          (this._registerPropertyID = 0);
+    set animation(animation) {
+      const openOrig = this._openOrig;
+      if (INDICATORANI[animation] === "NONE") this.destroy();
+      else if (INDICATORANI[animation] === "FADE")
+        CandidatePopup.open = () => {
+          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.FADE);
+        };
+      else if (INDICATORANI[animation] === "SLIDE")
+        CandidatePopup.open = () => {
+          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.SLIDE);
+        };
+      else if (INDICATORANI[animation] === "FULL")
+        CandidatePopup.open = () => {
+          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.FULL);
+        };
     }
 
     destroy() {
-      if (this._onWindowChangedID)
-        global.display.disconnect(this._onWindowChangedID),
-          (this._onWindowChangedID = 0);
-      if (this._overviewShowingID)
-        Main.overview.disconnect(this._overviewShowingID),
-          (this._overviewShowingID = 0);
-      if (this._overviewHiddenID)
-        Main.overview.disconnect(this._overviewHiddenID),
-          (this._overviewHiddenID = 0);
-      this._destroy_indicator();
+      if (this._openOrig) CandidatePopup.open = this._openOrig;
     }
   }
 );
 
-const IBusAutoSwitch = GObject.registerClass(
+// Candidate box right click
+const IBusClickSwitch = GObject.registerClass(
   {
     Properties: {
-      unknown: GObject.param_spec_uint(
-        "unknown",
-        "unknown",
-        "unknown",
+      switchfunction: GObject.param_spec_uint(
+        "switchfunction",
+        "switchfunction",
+        "switchfunction",
         0,
-        2,
+        1,
         0,
         GObject.ParamFlags.READWRITE
       ),
-      remember: GObject.param_spec_uint(
-        "remember",
-        "remember",
-        "remember",
-        0,
-        1,
-        1,
-        GObject.ParamFlags.WRITABLE
-      ),
     },
   },
-  class IBusAutoSwitch extends GObject.Object {
-    _init() {
-      super._init();
-      this._bindSettings();
-      this._tmpWindow = null;
-      this._overviewHiddenID = Main.overview.connect(
-        "hidden",
-        this._onWindowChanged.bind(this)
-      );
-      this._overviewShowingID = Main.overview.connect(
-        "showing",
-        this._onWindowChanged.bind(this)
-      );
-      this._onWindowChangedID = global.display.connect(
-        "notify::focus-window",
-        this._onWindowChanged.bind(this)
-      );
-    }
-
-    get _state() {
-      const labels = InputSourceIndicator._indicatorLabels;
-      return ASCIIMODES.includes(
-        labels[InputSourceManager.currentSource.index].get_text()
-      );
-    }
-
-    get _toggle() {
-      let win = InputSourceManager._getCurrentWindow();
-      if (!win) return false;
-
-      let state = this._state;
-      let stateConf = false;
-      if (this._remember) {
-        let store = this._states.get(this._tmpWindow);
-        if (state != store) this._states.set(this._tmpWindow, state);
-
-        this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : "";
-        if (!this._states.has(this._tmpWindow)) {
-          let unknown =
-            this.unknown == UNKNOWN.DEFAULT
-              ? state
-              : this.unknown == UNKNOWN.ON;
-          this._states.set(this._tmpWindow, unknown);
-        }
-        stateConf = this._states.get(this._tmpWindow);
-      } else {
-        stateConf =
-          this.unknown == UNKNOWN.DEFAULT ? state : this.unknown == UNKNOWN.ON;
-      }
-
-      return state ^ stateConf;
-    }
-
-    set remember(remember) {
-      this._remember = remember;
-    }
-
-    _onWindowChanged() {
-      if (this._toggle && IBusManager._panelService) {
-        IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-      }
-    }
-
-    _bindSettings() {
-      gsettings.bind(
-        Fields.REMEMBERINPUT,
-        this,
-        "remember",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.UNKNOWNSTATE,
-        this,
-        "unknown",
-        Gio.SettingsBindFlags.GET
-      );
-      this._states = new Map(
-        Object.entries(gsettings.get_value(Fields.INPUTLIST).deep_unpack())
-      );
-    }
-
-    destroy() {
-      gsettings.set_value(
-        Fields.INPUTLIST,
-        new GLib.Variant("a{sb}", Object.fromEntries(this._states))
-      );
-      if (this._onWindowChangedID)
-        global.display.disconnect(this._onWindowChangedID),
-          (this._onWindowChangedID = 0);
-      if (this._overviewShowingID)
-        Main.overview.disconnect(this._overviewShowingID),
-          (this._overviewShowingID = 0);
-      if (this._overviewHiddenID)
-        Main.overview.disconnect(this._overviewHiddenID),
-          (this._overviewHiddenID = 0);
-    }
-  }
-);
-
-const IBusFontSetting = GObject.registerClass(
-  {
-    Properties: {
-      fontname: GObject.param_spec_string(
-        "fontname",
-        "fontname",
-        "font name",
-        "Sans 16",
-        GObject.ParamFlags.WRITABLE
-      ),
-    },
-  },
-  class IBusFontSetting extends GObject.Object {
+  class IBusClickSwitch extends GObject.Object {
     _init() {
       super._init();
       gsettings.bind(
-        Fields.CUSTOMFONT,
+        Fields.CANDRIGHTFUNC,
         this,
-        "fontname",
+        "switchfunction",
         Gio.SettingsBindFlags.GET
       );
-      this._fontChangeID = IBusSettings.connect(
-        `changed::${Fields.CUSTOMFONT}`,
-        () => {
-          let value = IBusSettings.get_string(Fields.CUSTOMFONT);
-          gsettings.set_string(Fields.CUSTOMFONT, value);
-        }
-      );
-    }
-
-    set fontname(fontname) {
-      IBusSettings.set_string(Fields.CUSTOMFONT, fontname);
-      let scale = 15 / 16; // the fonts-size difference between index and candidate
-      let desc = Pango.FontDescription.from_string(fontname);
-      let get_weight = () => {
-        try {
-          return desc.get_weight();
-        } catch (e) {
-          return parseInt(e.message);
-        }
-      }; // hack for Pango.Weight enumeration exception (eg: 290) in some fonts
-      fontStyle =
-        'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
-          get_weight(),
-          desc.get_family(),
-          (desc.get_size() / Pango.SCALE) * scale,
-          Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
-        );
-      CandidatePopup.set_style(fontStyle + opacityStyle);
-      CandidateArea._candidateBoxes.forEach((x) => {
-        x._candidateLabel.set_style(
-          "font-size: %dpt;".format(desc.get_size() / Pango.SCALE)
-        );
-        x._indexLabel.set_style(
-          "padding: %dpx 4px 0 0;".format((1 - scale) * 2)
-        );
-      });
-    }
-
-    destroy() {
-      fontStyle = "";
-      CandidatePopup.set_style(fontStyle + opacityStyle);
-      CandidateArea._candidateBoxes.forEach((x) => {
-        x._candidateLabel.set_style("");
-        x._indexLabel.set_style("");
-      });
-      if (this._fontChangeID)
-        IBusSettings.disconnect(this._fontChangeID), (this._fontChangeID = 0);
-    }
-  }
-);
-
-const IBusOpacity = GObject.registerClass(
-  {
-    Properties: {
-      opacity: GObject.param_spec_uint(
-        "opacity",
-        "opacity",
-        "opacity",
-        0,
-        255,
-        255,
-        GObject.ParamFlags.WRITABLE
-      ),
-    },
-  },
-  class IBusOpacity extends GObject.Object {
-    _init() {
-      super._init();
-      // Support for GNOME version less than 3.36
+      CandidatePopup.reactive = true;
       this._CandidateAreaActor = CandidateArea;
       if (!(CandidateArea instanceof St.BoxLayout))
         this._CandidateAreaActor = CandidateArea.actor;
 
-      this._area_opacity = this._CandidateAreaActor.get_opacity();
-      this._child_opacity = [];
-      let candidate_child = CandidatePopup.bin.get_children();
-      for (let i in candidate_child) {
-        this._child_opacity.push(candidate_child[i].get_opacity());
-      }
-      gsettings.bind(
-        Fields.CANDOPACITY,
-        this,
-        "opacity",
-        Gio.SettingsBindFlags.GET
+      this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
+        "enter-event",
+        (actor, event) => {
+          this._mouseInCandidate = true;
+        }
+      );
+      this._mouseCandidateLeaveID = this._CandidateAreaActor.connect(
+        "leave-event",
+        (actor, event) => {
+          this._mouseInCandidate = false;
+        }
+      );
+      this._buttonPressID = CandidatePopup.connect(
+        "button-press-event",
+        (actor, event) => {
+          if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
+            if (!this._mouseInCandidate || !this._clickSwitch) {
+              Atspi.generate_keyboard_event(
+                Gdk.keyval_from_name("Return"),
+                null,
+                Atspi.KeySynthType.PRESS | Atspi.KeySynthType.SYM
+              );
+              CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
+            }
+            if (this._clickSwitch) {
+              IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+            } else {
+              InputSourceIndicator.menu.open(
+                InputSourceIndicator.menu.activeMenu
+                  ? BoxPointer.PopupAnimation.FADE
+                  : BoxPointer.PopupAnimation.FULL
+              );
+              Main.panel.menuManager.ignoreRelease();
+            }
+          }
+        }
       );
     }
 
-    set opacity(opacity) {
-      this._opacity = opacity;
-      this._update_opacity();
-    }
-
-    _update_opacity() {
-      if (this._themeContextChangedID)
-        this._themeContext.disconnect(this._themeContextChangedID),
-          (this._themeContextChangedID = 0);
-
-      this._CandidateAreaActor.set_opacity(this._opacity);
-      let candidate_child = CandidatePopup.bin.get_children();
-      for (let i in candidate_child)
-        candidate_child[i].set_opacity(this._opacity);
-
-      // To get the theme color and modify its opacity
-      opacityStyle = "";
-      CandidatePopup.set_style(fontStyle + opacityStyle);
-      let themeNode = CandidatePopup.get_theme_node();
-      let backgroundColor = themeNode.get_color("-arrow-background-color");
-      if (backgroundColor.alpha != 0) {
-        opacityStyle = "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
-          backgroundColor.red,
-          backgroundColor.green,
-          backgroundColor.blue,
-          this._opacity / 255
-        );
-      }
-      CandidatePopup.set_style(fontStyle + opacityStyle);
-      this._themeContext = St.ThemeContext.get_for_stage(global.stage);
-      this._themeContextChangedID = this._themeContext.connect(
-        "changed",
-        this._update_opacity.bind(this)
-      );
+    set switchfunction(switchfunction) {
+      this._clickSwitch = switchfunction == 0 ? false : true;
     }
 
     destroy() {
-      if (this._area_opacity)
-        this._CandidateAreaActor.set_opacity(this._area_opacity);
-      if (this._child_opacity) {
-        let candidate_child = CandidatePopup.bin.get_children();
-        for (let i in candidate_child)
-          candidate_child[i].set_opacity(this._child_opacity[i]);
-      }
-
-      if (this._themeContextChangedID)
-        this._themeContext.disconnect(this._themeContextChangedID),
-          (this._themeContextChangedID = 0);
-      opacityStyle = "";
-      CandidatePopup.set_style(fontStyle + opacityStyle);
+      if (this._buttonPressID)
+        CandidatePopup.disconnect(this._buttonPressID),
+          (this._buttonPressID = 0);
+      if (this._mouseCandidateEnterID)
+        this._CandidateAreaActor.disconnect(this._mouseCandidateEnterID),
+          (this._mouseCandidateEnterID = 0);
+      if (this._mouseCandidateLeaveID)
+        this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
+          (this._mouseCandidateLeaveID = 0);
+      delete this.candidateBoxesID;
     }
   }
 );
 
+// Candidates scroll
 const IBusScroll = GObject.registerClass(
   {
     Properties: {
@@ -1021,267 +315,7 @@ const IBusScroll = GObject.registerClass(
   }
 );
 
-const IBusBGSetting = GObject.registerClass(
-  {
-    Properties: {
-      background: GObject.param_spec_string(
-        "bg",
-        "bg",
-        "background",
-        "",
-        GObject.ParamFlags.WRITABLE
-      ),
-      backgroundDark: GObject.param_spec_string(
-        "bgdark",
-        "bgdark",
-        "backgroundDark",
-        "",
-        GObject.ParamFlags.WRITABLE
-      ),
-      night: GObject.ParamSpec.boolean(
-        "night",
-        "night",
-        "night",
-        GObject.ParamFlags.READWRITE,
-        false
-      ),
-      backgroundMode: GObject.param_spec_uint(
-        "bgmode",
-        "bgmode",
-        "backgroundMode",
-        0,
-        2,
-        2,
-        GObject.ParamFlags.WRITABLE
-      ),
-      backgroundDarkMode: GObject.param_spec_uint(
-        "bgdarkmode",
-        "bgdarkmode",
-        "backgroundDarkMode",
-        0,
-        2,
-        2,
-        GObject.ParamFlags.WRITABLE
-      ),
-      backgroundRepeatMode: GObject.param_spec_uint(
-        "bgrepeatmode",
-        "bgrepeatmode",
-        "backgroundRepeatMode",
-        0,
-        3,
-        3,
-        GObject.ParamFlags.WRITABLE
-      ),
-      backgroundDarkRepeatMode: GObject.param_spec_uint(
-        "bgdarkrepeatmode",
-        "bgdarkrepeatmode",
-        "backgroundDarkRepeatMode",
-        0,
-        3,
-        3,
-        GObject.ParamFlags.WRITABLE
-      ),
-    },
-  },
-  class IBusBGSetting extends GObject.Object {
-    _init() {
-      super._init();
-      ngsettings.bind(System.LIGHT, this, "night", Gio.SettingsBindFlags.GET);
-      gsettings.bind(Fields.CUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
-      gsettings.bind(
-        Fields.CUSTOMBGDARK,
-        this,
-        "bgdark",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(Fields.BGMODE, this, "bgmode", Gio.SettingsBindFlags.GET);
-      gsettings.bind(
-        Fields.BGDARKMODE,
-        this,
-        "bgdarkmode",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.BGREPEATMODE,
-        this,
-        "bgrepeatmode",
-        Gio.SettingsBindFlags.GET
-      );
-      gsettings.bind(
-        Fields.BGDARKREPEATMODE,
-        this,
-        "bgdarkrepeatmode",
-        Gio.SettingsBindFlags.GET
-      );
-      this._candidateBox = CandidatePopup.bin.get_children();
-      if (this._candidateBox) this._candidateBox = this._candidateBox[0];
-      this._buildWidgets();
-    }
-
-    _buildWidgets() {
-      this._proxy = new ColorProxy(
-        Gio.DBus.session,
-        System.BUS_NAME,
-        System.OBJECT_PATH,
-        (proxy, error) => {
-          if (!error) {
-            this._onProxyChanged();
-            this._proxy.connect(
-              System.PROPERTY,
-              this._onProxyChanged.bind(this)
-            );
-          }
-        }
-      );
-    }
-
-    _onProxyChanged() {
-      this._light = this._proxy.NightLightActive;
-      this._changeBG();
-    }
-
-    set night(night) {
-      this._night = night;
-      this._changeBG();
-    }
-
-    set bg(bg) {
-      this._background = bg;
-      this._changeBG();
-    }
-
-    set bgdark(bgdark) {
-      this._backgroundDark = bgdark;
-      this._changeBG();
-    }
-
-    set bgmode(bgmode) {
-      this._backgroundMode = BGMODESACTIONS[BGMODES[bgmode]];
-      this._changeBG();
-    }
-
-    set bgdarkmode(bgdarkmode) {
-      this._backgroundDarkMode = BGMODESACTIONS[BGMODES[bgdarkmode]];
-      this._changeBG();
-    }
-
-    set bgrepeatmode(bgrepeatmode) {
-      this._backgroundRepeatMode = BGREPEATMODES[bgrepeatmode];
-      this._changeBG();
-    }
-
-    set bgdarkrepeatmode(bgdarkrepeatmode) {
-      this._backgroundDarkRepeatMode = BGREPEATMODES[bgdarkrepeatmode];
-      this._changeBG();
-    }
-
-    // Load background
-    _changeBG(toEnable = true) {
-      this._atNight = this._night && this._light;
-      let enabled = gsettings.get_boolean(Fields.USECUSTOMBG);
-      let enabledNight = gsettings.get_boolean(Fields.USECUSTOMBGDARK);
-
-      if (
-        this._background &&
-        enabled &&
-        toEnable &&
-        (!this._atNight || !enabledNight)
-      ) {
-        if (Gio.File.new_for_path(this._background).query_exists(null)) {
-          this._bgPic = this._background;
-          this._bgMode = this._backgroundMode;
-          this._bgRepeatMode = this._backgroundRepeatMode;
-        } else this._bgPic = "";
-      } else if (
-        this._backgroundDark &&
-        enabledNight &&
-        toEnable &&
-        (this._atNight || !enabled)
-      ) {
-        if (Gio.File.new_for_path(this._backgroundDark).query_exists(null)) {
-          this._bgPic = this._backgroundDark;
-          this._bgMode = this._backgroundDarkMode;
-          this._bgRepeatMode = this._backgroundDarkRepeatMode;
-        } else this._bgPic = "";
-      } else {
-        this._bgPic = "";
-      }
-      if (this._candidateBox) {
-        if (this._bgPic) {
-          global.log(_("loading background for IBus:") + this._bgPic);
-          this._candidateBox.set_style(
-            'background: url("%s"); background-repeat: %s; background-size: %s; box-shadow: none;'.format(
-              this._bgPic,
-              this._bgRepeatMode,
-              this._bgMode
-            )
-          );
-          this._candidateBox.add_style_class_name("candidate-popup-content");
-        } else {
-          global.log(_("remove custom background for IBus"));
-          this._candidateBox.set_style("");
-        }
-      }
-    }
-
-    destroy() {
-      this._changeBG(false);
-      if (this._candidateBox) delete this._candidateBox;
-      delete this._proxy;
-    }
-  }
-);
-
-const IBusOrientation = GObject.registerClass(
-  {
-    Properties: {
-      orientation: GObject.param_spec_uint(
-        "orientation",
-        "orientation",
-        "orientation",
-        0,
-        1,
-        1,
-        GObject.ParamFlags.WRITABLE
-      ),
-    },
-  },
-  class IBusOrientation extends GObject.Object {
-    _init() {
-      super._init();
-      this._originalSetOrientation =
-        CandidateArea.setOrientation.bind(CandidateArea);
-      CandidateArea.setOrientation = () => {};
-      gsettings.bind(
-        Fields.ORIENTATION,
-        this,
-        "orientation",
-        Gio.SettingsBindFlags.GET
-      );
-      this._orienChangeID = IBusSettings.connect(
-        `changed::lookup-table-orientation`,
-        () => {
-          let value = IBusSettings.get_int("lookup-table-orientation");
-          gsettings.set_uint(Fields.ORIENTATION, 1 - value);
-        }
-      );
-    }
-
-    set orientation(orientation) {
-      this._originalSetOrientation(
-        orientation ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL
-      );
-      IBusSettings.set_int("lookup-table-orientation", 1 - orientation);
-    }
-
-    destroy() {
-      CandidateArea.setOrientation = this._originalSetOrientation;
-      if (this._orienChangeID)
-        IBusSettings.disconnect(this._orienChangeID), (this._orienChangeID = 0);
-    }
-  }
-);
-
+// Fix Candidate box
 const IBusNotFollowCaret = GObject.registerClass(
   {
     Properties: {
@@ -1407,265 +441,294 @@ const IBusNotFollowCaret = GObject.registerClass(
   }
 );
 
-const IBusClickSwitch = GObject.registerClass(
+// Use custom font
+const IBusFontSetting = GObject.registerClass(
   {
     Properties: {
-      switchfunction: GObject.param_spec_uint(
-        "switchfunction",
-        "switchfunction",
-        "switchfunction",
-        0,
-        1,
-        0,
-        GObject.ParamFlags.READWRITE
-      ),
-    },
-  },
-  class IBusClickSwitch extends GObject.Object {
-    _init() {
-      super._init();
-      gsettings.bind(
-        Fields.CANDRIGHTFUNC,
-        this,
-        "switchfunction",
-        Gio.SettingsBindFlags.GET
-      );
-      CandidatePopup.reactive = true;
-      this._CandidateAreaActor = CandidateArea;
-      if (!(CandidateArea instanceof St.BoxLayout))
-        this._CandidateAreaActor = CandidateArea.actor;
-
-      this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
-        "enter-event",
-        (actor, event) => {
-          this._mouseInCandidate = true;
-        }
-      );
-      this._mouseCandidateLeaveID = this._CandidateAreaActor.connect(
-        "leave-event",
-        (actor, event) => {
-          this._mouseInCandidate = false;
-        }
-      );
-      this._buttonPressID = CandidatePopup.connect(
-        "button-press-event",
-        (actor, event) => {
-          if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
-            if (!this._mouseInCandidate || !this._clickSwitch) {
-              Atspi.generate_keyboard_event(
-                Gdk.keyval_from_name("Return"),
-                null,
-                Atspi.KeySynthType.PRESS | Atspi.KeySynthType.SYM
-              );
-              CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
-            }
-            if (this._clickSwitch) {
-              IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-            } else {
-              InputSourceIndicator.menu.open(
-                InputSourceIndicator.menu.activeMenu
-                  ? BoxPointer.PopupAnimation.FADE
-                  : BoxPointer.PopupAnimation.FULL
-              );
-              Main.panel.menuManager.ignoreRelease();
-            }
-          }
-        }
-      );
-    }
-
-    set switchfunction(switchfunction) {
-      this._clickSwitch = switchfunction == 0 ? false : true;
-    }
-
-    destroy() {
-      if (this._buttonPressID)
-        CandidatePopup.disconnect(this._buttonPressID),
-          (this._buttonPressID = 0);
-      if (this._mouseCandidateEnterID)
-        this._CandidateAreaActor.disconnect(this._mouseCandidateEnterID),
-          (this._mouseCandidateEnterID = 0);
-      if (this._mouseCandidateLeaveID)
-        this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
-          (this._mouseCandidateLeaveID = 0);
-      delete this.candidateBoxesID;
-    }
-  }
-);
-
-const IBusTrayClickSwitch = GObject.registerClass(
-  {
-    Properties: {
-      traysswitchkey: GObject.param_spec_uint(
-        "traysswitchkey",
-        "traysswitchkey",
-        "traysswitchkey",
-        0,
-        1,
-        0,
+      fontname: GObject.param_spec_string(
+        "fontname",
+        "fontname",
+        "font name",
+        "Sans 16",
         GObject.ParamFlags.WRITABLE
       ),
     },
   },
-  class IBusTrayClickSwitch extends GObject.Object {
+  class IBusFontSetting extends GObject.Object {
     _init() {
       super._init();
       gsettings.bind(
-        Fields.TRAYSSWITCHKEY,
+        Fields.CUSTOMFONT,
         this,
-        "traysswitchkey",
+        "fontname",
         Gio.SettingsBindFlags.GET
       );
-    }
-
-    set traysswitchkey(traysswitchkey) {
-      if (this._buttonPressID)
-        InputSourceIndicator.container.disconnect(this._buttonPressID),
-          (this._buttonPressID = 0);
-      let keyNum = traysswitchkey == 0 ? "1" : "3";
-      InputSourceIndicator.container.reactive = true;
-      this._buttonPressID = InputSourceIndicator.container.connect(
-        "button-press-event",
-        function (actor, event) {
-          if (
-            event.get_state() &
-            Clutter.ModifierType["BUTTON" + keyNum + "_MASK"]
-          ) {
-            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-            InputSourceIndicator.menu.close();
-          }
+      this._fontChangeID = IBusSettings.connect(
+        `changed::${Fields.CUSTOMFONT}`,
+        () => {
+          let value = IBusSettings.get_string(Fields.CUSTOMFONT);
+          gsettings.set_string(Fields.CUSTOMFONT, value);
         }
       );
     }
 
+    set fontname(fontname) {
+      IBusSettings.set_string(Fields.CUSTOMFONT, fontname);
+      let scale = 15 / 16; // the fonts-size difference between index and candidate
+      let desc = Pango.FontDescription.from_string(fontname);
+      let get_weight = () => {
+        try {
+          return desc.get_weight();
+        } catch (e) {
+          return parseInt(e.message);
+        }
+      }; // hack for Pango.Weight enumeration exception (eg: 290) in some fonts
+      fontStyle =
+        'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
+          get_weight(),
+          desc.get_family(),
+          (desc.get_size() / Pango.SCALE) * scale,
+          Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
+        );
+      CandidatePopup.set_style(fontStyle + opacityStyle);
+      CandidateArea._candidateBoxes.forEach((x) => {
+        x._candidateLabel.set_style(
+          "font-size: %dpt;".format(desc.get_size() / Pango.SCALE)
+        );
+        x._indexLabel.set_style(
+          "padding: %dpx 4px 0 0;".format((1 - scale) * 2)
+        );
+      });
+    }
+
     destroy() {
-      if (this._buttonPressID)
-        InputSourceIndicator.container.disconnect(this._buttonPressID),
-          (this._buttonPressID = 0);
-      InputSourceIndicator.container.reactive = false;
+      fontStyle = "";
+      CandidatePopup.set_style(fontStyle + opacityStyle);
+      CandidateArea._candidateBoxes.forEach((x) => {
+        x._candidateLabel.set_style("");
+        x._indexLabel.set_style("");
+      });
+      if (this._fontChangeID)
+        IBusSettings.disconnect(this._fontChangeID), (this._fontChangeID = 0);
     }
   }
 );
 
-const IBusReposition = GObject.registerClass(
-  class IBusReposition extends GObject.Object {
+// Auto switch ASCII mode
+const IBusAutoSwitch = GObject.registerClass(
+  {
+    Properties: {
+      unknown: GObject.param_spec_uint(
+        "unknown",
+        "unknown",
+        "unknown",
+        0,
+        2,
+        0,
+        GObject.ParamFlags.READWRITE
+      ),
+      remember: GObject.param_spec_uint(
+        "remember",
+        "remember",
+        "remember",
+        0,
+        1,
+        1,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusAutoSwitch extends GObject.Object {
     _init() {
       super._init();
-      CandidatePopup.reactive = true;
-      this._buttonPressID = CandidatePopup.connect(
-        "button-press-event",
-        (actor, event) => {
-          if (
-            event.get_state() & Clutter.ModifierType.BUTTON1_MASK &&
-            !this._mouseInCandidate
-          ) {
-            let [boxX, boxY] = CandidateDummyCursor.get_position();
-            let [mouseX, mouseY] = event.get_coords();
-            CandidatePopup._relativePosX = mouseX - boxX;
-            CandidatePopup._relativePosY = mouseY - boxY;
-            global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
-            this._location_handler = GLib.timeout_add(
-              GLib.PRIORITY_DEFAULT,
-              10,
-              this._updatePos.bind(this)
-            );
-          }
-        }
+      this._bindSettings();
+      this._tmpWindow = null;
+      this._overviewHiddenID = Main.overview.connect(
+        "hidden",
+        this._onWindowChanged.bind(this)
       );
+      this._overviewShowingID = Main.overview.connect(
+        "showing",
+        this._onWindowChanged.bind(this)
+      );
+      this._onWindowChangedID = global.display.connect(
+        "notify::focus-window",
+        this._onWindowChanged.bind(this)
+      );
+    }
 
+    get _state() {
+      const labels = InputSourceIndicator._indicatorLabels;
+      return ASCIIMODES.includes(
+        labels[InputSourceManager.currentSource.index].get_text()
+      );
+    }
+
+    get _toggle() {
+      let win = InputSourceManager._getCurrentWindow();
+      if (!win) return false;
+
+      let state = this._state;
+      let stateConf = false;
+      if (this._remember) {
+        let store = this._states.get(this._tmpWindow);
+        if (state != store) this._states.set(this._tmpWindow, state);
+
+        this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : "";
+        if (!this._states.has(this._tmpWindow)) {
+          let unknown =
+            this.unknown == UNKNOWN.DEFAULT
+              ? state
+              : this.unknown == UNKNOWN.ON;
+          this._states.set(this._tmpWindow, unknown);
+        }
+        stateConf = this._states.get(this._tmpWindow);
+      } else {
+        stateConf =
+          this.unknown == UNKNOWN.DEFAULT ? state : this.unknown == UNKNOWN.ON;
+      }
+
+      return state ^ stateConf;
+    }
+
+    set remember(remember) {
+      this._remember = remember;
+    }
+
+    _onWindowChanged() {
+      if (this._toggle && IBusManager._panelService) {
+        IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+      }
+    }
+
+    _bindSettings() {
+      gsettings.bind(
+        Fields.REMEMBERINPUT,
+        this,
+        "remember",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.UNKNOWNSTATE,
+        this,
+        "unknown",
+        Gio.SettingsBindFlags.GET
+      );
+      this._states = new Map(
+        Object.entries(gsettings.get_value(Fields.INPUTLIST).deep_unpack())
+      );
+    }
+
+    destroy() {
+      gsettings.set_value(
+        Fields.INPUTLIST,
+        new GLib.Variant("a{sb}", Object.fromEntries(this._states))
+      );
+      if (this._onWindowChangedID)
+        global.display.disconnect(this._onWindowChangedID),
+          (this._onWindowChangedID = 0);
+      if (this._overviewShowingID)
+        Main.overview.disconnect(this._overviewShowingID),
+          (this._overviewShowingID = 0);
+      if (this._overviewHiddenID)
+        Main.overview.disconnect(this._overviewHiddenID),
+          (this._overviewHiddenID = 0);
+    }
+  }
+);
+
+// Candidate box opacity
+const IBusOpacity = GObject.registerClass(
+  {
+    Properties: {
+      opacity: GObject.param_spec_uint(
+        "opacity",
+        "opacity",
+        "opacity",
+        0,
+        255,
+        255,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusOpacity extends GObject.Object {
+    _init() {
+      super._init();
+      // Support for GNOME version less than 3.36
       this._CandidateAreaActor = CandidateArea;
       if (!(CandidateArea instanceof St.BoxLayout))
         this._CandidateAreaActor = CandidateArea.actor;
 
-      this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
-        "enter-event",
-        (actor, event) => {
-          this._mouseInCandidate = true;
-        }
+      this._area_opacity = this._CandidateAreaActor.get_opacity();
+      this._child_opacity = [];
+      let candidate_child = CandidatePopup.bin.get_children();
+      for (let i in candidate_child) {
+        this._child_opacity.push(candidate_child[i].get_opacity());
+      }
+      gsettings.bind(
+        Fields.CANDOPACITY,
+        this,
+        "opacity",
+        Gio.SettingsBindFlags.GET
       );
-      this._mouseCandidateLeaveID = this._CandidateAreaActor.connect(
-        "leave-event",
-        (actor, event) => {
-          this._mouseInCandidate = false;
-        }
-      );
-      this._sideChangeID = CandidatePopup.connect("arrow-side-changed", () => {
-        let themeNode = CandidatePopup.get_theme_node();
-        let gap = themeNode.get_length("-boxpointer-gap");
-        let [, , , natHeight] = CandidatePopup.get_preferred_size();
-        let sourceTopLeft = 0;
-        let sourceBottomRight = 0;
-        if (CandidatePopup._sourceExtents) {
-          sourceTopLeft = CandidatePopup._sourceExtents.get_top_left();
-          sourceBottomRight = CandidatePopup._sourceExtents.get_bottom_right();
-        }
-        if (CandidatePopup._relativePosY) {
-          switch (CandidatePopup._arrowSide) {
-            case St.Side.TOP:
-              CandidatePopup._relativePosY +=
-                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
-              break;
-            case St.Side.BOTTOM:
-              CandidatePopup._relativePosY -=
-                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
-              break;
-          }
-          this._updatePos();
-        }
-      });
     }
 
-    _move(x, y) {
-      CandidateDummyCursor.set_position(
-        Math.round(x - CandidatePopup._relativePosX),
-        Math.round(y - CandidatePopup._relativePosY)
-      );
-      CandidatePopup.setPosition(CandidateDummyCursor, 0);
+    set opacity(opacity) {
+      this._opacity = opacity;
+      this._update_opacity();
     }
 
-    _updatePos() {
-      let [mouse_x, mouse_y, mask] = global.get_pointer();
-      this._move(mouse_x, mouse_y);
-      mask &= Clutter.ModifierType.BUTTON1_MASK;
-      if (mask) return GLib.SOURCE_CONTINUE;
-      this._location_handler = null;
-      global.display.set_cursor(Meta.Cursor.DEFAULT);
-      let state = new Map(
-        Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack())
+    _update_opacity() {
+      if (this._themeContextChangedID)
+        this._themeContext.disconnect(this._themeContextChangedID),
+          (this._themeContextChangedID = 0);
+
+      this._CandidateAreaActor.set_opacity(this._opacity);
+      let candidate_child = CandidatePopup.bin.get_children();
+      for (let i in candidate_child)
+        candidate_child[i].set_opacity(this._opacity);
+
+      // To get the theme color and modify its opacity
+      opacityStyle = "";
+      CandidatePopup.set_style(fontStyle + opacityStyle);
+      let themeNode = CandidatePopup.get_theme_node();
+      let backgroundColor = themeNode.get_color("-arrow-background-color");
+      if (backgroundColor.alpha != 0) {
+        opacityStyle = "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
+          backgroundColor.red,
+          backgroundColor.green,
+          backgroundColor.blue,
+          this._opacity / 255
+        );
+      }
+      CandidatePopup.set_style(fontStyle + opacityStyle);
+      this._themeContext = St.ThemeContext.get_for_stage(global.stage);
+      this._themeContextChangedID = this._themeContext.connect(
+        "changed",
+        this._update_opacity.bind(this)
       );
-      let [boxX, boxY] = CandidateDummyCursor.get_position();
-      state.set("x", boxX);
-      state.set("y", boxY);
-      gsettings.set_value(
-        Fields.CANDBOXPOS,
-        new GLib.Variant("a{su}", Object.fromEntries(state))
-      );
-      return GLib.SOURCE_REMOVE;
     }
 
     destroy() {
-      if (this._buttonPressID)
-        CandidatePopup.disconnect(this._buttonPressID),
-          (this._buttonPressID = 0);
-      if (this._sideChangeID)
-        CandidatePopup.disconnect(this._sideChangeID), (this._sideChangeID = 0);
-      if (this._location_handler) {
-        global.display.set_cursor(Meta.Cursor.DEFAULT);
-        GLib.source_remove(this._location_handler),
-          (this._location_handler = 0);
+      if (this._area_opacity)
+        this._CandidateAreaActor.set_opacity(this._area_opacity);
+      if (this._child_opacity) {
+        let candidate_child = CandidatePopup.bin.get_children();
+        for (let i in candidate_child)
+          candidate_child[i].set_opacity(this._child_opacity[i]);
       }
-      if (this._mouseCandidateEnterID)
-        this._CandidateAreaActor.disconnect(this._mouseCandidateEnterID),
-          (this._mouseCandidateEnterID = 0);
-      if (this._mouseCandidateLeaveID)
-        this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
-          (this._mouseCandidateLeaveID = 0);
-      CandidatePopup._relativePosX = null;
-      CandidatePopup._relativePosY = null;
+
+      if (this._themeContextChangedID)
+        this._themeContext.disconnect(this._themeContextChangedID),
+          (this._themeContextChangedID = 0);
+      opacityStyle = "";
+      CandidatePopup.set_style(fontStyle + opacityStyle);
     }
   }
 );
 
+// Fix IME List order
 const IBusFixIMEList = GObject.registerClass(
   class IBusFixIMEList extends GObject.Object {
     _init() {
@@ -1922,55 +985,807 @@ const IBusFixIMEList = GObject.registerClass(
   }
 );
 
-const IBusAnimation = GObject.registerClass(
-  {
-    Properties: {
-      animation: GObject.param_spec_uint(
-        "animation",
-        "animation",
-        "animation",
-        0,
-        3,
-        3,
-        GObject.ParamFlags.WRITABLE
-      ),
-    },
-  },
-  class IBusAnimation extends GObject.Object {
+// Enable drag to reposition candidate box
+const IBusReposition = GObject.registerClass(
+  class IBusReposition extends GObject.Object {
     _init() {
       super._init();
-      this._openOrig = CandidatePopup.open;
-      gsettings.bind(
-        Fields.CANDANIMATION,
-        this,
-        "animation",
-        Gio.SettingsBindFlags.GET
+      CandidatePopup.reactive = true;
+      this._buttonPressID = CandidatePopup.connect(
+        "button-press-event",
+        (actor, event) => {
+          if (
+            event.get_state() & Clutter.ModifierType.BUTTON1_MASK &&
+            !this._mouseInCandidate
+          ) {
+            let [boxX, boxY] = CandidateDummyCursor.get_position();
+            let [mouseX, mouseY] = event.get_coords();
+            CandidatePopup._relativePosX = mouseX - boxX;
+            CandidatePopup._relativePosY = mouseY - boxY;
+            global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
+            this._location_handler = GLib.timeout_add(
+              GLib.PRIORITY_DEFAULT,
+              10,
+              this._updatePos.bind(this)
+            );
+          }
+        }
       );
+
+      this._CandidateAreaActor = CandidateArea;
+      if (!(CandidateArea instanceof St.BoxLayout))
+        this._CandidateAreaActor = CandidateArea.actor;
+
+      this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
+        "enter-event",
+        (actor, event) => {
+          this._mouseInCandidate = true;
+        }
+      );
+      this._mouseCandidateLeaveID = this._CandidateAreaActor.connect(
+        "leave-event",
+        (actor, event) => {
+          this._mouseInCandidate = false;
+        }
+      );
+      this._sideChangeID = CandidatePopup.connect("arrow-side-changed", () => {
+        let themeNode = CandidatePopup.get_theme_node();
+        let gap = themeNode.get_length("-boxpointer-gap");
+        let [, , , natHeight] = CandidatePopup.get_preferred_size();
+        let sourceTopLeft = 0;
+        let sourceBottomRight = 0;
+        if (CandidatePopup._sourceExtents) {
+          sourceTopLeft = CandidatePopup._sourceExtents.get_top_left();
+          sourceBottomRight = CandidatePopup._sourceExtents.get_bottom_right();
+        }
+        if (CandidatePopup._relativePosY) {
+          switch (CandidatePopup._arrowSide) {
+            case St.Side.TOP:
+              CandidatePopup._relativePosY +=
+                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+              break;
+            case St.Side.BOTTOM:
+              CandidatePopup._relativePosY -=
+                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+              break;
+          }
+          this._updatePos();
+        }
+      });
     }
 
-    set animation(animation) {
-      const openOrig = this._openOrig;
-      if (INDICATORANI[animation] === "NONE") this.destroy();
-      else if (INDICATORANI[animation] === "FADE")
-        CandidatePopup.open = () => {
-          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.FADE);
-        };
-      else if (INDICATORANI[animation] === "SLIDE")
-        CandidatePopup.open = () => {
-          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.SLIDE);
-        };
-      else if (INDICATORANI[animation] === "FULL")
-        CandidatePopup.open = () => {
-          openOrig.call(CandidatePopup, BoxPointer.PopupAnimation.FULL);
-        };
+    _move(x, y) {
+      CandidateDummyCursor.set_position(
+        Math.round(x - CandidatePopup._relativePosX),
+        Math.round(y - CandidatePopup._relativePosY)
+      );
+      CandidatePopup.setPosition(CandidateDummyCursor, 0);
+    }
+
+    _updatePos() {
+      let [mouse_x, mouse_y, mask] = global.get_pointer();
+      this._move(mouse_x, mouse_y);
+      mask &= Clutter.ModifierType.BUTTON1_MASK;
+      if (mask) return GLib.SOURCE_CONTINUE;
+      this._location_handler = null;
+      global.display.set_cursor(Meta.Cursor.DEFAULT);
+      let state = new Map(
+        Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack())
+      );
+      let [boxX, boxY] = CandidateDummyCursor.get_position();
+      state.set("x", boxX);
+      state.set("y", boxY);
+      gsettings.set_value(
+        Fields.CANDBOXPOS,
+        new GLib.Variant("a{su}", Object.fromEntries(state))
+      );
+      return GLib.SOURCE_REMOVE;
     }
 
     destroy() {
-      if (this._openOrig) CandidatePopup.open = this._openOrig;
+      if (this._buttonPressID)
+        CandidatePopup.disconnect(this._buttonPressID),
+          (this._buttonPressID = 0);
+      if (this._sideChangeID)
+        CandidatePopup.disconnect(this._sideChangeID), (this._sideChangeID = 0);
+      if (this._location_handler) {
+        global.display.set_cursor(Meta.Cursor.DEFAULT);
+        GLib.source_remove(this._location_handler),
+          (this._location_handler = 0);
+      }
+      if (this._mouseCandidateEnterID)
+        this._CandidateAreaActor.disconnect(this._mouseCandidateEnterID),
+          (this._mouseCandidateEnterID = 0);
+      if (this._mouseCandidateLeaveID)
+        this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
+          (this._mouseCandidateLeaveID = 0);
+      CandidatePopup._relativePosX = null;
+      CandidatePopup._relativePosY = null;
     }
   }
 );
 
+/* Tray */
+// Directly switch source with click
+const IBusTrayClickSwitch = GObject.registerClass(
+  {
+    Properties: {
+      traysswitchkey: GObject.param_spec_uint(
+        "traysswitchkey",
+        "traysswitchkey",
+        "traysswitchkey",
+        0,
+        1,
+        0,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusTrayClickSwitch extends GObject.Object {
+    _init() {
+      super._init();
+      gsettings.bind(
+        Fields.TRAYSSWITCHKEY,
+        this,
+        "traysswitchkey",
+        Gio.SettingsBindFlags.GET
+      );
+    }
+
+    set traysswitchkey(traysswitchkey) {
+      if (this._buttonPressID)
+        InputSourceIndicator.container.disconnect(this._buttonPressID),
+          (this._buttonPressID = 0);
+      let keyNum = traysswitchkey == 0 ? "1" : "3";
+      InputSourceIndicator.container.reactive = true;
+      this._buttonPressID = InputSourceIndicator.container.connect(
+        "button-press-event",
+        function (actor, event) {
+          if (
+            event.get_state() &
+            Clutter.ModifierType["BUTTON" + keyNum + "_MASK"]
+          ) {
+            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+            InputSourceIndicator.menu.close();
+          }
+        }
+      );
+    }
+
+    destroy() {
+      if (this._buttonPressID)
+        InputSourceIndicator.container.disconnect(this._buttonPressID),
+          (this._buttonPressID = 0);
+      InputSourceIndicator.container.reactive = false;
+    }
+  }
+);
+
+/* Indicator */
+const IBusInputSourceIndicator = GObject.registerClass(
+  {
+    Properties: {
+      inputindtog: GObject.param_spec_boolean(
+        "inputindtog",
+        "inputindtog",
+        "inputindtog",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindASCII: GObject.param_spec_boolean(
+        "inputindASCII",
+        "inputindASCII",
+        "inputindASCII",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindrigc: GObject.param_spec_boolean(
+        "inputindrigc",
+        "inputindrigc",
+        "inputindrigc",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindscroll: GObject.param_spec_boolean(
+        "inputindscroll",
+        "inputindscroll",
+        "inputindscroll",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindanim: GObject.param_spec_uint(
+        "inputindanim",
+        "inputindanim",
+        "inputindanim",
+        0,
+        3,
+        1,
+        GObject.ParamFlags.READWRITE
+      ),
+      inputindusef: GObject.param_spec_boolean(
+        "inputindusef",
+        "inputindusef",
+        "inputindusef",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      fontname: GObject.param_spec_string(
+        "fontname",
+        "fontname",
+        "font name",
+        "Sans 16",
+        GObject.ParamFlags.WRITABLE
+      ),
+      useinputindlclk: GObject.param_spec_boolean(
+        "useinputindlclk",
+        "useinputindlclk",
+        "useinputindlclk",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindlclick: GObject.param_spec_uint(
+        "inputindlclick",
+        "inputindlclick",
+        "inputindlclick",
+        0,
+        1,
+        0,
+        GObject.ParamFlags.WRITABLE
+      ),
+      useindopacity: GObject.param_spec_boolean(
+        "useindopacity",
+        "useindopacity",
+        "useindopacity",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      indopacity: GObject.param_spec_uint(
+        "indopacity",
+        "indopacity",
+        "indopacity",
+        0,
+        255,
+        255,
+        GObject.ParamFlags.WRITABLE
+      ),
+      useindautohid: GObject.param_spec_boolean(
+        "useindautohid",
+        "useindautohid",
+        "useindautohid",
+        true,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindhid: GObject.param_spec_uint(
+        "inputindhid",
+        "inputindhid",
+        "inputindhid",
+        1,
+        5,
+        1,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusInputSourceIndicator extends BoxPointer.BoxPointer {
+    /* Main */
+    _init() {
+      super._init(St.Side.TOP);
+      this.font_style = "";
+      this.opacity_style = "";
+      this.visible = false;
+      this.style_class = "candidate-popup-boxpointer";
+      this._dummyCursor = new St.Widget({ opacity: 0 });
+      Main.layoutManager.uiGroup.add_actor(this._dummyCursor);
+      Main.layoutManager.addChrome(this);
+      let box = new St.BoxLayout({
+        style_class: "candidate-popup-content",
+        vertical: true,
+      });
+      this.bin.set_child(box);
+      this._inputIndicatorLabel = new St.Label({
+        style_class: "candidate-popup-text",
+        visible: true,
+      });
+      box.add(this._inputIndicatorLabel);
+
+      this._child_opacity = [];
+      let candidate_child = this.bin.get_children();
+      for (let i in candidate_child) {
+        this._child_opacity.push(candidate_child[i].get_opacity());
+      }
+
+      this._bindSettings();
+
+      this._panelService = null;
+      this._overviewHiddenID = Main.overview.connect(
+        "hidden",
+        this._onWindowChanged.bind(this)
+      );
+      this._overviewShowingID = Main.overview.connect(
+        "showing",
+        this._onWindowChanged.bind(this)
+      );
+      this._onWindowChangedID = global.display.connect(
+        "notify::focus-window",
+        this._onWindowChanged.bind(this)
+      );
+    }
+
+    _connectPanelService(panelService) {
+      this._panelService = panelService;
+      if (!panelService) return;
+
+      this._setCursorLocationID = panelService.connect(
+        "set-cursor-location",
+        (ps, x, y, w, h) => {
+          this._setDummyCursorGeometry(x, y, w, h);
+        }
+      );
+      try {
+        this._setCursorLocationRelativeID = panelService.connect(
+          "set-cursor-location-relative",
+          (ps, x, y, w, h) => {
+            if (!global.display.focus_window) return;
+            let window = global.display.focus_window.get_compositor_private();
+            this._setDummyCursorGeometry(window.x + x, window.y + y, w, h);
+          }
+        );
+      } catch (e) {
+        // Only recent IBus versions have support for this signal
+        // which is used for wayland clients. In order to work
+        // with older IBus versions we can silently ignore the
+        // signal's absence.
+      }
+      this._focusOutID = panelService.connect("focus-out", () => {
+        this._inSetPosMode = false;
+        this.close(BoxPointer.PopupAnimation[this.animation]);
+      });
+      this._updatePropertyID = panelService.connect(
+        "update-property",
+        (engineName, prop) => {
+          if (prop.get_key() == INPUTMODE) {
+            this._inputIndicatorLabel.text = this._getInputLabel();
+            this._updateVisibility(true);
+          }
+        }
+      );
+      this._registerPropertyID = panelService.connect(
+        "register-properties",
+        (engineName, prop) => {
+          this._inputIndicatorLabel.text = this._getInputLabel();
+        }
+      );
+    }
+
+    _setDummyCursorGeometry(x, y, w, h) {
+      this._dummyCursor.set_position(Math.round(x), Math.round(y));
+      this._dummyCursor.set_size(Math.round(w), Math.round(h));
+      this.setPosition(this._dummyCursor, 0);
+      this._updateVisibility();
+    }
+
+    _updateVisibility(sourceToggle = false) {
+      this.visible = !CandidatePopup.visible;
+      if (this.onlyOnToggle) this.visible = this.onlyOnToggle && sourceToggle;
+      if (this.onlyASCII)
+        if (!ASCIIMODES.includes(this._inputIndicatorLabel.text))
+          this.visible = false;
+      if (this._lastTimeOut) {
+        GLib.source_remove(this._lastTimeOut);
+        this._lastTimeOut = null;
+      }
+      if (this.visible) {
+        this.setPosition(this._dummyCursor, 0);
+        this.open(BoxPointer.PopupAnimation[this.animation]);
+        this.get_parent().set_child_above_sibling(this, null);
+        if (this.enableAutoHide)
+          this._lastTimeOut = GLib.timeout_add_seconds(
+            GLib.PRIORITY_DEFAULT,
+            this.hideTime,
+            () => {
+              this._inSetPosMode = false;
+              this.close(BoxPointer.PopupAnimation[this.animation]);
+              this._lastTimeOut = null;
+              return GLib.SOURCE_REMOVE;
+            }
+          );
+      } else {
+        this._inSetPosMode = false;
+        this.close(BoxPointer.PopupAnimation[this.animation]);
+      }
+    }
+
+    _onWindowChanged() {
+      if (IBusManager._panelService !== this._panelService) {
+        this._connectPanelService(IBusManager._panelService);
+        global.log(_("IBus panel service connected!"));
+        this._inputIndicatorLabel.text = this._getInputLabel();
+      }
+    }
+
+    _getInputLabel() {
+      const labels = InputSourceIndicator._indicatorLabels;
+      return labels[InputSourceManager.currentSource.index].get_text();
+    }
+
+    /* Settings */
+    // Indicate only when switching input source
+    set inputindtog(inputindtog) {
+      this.onlyOnToggle = inputindtog;
+    }
+
+    // Indicate only when using ASCII mode
+    set inputindASCII(inputindASCII) {
+      this.onlyASCII = inputindASCII;
+    }
+
+    // Enable right click to close indicator
+    set inputindrigc(inputindrigc) {
+      if (inputindrigc) {
+        this.reactive = true;
+        this._buttonRightPressID = this.connect(
+          "button-press-event",
+          (actor, event) => {
+            if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
+              this._inSetPosMode = false;
+              this.close(BoxPointer.PopupAnimation[this.animation]);
+            }
+          }
+        );
+      } else {
+        if (this._buttonRightPressID)
+          this.disconnect(this._buttonRightPressID),
+            (this._buttonRightPressID = 0);
+      }
+    }
+
+    // Enable scroll to switch input source
+    set inputindscroll(inputindscroll) {
+      this.use_scroll = inputindscroll;
+    }
+
+    vfunc_scroll_event(scrollEvent) {
+      if (this.use_scroll)
+        switch (scrollEvent.direction) {
+          case Clutter.ScrollDirection.UP:
+          case Clutter.ScrollDirection.DOWN:
+            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+            break;
+        }
+      return Clutter.EVENT_PROPAGATE;
+    }
+
+    // Indicator popup animation
+    set inputindanim(inputindanim) {
+      this.animation = INDICATORANI[inputindanim];
+    }
+
+    // Use custom font
+    set inputindusef(inputindusef) {
+      this.useCustomFont = inputindusef;
+      this._update_font();
+    }
+
+    set fontname(fontname) {
+      this.fontName = fontname;
+      this._update_font();
+    }
+
+    _update_font() {
+      if (this.useCustomFont && this.fontName) {
+        let scale = 15 / 16; // the fonts-size difference between index and candidate
+        let desc = Pango.FontDescription.from_string(this.fontName);
+        let get_weight = () => {
+          try {
+            return desc.get_weight();
+          } catch (e) {
+            return parseInt(e.message);
+          }
+        }; // hack for Pango.Weight enumeration exception (eg: 290) in some fonts
+        this.font_style =
+          'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
+            get_weight(),
+            desc.get_family(),
+            (desc.get_size() / Pango.SCALE) * scale,
+            Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
+          );
+        this.set_style(this.opacity_style + this.font_style);
+      } else {
+        this.font_style = "";
+        this.set_style(this.opacity_style + this.font_style);
+      }
+    }
+
+    // Enable indicator left click
+    set useinputindlclk(useinputindlclk) {
+      this.enableLeftClick = useinputindlclk;
+      this._update_lclick();
+    }
+
+    set inputindlclick(inputindlclick) {
+      this.leftClickFunction = inputindlclick;
+      this._update_lclick();
+    }
+
+    _update_lclick() {
+      this._destroy_lclick();
+      if (this.enableLeftClick)
+        if (this.leftClickFunction) {
+          this._use_switch();
+        } else {
+          this._use_move();
+        }
+    }
+
+    _use_switch() {
+      this.reactive = true;
+      this._buttonPressID = this.connect(
+        "button-press-event",
+        (actor, event) => {
+          if (event.get_state() & Clutter.ModifierType.BUTTON1_MASK) {
+            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+          }
+        }
+      );
+    }
+
+    _use_move() {
+      this.reactive = true;
+      this._buttonPressID = this.connect(
+        "button-press-event",
+        (actor, event) => {
+          if (event.get_state() & Clutter.ModifierType.BUTTON1_MASK) {
+            let [boxX, boxY] = this._dummyCursor.get_position();
+            let [mouseX, mouseY] = event.get_coords();
+            this._relativePosX = mouseX - boxX;
+            this._relativePosY = mouseY - boxY;
+            global.display.set_cursor(Meta.Cursor.MOVE_OR_RESIZE_WINDOW);
+            this._location_handler = GLib.timeout_add(
+              GLib.PRIORITY_DEFAULT,
+              10,
+              this._updatePos.bind(this)
+            );
+          }
+        }
+      );
+      this._sideChangeID = this.connect("arrow-side-changed", () => {
+        let themeNode = this.get_theme_node();
+        let gap = themeNode.get_length("-boxpointer-gap");
+        let [, , , natHeight] = this.get_preferred_size();
+        let sourceTopLeft = 0;
+        let sourceBottomRight = 0;
+        if (this._sourceExtents) {
+          sourceTopLeft = this._sourceExtents.get_top_left();
+          sourceBottomRight = this._sourceExtents.get_bottom_right();
+        }
+        switch (this._arrowSide) {
+          case St.Side.TOP:
+            this._relativePosY +=
+              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+            break;
+          case St.Side.BOTTOM:
+            this._relativePosY -=
+              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+            break;
+        }
+        this._updatePos();
+      });
+    }
+
+    _move(x, y) {
+      this._dummyCursor.set_position(
+        Math.round(x - this._relativePosX),
+        Math.round(y - this._relativePosY)
+      );
+      this.setPosition(this._dummyCursor, 0);
+    }
+
+    _updatePos() {
+      let [mouse_x, mouse_y, mask] = global.get_pointer();
+      this._move(mouse_x, mouse_y);
+      mask &= Clutter.ModifierType.BUTTON1_MASK;
+      if (mask) return GLib.SOURCE_CONTINUE;
+      this._location_handler = null;
+      global.display.set_cursor(Meta.Cursor.DEFAULT);
+      return GLib.SOURCE_REMOVE;
+    }
+
+    _destroy_lclick() {
+      if (this._buttonPressID)
+        this.disconnect(this._buttonPressID), (this._buttonPressID = 0);
+      if (this._sideChangeID)
+        this.disconnect(this._sideChangeID), (this._sideChangeID = 0);
+      if (this._location_handler) {
+        global.display.set_cursor(Meta.Cursor.DEFAULT);
+        GLib.source_remove(this._location_handler),
+          (this._location_handler = 0);
+      }
+      this._relativePosX = null;
+      this._relativePosY = null;
+    }
+
+    // Indicator Opacity
+    set useindopacity(useindopacity) {
+      this._use_opacity = useindopacity;
+      this._update_opacity();
+    }
+
+    set indopacity(indopacity) {
+      this._opacity = indopacity;
+      this._update_opacity();
+    }
+
+    _update_opacity() {
+      if (this._themeContextChangedID)
+        this._themeContext.disconnect(this._themeContextChangedID),
+          (this._themeContextChangedID = 0);
+
+      if (this._use_opacity && this._opacity) {
+        let candidate_child = this.bin.get_children();
+        for (let i in candidate_child)
+          candidate_child[i].set_opacity(this._opacity);
+
+        // To get the theme color and modify its opacity
+        this.opacity_style = "";
+        this.set_style(this.opacity_style + this.font_style);
+        let themeNode = this.get_theme_node();
+        let backgroundColor = themeNode.get_color("-arrow-background-color");
+        if (backgroundColor.alpha != 0) {
+          this.opacity_style =
+            "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
+              backgroundColor.red,
+              backgroundColor.green,
+              backgroundColor.blue,
+              this._opacity / 255
+            );
+        }
+        this.set_style(this.opacity_style + this.font_style);
+        this._themeContext = St.ThemeContext.get_for_stage(global.stage);
+        this._themeContextChangedID = this._themeContext.connect(
+          "changed",
+          this._update_opacity.bind(this)
+        );
+      } else {
+        if (this._child_opacity) {
+          let candidate_child = this.bin.get_children();
+          for (let i in candidate_child)
+            candidate_child[i].set_opacity(this._child_opacity[i]);
+        }
+
+        this.opacity_style = "";
+        this.set_style(this.opacity_style + this.font_style);
+      }
+    }
+
+    // Enable indicator auto-hide timeout
+    set useindautohid(useindautohid) {
+      this.enableAutoHide = useindautohid;
+    }
+
+    set inputindhid(inputindhid) {
+      this.hideTime = inputindhid;
+    }
+
+    _bindSettings() {
+      gsettings.bind(
+        Fields.INPUTINDTOG,
+        this,
+        "inputindtog",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDASCII,
+        this,
+        "inputindASCII",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDRIGC,
+        this,
+        "inputindrigc",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDSCROLL,
+        this,
+        "inputindscroll",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDANIM,
+        this,
+        "inputindanim",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDUSEF,
+        this,
+        "inputindusef",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDCUSTOMFONT,
+        this,
+        "fontname",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USEINPUTINDLCLK,
+        this,
+        "useinputindlclk",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDLCLICK,
+        this,
+        "inputindlclick",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USEINDOPACITY,
+        this,
+        "useindopacity",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INDOPACITY,
+        this,
+        "indopacity",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.USEINDAUTOHID,
+        this,
+        "useindautohid",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDHID,
+        this,
+        "inputindhid",
+        Gio.SettingsBindFlags.GET
+      );
+    }
+
+    _destroy_indicator() {
+      this._inSetPosMode = false;
+      this.close(BoxPointer.PopupAnimation[this.animation]);
+      this._destroy_lclick();
+      if (this._buttonRightPressID)
+        this.disconnect(this._buttonRightPressID),
+          (this._buttonRightPressID = 0);
+      if (this._setCursorLocationID)
+        this._panelService.disconnect(this._setCursorLocationID),
+          (this._setCursorLocationID = 0);
+      if (this._setCursorLocationRelativeID)
+        this._panelService.disconnect(this._setCursorLocationRelativeID),
+          (this._setCursorLocationRelativeID = 0);
+      if (this._focusOutID)
+        this._panelService.disconnect(this._focusOutID), (this._focusOutID = 0);
+      if (this._updatePropertyID)
+        this._panelService.disconnect(this._updatePropertyID),
+          (this._updatePropertyID = 0);
+      if (this._registerPropertyID)
+        this._panelService.disconnect(this._registerPropertyID),
+          (this._registerPropertyID = 0);
+    }
+
+    destroy() {
+      if (this._onWindowChangedID)
+        global.display.disconnect(this._onWindowChangedID),
+          (this._onWindowChangedID = 0);
+      if (this._overviewShowingID)
+        Main.overview.disconnect(this._overviewShowingID),
+          (this._overviewShowingID = 0);
+      if (this._overviewHiddenID)
+        Main.overview.disconnect(this._overviewHiddenID),
+          (this._overviewHiddenID = 0);
+      this._destroy_indicator();
+    }
+  }
+);
+
+/* Theme */
 const IBusThemeManager = GObject.registerClass(
   {
     Properties: {
@@ -2134,6 +1949,218 @@ const IBusThemeManager = GObject.registerClass(
         this.loadTheme();
         this._prevCssStylesheet = "";
       }
+    }
+  }
+);
+
+/* Background */
+const IBusBGSetting = GObject.registerClass(
+  {
+    Properties: {
+      background: GObject.param_spec_string(
+        "bg",
+        "bg",
+        "background",
+        "",
+        GObject.ParamFlags.WRITABLE
+      ),
+      backgroundDark: GObject.param_spec_string(
+        "bgdark",
+        "bgdark",
+        "backgroundDark",
+        "",
+        GObject.ParamFlags.WRITABLE
+      ),
+      night: GObject.ParamSpec.boolean(
+        "night",
+        "night",
+        "night",
+        GObject.ParamFlags.READWRITE,
+        false
+      ),
+      backgroundMode: GObject.param_spec_uint(
+        "bgmode",
+        "bgmode",
+        "backgroundMode",
+        0,
+        2,
+        2,
+        GObject.ParamFlags.WRITABLE
+      ),
+      backgroundDarkMode: GObject.param_spec_uint(
+        "bgdarkmode",
+        "bgdarkmode",
+        "backgroundDarkMode",
+        0,
+        2,
+        2,
+        GObject.ParamFlags.WRITABLE
+      ),
+      backgroundRepeatMode: GObject.param_spec_uint(
+        "bgrepeatmode",
+        "bgrepeatmode",
+        "backgroundRepeatMode",
+        0,
+        3,
+        3,
+        GObject.ParamFlags.WRITABLE
+      ),
+      backgroundDarkRepeatMode: GObject.param_spec_uint(
+        "bgdarkrepeatmode",
+        "bgdarkrepeatmode",
+        "backgroundDarkRepeatMode",
+        0,
+        3,
+        3,
+        GObject.ParamFlags.WRITABLE
+      ),
+    },
+  },
+  class IBusBGSetting extends GObject.Object {
+    _init() {
+      super._init();
+      ngsettings.bind(System.LIGHT, this, "night", Gio.SettingsBindFlags.GET);
+      gsettings.bind(Fields.CUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
+      gsettings.bind(
+        Fields.CUSTOMBGDARK,
+        this,
+        "bgdark",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(Fields.BGMODE, this, "bgmode", Gio.SettingsBindFlags.GET);
+      gsettings.bind(
+        Fields.BGDARKMODE,
+        this,
+        "bgdarkmode",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.BGREPEATMODE,
+        this,
+        "bgrepeatmode",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.BGDARKREPEATMODE,
+        this,
+        "bgdarkrepeatmode",
+        Gio.SettingsBindFlags.GET
+      );
+      this._candidateBox = CandidatePopup.bin.get_children();
+      if (this._candidateBox) this._candidateBox = this._candidateBox[0];
+      this._buildWidgets();
+    }
+
+    _buildWidgets() {
+      this._proxy = new ColorProxy(
+        Gio.DBus.session,
+        System.BUS_NAME,
+        System.OBJECT_PATH,
+        (proxy, error) => {
+          if (!error) {
+            this._onProxyChanged();
+            this._proxy.connect(
+              System.PROPERTY,
+              this._onProxyChanged.bind(this)
+            );
+          }
+        }
+      );
+    }
+
+    _onProxyChanged() {
+      this._light = this._proxy.NightLightActive;
+      this._changeBG();
+    }
+
+    set night(night) {
+      this._night = night;
+      this._changeBG();
+    }
+
+    set bg(bg) {
+      this._background = bg;
+      this._changeBG();
+    }
+
+    set bgdark(bgdark) {
+      this._backgroundDark = bgdark;
+      this._changeBG();
+    }
+
+    set bgmode(bgmode) {
+      this._backgroundMode = BGMODESACTIONS[BGMODES[bgmode]];
+      this._changeBG();
+    }
+
+    set bgdarkmode(bgdarkmode) {
+      this._backgroundDarkMode = BGMODESACTIONS[BGMODES[bgdarkmode]];
+      this._changeBG();
+    }
+
+    set bgrepeatmode(bgrepeatmode) {
+      this._backgroundRepeatMode = BGREPEATMODES[bgrepeatmode];
+      this._changeBG();
+    }
+
+    set bgdarkrepeatmode(bgdarkrepeatmode) {
+      this._backgroundDarkRepeatMode = BGREPEATMODES[bgdarkrepeatmode];
+      this._changeBG();
+    }
+
+    // Load background
+    _changeBG(toEnable = true) {
+      this._atNight = this._night && this._light;
+      let enabled = gsettings.get_boolean(Fields.USECUSTOMBG);
+      let enabledNight = gsettings.get_boolean(Fields.USECUSTOMBGDARK);
+
+      if (
+        this._background &&
+        enabled &&
+        toEnable &&
+        (!this._atNight || !enabledNight)
+      ) {
+        if (Gio.File.new_for_path(this._background).query_exists(null)) {
+          this._bgPic = this._background;
+          this._bgMode = this._backgroundMode;
+          this._bgRepeatMode = this._backgroundRepeatMode;
+        } else this._bgPic = "";
+      } else if (
+        this._backgroundDark &&
+        enabledNight &&
+        toEnable &&
+        (this._atNight || !enabled)
+      ) {
+        if (Gio.File.new_for_path(this._backgroundDark).query_exists(null)) {
+          this._bgPic = this._backgroundDark;
+          this._bgMode = this._backgroundDarkMode;
+          this._bgRepeatMode = this._backgroundDarkRepeatMode;
+        } else this._bgPic = "";
+      } else {
+        this._bgPic = "";
+      }
+      if (this._candidateBox) {
+        if (this._bgPic) {
+          global.log(_("loading background for IBus:") + this._bgPic);
+          this._candidateBox.set_style(
+            'background: url("%s"); background-repeat: %s; background-size: %s; box-shadow: none;'.format(
+              this._bgPic,
+              this._bgRepeatMode,
+              this._bgMode
+            )
+          );
+          this._candidateBox.add_style_class_name("candidate-popup-content");
+        } else {
+          global.log(_("remove custom background for IBus"));
+          this._candidateBox.set_style("");
+        }
+      }
+    }
+
+    destroy() {
+      this._changeBG(false);
+      if (this._candidateBox) delete this._candidateBox;
+      delete this._proxy;
     }
   }
 );
@@ -2649,10 +2676,6 @@ const Extensions = GObject.registerClass(
       }
     }
 
-    set usetray(usetray) {
-      InputSourceIndicator.container.visible = usetray;
-    }
-
     set usetraysswitch(usetraysswitch) {
       if (usetraysswitch) {
         if (this._usetraysswitch) return;
@@ -2686,6 +2709,35 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    /* General */
+    // Candidate box page buttons
+    set usebuttons(usebuttons) {
+      CandidateArea._buttonBox.visible = usebuttons;
+      CandidateArea._previousButton.visible = usebuttons;
+      CandidateArea._nextButton.visible = usebuttons;
+    }
+
+    /* Tray */
+    // Start/Restart IBus
+    set ibusresttime(ibusresttime) {
+      if (this._not_extension_first_start) {
+        IBusManager.restartDaemon();
+        Util.spawn([
+          "notify-send",
+          _("Successfully triggered a restart for IBus"),
+          new Date(parseInt(ibusresttime)).toString(),
+        ]);
+      }
+      this._not_extension_first_start = true;
+    }
+
+    // Show IBus tray icon
+    set usetray(usetray) {
+      InputSourceIndicator.container.visible = usetray;
+    }
+
+    // Add Additional Menu Entries
+    // Copying Emoji
     set menuibusemoji(menuibusemoji) {
       if (menuibusemoji) {
         if (this._menuibusemoji) return;
@@ -2701,6 +2753,12 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    _MenuIBusEmoji() {
+      Main.overview.hide();
+      Util.spawn(["ibus", "emoji"]);
+    }
+
+    // This Extension's Preferences
     set menuextpref(menuextpref) {
       if (menuextpref) {
         if (this._menuextpref) return;
@@ -2716,6 +2774,15 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    _MenuExtPref() {
+      Main.overview.hide();
+      if (ExtensionUtils.openPrefs)
+        ExtensionUtils.openPrefs(Me.metadata.uuid.toString());
+      else
+        Util.spawn(["gnome-extensions", "prefs", Me.metadata.uuid.toString()]);
+    }
+
+    // IBus Preferences
     set menuibuspref(menuibuspref) {
       if (menuibuspref) {
         if (this._menuibuspref) return;
@@ -2731,6 +2798,12 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    _menuIBusPref() {
+      Main.overview.hide();
+      Util.spawn(["ibus-setup"]);
+    }
+
+    // IBus Version
     set menuibusver(menuibusver) {
       if (menuibusver) {
         if (this._menuibusver) return;
@@ -2746,6 +2819,20 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    _MenuIBusVer() {
+      Main.overview.hide();
+      Util.spawn([
+        "notify-send",
+        _("IBus Version"),
+        IBus.MAJOR_VERSION +
+          "." +
+          IBus.MINOR_VERSION +
+          "." +
+          IBus.MICRO_VERSION,
+      ]);
+    }
+
+    // Restarting IBus
     set menuibusrest(menuibusrest) {
       if (menuibusrest) {
         if (this._menuibusrest) return;
@@ -2761,6 +2848,12 @@ const Extensions = GObject.registerClass(
       }
     }
 
+    _MenuIBusRest() {
+      Main.overview.hide();
+      IBusManager.restartDaemon();
+    }
+
+    // Exiting IBus
     set menuibusexit(menuibusexit) {
       if (menuibusexit) {
         if (this._menuibusexit) return;
@@ -2776,64 +2869,11 @@ const Extensions = GObject.registerClass(
       }
     }
 
-    set ibusresttime(ibusresttime) {
-      if (this._not_extension_first_start) {
-        IBusManager.restartDaemon();
-        Util.spawn([
-          "notify-send",
-          _("Successfully triggered a restart for IBus"),
-          new Date(parseInt(ibusresttime)).toString(),
-        ]);
-      }
-      this._not_extension_first_start = true;
-    }
-
-    set usebuttons(usebuttons) {
-      CandidateArea._buttonBox.visible = usebuttons;
-      CandidateArea._previousButton.visible = usebuttons;
-      CandidateArea._nextButton.visible = usebuttons;
-    }
-
-    _MenuIBusEmoji() {
-      Main.overview.hide();
-      Util.spawn(["ibus", "emoji"]);
-    }
-
-    _MenuExtPref() {
-      Main.overview.hide();
-      if (ExtensionUtils.openPrefs)
-        ExtensionUtils.openPrefs(Me.metadata.uuid.toString());
-      else
-        Util.spawn(["gnome-extensions", "prefs", Me.metadata.uuid.toString()]);
-    }
-
-    _menuIBusPref() {
-      Main.overview.hide();
-      Util.spawn(["ibus-setup"]);
-    }
-
-    _MenuIBusVer() {
-      Main.overview.hide();
-      Util.spawn([
-        "notify-send",
-        _("IBus Version"),
-        IBus.MAJOR_VERSION +
-          "." +
-          IBus.MINOR_VERSION +
-          "." +
-          IBus.MICRO_VERSION,
-      ]);
-    }
-
-    _MenuIBusRest() {
-      Main.overview.hide();
-      IBusManager.restartDaemon();
-    }
-
     _MenuIBusExit() {
       Main.overview.hide();
       Util.spawn(["ibus", "exit"]);
     }
+
     destroy() {
       this.bg = false;
       this.bgdark = false;

@@ -8,7 +8,7 @@ CSDN link: https://blog.csdn.net/qq_18572023/article/details/118487988
 
 First, make sure you have installed the GNOME Shell Extension: Customize IBus [https://extensions.gnome.org/extension/4112/customize-ibus/](https://extensions.gnome.org/extension/4112/customize-ibus/)
 
-### installation
+### Installation
 
 You can refer to here: [https://itsfoss.com/gnome-shell-extensions/](https://itsfoss.com/gnome-shell-extensions/) to install the GNOME Shell Extension from a web browser.
 
@@ -422,17 +422,20 @@ The following steps can change the GTK theme of IBus:
 1. First, Install [ibus-theme-tools](https://github.com/openSUSE/IBus-Theme-Tools):
 
 Recommend to use pip to install:
+
 ```bash
 pip install ibus-theme-tools
 ```
 
 You can also install manually:
+
 ```bash
 git clone https://github.com/openSUSE/IBus-Theme-Tools.git
 cd IBus-Theme-Tools && python3 setup.py install
 ```
 
 If you use Arch Linux, you can also use AUR to install as a system extension:
+
 ```bash
 yay -S ibus-theme-tools
 ```
@@ -459,7 +462,7 @@ yay -S ibus-theme-tools
 8. Then choose repeat and sizing modes, and set background border radius (unit: `px`).
    ![](https://img-blog.csdnimg.cn/8b332c7350db4489bb500815859ded91.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-9.  If there is no error message, the setting action should be successful. Then you can choose the GTK theme that just generated in the system theme settings to apply the previous choices.
+9. If there is no error message, the setting action should be successful. Then you can choose the GTK theme that just generated in the system theme settings to apply the previous choices.
    ![](https://img-blog.csdnimg.cn/2b99d19a5171402e9ba466917b72525b.png)
 
 ### Customize IBus font size
