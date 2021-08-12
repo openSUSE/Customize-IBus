@@ -6,7 +6,7 @@
 cd rpm
 rm -rf drpms repodata
 rpm --addsign gnome-shell-extension-customize-ibus-*.noarch.rpm
-createrepo_c --deltas --retain-old-md 1 ./
+createrepo_c --retain-old-md 1 ./
 
 # Change this to your GPG key name
 KEY_NAME='Hollow Man (Domain Address) <hollowman@hollowman.ml>'
