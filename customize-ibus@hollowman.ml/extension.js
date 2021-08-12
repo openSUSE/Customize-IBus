@@ -379,7 +379,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
     _update_font() {
       if (this.useCustomFont && this.fontName) {
-        let offset = 3; // the fonts-size difference between index and candidate
+        let scale = 15 / 16; // the fonts-size difference between index and candidate
         let desc = Pango.FontDescription.from_string(this.fontName);
         let get_weight = () => {
           try {
@@ -392,7 +392,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
           'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
             get_weight(),
             desc.get_family(),
-            desc.get_size() / Pango.SCALE - offset,
+            (desc.get_size() / Pango.SCALE) * scale,
             Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
           );
         this.set_style(this.opacity_style + this.font_style);
@@ -830,7 +830,7 @@ const IBusFontSetting = GObject.registerClass(
 
     set fontname(fontname) {
       IBusSettings.set_string(Fields.CUSTOMFONT, fontname);
-      let offset = 3; // the fonts-size difference between index and candidate
+      let scale = 15 / 16; // the fonts-size difference between index and candidate
       let desc = Pango.FontDescription.from_string(fontname);
       let get_weight = () => {
         try {
@@ -843,7 +843,7 @@ const IBusFontSetting = GObject.registerClass(
         'font-weight: %d; font-family: "%s"; font-size: %dpt; font-style: %s;'.format(
           get_weight(),
           desc.get_family(),
-          desc.get_size() / Pango.SCALE - offset,
+          (desc.get_size() / Pango.SCALE) * scale,
           Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
         );
       CandidatePopup.set_style(fontStyle + opacityStyle);
@@ -851,7 +851,9 @@ const IBusFontSetting = GObject.registerClass(
         x._candidateLabel.set_style(
           "font-size: %dpt;".format(desc.get_size() / Pango.SCALE)
         );
-        x._indexLabel.set_style("padding: %dpx 4px 0 0;".format(offset * 2));
+        x._indexLabel.set_style(
+          "padding: %dpx 4px 0 0;".format((1 - scale) * 2)
+        );
       });
     }
 
