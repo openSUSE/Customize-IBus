@@ -1,4 +1,4 @@
-gnome-shell-extension-customize-ibus (69) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (70) hirsute; urgency=medium
 
   * v70: Fix and optimise for GSoC 2021 final submission.
 
