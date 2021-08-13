@@ -1,8 +1,14 @@
 gnome-shell-extension-customize-ibus (69) hirsute; urgency=medium
 
+  * v70: Fix and optimise for GSoC 2021 final submission.
+
+ -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Fri, 13 Aug 2021 10:13:32 +0800
+
+gnome-shell-extension-customize-ibus (69) hirsute; urgency=medium
+
   * v69: Add support for theme style sheets hot reload.
 
- -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Sun, 08 Jul 2021 14:54:43 +0800
+ -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Sun, 08 Aug 2021 14:54:43 +0800
 
 gnome-shell-extension-customize-ibus (68) hirsute; urgency=medium
 

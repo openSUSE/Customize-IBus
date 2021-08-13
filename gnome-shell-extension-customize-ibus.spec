@@ -20,7 +20,7 @@
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        69
+Version:        70
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,7 +56,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Fri Jul 09 2021 Hollow Man <hollowman@hollowman.ml> - 69
+* Fri Aug 13 2021 Hollow Man <hollowman@hollowman.ml> - 70
+- Fix and optimise for GSoC 2021 final submission.
+
+* Sun Aug 08 2021 Hollow Man <hollowman@hollowman.ml> - 69
 - Add support for theme style sheets hot reload.
 
 * Fri Jul 09 2021 Hollow Man <hollowman@hollowman.ml> - 68

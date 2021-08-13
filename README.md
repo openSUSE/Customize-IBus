@@ -216,8 +216,9 @@ When only the light background or dark background is turned on, the extension wi
 - [x] V67: Further fix support for openSUSE Leap 15.3.
 - [x] V68: Add functionality to modify opacity.
 - [x] V69: Add support for theme style sheets hot reload.
+- [x] V70: Fix and optimise for GSoC 2021 final submission.
 
-Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65, v66), 3.34, 3.36, 3.38 and 40(v67, v68, v69).
+Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65, v66), 3.34, 3.36, 3.38 and 40(v67, v68, v69, v70).
 
 ## Acknowledgements
 
