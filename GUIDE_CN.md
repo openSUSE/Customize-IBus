@@ -454,7 +454,7 @@ yay -S ibus-theme-tools
    ![](https://img-blog.csdnimg.cn/9b295974d7cc403aaf98804a752a43f0.png)
 
 8. 然后依次选择重复和大小模式，并输入想设置的图片圆角半径（单位为`px`）。
-   ![](https://img-blog.csdnimg.cn/90549130d37f4f45b85d7d00e1cd824f.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+   ![](https://img-blog.csdnimg.cn/71e01d5789444c06b3e81dfdd074b833.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 9.  若无任何错误提示，则设定成功。随后你就可以在系统主题设置中选择该生成的主题来应用刚才的设置。
    ![](https://img-blog.csdnimg.cn/f6f36df22d684518b4c15b9877ffb11a.png)

@@ -460,7 +460,7 @@ yay -S ibus-theme-tools
    ![](https://img-blog.csdnimg.cn/1d167b6884da443f9260406d03ecb4a3.png)
 
 8. Then choose repeat and sizing modes, and set background border radius (unit: `px`).
-   ![](https://img-blog.csdnimg.cn/8b332c7350db4489bb500815859ded91.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+   ![](https://img-blog.csdnimg.cn/bdc295792c63427093b4a7d6ac913a3d.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 9. If there is no error message, the setting action should be successful. Then you can choose the GTK theme that just generated in the system theme settings to apply the previous choices.
    ![](https://img-blog.csdnimg.cn/2b99d19a5171402e9ba466917b72525b.png)
