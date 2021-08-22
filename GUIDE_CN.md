@@ -156,7 +156,7 @@ sudo apt install gnome-shell-extension-customize-ibus
    ![](https://img-blog.csdnimg.cn/2021050119011780.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 3. 输入你想要存放导出的 IBus 相关 GNOME Shell 主题样式文件地址，并按下回车。空选择则默认为当前目录下的 `exportedIBusTheme.css` 文件。如无错误提示则成功导出到指定位置。
-   ![](https://img-blog.csdnimg.cn/20210501190516268.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+   ![](https://img-blog.csdnimg.cn/d2d114df1f2f449896da4baa47e1424d.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 示例导出文件：
 

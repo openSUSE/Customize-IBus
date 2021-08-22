@@ -2,6 +2,8 @@
 
 CSDN link: https://blog.csdn.net/qq_18572023/article/details/118487988
 
+My blog link: https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/
+
 [中文 Chinese](GUIDE_CN.md)
 
 ## GNOME Desktop
@@ -159,7 +161,7 @@ The [IBus theme tool](https://github.com/openSUSE/IBus-Theme-Tools) style sheet 
    ![](https://img-blog.csdnimg.cn/20210705151334983.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 3. Enter the location of the GNOME Shell theme style sheet exported related to IBus that you want to store, and press `Enter`. Empty selection will be the default, that is in the current directory `exportedIBusTheme.css` file. If there is no error message, it will be successfully exported to the specified location.
-   ![](https://img-blog.csdnimg.cn/20210705151432429.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+   ![](https://img-blog.csdnimg.cn/b0373619260f41b8a19b425c997469e4.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
 Example export file:
 

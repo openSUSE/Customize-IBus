@@ -2043,7 +2043,7 @@ const CustomizeIBus = GObject.registerClass(
         else this.toplevel = this.get_root();
         this.headerBar = this.toplevel.get_titlebar();
         let uri = _(
-          "https://github.com/openSUSE/Customize-IBus/blob/main/GUIDE.md"
+          "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
         );
         let helpButton = this._iconButtonMaker(
           uri,
