@@ -52,8 +52,8 @@ sudo zypper install gnome-shell-extension-customize-ibus
 - Debian 系(Ubuntu):
 
 ```bash
-echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
-wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
+echo "deb http://opensuse.github.io/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
+wget -q -O - http://opensuse.github.io/Customize-IBus/hollowman.pgp | sudo apt-key add -
 sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
