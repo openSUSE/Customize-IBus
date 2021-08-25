@@ -59,7 +59,6 @@ clean:
 	-rm -fR deb/debian/files
 	-rm -fR deb/debian/.debhelper
 	-rm -fR $(SCMCPL)
-	-rm -fR $(UUID)/$(MSGPOT)
 	-rm -fR $(MSGPOS:.po=.mo)
 	-rm -fR $(MSGPOS:.po=.po~)
 	-rm -fR deb/usr
@@ -109,7 +108,6 @@ pofile: $(UUID)/$(MSGSRC)
 mergepo: potfile pofile
 	cd $(UUID); \
 		msgmerge -U $(MSGSRC) $(MSGPOT); \
-		rm -fR $(MSGPOT); \
 		rm -fR $(MSGDIR)/*po~
 
 debprepare: _build
