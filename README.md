@@ -34,8 +34,8 @@ sudo zypper install gnome-shell-extension-customize-ibus
 ## [Debian/Ubuntu](deb)
 
 ```bash
-echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
-wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
+echo "deb https://opensuse.github.io/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
+wget -q -O - https://opensuse.github.io/Customize-IBus/hollowman.pgp | sudo apt-key add -
 sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
@@ -65,8 +65,8 @@ sudo zypper install gnome-shell-extension-customize-ibus
 ## [Debian/Ubuntu](deb)
 
 ```bash
-echo "deb https://hollowman.ml/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
-wget -q -O - https://hollowman.ml/Customize-IBus/hollowman.pgp | sudo apt-key add -
+echo "deb https://opensuse.github.io/Customize-IBus/deb/ /" | sudo tee -a /etc/apt/sources.list.d/customize-ibus-deb.list > /dev/null
+wget -q -O - https://opensuse.github.io/Customize-IBus/hollowman.pgp | sudo apt-key add -
 sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
