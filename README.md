@@ -9,6 +9,10 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/context:javascript)
 
+### Welcome to contribute your translation on Weblate!
+
+[![Translation Status](https://hosted.weblate.org/widgets/customize-ibus/-/287x66-grey.png)](https://hosted.weblate.org/engage/customize-ibus/)
+
 [中文 Chinese](README_CN.md)
 
 Full customization of appearance, behavior, system tray and input source indicator for IBus.

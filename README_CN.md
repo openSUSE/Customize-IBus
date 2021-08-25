@@ -9,6 +9,10 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/context:javascript)
 
+### 欢迎在 Weblate 中贡献你的翻译！
+
+[![翻译状态](https://hosted.weblate.org/widgets/customize-ibus/-/287x66-grey.png)](https://hosted.weblate.org/engage/customize-ibus/)
+
 [English](README.md)
 
 深度定制 IBus 的外观、行为、系统托盘以及输入指示。

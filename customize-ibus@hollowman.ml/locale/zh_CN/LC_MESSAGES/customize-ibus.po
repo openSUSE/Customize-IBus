@@ -627,7 +627,8 @@ msgstr ""
 "</b> 来使其生效。</span>"
 
 #: prefs.js:2046
-msgid "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
+msgid ""
+"https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
 msgstr "https://blog.csdn.net/qq_18572023/article/details/116331601"
 
 #: prefs.js:2070 prefs.js:2098
