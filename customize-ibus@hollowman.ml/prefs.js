@@ -304,7 +304,9 @@ const CustomizeIBus = GObject.registerClass(
       this._logoPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._open_logo_button = this._iconButtonMaker("", "document-open");
+      this._reset_logo_button = this._iconButtonMaker("", "edit-clear");
+      this._reset_logo_button.visible = false;
+      this._open_logo_button = this._iconLinkButtonMaker("", "document-open");
       this._open_logo_button.visible = false;
 
       this._fileDarkChooser = new Gtk.FileChooserNative({
@@ -315,7 +317,12 @@ const CustomizeIBus = GObject.registerClass(
       this._logoDarkPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._open_logoDark_button = this._iconButtonMaker("", "document-open");
+      this._reset_logoDark_button = this._iconButtonMaker("", "edit-clear");
+      this._reset_logoDark_button.visible = false;
+      this._open_logoDark_button = this._iconLinkButtonMaker(
+        "",
+        "document-open"
+      );
       this._open_logoDark_button.visible = false;
 
       const cssFilter = new Gtk.FileFilter();
@@ -329,7 +336,9 @@ const CustomizeIBus = GObject.registerClass(
       this._cssPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._open_css_button = this._iconButtonMaker("", "document-open");
+      this._reset_css_button = this._iconButtonMaker("", "edit-clear");
+      this._reset_css_button.visible = false;
+      this._open_css_button = this._iconLinkButtonMaker("", "document-open");
       this._open_css_button.visible = false;
 
       this._cssDarkFileChooser = new Gtk.FileChooserNative({
@@ -340,7 +349,12 @@ const CustomizeIBus = GObject.registerClass(
       this._cssDarkPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._open_cssDark_button = this._iconButtonMaker("", "document-open");
+      this._reset_cssDark_button = this._iconButtonMaker("", "edit-clear");
+      this._reset_cssDark_button.visible = false;
+      this._open_cssDark_button = this._iconLinkButtonMaker(
+        "",
+        "document-open"
+      );
       this._open_cssDark_button.visible = false;
     }
 
@@ -350,10 +364,12 @@ const CustomizeIBus = GObject.registerClass(
         this._logoPicker.label = _("(None)");
         this._open_logo_button.uri = "";
         this._open_logo_button.visible = false;
+        this._reset_logo_button.visible = false;
       } else {
         this._logoPicker.label = GLib.basename(filename);
         this._open_logo_button.uri = "file://" + filename;
         this._open_logo_button.visible = true;
+        this._reset_logo_button.visible = true;
       }
     }
 
@@ -363,10 +379,12 @@ const CustomizeIBus = GObject.registerClass(
         this._logoDarkPicker.label = _("(None)");
         this._open_logoDark_button.uri = "";
         this._open_logoDark_button.visible = false;
+        this._reset_logoDark_button.visible = false;
       } else {
         this._logoDarkPicker.label = GLib.basename(filename);
         this._open_logoDark_button.uri = "file://" + filename;
         this._open_logoDark_button.visible = true;
+        this._reset_logoDark_button.visible = true;
       }
     }
 
@@ -376,10 +394,12 @@ const CustomizeIBus = GObject.registerClass(
         this._cssPicker.label = _("(None)");
         this._open_css_button.uri = "";
         this._open_css_button.visible = false;
+        this._reset_css_button.visible = false;
       } else {
         this._cssPicker.label = GLib.basename(filename);
         this._open_css_button.uri = "file://" + filename;
         this._open_css_button.visible = true;
+        this._reset_css_button.visible = true;
       }
     }
 
@@ -389,10 +409,12 @@ const CustomizeIBus = GObject.registerClass(
         this._cssDarkPicker.label = _("(None)");
         this._open_cssDark_button.uri = "";
         this._open_cssDark_button.visible = false;
+        this._reset_cssDark_button.visible = false;
       } else {
         this._cssDarkPicker.label = GLib.basename(filename);
         this._open_cssDark_button.uri = "file://" + filename;
         this._open_cssDark_button.visible = true;
+        this._reset_cssDark_button.visible = true;
       }
     }
 
@@ -606,11 +628,13 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus_theme._add(
         this._field_enable_custom_theme,
         this._cssPicker,
+        this._reset_css_button,
         this._open_css_button
       );
       this._ibus_theme._add(
         this._field_enable_custom_theme_dark,
         this._cssDarkPicker,
+        this._reset_cssDark_button,
         this._open_cssDark_button
       );
       this._themeHelpPage(this._ibus_theme);
@@ -621,6 +645,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_bg_mode,
         this._field_bg_repeat_mode,
         this._logoPicker,
+        this._reset_logo_button,
         this._open_logo_button
       );
       this._ibus_bg._add(
@@ -628,6 +653,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_bg_dark_mode,
         this._field_bg_dark_repeat_mode,
         this._logoDarkPicker,
+        this._reset_logoDark_button,
         this._open_logoDark_button
       );
       this._bgHelpPage(this._ibus_bg);
@@ -740,22 +766,26 @@ const CustomizeIBus = GObject.registerClass(
         this._logoPicker.set_sensitive(widget.active);
         this._field_bg_mode.set_sensitive(widget.active);
         this._field_bg_repeat_mode.set_sensitive(widget.active);
+        this._reset_logo_button.set_sensitive(widget.active);
         this._open_logo_button.set_sensitive(widget.active);
       });
       this._field_use_custom_bg_dark.connect("notify::active", (widget) => {
         this._logoDarkPicker.set_sensitive(widget.active);
         this._field_bg_dark_mode.set_sensitive(widget.active);
         this._field_bg_dark_repeat_mode.set_sensitive(widget.active);
+        this._reset_logoDark_button.set_sensitive(widget.active);
         this._open_logoDark_button.set_sensitive(widget.active);
       });
       this._field_enable_custom_theme.connect("notify::active", (widget) => {
         this._cssPicker.set_sensitive(widget.active);
+        this._reset_css_button.set_sensitive(widget.active);
         this._open_css_button.set_sensitive(widget.active);
       });
       this._field_enable_custom_theme_dark.connect(
         "notify::active",
         (widget) => {
           this._cssDarkPicker.set_sensitive(widget.active);
+          this._reset_cssDark_button.set_sensitive(widget.active);
           this._open_cssDark_button.set_sensitive(widget.active);
         }
       );
@@ -889,6 +919,18 @@ const CustomizeIBus = GObject.registerClass(
         else this._cssDarkFileChooser.transient_for = this.get_root();
         this._cssDarkFileChooser.show();
       });
+      this._reset_logo_button.connect("clicked", () => {
+        gsettings.set_string(Fields.CUSTOMBG, "");
+      });
+      this._reset_logoDark_button.connect("clicked", () => {
+        gsettings.set_string(Fields.CUSTOMBGDARK, "");
+      });
+      this._reset_css_button.connect("clicked", () => {
+        gsettings.set_string(Fields.CUSTOMTHEME, "");
+      });
+      this._reset_cssDark_button.connect("clicked", () => {
+        gsettings.set_string(Fields.CUSTOMTHEMENIGHT, "");
+      });
 
       this._field_remember_input.set_sensitive(this._field_enable_ASCII.active);
       this._field_unkown_state.set_sensitive(this._field_enable_ASCII.active);
@@ -979,16 +1021,26 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_custom_bg_dark.active
       );
       this._logoPicker.set_sensitive(this._field_use_custom_bg.active);
+      this._reset_logo_button.set_sensitive(this._field_use_custom_bg.active);
       this._open_logo_button.set_sensitive(this._field_use_custom_bg.active);
       this._logoDarkPicker.set_sensitive(this._field_use_custom_bg_dark.active);
+      this._reset_logoDark_button.set_sensitive(
+        this._field_use_custom_bg_dark.active
+      );
       this._open_logoDark_button.set_sensitive(
         this._field_use_custom_bg_dark.active
       );
       this._cssPicker.set_sensitive(this._field_enable_custom_theme.active);
+      this._reset_css_button.set_sensitive(
+        this._field_enable_custom_theme.active
+      );
       this._open_css_button.set_sensitive(
         this._field_enable_custom_theme.active
       );
       this._cssDarkPicker.set_sensitive(
+        this._field_enable_custom_theme_dark.active
+      );
+      this._reset_cssDark_button.set_sensitive(
         this._field_enable_custom_theme_dark.active
       );
       this._open_cssDark_button.set_sensitive(
@@ -1390,7 +1442,7 @@ const CustomizeIBus = GObject.registerClass(
       if (ShellVersion < 40) frame.add(frame.grid);
       else frame.set_child(frame.grid);
 
-      frame._add = (x, y, z, a, b) => {
+      frame._add = (x, y, z, a, b, c) => {
         const boxrow = new Gtk.ListBoxRow({
           activatable: true,
           selectable: false,
@@ -1410,6 +1462,7 @@ const CustomizeIBus = GObject.registerClass(
           if (z) hbox.pack_start(z, false, false, spacing);
           if (a) hbox.pack_start(a, false, false, spacing);
           if (b) hbox.pack_start(b, false, false, spacing);
+          if (c) hbox.pack_start(c, false, false, spacing);
         } else {
           hbox.set_spacing(spacing);
           hbox.append(x);
@@ -1417,6 +1470,7 @@ const CustomizeIBus = GObject.registerClass(
           if (z) hbox.append(z);
           if (a) hbox.append(a);
           if (b) hbox.append(b);
+          if (c) hbox.append(c);
         }
         frame.grid.attach(boxrow, 0, frame.grid._row++, 1, 1);
       };
@@ -2018,6 +2072,25 @@ const CustomizeIBus = GObject.registerClass(
 
     _iconButtonMaker(uri, icon_name) {
       if (ShellVersion < 40)
+        return new Gtk.Button({
+          image: new Gtk.Image({
+            gicon: new Gio.ThemedIcon({
+              name: icon_name,
+            }),
+            icon_size: Gtk.IconSize.BUTTON,
+            visible: true,
+          }),
+          visible: true,
+        });
+      else
+        return new Gtk.Button({
+          icon_name: icon_name,
+          visible: true,
+        });
+    }
+
+    _iconLinkButtonMaker(uri, icon_name) {
+      if (ShellVersion < 40)
         return new Gtk.LinkButton({
           uri,
           image: new Gtk.Image({
@@ -2045,7 +2118,7 @@ const CustomizeIBus = GObject.registerClass(
         let uri = _(
           "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
         );
-        let helpButton = this._iconButtonMaker(
+        let helpButton = this._iconLinkButtonMaker(
           uri,
           "dialog-information-symbolic"
         );

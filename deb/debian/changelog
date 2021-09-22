@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (71) hirsute; urgency=medium
+
+  * v71: Add support for GNOME 41. Enable to reset to follow system themes and backgrounds.
+
+ -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Wed, 22 Sep 2021 19:06:51 +0800
+
 gnome-shell-extension-customize-ibus (70) hirsute; urgency=medium
 
   * v70: Fix and optimise for GSoC 2021 final submission.

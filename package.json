@@ -1,14 +1,14 @@
 {
   "name": "customize-ibus",
-  "version": "70.0.0",
+  "version": "71.0.0",
   "description": "Full customization of appearance, behavior, system tray and input source indicator for IBus.",
   "dependencies": {
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "husky": "^7.0.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2"
+    "prettier": "^2.4.1"
   },
   "scripts": {
     "lint": "eslint .",
