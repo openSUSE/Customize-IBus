@@ -118,7 +118,7 @@ debprepare: _build
 deb: debprepare
 	cd deb; dpkg-buildpackage -F
 
-ppa: debprepare
+ppa: clean debprepare
 	cd deb; \
 		dpkg-buildpackage -S;
 	dput $(NAME) *source.changes
