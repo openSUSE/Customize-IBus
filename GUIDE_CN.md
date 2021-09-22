@@ -132,11 +132,11 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 主题
 
-![](https://img-blog.csdnimg.cn/29bca5b29c36477b9c3a79a1950d0ea1.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/c624ccc449d34292a67db473feae948c.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_19,color_FFFFFF,t_70,g_se,x_16)
 
 同常规部分，单击左侧复选框选中来进行功能的启用，单击右侧进行 IBus 主题样式表选择。
 
-如果你已经选择了某个样式表，点击最右边的图标还可以直接打开查看该样式表。
+如果你已经选择了某个样式表，点击最右边的图标还可以直接打开查看该样式表。你还可以点击清除图标来选择跟随系统主题。
 
 支持导入由 [IBus 主题工具](https://github.com/openSUSE/IBus-Theme-Tools)生成的或者由[IBus 主题集合](https://github.com/openSUSE/IBus-Theme-Hub)提供的样式表。
 
@@ -304,11 +304,11 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 背景
 
-![](https://img-blog.csdnimg.cn/20210610005859997.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/946089c7e8ac4084ba51f5189fd50ced.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_19,color_FFFFFF,t_70,g_se,x_16)
 
 支持使用图片来自定义 IBus 候选框背景，其具有比主题背景更高的优先级。
 
-如果你已经选择了某个图片，点击最右边的图标还可以直接打开查看该图片。
+如果你已经选择了某个图片，点击最右边的图标还可以直接打开查看该图片。你还可以点击清除图标来选择跟随主题定义图片。
 
 当浅色背景和深色背景同时开启时，IBus 背景将会自动跟随 GNOME 夜灯模式，关闭时使用浅色背景，开启时使用深色背景。当浅色背景和深色背景只有一个被开启时，扩展将会始终使用那个开启的背景。
 
@@ -340,10 +340,9 @@ sudo apt install gnome-shell-extension-customize-ibus
 ### 关于
 
 在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/4ae7005e423447f4bcf20c3d8b55f714.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/a8c6700115b241668243ae0a372e1b24.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
 
-点击`恢复默认设置`，确认之后可以将此插件进行初始化操作：
-![](https://img-blog.csdnimg.cn/6fb763b7baa14098b32c4ab5590ae792.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+点击`恢复默认设置`，确认之后可以将此插件进行初始化操作。
 
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
