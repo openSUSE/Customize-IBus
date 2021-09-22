@@ -340,7 +340,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 ### 关于
 
 在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/a8c6700115b241668243ae0a372e1b24.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/2b9193f4d6a44c5d8714b275a16c2eeb.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作。
 
