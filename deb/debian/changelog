@@ -1,6 +1,6 @@
-gnome-shell-extension-customize-ibus (71) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (72) hirsute; urgency=medium
 
-  * v71: Add support for GNOME 41. Enable to reset to follow system themes and backgrounds.
+  * v72: Add support for GNOME 41. Enable to reset to follow system themes and backgrounds.
 
  -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Wed, 22 Sep 2021 19:06:51 +0800
 

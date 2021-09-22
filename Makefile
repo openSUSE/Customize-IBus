@@ -74,6 +74,8 @@ _build: $(SCMCPL) $(MSGPOS:.po=.mo)
 	-rm -fR _build
 	mkdir -p _build
 	cp -r $(UUID)/* _build
+	-rm -fR _build/locale/*/LC_MESSAGES/*.po
+	-rm -fR _build/locale/*.pot
 	sed -i 's/"version": [[:digit:]]\+/"version": $(VERSION)/' _build/metadata.json;
 
 zip: _build
