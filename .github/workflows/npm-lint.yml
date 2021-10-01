@@ -11,8 +11,7 @@ on:
     branches: [ main ]
 
 jobs:
-
-  publish-gpr:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,6 +19,5 @@ jobs:
         with:
           node-version: 14
           cache: 'npm'
-          cache-dependency-path: '**/package-lock.json'
       - run: npm install
       - run: npm run lint
