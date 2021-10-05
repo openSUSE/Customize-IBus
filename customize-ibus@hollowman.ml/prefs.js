@@ -14,6 +14,8 @@ const Config = imports.misc.config;
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 
 const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
+const SessionType =
+  GLib.getenv("XDG_SESSION_TYPE") == "wayland" ? "Wayland" : "Xorg";
 const SCHEMA_PATH = "/org/gnome/shell/extensions/customize-ibus/";
 
 function buildPrefsWidget() {
@@ -1596,6 +1598,21 @@ const CustomizeIBus = GObject.registerClass(
           label: _(
             '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE">@openSUSE</a></b>.</span>'
           ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          label:
+            _("Current Session") +
+            ": GNOME " +
+            Config.PACKAGE_VERSION +
+            " (" +
+            SessionType +
+            ")",
         }),
         0,
         frame.grid._row++,

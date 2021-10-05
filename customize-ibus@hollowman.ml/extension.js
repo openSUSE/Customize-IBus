@@ -5,19 +5,8 @@
 "use strict";
 
 /* Constant Variables */
-const {
-  Clutter,
-  Gio,
-  GLib,
-  Meta,
-  Shell,
-  IBus,
-  Pango,
-  St,
-  Atspi,
-  Gdk,
-  GObject,
-} = imports.gi;
+const { Clutter, Gio, GLib, Meta, Shell, IBus, Pango, St, GObject } =
+  imports.gi;
 
 const Main = imports.ui.main;
 const ExtensionUtils = imports.misc.extensionUtils;
@@ -47,6 +36,10 @@ const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
+const Config = imports.misc.config;
+const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
+const SessionType =
+  GLib.getenv("XDG_SESSION_TYPE") == "wayland" ? "Wayland" : "Xorg";
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INDICATORANI = ["NONE", "SLIDE", "FADE", "FULL"];
@@ -191,6 +184,14 @@ const IBusClickSwitch = GObject.registerClass(
         Gio.SettingsBindFlags.GET
       );
       CandidatePopup.reactive = true;
+      let deviceManager = null;
+      if (Clutter.DeviceManager)
+        deviceManager = Clutter.DeviceManager.get_default();
+      else deviceManager = Clutter.get_default_backend().get_default_seat();
+      this._virtualDevice = deviceManager.create_virtual_device(
+        Clutter.InputDeviceType.KEYBOARD_DEVICE
+      );
+
       this._CandidateAreaActor = CandidateArea;
       if (!(CandidateArea instanceof St.BoxLayout))
         this._CandidateAreaActor = CandidateArea.actor;
@@ -210,25 +211,39 @@ const IBusClickSwitch = GObject.registerClass(
       this._buttonPressID = CandidatePopup.connect(
         "button-press-event",
         (actor, event) => {
-          if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
-            if (!this._mouseInCandidate || !this._clickSwitch) {
-              Atspi.generate_keyboard_event(
-                Gdk.keyval_from_name("Return"),
-                null,
-                Atspi.KeySynthType.PRESS | Atspi.KeySynthType.SYM
+          let rightButton = "BUTTON3_MASK";
+          if (ShellVersion >= 40 && SessionType == "Wayland")
+            rightButton = "BUTTON2_MASK";
+          if (event.get_state() & Clutter.ModifierType[rightButton]) {
+            let shouldPressReturn =
+              !this._mouseInCandidate || !this._clickSwitch;
+            if (shouldPressReturn) {
+              this._virtualDevice.notify_keyval(
+                Clutter.get_current_event_time(),
+                Clutter.KEY_Return,
+                Clutter.KeyState.PRESSED
               );
-              CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
-            }
-            if (this._clickSwitch) {
-              IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-            } else {
-              InputSourceIndicator.menu.open(
-                InputSourceIndicator.menu.activeMenu
-                  ? BoxPointer.PopupAnimation.FADE
-                  : BoxPointer.PopupAnimation.FULL
+              this._virtualDevice.notify_keyval(
+                Clutter.get_current_event_time(),
+                Clutter.KEY_Return,
+                Clutter.KeyState.RELEASED
               );
-              Main.panel.menuManager.ignoreRelease();
             }
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 10, () => {
+              if (shouldPressReturn)
+                CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
+              if (this._clickSwitch) {
+                IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+              } else {
+                InputSourceIndicator.menu.open(
+                  InputSourceIndicator.menu.activeMenu
+                    ? BoxPointer.PopupAnimation.FADE
+                    : BoxPointer.PopupAnimation.FULL
+                );
+                Main.panel.menuManager.ignoreRelease();
+              }
+              return GLib.SOURCE_REMOVE;
+            });
           }
         }
       );
@@ -1031,6 +1046,7 @@ const IBusReposition = GObject.registerClass(
       this._sideChangeID = CandidatePopup.connect("arrow-side-changed", () => {
         let themeNode = CandidatePopup.get_theme_node();
         let gap = themeNode.get_length("-boxpointer-gap");
+        let padding = themeNode.get_length("-arrow-rise");
         let [, , , natHeight] = CandidatePopup.get_preferred_size();
         let sourceTopLeft = 0;
         let sourceBottomRight = 0;
@@ -1042,14 +1058,23 @@ const IBusReposition = GObject.registerClass(
           switch (CandidatePopup._arrowSide) {
             case St.Side.TOP:
               CandidatePopup._relativePosY +=
-                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+                natHeight +
+                2 * gap -
+                sourceTopLeft.y +
+                sourceBottomRight.y +
+                padding;
               break;
             case St.Side.BOTTOM:
               CandidatePopup._relativePosY -=
-                natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+                natHeight +
+                2 * gap -
+                sourceTopLeft.y +
+                sourceBottomRight.y +
+                padding;
               break;
           }
           this._updatePos();
+          CandidatePopup._border.queue_repaint();
         }
       });
     }
@@ -1137,6 +1162,8 @@ const IBusTrayClickSwitch = GObject.registerClass(
         InputSourceIndicator.container.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
       let keyNum = traysswitchkey == 0 ? "1" : "3";
+      if (ShellVersion >= 40 && SessionType == "Wayland")
+        keyNum = traysswitchkey == 0 ? "1" : "2";
       InputSourceIndicator.container.reactive = true;
       this._buttonPressID = InputSourceIndicator.container.connect(
         "button-press-event",
@@ -1426,7 +1453,10 @@ const IBusInputSourceIndicator = GObject.registerClass(
         this._buttonRightPressID = this.connect(
           "button-press-event",
           (actor, event) => {
-            if (event.get_state() & Clutter.ModifierType.BUTTON3_MASK) {
+            let rightButton = "BUTTON3_MASK";
+            if (ShellVersion >= 40 && SessionType == "Wayland")
+              rightButton = "BUTTON2_MASK";
+            if (event.get_state() & Clutter.ModifierType[rightButton]) {
               this._inSetPosMode = false;
               this.close(BoxPointer.PopupAnimation[this.animation]);
             }
