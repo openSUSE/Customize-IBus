@@ -659,7 +659,7 @@ const CustomizeIBus = GObject.registerClass(
         this._open_logoDark_button
       );
       this._bgHelpPage(this._ibus_bg);
-
+      this._settingsPage();
       this._aboutPage();
     }
 
@@ -1479,6 +1479,116 @@ const CustomizeIBus = GObject.registerClass(
       return frame;
     }
 
+    _settingsPage() {
+      let box = new Gtk.Box({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        orientation: Gtk.Orientation.VERTICAL,
+      });
+      let frame = new Gtk.Frame({
+        margin_top: 10,
+      });
+
+      if (ShellVersion < 40) box.add(frame);
+      else box.append(frame);
+      this._notebook.append_page(box, new Gtk.Label({ label: _("Settings") }));
+
+      frame.grid = new Gtk.Grid({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+        hexpand: true,
+        row_spacing: 12,
+        column_spacing: 18,
+        row_homogeneous: false,
+        column_homogeneous: false,
+        halign: Gtk.Align.CENTER,
+      });
+
+      frame.grid._row = 0;
+      if (ShellVersion < 40) frame.add(frame.grid);
+      else frame.set_child(frame.grid);
+
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          hexpand: true,
+          halign: Gtk.Align.CENTER,
+          label: "<b>" + _("Settings for extension") + "</b>",
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      const boxrow = new Gtk.ListBoxRow({
+        activatable: true,
+        selectable: false,
+      });
+      const hbox = new Gtk.Box({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+      });
+      if (ShellVersion < 40) boxrow.add(hbox);
+      else boxrow.set_child(hbox);
+      let spacing = 4;
+      if (ShellVersion < 40) {
+        hbox.pack_start(this._reset_extension, false, false, spacing);
+        hbox.pack_start(this._export_settings, false, false, spacing);
+        hbox.pack_start(this._import_settings, false, false, spacing);
+      } else {
+        hbox.set_spacing(spacing);
+        hbox.append(this._reset_extension);
+        hbox.append(this._export_settings);
+        hbox.append(this._import_settings);
+      }
+      frame.grid.attach(boxrow, 0, frame.grid._row++, 1, 1);
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          hexpand: true,
+          halign: Gtk.Align.CENTER,
+          label:
+            "<b>" + _("Other official IBus customization settings") + "</b>",
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      const boxrow1 = new Gtk.ListBoxRow({
+        activatable: true,
+        selectable: false,
+      });
+      const hbox1 = new Gtk.Box({
+        margin_start: 10,
+        margin_end: 10,
+        margin_top: 10,
+        margin_bottom: 10,
+      });
+      if (ShellVersion < 40) boxrow1.add(hbox1);
+      else boxrow1.set_child(hbox1);
+      if (ShellVersion < 40) {
+        hbox1.pack_start(
+          this._field_open_system_settings,
+          false,
+          false,
+          spacing
+        );
+        hbox1.pack_start(this._field_open_ibus_pref, false, false, spacing);
+      } else {
+        hbox1.set_spacing(spacing);
+        hbox1.append(this._field_open_system_settings);
+        hbox1.append(this._field_open_ibus_pref);
+      }
+      frame.grid.attach(boxrow1, 0, frame.grid._row++, 1, 1);
+    }
+
     _aboutPage() {
       let box = new Gtk.Box({
         margin_start: 10,
@@ -1571,6 +1681,41 @@ const CustomizeIBus = GObject.registerClass(
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
+          label: _(" "),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          label:
+            _("Current Session") +
+            ": GNOME " +
+            Config.PACKAGE_VERSION +
+            " (" +
+            SessionType +
+            ")",
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          label: _(" "),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
           label: _(
             '<span size="small">Copyright © 2021 <a href="https://github.com/HollowMan6">Hollow Man</a> &lt;<a href="mailto:hollowman@hollowman.ml">hollowman@hollowman.ml</a>&gt;</span>'
           ),
@@ -1606,100 +1751,14 @@ const CustomizeIBus = GObject.registerClass(
       );
       frame.grid.attach(
         new Gtk.Label({
-          label:
-            _("Current Session") +
-            ": GNOME " +
-            Config.PACKAGE_VERSION +
-            " (" +
-            SessionType +
-            ")",
+          use_markup: true,
+          label: _(" "),
         }),
         0,
         frame.grid._row++,
         1,
         1
       );
-      let expanderFrame = new Gtk.Frame({
-        margin_top: 10,
-      });
-      expanderFrame.grid = new Gtk.Grid({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        hexpand: true,
-        row_spacing: 12,
-        column_spacing: 18,
-        row_homogeneous: false,
-        column_homogeneous: false,
-        halign: Gtk.Align.CENTER,
-      });
-      expanderFrame.grid._row = 0;
-      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
-      else expanderFrame.set_child(expanderFrame.grid);
-      frame.grid.attach(expanderFrame, 0, frame.grid._row++, 1, 1);
-      const boxrow = new Gtk.ListBoxRow({
-        activatable: true,
-        selectable: false,
-      });
-      const hbox = new Gtk.Box({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-      });
-      if (ShellVersion < 40) boxrow.add(hbox);
-      else boxrow.set_child(hbox);
-      let spacing = 4;
-      if (ShellVersion < 40) {
-        hbox.pack_start(this._reset_extension, false, false, spacing);
-        hbox.pack_start(this._export_settings, false, false, spacing);
-        hbox.pack_start(this._import_settings, false, false, spacing);
-      } else {
-        hbox.set_spacing(spacing);
-        hbox.append(this._reset_extension);
-        hbox.append(this._export_settings);
-        hbox.append(this._import_settings);
-      }
-      expanderFrame.grid.attach(boxrow, 0, expanderFrame.grid._row++, 1, 1);
-      expanderFrame.grid.attach(
-        new Gtk.Label({
-          use_markup: true,
-          hexpand: true,
-          halign: Gtk.Align.CENTER,
-          label: "<b>" + _("Other official customization settings") + "</b>",
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
-      );
-      const boxrow1 = new Gtk.ListBoxRow({
-        activatable: true,
-        selectable: false,
-      });
-      const hbox1 = new Gtk.Box({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-      });
-      if (ShellVersion < 40) boxrow1.add(hbox1);
-      else boxrow1.set_child(hbox1);
-      if (ShellVersion < 40) {
-        hbox1.pack_start(
-          this._field_open_system_settings,
-          false,
-          false,
-          spacing
-        );
-        hbox1.pack_start(this._field_open_ibus_pref, false, false, spacing);
-      } else {
-        hbox1.set_spacing(spacing);
-        hbox1.append(this._field_open_system_settings);
-        hbox1.append(this._field_open_ibus_pref);
-      }
-      expanderFrame.grid.attach(boxrow1, 0, expanderFrame.grid._row++, 1, 1);
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,

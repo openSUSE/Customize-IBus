@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+for d in $(find customize-ibus@hollowman.ml/locale -maxdepth 1 -type d | cut -d / -f 3); do
+  make LANG=$d mergepo $1;
+done
