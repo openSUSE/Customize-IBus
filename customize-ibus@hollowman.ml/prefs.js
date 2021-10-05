@@ -1690,31 +1690,6 @@ const CustomizeIBus = GObject.registerClass(
       );
       frame.grid.attach(
         new Gtk.Label({
-          label:
-            _("Current Session") +
-            ": GNOME " +
-            Config.PACKAGE_VERSION +
-            " (" +
-            SessionType +
-            ")",
-        }),
-        0,
-        frame.grid._row++,
-        1,
-        1
-      );
-      frame.grid.attach(
-        new Gtk.Label({
-          use_markup: true,
-          label: _(" "),
-        }),
-        0,
-        frame.grid._row++,
-        1,
-        1
-      );
-      frame.grid.attach(
-        new Gtk.Label({
           use_markup: true,
           label: _(
             '<span size="small">Copyright © 2021 <a href="https://github.com/HollowMan6">Hollow Man</a> &lt;<a href="mailto:hollowman@hollowman.ml">hollowman@hollowman.ml</a>&gt;</span>'
@@ -1743,6 +1718,31 @@ const CustomizeIBus = GObject.registerClass(
           label: _(
             '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/projects/#5505085183885312">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE">@openSUSE</a></b>.</span>'
           ),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          use_markup: true,
+          label: _(" "),
+        }),
+        0,
+        frame.grid._row++,
+        1,
+        1
+      );
+      frame.grid.attach(
+        new Gtk.Label({
+          label:
+            _("Current Session") +
+            ": GNOME " +
+            Config.PACKAGE_VERSION +
+            " (" +
+            SessionType +
+            ")",
         }),
         0,
         frame.grid._row++,
