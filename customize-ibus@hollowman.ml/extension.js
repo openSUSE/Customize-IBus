@@ -1581,6 +1581,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this._sideChangeID = this.connect("arrow-side-changed", () => {
         let themeNode = this.get_theme_node();
         let gap = themeNode.get_length("-boxpointer-gap");
+        let padding = themeNode.get_length("-arrow-rise");
         let [, , , natHeight] = this.get_preferred_size();
         let sourceTopLeft = 0;
         let sourceBottomRight = 0;
@@ -1591,14 +1592,23 @@ const IBusInputSourceIndicator = GObject.registerClass(
         switch (this._arrowSide) {
           case St.Side.TOP:
             this._relativePosY +=
-              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+              natHeight +
+              2 * gap -
+              sourceTopLeft.y +
+              sourceBottomRight.y +
+              padding;
             break;
           case St.Side.BOTTOM:
             this._relativePosY -=
-              natHeight + 2 * gap - sourceTopLeft.y + sourceBottomRight.y;
+              natHeight +
+              2 * gap -
+              sourceTopLeft.y +
+              sourceBottomRight.y +
+              padding;
             break;
         }
         this._updatePos();
+        this._border.queue_repaint();
       });
     }
 
