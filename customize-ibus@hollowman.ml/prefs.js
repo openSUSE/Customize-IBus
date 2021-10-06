@@ -1607,7 +1607,7 @@ const CustomizeIBus = GObject.registerClass(
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
-          label: _(" "),
+          label: " ",
         }),
         0,
         frame.grid._row++,
@@ -1653,7 +1653,7 @@ const CustomizeIBus = GObject.registerClass(
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
-          label: _(" "),
+          label: " ",
         }),
         0,
         frame.grid._row++,
@@ -1678,7 +1678,7 @@ const CustomizeIBus = GObject.registerClass(
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
-          label: _(" "),
+          label: " ",
         }),
         0,
         frame.grid._row++,

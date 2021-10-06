@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 75\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-06 16:36+0800\n"
+"POT-Creation-Date: 2021-10-06 17:51+0800\n"
 "PO-Revision-Date: 2021-08-26 02:53+0000\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -433,10 +433,6 @@ msgid ""
 "Full customization of appearance, behavior, system tray and input source "
 "indicator for IBus."
 msgstr "深度定製 IBus 的外觀、行為、系統托盤以及輸入指示。"
-
-#: prefs.js:1610 prefs.js:1656 prefs.js:1681
-msgid " "
-msgstr ""
 
 #: prefs.js:1621
 msgid ""
