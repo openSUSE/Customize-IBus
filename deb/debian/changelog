@@ -1,6 +1,6 @@
-gnome-shell-extension-customize-ibus (74) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (75) hirsute; urgency=medium
 
-  * v74: Fix support for wayland and reposition bug; Rearrange UI.
+  * v75: Fix support for wayland and reposition bug; Rearrange UI.
 
  -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Wed, 06 Oct 2021 11:10:58 +0800
 

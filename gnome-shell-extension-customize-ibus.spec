@@ -16,11 +16,11 @@
 #
 
 
-%global commit e1a38c094cae2131bb1eac69123c71d9b1ec12d0
+%global commit f07228038ab7245e1a25a0f5ad1be130bf8dd5b5
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        73
+Version:        75
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,7 +56,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Wed Oct 06 2021 Hollow Man <hollowman@hollowman.ml> - 74
+* Wed Oct 06 2021 Hollow Man <hollowman@hollowman.ml> - 75
 - Fix support for wayland and reposition bug.
 - Rearrange UI.
 

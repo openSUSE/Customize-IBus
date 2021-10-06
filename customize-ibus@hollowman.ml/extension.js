@@ -243,6 +243,7 @@ const IBusClickSwitch = GObject.registerClass(
                   );
                   Main.panel.menuManager.ignoreRelease();
                 }
+                this._delayAfterPress = null;
                 return GLib.SOURCE_REMOVE;
               }
             );
