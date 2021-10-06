@@ -36,8 +36,6 @@ const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
-const Config = imports.misc.config;
-const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
 const SessionType =
   GLib.getenv("XDG_SESSION_TYPE") == "wayland" ? "Wayland" : "Xorg";
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
@@ -212,8 +210,7 @@ const IBusClickSwitch = GObject.registerClass(
         "button-press-event",
         (actor, event) => {
           let rightButton = "BUTTON3_MASK";
-          if (ShellVersion >= 40 && SessionType == "Wayland")
-            rightButton = "BUTTON2_MASK";
+          if (SessionType == "Wayland") rightButton = "BUTTON2_MASK";
           if (event.get_state() & Clutter.ModifierType[rightButton]) {
             let shouldPressReturn =
               !this._mouseInCandidate || !this._clickSwitch;
@@ -1162,8 +1159,7 @@ const IBusTrayClickSwitch = GObject.registerClass(
         InputSourceIndicator.container.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
       let keyNum = traysswitchkey == 0 ? "1" : "3";
-      if (ShellVersion >= 40 && SessionType == "Wayland")
-        keyNum = traysswitchkey == 0 ? "1" : "2";
+      if (SessionType == "Wayland") keyNum = traysswitchkey == 0 ? "1" : "2";
       InputSourceIndicator.container.reactive = true;
       this._buttonPressID = InputSourceIndicator.container.connect(
         "button-press-event",
@@ -1454,8 +1450,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
           "button-press-event",
           (actor, event) => {
             let rightButton = "BUTTON3_MASK";
-            if (ShellVersion >= 40 && SessionType == "Wayland")
-              rightButton = "BUTTON2_MASK";
+            if (SessionType == "Wayland") rightButton = "BUTTON2_MASK";
             if (event.get_state() & Clutter.ModifierType[rightButton]) {
               this._inSetPosMode = false;
               this.close(BoxPointer.PopupAnimation[this.animation]);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 72\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-06 01:17+0800\n"
+"POT-Creation-Date: 2021-10-06 09:41+0800\n"
 "PO-Revision-Date: 2021-08-25 16:39+0000\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (Traditional, Hong Kong) <https://hosted.weblate.org/"
@@ -19,55 +19,55 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.8.1-dev\n"
 
-#: extension.js:1428
+#: extension.js:1424
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服務連接成功！"
 
-#: extension.js:1973
+#: extension.js:1968
 msgid "loading light user theme for IBus:"
 msgstr "正在為 IBus 加載淺色用户主題:"
 
-#: extension.js:1983
+#: extension.js:1978
 msgid "loading dark user theme for IBus:"
 msgstr "正在為 IBus 加載深色用户主題:"
 
-#: extension.js:1988
+#: extension.js:1983
 msgid "loading default theme for IBus"
 msgstr "正在為 IBus 加載當前系統主題"
 
-#: extension.js:2184
+#: extension.js:2179
 msgid "loading background for IBus:"
 msgstr "正在為 IBus 加載背景:"
 
-#: extension.js:2194
+#: extension.js:2189
 msgid "remove custom background for IBus"
 msgstr "為 IBus 去除自定義背景"
 
-#: extension.js:2767
+#: extension.js:2762
 msgid "Successfully triggered a restart for IBus"
 msgstr "成功觸發一次 IBus 的重新啓動"
 
-#: extension.js:2785
+#: extension.js:2780
 msgid "Copy Emoji"
 msgstr "複製 Emoji"
 
-#: extension.js:2806 prefs.js:1654 prefs.js:2202
+#: extension.js:2801 prefs.js:1654 prefs.js:2202
 msgid "Customize IBus"
 msgstr "自定義 IBus"
 
-#: extension.js:2830 prefs.js:275 prefs.js:535
+#: extension.js:2825 prefs.js:275 prefs.js:535
 msgid "IBus Preferences"
 msgstr "IBus 首選項"
 
-#: extension.js:2851 extension.js:2866 prefs.js:539
+#: extension.js:2846 extension.js:2861 prefs.js:539
 msgid "IBus Version"
 msgstr "IBus 版本"
 
-#: extension.js:2880
+#: extension.js:2875
 msgid "Restart"
 msgstr "重新啓動"
 
-#: extension.js:2901
+#: extension.js:2896
 msgid "Quit"
 msgstr "退出"
 
