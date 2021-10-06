@@ -70,7 +70,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 常规
 
-![](https://img-blog.csdnimg.cn/20210709112942120.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/374fcdefa9e641f2a04c9ac21c7c7ae1.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
 
 点击`候选框方向`左侧的复选框来进行选中，即可支持配置 IBus 输入法候选框方向。点击右侧进行选择，支持设定为竖直或者水平。
 
@@ -111,7 +111,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 托盘
 
-![](https://img-blog.csdnimg.cn/20210606205406511.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/c9a732a9e4e94ff4ad63e81b8c458dcf.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_16,color_FFFFFF,t_70,g_se,x_16)
 
 这里你可以选择显示 IBus 托盘图标，启用直接点击切换输入源，为位于系统托盘处的 IBus 输入源指示菜单增加额外的菜单项，来复原 IBus 在非 GNOME 桌面的体验。各菜单功能如文字描述，点击右侧切换按钮即可启用。
 
@@ -123,7 +123,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 指示
 
-![](https://img-blog.csdnimg.cn/20210709113143680.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/973f884314bf45f4a037259358bc4efb.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_16,color_FFFFFF,t_70,g_se,x_16)
 
 这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`，`启用右击关闭指示器`，`启用滚动切换输入源`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。还支持设定指示器字体。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。另外可以设定`指示器透明度`，支持设定值为 0 到 255，设定步进为 1。你还可以`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 1。
 
@@ -132,7 +132,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 主题
 
-![](https://img-blog.csdnimg.cn/c624ccc449d34292a67db473feae948c.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_19,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/cf039a1c390a406797c7294dce31f132.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_16,color_FFFFFF,t_70,g_se,x_16)
 
 同常规部分，单击左侧复选框选中来进行功能的启用，单击右侧进行 IBus 主题样式表选择。
 
@@ -304,7 +304,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 背景
 
-![](https://img-blog.csdnimg.cn/946089c7e8ac4084ba51f5189fd50ced.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_19,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/5c1b69077116495680726dc0ef409310.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_16,color_FFFFFF,t_70,g_se,x_16)
 
 支持使用图片来自定义 IBus 候选框背景，其具有比主题背景更高的优先级。
 
@@ -337,12 +337,15 @@ sudo apt install gnome-shell-extension-customize-ibus
 - **裁剪 + 不重复/重复(等效)**：
   ![](https://img-blog.csdnimg.cn/20210503124907786.png)
 
-### 关于
+### 设置
 
-在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/2b9193f4d6a44c5d8714b275a16c2eeb.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/ba08eed4f0734bcd856e810ce4a08987.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_16,color_FFFFFF,t_70,g_se,x_16)
+
+这里你可以将所有插件设置重置为默认值。你也可以将当前设置导出为 ini 文件来进行备份，后面等需要恢复设置时再导入。另外供你参考的是，你也可以打开官方的 IBus 自定义设置来自定义你在此插件中未曾找到的设定。
 
 点击`恢复默认设置`，确认之后可以将此插件进行初始化操作。
+
+![](https://img-blog.csdnimg.cn/69235bf6d0e44a329c0ada2286937cdd.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_16,color_FFFFFF,t_70,g_se,x_16)
 
 点击`导出当前设置`，你可以选择将当前设置导出为`*.ini`文件。默认文件名为`Customize_IBus_Settings_[当前时间].ini`：
 ![](https://img-blog.csdnimg.cn/2021061001011966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -403,7 +406,11 @@ use-tray-click-source-switch=true
 点击`从文件导入`，你可以选择将从刚刚保存的设置文件进行导入操作：
 ![](https://img-blog.csdnimg.cn/20210610010202175.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-你还可以选择打开其他官方自定义设置进行进一步的自定义操作。
+### 关于
+
+在任何时候，你都可以点击左上角的图标打开此指南：
+
+![](https://img-blog.csdnimg.cn/002c47d2753a492b96f6346dc47c2125.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
 
 ## 非 GNOME 桌面
 

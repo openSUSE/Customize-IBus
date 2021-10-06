@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 73\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-06 10:58+0800\n"
+"POT-Creation-Date: 2021-10-06 12:49+0800\n"
 "PO-Revision-Date: 2021-08-25 16:39+0000\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -51,7 +51,7 @@ msgstr "成功触发一次 IBus 的重新启动"
 msgid "Copy Emoji"
 msgstr "复制 Emoji"
 
-#: extension.js:2801 prefs.js:1581 prefs.js:1962
+#: extension.js:2801 prefs.js:1580 prefs.js:1961
 msgid "Customize IBus"
 msgstr "自定义 IBus"
 
@@ -131,11 +131,11 @@ msgstr "启动/重启 IBus"
 msgid "Restore Default Settings"
 msgstr "恢复默认设置"
 
-#: prefs.js:128 prefs.js:840
+#: prefs.js:128 prefs.js:839
 msgid "Export Current Settings"
 msgstr "导出当前设置"
 
-#: prefs.js:134 prefs.js:864
+#: prefs.js:134 prefs.js:863
 msgid "Import Settings from File"
 msgstr "从文件导入"
 
@@ -396,49 +396,49 @@ msgstr "背景"
 msgid "Settings"
 msgstr "设置"
 
-#: prefs.js:661
+#: prefs.js:660
 msgid "Settings for extension"
 msgstr "配置插件"
 
-#: prefs.js:675
+#: prefs.js:674
 msgid "Other official IBus customization settings"
 msgstr "其它官方 IBus 自定义设置"
 
-#: prefs.js:845
+#: prefs.js:844
 msgid "Save"
 msgstr "保存"
 
-#: prefs.js:869
+#: prefs.js:868
 msgid "Open"
 msgstr "打开"
 
-#: prefs.js:1515
+#: prefs.js:1514
 msgid "Help"
 msgstr "帮助"
 
-#: prefs.js:1533
+#: prefs.js:1532
 msgid "About"
 msgstr "关于"
 
-#: prefs.js:1552
+#: prefs.js:1551
 msgid "unknown (self-build ?)"
 msgstr "未知（自编译？）"
 
-#: prefs.js:1589
+#: prefs.js:1588
 msgid "Version: "
 msgstr "版本： "
 
-#: prefs.js:1600
+#: prefs.js:1599
 msgid ""
 "Full customization of appearance, behavior, system tray and input source "
 "indicator for IBus."
 msgstr "深度定制 IBus 的外观、行为、系统托盘以及输入指示。"
 
-#: prefs.js:1611 prefs.js:1657 prefs.js:1682
+#: prefs.js:1610 prefs.js:1656 prefs.js:1681
 msgid " "
 msgstr ""
 
-#: prefs.js:1622
+#: prefs.js:1621
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
@@ -448,7 +448,7 @@ msgstr ""
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
 "\">hollowman@hollowman.ml</a>&gt;</span>"
 
-#: prefs.js:1634
+#: prefs.js:1633
 msgid ""
 "<span size=\"small\">Source Code: <a href=\"https://github.com/openSUSE/"
 "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
@@ -456,7 +456,7 @@ msgstr ""
 "<span size=\"small\">源代码：<a href=\"https://github.com/openSUSE/Customize-"
 "IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
 
-#: prefs.js:1646
+#: prefs.js:1645
 msgid ""
 "<span size=\"small\">Sponsored by <a href=\"https://summerofcode.withgoogle."
 "com/projects/#5505085183885312\">Google Summer of Code 2021</a> <b><a href="
@@ -466,16 +466,16 @@ msgstr ""
 "projects/#5505085183885312\">2021谷歌编程之夏</a> <b><a href=\"https://"
 "github.com/openSUSE\">@openSUSE</a></b>资助。</span>"
 
-#: prefs.js:1667
+#: prefs.js:1666
 msgid "Current Session"
 msgstr "当前会话"
 
-#: prefs.js:1693
+#: prefs.js:1692
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.</span>"
 msgstr "<span size=\"small\">本程序不提供任何担保。</span>"
 
-#: prefs.js:1705
+#: prefs.js:1704
 msgid ""
 "<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/gpl"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
@@ -483,7 +483,7 @@ msgstr ""
 "<span size=\"small\">参见 <a href=\"https://www.gnu.org/licenses/gpl\">GNU 通"
 "用公共许可证，第三版或更高版本</a>以了解更多细节。</span>"
 
-#: prefs.js:1723
+#: prefs.js:1722
 msgid ""
 "Here you can set the IBus input window orientation, animation, right click "
 "to open menu or switch source, scroll to switch among pages or candidates, "
@@ -497,7 +497,7 @@ msgstr ""
 "默认切换语言、候选框透明度、固定输入法列表顺序、当输入时通过拖拽移动候选框、"
 "以及显示或隐藏候选框调页按钮。"
 
-#: prefs.js:1732
+#: prefs.js:1731
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>fix candidate box</b> is enabled, "
 "you can set the candidate box position with 9 options. Recommend to "
@@ -511,7 +511,7 @@ msgstr ""
 "置。当选择 <b>记住最后位置</b> 时，可以永远记住你上次拖拽的位置，并且在下次登"
 "陆时恢复。</span>"
 
-#: prefs.js:1741
+#: prefs.js:1740
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is "
 "enabled, and you have set to <b>Remember Input State</b>, every opened APP's "
@@ -524,7 +524,7 @@ msgstr ""
 "将会被自动记住。另外，新打开的应用将会遵循你的输入源配置，应用的输入状态将会"
 "永远被记住。</span>"
 
-#: prefs.js:1750
+#: prefs.js:1749
 msgid ""
 "<span size=\"small\"><b>Note:</b> If you <b>enable drag to reposition "
 "candidate box</b>, and if <b>fix candidate box</b> is enabled, your "
@@ -535,7 +535,7 @@ msgstr ""
 "用了<b>固定候选框</b>，那么你手动拖拽移动的位置将会保持到此次会话结束。否则手"
 "动拖拽移动的位置只会在本次输入中保持。</span>"
 
-#: prefs.js:1764
+#: prefs.js:1763
 msgid ""
 "Here you can set to show IBus tray icon, enable directly switch source with "
 "click, add additional menu entries to IBus input source indicator menu at "
@@ -546,7 +546,7 @@ msgstr ""
 "IBus 输入源指示菜单增加额外的菜单项，来复原 IBus 在非GNOME桌面的体验。你还可"
 "以通过点击最上方的按钮来启动或者重启 IBus。"
 
-#: prefs.js:1774
+#: prefs.js:1773
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>Directly switch source with click</"
 "b> is enabled, when the left key is selected, if you click the tray icon "
@@ -557,7 +557,7 @@ msgstr ""
 "左键时，如果你用左键点击托盘图标，将会切换输入源，右键点击则会和往常一样打开"
 "菜单，反之亦然。</span>"
 
-#: prefs.js:1788
+#: prefs.js:1787
 msgid ""
 "Here you can set to show input source indicator, default is to show "
 "indicator every time you type, move caret or switch input source. You can "
@@ -573,7 +573,7 @@ msgstr ""
 "左击切换输入源拖拽移动指示器，指示器透明度和启用自动隐藏时延，自动隐藏时延"
 "（单位：秒）。"
 
-#: prefs.js:1802
+#: prefs.js:1801
 msgid ""
 "Support importing stylesheet generated by <a href=\"https://github.com/"
 "openSUSE/IBus-Theme-Tools\">IBus Theme Tools</a> or provided by <a href="
@@ -583,7 +583,7 @@ msgstr ""
 "工具</a> 生成的或者由 <a href=\"https://github.com/openSUSE/IBus-Theme-Hub"
 "\">IBus 主题集合</a> 提供的样式表。"
 
-#: prefs.js:1811
+#: prefs.js:1810
 msgid ""
 "When light theme and dark theme are turned on at the same time, the IBus "
 "theme will automatically follow GNOME Night Light mode, use light theme when "
@@ -594,7 +594,7 @@ msgstr ""
 "使用浅色主题，开启时使用深色主题。当浅色主题和深色主题只有一个被开启时，扩展"
 "将会始终使用那个开启的主题。"
 
-#: prefs.js:1820
+#: prefs.js:1819
 msgid ""
 "<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
 "add any classes that's not started with <i>.candidate-*</i> into IBus "
@@ -603,7 +603,7 @@ msgstr ""
 "<span size=\"small\"><b><i>警告：</i> 如非调试需要，请勿在 IBus 主题样式表中"
 "加入非 <i>.candidate-*</i> 开头的类，以免干扰系统主题。</b></span>"
 
-#: prefs.js:1829
+#: prefs.js:1828
 msgid ""
 "<span size=\"small\"><b>Note:</b> Support stylesheets hot reload, CSS "
 "changes reflecting in real-time.</span>"
@@ -611,13 +611,13 @@ msgstr ""
 "<span size=\"small\"><b>注：</b> 支持样式表热重载, CSS 的变化会实时地体现出"
 "来。</span>"
 
-#: prefs.js:1843
+#: prefs.js:1842
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than the theme-defined background."
 msgstr "支持使用图片来自定义 IBus 候选框背景，其具有比主题背景更高的优先级。"
 
-#: prefs.js:1852
+#: prefs.js:1851
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -629,7 +629,7 @@ msgstr ""
 "使用浅色背景，开启时使用深色背景。当浅色背景和深色背景只有一个被开启时，扩展"
 "将会始终使用那个开启的背景。"
 
-#: prefs.js:1861
+#: prefs.js:1860
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "
@@ -641,34 +641,34 @@ msgstr ""
 "可移动设备，系统默认不挂载，每次手动挂载后请关闭并重新开启对应 <b>自定义背景"
 "</b> 来使其生效。</span>"
 
-#: prefs.js:1875
+#: prefs.js:1874
 msgid ""
 "Here you can reset the settings of this extension to default. You can also "
 "export current settings to an ini file for backup, and then import it when "
 "you need restore. For your information, you may also open the official IBus "
 "customization settings for customizations you can't find in this extension."
 msgstr ""
-"这里你可以将所有插件设置重置为默认值。你也可以将当前设置导出为 ini 文件来进"
-"行备份，后面等需要恢复设置时再导入。另外供你参考的是，你也可以打开官方的 IBus "
+"这里你可以将所有插件设置重置为默认值。你也可以将当前设置导出为 ini 文件来进行"
+"备份，后面等需要恢复设置时再导入。另外供你参考的是，你也可以打开官方的 IBus "
 "自定义设置来自定义你在此插件中未曾找到的设定。"
 
-#: prefs.js:1955
+#: prefs.js:1954
 msgid ""
 "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
 msgstr "https://blog.csdn.net/qq_18572023/article/details/116331601"
 
-#: prefs.js:1979 prefs.js:2007
+#: prefs.js:1978 prefs.js:2006
 msgid "Cancel"
 msgstr "取消"
 
-#: prefs.js:2008
+#: prefs.js:2007
 msgid "OK"
 msgstr "确认"
 
-#: prefs.js:2010
+#: prefs.js:2009
 msgid "Reset All Settings to Default?"
 msgstr "是否将所有设置重置为默认值？"
 
-#: prefs.js:2016
+#: prefs.js:2015
 msgid "This will discard all the current configurations!"
 msgstr "这将丢弃当前的所有配置！"

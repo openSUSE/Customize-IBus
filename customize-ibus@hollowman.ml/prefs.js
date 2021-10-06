@@ -657,8 +657,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           hexpand: true,
           halign: Gtk.Align.CENTER,
-          label:
-            "<b>" + _("Settings for extension") + "</b>",
+          label: "<b>" + _("Settings for extension") + "</b>",
         })
       );
       this._ibus_settings._add(

@@ -74,7 +74,7 @@ You can also click the configuration icon of the Customize IBus extension in [ht
 
 ### General
 
-![](https://img-blog.csdnimg.cn/20210709105216650.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/35c6323486254e0a89128ee5d75469a1.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 At item `Candidates orientation`, select the check box on the left to enable the configuration of the IBus candidate box direction. Click on the right side to select, it can be set to vertical or horizontal.
 
@@ -115,7 +115,7 @@ At item `Candidate box page buttons`, click the switch on the right to show or h
 
 ### Tray
 
-![](https://img-blog.csdnimg.cn/20210705151009333.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/b8d790b8c96f4471a0fc94bd4f2fb994.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 Here you can set to show IBus tray icon, enable directly switch source with click, add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment.
 
@@ -127,7 +127,7 @@ You can also start or restart IBus by pressing the top button:
 
 ### Indicator
 
-![](https://img-blog.csdnimg.cn/20210709105350517.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
+![](https://img-blog.csdnimg.cn/263013182fb144a08b19004aecfd1189.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 Here you can set to `Use input source indicator`, default is to show indicator every time you type, move caret or switch input source. You can set to `Indicate only when switching input source` by clicking the switch on the right. You can also set to `Indicate only when using ASCII mode`, `Right click to close indicator`, `Scroll to switch input source`, `Indicator popup animation` supporting `None`, `Slide`, `Fade`, `All`. Also support to `Use custom font`, `Enable indicator left click` to switch input source or drag to move indicator, set `Indicator opacity` supporting range of 0 to 255, and the setting step is 1, `Enable indicator auto-hide timeout (unit: seconds)` and auto-hide timeout (in "
 "seconds) supporting to set the hidden delay in the range of 1 second to 5 seconds, and the setting step is 1.
@@ -137,7 +137,7 @@ Example animation:
 
 ### Theme
 
-![](https://img-blog.csdnimg.cn/8f1694082cd447f0a63561c8584ae188.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/f4b289dad5e14106b7658fc3c89c21a6.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 Same as the general part, select the check box on the left to enable the configuration, and click on the right to select the IBus theme style sheet.
 
@@ -309,7 +309,7 @@ You can also go directly to the [IBus Theme Hub](https://github.com/openSUSE/IBu
 
 ### Background
 
-![](https://img-blog.csdnimg.cn/6e381eddf5404a00b76ecc77e1da9063.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/b7ebdead51284f56ba19b0dda72aeaf8.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 Support customizing your IBus Input window background with a picture. It has a higher priority than the theme-defined background.
 
@@ -342,12 +342,15 @@ Examples of various picture display modes (using 128x128 compressed pictures: [h
 - **Zoom + No Repeat/Repeat (equivalent)**:
   ![](https://img-blog.csdnimg.cn/20210503124907786.png)
 
-### About
+### Settings
 
-At any time, you can click on the icon in the upper left corner to open this guide:
-![](https://img-blog.csdnimg.cn/a00b70b2d4aa4986b38b78d555338b99.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/f4297a6431e1489b8dc842c14d218ca0.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+
+Here you can reset the settings of this extension to default. You can also export current settings to an `ini` file for backup, and then import it when you need restore. For your information, you may also open the official IBus customization settings for customizations you can't find in this extension.
 
 Click `Restore Default Settings`, after confirming, you can re-initialize the extension.
+
+![](https://img-blog.csdnimg.cn/e77855aca78542929c27681d072f2263.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 Click `Export Current Settings`, you can choose to export the current settings as a `*.inifile`. The default file name is `Customize_IBus_Settings_[Current Time].ini`:
 ![](https://img-blog.csdnimg.cn/20210705150208339.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
@@ -408,7 +411,10 @@ use-tray-click-source-switch=true
 Click `Import Settings from File`, you can choose to import the settings file you just saved:
 ![](https://img-blog.csdnimg.cn/20210705150359863.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-You can also choose to open other official customize settings for further customization operations.
+### About
+
+At any time, you can click on the icon in the upper left corner to open this guide:
+![](https://img-blog.csdnimg.cn/2e5f5c9a6e47425abf2920986765b643.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 ## Non-GNOME desktop
 
