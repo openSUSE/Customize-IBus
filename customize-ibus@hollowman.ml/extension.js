@@ -2985,8 +2985,10 @@ const Extension = class Extension {
   }
 
   disable() {
-    this._ext.destroy();
-    delete this._ext;
+    if (this._ext) {
+      this._ext.destroy();
+      delete this._ext;
+    }
     IBusSettings = null;
     ngsettings = null;
     opacityStyle = "";
