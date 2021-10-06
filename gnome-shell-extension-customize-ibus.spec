@@ -20,7 +20,7 @@
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        72
+Version:        73
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,6 +56,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Wed Oct 06 2021 Hollow Man <hollowman@hollowman.ml> - 73
+- Fix support for wayland and reposition bug.
+- Rearrange UI.
+
 * Wed Sep 22 2021 Hollow Man <hollowman@hollowman.ml> - 72
 - Add support for GNOME 41.
 - Enable to reset to follow system themes and backgrounds.

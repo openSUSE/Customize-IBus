@@ -18,6 +18,13 @@ const SessionType =
   GLib.getenv("XDG_SESSION_TYPE") == "wayland" ? "Wayland" : "Xorg";
 const SCHEMA_PATH = "/org/gnome/shell/extensions/customize-ibus/";
 
+const BoxSettings = {
+  margin_start: 10,
+  margin_end: 10,
+  margin_top: 10,
+  margin_bottom: 10,
+};
+
 function buildPrefsWidget() {
   return new CustomizeIBus();
 }
@@ -469,12 +476,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_unkown_state
       );
       if (ShellVersion < 40) {
-        let hbox = new Gtk.Box({
-          margin_start: 10,
-          margin_end: 10,
-          margin_top: 10,
-          margin_bottom: 10,
-        });
+        let hbox = new Gtk.Box(BoxSettings);
         hbox.pack_start(this._field_use_candidate_opacity, true, true, 4);
         hbox.pack_start(this._field_candidate_opacity, true, true, 4);
         this._ibus_basic.grid.attach(
@@ -583,12 +585,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_left_click
       );
       if (ShellVersion < 40) {
-        let hbox = new Gtk.Box({
-          margin_start: 10,
-          margin_end: 10,
-          margin_top: 10,
-          margin_bottom: 10,
-        });
+        let hbox = new Gtk.Box(BoxSettings);
         hbox.pack_start(this._field_indicator_use_opacity, true, true, 4);
         hbox.pack_start(this._field_indicator_opacity, true, true, 4);
         this._ibus_indicator.grid.attach(
@@ -604,12 +601,7 @@ const CustomizeIBus = GObject.registerClass(
           this._field_indicator_opacity
         );
       if (ShellVersion < 40) {
-        let hbox = new Gtk.Box({
-          margin_start: 10,
-          margin_end: 10,
-          margin_top: 10,
-          margin_bottom: 10,
-        });
+        let hbox = new Gtk.Box(BoxSettings);
         hbox.pack_start(this._field_indicator_enable_autohide, true, true, 4);
         hbox.pack_start(this._field_indicator_hide_time, true, true, 4);
         this._ibus_indicator.grid.attach(
@@ -659,7 +651,35 @@ const CustomizeIBus = GObject.registerClass(
         this._open_logoDark_button
       );
       this._bgHelpPage(this._ibus_bg);
-      this._settingsPage();
+      this._ibus_settings = this._listFrameMaker(_("Settings"));
+      this._ibus_settings._add(
+        new Gtk.Label({
+          use_markup: true,
+          hexpand: true,
+          halign: Gtk.Align.CENTER,
+          label:
+            "<b>" + _("Settings for extension") + "</b>",
+        })
+      );
+      this._ibus_settings._add(
+        this._reset_extension,
+        this._export_settings,
+        this._import_settings
+      );
+      this._ibus_settings._add(
+        new Gtk.Label({
+          use_markup: true,
+          hexpand: true,
+          halign: Gtk.Align.CENTER,
+          label:
+            "<b>" + _("Other official IBus customization settings") + "</b>",
+        })
+      );
+      this._ibus_settings._add(
+        this._field_open_system_settings,
+        this._field_open_ibus_pref
+      );
+      this._settingsHelpPage(this._ibus_settings);
       this._aboutPage();
     }
 
@@ -813,7 +833,7 @@ const CustomizeIBus = GObject.registerClass(
       });
       const dconfFilter = new Gtk.FileFilter();
       dconfFilter.add_pattern("*.ini");
-      /* About */
+      /* Settings */
       // Export Current Settings
       this._export_settings.connect("clicked", () => {
         this._showFileChooser(
@@ -1419,13 +1439,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _listFrameMaker(lbl) {
-      let box = new Gtk.Box({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        orientation: Gtk.Orientation.VERTICAL,
-      });
+      let box = new Gtk.Box(BoxSettings);
       let frame = new Gtk.Frame({
         margin_top: 10,
       });
@@ -1449,12 +1463,7 @@ const CustomizeIBus = GObject.registerClass(
           activatable: true,
           selectable: false,
         });
-        const hbox = new Gtk.Box({
-          margin_start: 10,
-          margin_end: 10,
-          margin_top: 10,
-          margin_bottom: 10,
-        });
+        const hbox = new Gtk.Box(BoxSettings);
         if (ShellVersion < 40) boxrow.add(hbox);
         else boxrow.set_child(hbox);
         let spacing = 4;
@@ -1479,23 +1488,11 @@ const CustomizeIBus = GObject.registerClass(
       return frame;
     }
 
-    _settingsPage() {
-      let box = new Gtk.Box({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        orientation: Gtk.Orientation.VERTICAL,
-      });
-      let frame = new Gtk.Frame({
+    _expanderFrame(frame) {
+      let expanderFrame = new Gtk.Frame({
         margin_top: 10,
       });
-
-      if (ShellVersion < 40) box.add(frame);
-      else box.append(frame);
-      this._notebook.append_page(box, new Gtk.Label({ label: _("Settings") }));
-
-      frame.grid = new Gtk.Grid({
+      expanderFrame.grid = new Gtk.Grid({
         margin_start: 10,
         margin_end: 10,
         margin_top: 10,
@@ -1507,96 +1504,26 @@ const CustomizeIBus = GObject.registerClass(
         column_homogeneous: false,
         halign: Gtk.Align.CENTER,
       });
+      expanderFrame.grid._row = 0;
+      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
+      else expanderFrame.set_child(expanderFrame.grid);
 
-      frame.grid._row = 0;
-      if (ShellVersion < 40) frame.add(frame.grid);
-      else frame.set_child(frame.grid);
+      let expander = new Gtk.Expander({
+        use_markup: true,
+        child: expanderFrame,
+        expanded: true,
+        label: "<b>💡" + _("Help") + "</b>",
+      });
+      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
 
-      frame.grid.attach(
-        new Gtk.Label({
-          use_markup: true,
-          hexpand: true,
-          halign: Gtk.Align.CENTER,
-          label: "<b>" + _("Settings for extension") + "</b>",
-        }),
-        0,
-        frame.grid._row++,
-        1,
-        1
-      );
-      const boxrow = new Gtk.ListBoxRow({
-        activatable: true,
-        selectable: false,
-      });
-      const hbox = new Gtk.Box({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-      });
-      if (ShellVersion < 40) boxrow.add(hbox);
-      else boxrow.set_child(hbox);
-      let spacing = 4;
-      if (ShellVersion < 40) {
-        hbox.pack_start(this._reset_extension, false, false, spacing);
-        hbox.pack_start(this._export_settings, false, false, spacing);
-        hbox.pack_start(this._import_settings, false, false, spacing);
-      } else {
-        hbox.set_spacing(spacing);
-        hbox.append(this._reset_extension);
-        hbox.append(this._export_settings);
-        hbox.append(this._import_settings);
-      }
-      frame.grid.attach(boxrow, 0, frame.grid._row++, 1, 1);
-      frame.grid.attach(
-        new Gtk.Label({
-          use_markup: true,
-          hexpand: true,
-          halign: Gtk.Align.CENTER,
-          label:
-            "<b>" + _("Other official IBus customization settings") + "</b>",
-        }),
-        0,
-        frame.grid._row++,
-        1,
-        1
-      );
-      const boxrow1 = new Gtk.ListBoxRow({
-        activatable: true,
-        selectable: false,
-      });
-      const hbox1 = new Gtk.Box({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-      });
-      if (ShellVersion < 40) boxrow1.add(hbox1);
-      else boxrow1.set_child(hbox1);
-      if (ShellVersion < 40) {
-        hbox1.pack_start(
-          this._field_open_system_settings,
-          false,
-          false,
-          spacing
-        );
-        hbox1.pack_start(this._field_open_ibus_pref, false, false, spacing);
-      } else {
-        hbox1.set_spacing(spacing);
-        hbox1.append(this._field_open_system_settings);
-        hbox1.append(this._field_open_ibus_pref);
-      }
-      frame.grid.attach(boxrow1, 0, frame.grid._row++, 1, 1);
+      expanderFrame._add = (x) => {
+        expanderFrame.grid.attach(x, 0, frame.grid._row++, 1, 1);
+      };
+      return expanderFrame;
     }
 
     _aboutPage() {
-      let box = new Gtk.Box({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        orientation: Gtk.Orientation.VERTICAL,
-      });
+      let box = new Gtk.Box(BoxSettings);
       let frame = new Gtk.Frame({
         margin_top: 10,
       });
@@ -1786,335 +1713,168 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _basicHelpPage(frame) {
-      let expanderFrame = new Gtk.Frame({
-        margin_top: 10,
-      });
-      expanderFrame.grid = new Gtk.Grid({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        hexpand: true,
-        row_spacing: 12,
-        column_spacing: 18,
-        row_homogeneous: false,
-        column_homogeneous: false,
-        halign: Gtk.Align.CENTER,
-      });
-      expanderFrame.grid._row = 0;
-      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
-      else expanderFrame.set_child(expanderFrame.grid);
+      let expanderFrame = this._expanderFrame(frame);
 
-      let expander = new Gtk.Expander({
-        use_markup: true,
-        child: expanderFrame,
-        expanded: true,
-        label: "<b>💡" + _("Help") + "</b>",
-      });
-      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
-
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, scroll to switch among pages or candidates, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, candidate box opacity, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons."
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             '<span size="small"><b>Note:</b> If <b>fix candidate box</b> is enabled, you can set the candidate box position with 9 options. Recommend to <b>enable drag to reposition candidate box</b> at the same time so that you can rearrange the position at any time. Will remember candidate position forever after reposition if you set to <b>remember last position</b>, and restore at next login.</span>'
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is enabled, and you have set to <b>Remember Input State</b>, every opened APP's input mode will be remembered if you have switched the input source manually in the APP's window, and the newly-opened APP will follow the configuration. APP's Input State will be remembered forever.</span>"
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             '<span size="small"><b>Note:</b> If you <b>enable drag to reposition candidate box</b>, and if <b>fix candidate box</b> is enabled, your rearranged position will last until the end of this session. If not the rearranged position will only last for the specific input.</span>'
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
     }
 
     _trayHelpPage(frame) {
-      let expanderFrame = new Gtk.Frame({
-        margin_top: 10,
-      });
-      expanderFrame.grid = new Gtk.Grid({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        hexpand: true,
-        row_spacing: 12,
-        column_spacing: 18,
-        row_homogeneous: false,
-        column_homogeneous: false,
-        halign: Gtk.Align.CENTER,
-      });
-      expanderFrame.grid._row = 0;
-      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
-      else expanderFrame.set_child(expanderFrame.grid);
+      let expanderFrame = this._expanderFrame(frame);
 
-      let expander = new Gtk.Expander({
-        use_markup: true,
-        child: expanderFrame,
-        expanded: true,
-        label: "<b>💡" + _("Help") + "</b>",
-      });
-      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
-
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             "Here you can set to show IBus tray icon, enable directly switch source with click, add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment. You can also start or restart IBus by pressing the top button."
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
 
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             '<span size="small"><b>Note:</b> If <b>Directly switch source with click</b> is enabled, when the left key is selected, if you click the tray icon with left key, you will have input source switched, and click right key will open the menu as normal, vice versa.</span>'
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
     }
 
     _indicatorHelpPage(frame) {
-      let expanderFrame = new Gtk.Frame({
-        margin_top: 10,
-      });
-      expanderFrame.grid = new Gtk.Grid({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        hexpand: true,
-        row_spacing: 12,
-        column_spacing: 18,
-        row_homogeneous: false,
-        column_homogeneous: false,
-        halign: Gtk.Align.CENTER,
-      });
-      expanderFrame.grid._row = 0;
-      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
-      else expanderFrame.set_child(expanderFrame.grid);
+      let expanderFrame = this._expanderFrame(frame);
 
-      let expander = new Gtk.Expander({
-        use_markup: true,
-        child: expanderFrame,
-        expanded: true,
-        label: "<b>💡" + _("Help") + "</b>",
-      });
-      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
-
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable auto-hide and auto-hide timeout (in seconds)."
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
     }
 
     _themeHelpPage(frame) {
-      let expanderFrame = new Gtk.Frame({
-        margin_top: 10,
-      });
-      expanderFrame.grid = new Gtk.Grid({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        hexpand: true,
-        row_spacing: 12,
-        column_spacing: 18,
-        row_homogeneous: false,
-        column_homogeneous: false,
-        halign: Gtk.Align.CENTER,
-      });
-      expanderFrame.grid._row = 0;
-      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
-      else expanderFrame.set_child(expanderFrame.grid);
+      let expanderFrame = this._expanderFrame(frame);
 
-      let expander = new Gtk.Expander({
-        use_markup: true,
-        child: expanderFrame,
-        expanded: true,
-        label: "<b>💡" + _("Help") + "</b>",
-      });
-      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
-
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             'Support importing stylesheet generated by <a href="https://github.com/openSUSE/IBus-Theme-Tools">IBus Theme Tools</a> or provided by <a href="https://github.com/openSUSE/IBus-Theme-Hub">IBus Theme Hub</a>.'
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             "When light theme and dark theme are turned on at the same time, the IBus theme will automatically follow GNOME Night Light mode, use light theme when off, and use dark theme when on. When only the light theme or dark theme is turned on, the IBus theme will always use the theme that is turned on."
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             '<span size="small"><b><i>Warning:</i> If not for debugging, please DO NOT add any classes that\'s not started with <i>.candidate-*</i> into IBus stylesheet to prevent from corrupting system themes.</b></span>'
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             '<span size="small"><b>Note:</b> Support stylesheets hot reload, CSS changes reflecting in real-time.</span>'
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
     }
 
     _bgHelpPage(frame) {
-      let expanderFrame = new Gtk.Frame({
-        margin_top: 10,
-      });
-      expanderFrame.grid = new Gtk.Grid({
-        margin_start: 10,
-        margin_end: 10,
-        margin_top: 10,
-        margin_bottom: 10,
-        hexpand: true,
-        row_spacing: 12,
-        column_spacing: 18,
-        row_homogeneous: false,
-        column_homogeneous: false,
-        halign: Gtk.Align.CENTER,
-      });
-      expanderFrame.grid._row = 0;
-      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
-      else expanderFrame.set_child(expanderFrame.grid);
+      let expanderFrame = this._expanderFrame(frame);
 
-      let expander = new Gtk.Expander({
-        use_markup: true,
-        child: expanderFrame,
-        expanded: true,
-        label: "<b>💡" + _("Help") + "</b>",
-      });
-      frame.grid.attach(expander, 0, frame.grid._row++, 1, 1);
-
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             "Support customizing your IBus Input window background with a picture. It has a higher priority than the theme-defined background."
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             "When light background and dark background are turned on at the same time, the IBus background will automatically follow GNOME Night Light mode, use light background when off, and use dark background when on. When only the light background or dark background is turned on, the IBus background will always use the background that is turned on."
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
       );
-      expanderFrame.grid.attach(
+      expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
             '<span size="small"><b>Note:</b> Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn\'t mount it by default, please disable and then enable the corresponding <b>Use custom background</b> again to make it effective after manually mounting.</span>'
           ),
-        }),
-        0,
-        expanderFrame.grid._row++,
-        1,
-        1
+        })
+      );
+    }
+
+    _settingsHelpPage(frame) {
+      let expanderFrame = this._expanderFrame(frame);
+
+      expanderFrame._add(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            "Here you can reset the settings of this extension to default. You can also export current settings to an ini file for backup, and then import it when you need restore. For your information, you may also open the official IBus customization settings for customizations you can't find in this extension."
+          ),
+        })
       );
     }
 
@@ -2231,7 +1991,7 @@ const CustomizeIBus = GObject.registerClass(
       });
     }
 
-    /* About */
+    /* Settings */
     // Restore Default Settings
     _resetExtension() {
       var transient_for;
