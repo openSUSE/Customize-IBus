@@ -36,8 +36,6 @@ const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
-const SessionType =
-  GLib.getenv("XDG_SESSION_TYPE") == "wayland" ? "Wayland" : "Xorg";
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INDICATORANI = ["NONE", "SLIDE", "FADE", "FULL"];
@@ -210,7 +208,7 @@ const IBusClickSwitch = GObject.registerClass(
         "button-press-event",
         (actor, event) => {
           let rightButton = "BUTTON3_MASK";
-          if (SessionType == "Wayland") rightButton = "BUTTON2_MASK";
+          if (Meta.is_wayland_compositor()) rightButton = "BUTTON2_MASK";
           if (event.get_state() & Clutter.ModifierType[rightButton]) {
             let shouldPressReturn =
               !this._mouseInCandidate || !this._clickSwitch;
@@ -226,21 +224,28 @@ const IBusClickSwitch = GObject.registerClass(
                 Clutter.KeyState.RELEASED
               );
             }
-            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 10, () => {
-              if (shouldPressReturn)
-                CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
-              if (this._clickSwitch) {
-                IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-              } else {
-                InputSourceIndicator.menu.open(
-                  InputSourceIndicator.menu.activeMenu
-                    ? BoxPointer.PopupAnimation.FADE
-                    : BoxPointer.PopupAnimation.FULL
-                );
-                Main.panel.menuManager.ignoreRelease();
+            this._delayAfterPress = GLib.timeout_add(
+              GLib.PRIORITY_DEFAULT,
+              10,
+              () => {
+                if (shouldPressReturn)
+                  CandidatePopup.close(BoxPointer.PopupAnimation.NONE);
+                if (this._clickSwitch) {
+                  IBusManager.activateProperty(
+                    INPUTMODE,
+                    IBus.PropState.CHECKED
+                  );
+                } else {
+                  InputSourceIndicator.menu.open(
+                    InputSourceIndicator.menu.activeMenu
+                      ? BoxPointer.PopupAnimation.FADE
+                      : BoxPointer.PopupAnimation.FULL
+                  );
+                  Main.panel.menuManager.ignoreRelease();
+                }
+                return GLib.SOURCE_REMOVE;
               }
-              return GLib.SOURCE_REMOVE;
-            });
+            );
           }
         }
       );
@@ -260,6 +265,10 @@ const IBusClickSwitch = GObject.registerClass(
       if (this._mouseCandidateLeaveID)
         this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
           (this._mouseCandidateLeaveID = 0);
+      if (this._delayAfterPress) {
+        GLib.source_remove(this._delayAfterPress);
+        this._delayAfterPress = null;
+      }
       delete this.candidateBoxesID;
     }
   }
@@ -1159,7 +1168,8 @@ const IBusTrayClickSwitch = GObject.registerClass(
         InputSourceIndicator.container.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
       let keyNum = traysswitchkey == 0 ? "1" : "3";
-      if (SessionType == "Wayland") keyNum = traysswitchkey == 0 ? "1" : "2";
+      if (Meta.is_wayland_compositor())
+        keyNum = traysswitchkey == 0 ? "1" : "2";
       InputSourceIndicator.container.reactive = true;
       this._buttonPressID = InputSourceIndicator.container.connect(
         "button-press-event",
@@ -1450,7 +1460,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
           "button-press-event",
           (actor, event) => {
             let rightButton = "BUTTON3_MASK";
-            if (SessionType == "Wayland") rightButton = "BUTTON2_MASK";
+            if (Meta.is_wayland_compositor()) rightButton = "BUTTON2_MASK";
             if (event.get_state() & Clutter.ModifierType[rightButton]) {
               this._inSetPosMode = false;
               this.close(BoxPointer.PopupAnimation[this.animation]);
@@ -1803,6 +1813,10 @@ const IBusInputSourceIndicator = GObject.registerClass(
       if (this._registerPropertyID)
         this._panelService.disconnect(this._registerPropertyID),
           (this._registerPropertyID = 0);
+      if (this._lastTimeOut) {
+        GLib.source_remove(this._lastTimeOut);
+        this._lastTimeOut = null;
+      }
     }
 
     destroy() {

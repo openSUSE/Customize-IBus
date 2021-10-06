@@ -56,7 +56,7 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
-* Wed Oct 06 2021 Hollow Man <hollowman@hollowman.ml> - 73
+* Wed Oct 06 2021 Hollow Man <hollowman@hollowman.ml> - 74
 - Fix support for wayland and reposition bug.
 - Rearrange UI.
 

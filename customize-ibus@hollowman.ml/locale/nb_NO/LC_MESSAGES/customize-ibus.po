@@ -4,9 +4,9 @@
 # Allan Nordhøy <epost@anotheragency.no>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 73\n"
+"Project-Id-Version: Customize Ibus 74\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-06 12:49+0800\n"
+"POT-Creation-Date: 2021-10-06 15:56+0800\n"
 "PO-Revision-Date: 2021-08-26 01:37+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
@@ -18,55 +18,55 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.8.1-dev\n"
 
-#: extension.js:1424
+#: extension.js:1434
 msgid "IBus panel service connected!"
 msgstr ""
 
-#: extension.js:1968
+#: extension.js:1982
 msgid "loading light user theme for IBus:"
 msgstr ""
 
-#: extension.js:1978
+#: extension.js:1992
 msgid "loading dark user theme for IBus:"
 msgstr ""
 
-#: extension.js:1983
+#: extension.js:1997
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:2179
+#: extension.js:2193
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:2189
+#: extension.js:2203
 msgid "remove custom background for IBus"
 msgstr ""
 
-#: extension.js:2762
+#: extension.js:2776
 msgid "Successfully triggered a restart for IBus"
 msgstr ""
 
-#: extension.js:2780
+#: extension.js:2794
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:2801 prefs.js:1580 prefs.js:1961
+#: extension.js:2815 prefs.js:1580 prefs.js:1961
 msgid "Customize IBus"
 msgstr ""
 
-#: extension.js:2825 prefs.js:282 prefs.js:537
+#: extension.js:2839 prefs.js:282 prefs.js:537
 msgid "IBus Preferences"
 msgstr ""
 
-#: extension.js:2846 extension.js:2861 prefs.js:541
+#: extension.js:2860 extension.js:2875 prefs.js:541
 msgid "IBus Version"
 msgstr ""
 
-#: extension.js:2875
+#: extension.js:2889
 msgid "Restart"
 msgstr ""
 
-#: extension.js:2896
+#: extension.js:2910
 msgid "Quit"
 msgstr "Avslutt"
 
