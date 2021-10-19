@@ -234,6 +234,6 @@ background-size: cover;
 2. [ibus-tweaker](https://github.com/tuberry/ibus-tweaker)
 3. [fixed-ime-list](https://github.com/AlynxZhou/gnome-shell-extension-fixed-ime-list)
 
-_该项目是[@HollowMan6](https://github.com/HollowMan6)参与[谷歌编程之夏 (GSoC) 2021](https://summerofcode.withgoogle.com/projects/#5505085183885312) 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_
+_该项目曾是[@HollowMan6](https://github.com/HollowMan6)参与[谷歌编程之夏 (GSoC) 2021](https://summerofcode.withgoogle.com/archive/2021/projects/6295506795364352/) 于[OpenSUSE](https://github.com/openSUSE/mentoring/issues/158)社区成果的一部分。_
 
 [ego]: https://extensions.gnome.org/extension/4112/customize-ibus/
