@@ -490,7 +490,7 @@ gtk-theme-name=Materia-light
 gtk-font-name=更纱黑体 SC 12
 ```
 
-In the above content, `gtk-theme-name` specifies that the current GTK theme is `material-light`, `gtk-font-name` specifies that the current font is `更纱黑体 SC` and the font size is `12 '.
+In the above content, `gtk-theme-name` specifies that the current GTK theme is `material-light`, `gtk-font-name` specifies that the current font is `更纱黑体 SC` and the font size is `12`.
 
 The IBus font and font size can be changed by modifying the above documents.
 
