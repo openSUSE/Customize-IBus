@@ -40,6 +40,7 @@ var Fields = {
   USEINPUTIND: "use-input-indicator",
   INPUTINDTOG: "input-indicator-only-on-toggle",
   INPUTINDASCII: "input-indicator-only-use-ascii",
+  INPUTINDSINGLE: "input-indicator-not-on-single-ime",
   INPUTINDSCROLL: "input-indicator-use-scroll",
   INPUTINDANIM: "input-indicator-animation",
   USEINDSHOWD: "use-indicator-show-delay",

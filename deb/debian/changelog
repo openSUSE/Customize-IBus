@@ -1,6 +1,7 @@
 gnome-shell-extension-customize-ibus (76) hirsute; urgency=medium
 
-  * v76: Support auto-manage the ASCII Mode list, and a show delay for input source indicator.
+  * v76: Support hide input source indicator when using single mode IME. 
+  * v76: Add a show delay for input source indicator.
 
  -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Sat, 30 Oct 2021 17:20:52 +0800
 

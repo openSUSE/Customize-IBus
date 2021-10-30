@@ -37,7 +37,7 @@ const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
-const ASCIIMODESSTATIC = ["en", "A", "英"];
+const ASCIIMODES = ["en", "A", "英"];
 const INDICATORANI = ["NONE", "SLIDE", "FADE", "FULL"];
 const INPUTMODE = "InputMode";
 const BGMODES = ["Centered", "Repeated", "Zoom"];
@@ -48,7 +48,7 @@ const BGMODESACTIONS = {
   Zoom: "cover",
 };
 
-var ASCIIModes = ASCIIMODESSTATIC;
+var IgnoreModes = [];
 var IBusSettings = null;
 var ngsettings = null;
 var opacityStyle = "";
@@ -581,10 +581,11 @@ const IBusAutoSwitch = GObject.registerClass(
     }
 
     get _state() {
-      const labels = InputSourceIndicator._indicatorLabels;
-      return ASCIIModes.includes(
-        labels[InputSourceManager.currentSource.index].get_text()
-      );
+      const text =
+        InputSourceIndicator._indicatorLabels[
+          InputSourceManager.currentSource.index
+        ].get_text();
+      return ASCIIMODES.includes(text);
     }
 
     get _toggle() {
@@ -1214,6 +1215,13 @@ const IBusInputSourceIndicator = GObject.registerClass(
         false,
         GObject.ParamFlags.WRITABLE
       ),
+      inputindsingle: GObject.param_spec_boolean(
+        "inputindsingle",
+        "inputindsingle",
+        "inputindsingle",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
       inputindrigc: GObject.param_spec_boolean(
         "inputindrigc",
         "inputindrigc",
@@ -1435,7 +1443,10 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this.visible = !CandidatePopup.visible;
       if (this.onlyOnToggle) this.visible = sourceToggle;
       if (this.onlyASCII)
-        if (!ASCIIModes.includes(this._inputIndicatorLabel.text))
+        if (!ASCIIMODES.includes(this._inputIndicatorLabel.text))
+          this.visible = false;
+      if (this.ignoreSingleModeIME)
+        if (IgnoreModes.includes(this._inputIndicatorLabel.text))
           this.visible = false;
       if (this._lastTimeOut) {
         GLib.source_remove(this._lastTimeOut);
@@ -1490,6 +1501,11 @@ const IBusInputSourceIndicator = GObject.registerClass(
     // Indicate only when using ASCII mode
     set inputindASCII(inputindASCII) {
       this.onlyASCII = inputindASCII;
+    }
+
+    // Don't indicate when using single mode IME
+    set inputindsingle(inputindsingle) {
+      this.ignoreSingleModeIME = inputindsingle;
     }
 
     // Enable right click to close indicator
@@ -1771,6 +1787,12 @@ const IBusInputSourceIndicator = GObject.registerClass(
         Fields.INPUTINDASCII,
         this,
         "inputindASCII",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDSINGLE,
+        this,
+        "inputindsingle",
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
@@ -3029,10 +3051,10 @@ const Extension = class Extension {
     ExtensionUtils.initTranslations();
   }
 
-  updateASCIIModes() {
-    ASCIIModes = ASCIIMODESSTATIC;
+  updateIgnoreModes() {
+    IgnoreModes = [];
     for (let i in InputSourceManager.inputSources) {
-      ASCIIModes.push(InputSourceManager.inputSources[i].shortName);
+      IgnoreModes.push(InputSourceManager.inputSources[i].shortName);
     }
   }
 
@@ -3052,10 +3074,10 @@ const Extension = class Extension {
     ngsettings = new Gio.Settings({
       schema: "org.gnome.settings-daemon.plugins.color",
     });
-    this.updateASCIIModes();
-    this._updateASCIIModesID = InputSourceManager.connect(
+    this.updateIgnoreModes();
+    this._updateIgnoreModesID = InputSourceManager.connect(
       "sources-changed",
-      this.updateASCIIModes.bind(this)
+      this.updateIgnoreModes.bind(this)
     );
     this._ext = new Extensions();
   }
@@ -3065,9 +3087,9 @@ const Extension = class Extension {
       this._ext.destroy();
       delete this._ext;
     }
-    if (this._updateASCIIModesID)
-      InputSourceManager.disconnect(this._updateASCIIModesID),
-        (this._updateASCIIModesID = 0);
+    if (this._updateIgnoreModesID)
+      InputSourceManager.disconnect(this._updateIgnoreModesID),
+        (this._updateIgnoreModesID = 0);
     IBusSettings = null;
     ngsettings = null;
     opacityStyle = "";

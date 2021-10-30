@@ -46,6 +46,7 @@ Support Customization of:
 * * Enable Indicator
 * * Only Indicate when Switching Input Mode
 * * Only Indicate when Using ASCII Input Mode
+* * Not Indicate when Using Single Mode IME
 * * Right-click Indicator to Hide
 * * Scroll on Indicator to Switch Input Mode
 * * Indicator Animation
@@ -82,6 +83,7 @@ User Guide: https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-
 * * 启用指示器
 * * 仅在切换输入法时指示
 * * 仅在英文输入时指示
+* * 使用单模式输入法时不指示
 * * 右击指示器来将其隐藏
 * * 指示器上滚动来切换输入源
 * * 指示器显示动画

@@ -163,6 +163,10 @@
         <default>false</default>
         <summary>use input indicator only when using ASCII mode</summary>
     </key>
+    <key type="b" name="input-indicator-not-on-single-ime">
+        <default>false</default>
+        <summary>not use input indicator when typing with single mode ime</summary>
+    </key>
     <key type="b" name="input-indicator-use-scroll">
         <default>false</default>
         <summary>use input indicator scroll to switch input source</summary>

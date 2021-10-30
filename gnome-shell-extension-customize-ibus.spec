@@ -57,8 +57,8 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 
 %changelog
 * Sat Oct 30 2021 Hollow Man <hollowman@hollowman.ml> - 76
-- Support auto-manage the ASCII Mode list.
-- Support a show delay for input source indicator.
+- Support hide input source indicator when using single mode IME.
+- Add a show delay for input source indicator.
 
 * Wed Oct 06 2021 Hollow Man <hollowman@hollowman.ml> - 75
 - Fix support for wayland and reposition bug.

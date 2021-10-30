@@ -245,6 +245,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_use_indicator = new Gtk.Switch();
       this._field_indicator_only_toggle = new Gtk.Switch();
       this._field_indicator_only_in_ASCII = new Gtk.Switch();
+      this._field_indicator_not_single_IME = new Gtk.Switch();
       this._field_indicator_right_close = new Gtk.Switch();
       this._field_indicator_scroll = new Gtk.Switch();
 
@@ -575,6 +576,10 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_only_in_ASCII
       );
       this._ibus_indicator._add(
+        this._switchLabelMaker(_("Don't indicate when using single mode IME")),
+        this._field_indicator_not_single_IME
+      );
+      this._ibus_indicator._add(
         this._switchLabelMaker(_("Enable right click to close indicator")),
         this._field_indicator_right_close
       );
@@ -757,6 +762,7 @@ const CustomizeIBus = GObject.registerClass(
       this._field_use_indicator.connect("notify::active", (widget) => {
         this._field_indicator_only_toggle.set_sensitive(widget.active);
         this._field_indicator_only_in_ASCII.set_sensitive(widget.active);
+        this._field_indicator_not_single_IME.set_sensitive(widget.active);
         this._field_indicator_right_close.set_sensitive(widget.active);
         this._field_indicator_scroll.set_sensitive(widget.active);
         this._field_indicator_animation.set_sensitive(widget.active);
@@ -1024,6 +1030,9 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_indicator.active
       );
       this._field_indicator_only_in_ASCII.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_not_single_IME.set_sensitive(
         this._field_use_indicator.active
       );
       this._field_indicator_right_close.set_sensitive(
@@ -1385,6 +1394,12 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.INPUTINDASCII,
         this._field_indicator_only_in_ASCII,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDSINGLE,
+        this._field_indicator_not_single_IME,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1839,7 +1854,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable show delay and show timeout (in seconds), enable auto-hide and auto-hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode (for multi-mode IME), not notify when using single mode IME, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable show delay and show timeout (in seconds), enable auto-hide and auto-hide timeout (in seconds)."
           ),
         })
       );
