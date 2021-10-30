@@ -261,6 +261,16 @@ const CustomizeIBus = GObject.registerClass(
         draw_value: true,
         hexpand: true,
       });
+      adjustment = this._createAdjustment(Fields.INPUTINDSHOW, 1);
+      this._field_indicator_enable_show_delay = this._checkMaker(
+        _("Enable indicator show delay (unit: seconds)")
+      );
+      this._field_indicator_show_time = new Gtk.Scale({
+        adjustment,
+        digits: 0,
+        draw_value: true,
+        hexpand: true,
+      });
       adjustment = this._createAdjustment(Fields.INPUTINDHID, 1);
       this._field_indicator_enable_autohide = this._checkMaker(
         _("Enable indicator auto-hide timeout (unit: seconds)")
@@ -602,6 +612,22 @@ const CustomizeIBus = GObject.registerClass(
         );
       if (ShellVersion < 40) {
         let hbox = new Gtk.Box(BoxSettings);
+        hbox.pack_start(this._field_indicator_enable_show_delay, true, true, 4);
+        hbox.pack_start(this._field_indicator_show_time, true, true, 4);
+        this._ibus_indicator.grid.attach(
+          hbox,
+          0,
+          this._ibus_indicator.grid._row++,
+          1,
+          1
+        );
+      } else
+        this._ibus_indicator._add(
+          this._field_indicator_enable_show_delay,
+          this._field_indicator_show_time
+        );
+      if (ShellVersion < 40) {
+        let hbox = new Gtk.Box(BoxSettings);
         hbox.pack_start(this._field_indicator_enable_autohide, true, true, 4);
         hbox.pack_start(this._field_indicator_hide_time, true, true, 4);
         this._ibus_indicator.grid.attach(
@@ -740,6 +766,9 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_opacity.set_sensitive(
           this._field_indicator_use_opacity.active && widget.active
         );
+        this._field_indicator_show_time.set_sensitive(
+          this._field_indicator_enable_show_delay.active && widget.active
+        );
         this._field_indicator_hide_time.set_sensitive(
           this._field_indicator_enable_autohide.active && widget.active
         );
@@ -749,6 +778,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_use_custom_font.set_sensitive(widget.active);
         this._field_indicator_enable_left_click.set_sensitive(widget.active);
         this._field_indicator_use_opacity.set_sensitive(widget.active);
+        this._field_indicator_enable_show_delay.set_sensitive(widget.active);
         this._field_indicator_enable_autohide.set_sensitive(widget.active);
       });
       this._field_indicator_enable_left_click.connect(
@@ -760,6 +790,12 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_use_opacity.connect("notify::active", (widget) => {
         this._field_indicator_opacity.set_sensitive(widget.active);
       });
+      this._field_indicator_enable_show_delay.connect(
+        "notify::active",
+        (widget) => {
+          this._field_indicator_show_time.set_sensitive(widget.active);
+        }
+      );
       this._field_indicator_enable_autohide.connect(
         "notify::active",
         (widget) => {
@@ -1007,6 +1043,10 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_indicator.active &&
           this._field_indicator_use_opacity.active
       );
+      this._field_indicator_show_time.set_sensitive(
+        this._field_use_indicator.active &&
+          this._field_indicator_enable_show_delay.active
+      );
       this._field_indicator_hide_time.set_sensitive(
         this._field_use_indicator.active &&
           this._field_indicator_enable_autohide.active
@@ -1015,6 +1055,9 @@ const CustomizeIBus = GObject.registerClass(
         this._field_use_indicator.active
       );
       this._field_indicator_use_opacity.set_sensitive(
+        this._field_use_indicator.active
+      );
+      this._field_indicator_enable_show_delay.set_sensitive(
         this._field_use_indicator.active
       );
       this._field_indicator_enable_autohide.set_sensitive(
@@ -1384,6 +1427,18 @@ const CustomizeIBus = GObject.registerClass(
       gsettings.bind(
         Fields.INDOPACITY,
         this._field_indicator_opacity,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.USEINDSHOWD,
+        this._field_indicator_enable_show_delay,
+        "active",
+        Gio.SettingsBindFlags.DEFAULT
+      );
+      gsettings.bind(
+        Fields.INPUTINDSHOW,
+        this._field_indicator_show_time,
         "active",
         Gio.SettingsBindFlags.DEFAULT
       );
@@ -1784,7 +1839,16 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable auto-hide and auto-hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable show delay and show timeout (in seconds), enable auto-hide and auto-hide timeout (in seconds)."
+          ),
+        })
+      );
+      expanderFrame._add(
+        new Gtk.Label({
+          use_markup: true,
+          wrap: true,
+          label: _(
+            '<span size="small"><b>Note:</b> If you choose to enable the show delay, there won\'t be a show delay when you switch input source.</span>'
           ),
         })
       );

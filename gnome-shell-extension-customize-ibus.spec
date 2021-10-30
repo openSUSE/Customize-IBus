@@ -20,7 +20,7 @@
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        75
+Version:        76
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,6 +56,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sat Oct 30 2021 Hollow Man <hollowman@hollowman.ml> - 76
+- Support auto-manage the ASCII Mode list.
+- Support a show delay for input source indicator.
+
 * Wed Oct 06 2021 Hollow Man <hollowman@hollowman.ml> - 75
 - Fix support for wayland and reposition bug.
 - Rearrange UI.

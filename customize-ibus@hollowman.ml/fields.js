@@ -42,6 +42,8 @@ var Fields = {
   INPUTINDASCII: "input-indicator-only-use-ascii",
   INPUTINDSCROLL: "input-indicator-use-scroll",
   INPUTINDANIM: "input-indicator-animation",
+  USEINDSHOWD: "use-indicator-show-delay",
+  INPUTINDSHOW: "input-indicator-show-time",
   USEINDAUTOHID: "use-indicator-auto-hide",
   INPUTINDHID: "input-indicator-hide-time",
   INPUTINDRIGC: "input-indicator-right-close",

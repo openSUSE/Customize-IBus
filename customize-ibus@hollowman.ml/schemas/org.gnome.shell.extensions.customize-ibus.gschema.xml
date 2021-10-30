@@ -172,6 +172,15 @@
         <range min="0" max="3"/>
         <summary>input state indicator popup animation</summary>
     </key>
+    <key type="b" name="use-indicator-show-delay">
+        <default>false</default>
+        <summary>enable input indicator show delay</summary>
+    </key>
+    <key type="u" name="input-indicator-show-time">
+        <default>1</default>
+        <range min="1" max="5"/>
+        <summary>input state indicator show time</summary>
+    </key>
     <key type="b" name="use-indicator-auto-hide">
         <default>true</default>
         <summary>enable input indicator auto hide</summary>

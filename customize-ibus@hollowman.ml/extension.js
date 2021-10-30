@@ -37,7 +37,7 @@ const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
-const ASCIIMODES = ["en", "A", "英"];
+const ASCIIMODESSTATIC = ["en", "A", "英"];
 const INDICATORANI = ["NONE", "SLIDE", "FADE", "FULL"];
 const INPUTMODE = "InputMode";
 const BGMODES = ["Centered", "Repeated", "Zoom"];
@@ -48,6 +48,7 @@ const BGMODESACTIONS = {
   Zoom: "cover",
 };
 
+var ASCIIModes = ASCIIMODESSTATIC;
 var IBusSettings = null;
 var ngsettings = null;
 var opacityStyle = "";
@@ -581,7 +582,7 @@ const IBusAutoSwitch = GObject.registerClass(
 
     get _state() {
       const labels = InputSourceIndicator._indicatorLabels;
-      return ASCIIMODES.includes(
+      return ASCIIModes.includes(
         labels[InputSourceManager.currentSource.index].get_text()
       );
     }
@@ -1282,6 +1283,22 @@ const IBusInputSourceIndicator = GObject.registerClass(
         255,
         GObject.ParamFlags.WRITABLE
       ),
+      useindshowd: GObject.param_spec_boolean(
+        "useindshowd",
+        "useindshowd",
+        "useindshowd",
+        false,
+        GObject.ParamFlags.WRITABLE
+      ),
+      inputindshow: GObject.param_spec_uint(
+        "inputindshow",
+        "inputindshow",
+        "inputindshow",
+        1,
+        5,
+        1,
+        GObject.ParamFlags.WRITABLE
+      ),
       useindautohid: GObject.param_spec_boolean(
         "useindautohid",
         "useindautohid",
@@ -1398,31 +1415,53 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this._updateVisibility();
     }
 
+    _showIndicator() {
+      this.open(BoxPointer.PopupAnimation[this.animation]);
+      this.get_parent().set_child_above_sibling(this, null);
+      if (this.enableAutoHide)
+        this._lastTimeOut = GLib.timeout_add_seconds(
+          GLib.PRIORITY_DEFAULT,
+          this.hideTime,
+          () => {
+            this._inSetPosMode = false;
+            this.close(BoxPointer.PopupAnimation[this.animation]);
+            this._lastTimeOut = null;
+            return GLib.SOURCE_REMOVE;
+          }
+        );
+    }
+
     _updateVisibility(sourceToggle = false) {
       this.visible = !CandidatePopup.visible;
-      if (this.onlyOnToggle) this.visible = this.onlyOnToggle && sourceToggle;
+      if (this.onlyOnToggle) this.visible = sourceToggle;
       if (this.onlyASCII)
-        if (!ASCIIMODES.includes(this._inputIndicatorLabel.text))
+        if (!ASCIIModes.includes(this._inputIndicatorLabel.text))
           this.visible = false;
       if (this._lastTimeOut) {
         GLib.source_remove(this._lastTimeOut);
         this._lastTimeOut = null;
       }
+      if (this._lastTimeIn) {
+        GLib.source_remove(this._lastTimeIn);
+        this._lastTimeIn = null;
+      }
       if (this.visible) {
         this.setPosition(this._dummyCursor, 0);
-        this.open(BoxPointer.PopupAnimation[this.animation]);
-        this.get_parent().set_child_above_sibling(this, null);
-        if (this.enableAutoHide)
-          this._lastTimeOut = GLib.timeout_add_seconds(
+        if (this.enableShowDelay && !sourceToggle) {
+          this._inSetPosMode = false;
+          this.close(BoxPointer.PopupAnimation.NONE);
+          this._lastTimeIn = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
-            this.hideTime,
+            this.showTime,
             () => {
-              this._inSetPosMode = false;
-              this.close(BoxPointer.PopupAnimation[this.animation]);
-              this._lastTimeOut = null;
+              this._lastTimeIn = null;
+              this._showIndicator();
               return GLib.SOURCE_REMOVE;
             }
           );
+        } else {
+          this._showIndicator();
+        }
       } else {
         this._inSetPosMode = false;
         this.close(BoxPointer.PopupAnimation[this.animation]);
@@ -1703,6 +1742,15 @@ const IBusInputSourceIndicator = GObject.registerClass(
       }
     }
 
+    // Enable indicator show delay
+    set useindshowd(useindshowd) {
+      this.enableShowDelay = useindshowd;
+    }
+
+    set inputindshow(inputindshow) {
+      this.showTime = inputindshow;
+    }
+
     // Enable indicator auto-hide timeout
     set useindautohid(useindautohid) {
       this.enableAutoHide = useindautohid;
@@ -1780,6 +1828,18 @@ const IBusInputSourceIndicator = GObject.registerClass(
         Gio.SettingsBindFlags.GET
       );
       gsettings.bind(
+        Fields.USEINDSHOWD,
+        this,
+        "useindshowd",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
+        Fields.INPUTINDSHOW,
+        this,
+        "inputindshow",
+        Gio.SettingsBindFlags.GET
+      );
+      gsettings.bind(
         Fields.USEINDAUTOHID,
         this,
         "useindautohid",
@@ -1817,6 +1877,10 @@ const IBusInputSourceIndicator = GObject.registerClass(
       if (this._lastTimeOut) {
         GLib.source_remove(this._lastTimeOut);
         this._lastTimeOut = null;
+      }
+      if (this._lastTimeIn) {
+        GLib.source_remove(this._lastTimeIn);
+        this._lastTimeIn = null;
       }
     }
 
@@ -2965,6 +3029,13 @@ const Extension = class Extension {
     ExtensionUtils.initTranslations();
   }
 
+  updateASCIIModes() {
+    ASCIIModes = ASCIIMODESSTATIC;
+    for (let i in InputSourceManager.inputSources) {
+      ASCIIModes.push(InputSourceManager.inputSources[i].shortName);
+    }
+  }
+
   enable() {
     // Add support for GNOME less than 3.36
     if (!Object.fromEntries)
@@ -2981,6 +3052,11 @@ const Extension = class Extension {
     ngsettings = new Gio.Settings({
       schema: "org.gnome.settings-daemon.plugins.color",
     });
+    this.updateASCIIModes();
+    this._updateASCIIModesID = InputSourceManager.connect(
+      "sources-changed",
+      this.updateASCIIModes.bind(this)
+    );
     this._ext = new Extensions();
   }
 
@@ -2989,6 +3065,9 @@ const Extension = class Extension {
       this._ext.destroy();
       delete this._ext;
     }
+    if (this._updateASCIIModesID)
+      InputSourceManager.disconnect(this._updateASCIIModesID),
+        (this._updateASCIIModesID = 0);
     IBusSettings = null;
     ngsettings = null;
     opacityStyle = "";

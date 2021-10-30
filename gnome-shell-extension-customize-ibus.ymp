@@ -52,6 +52,7 @@ Support Customization of:
 * * Customize Font
 * * Left-click Indicator to Drag to Move Indicator or Switch Input Mode
 * * Change Opacity
+* * Enable Indicator Show Delay and Configure Showing Timeout
 * * Enable Auto-hide Indicator and Configure Auto-hide Timeout
 * Theme (Stylesheet Provided or Extracted from GNOME Shell Themes, Refer to Help Instructions in Extension for More)
 * Candidate Box Background and its Displaying Style
@@ -87,6 +88,7 @@ User Guide: https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-
 * * 自定义字体
 * * 左击指示器以拖拽移动或者切换输入源
 * * 更改透明度
+* * 启用延时显示以及配置显示时延
 * * 启用自动隐藏以及配置自动隐藏时延
 * 皮肤样式主题（提供的或者从GNOME Shell主题中提取的样式表，参见扩展的帮助部分来获取更多指导）
 * 候选框背景图片及其显示样式
