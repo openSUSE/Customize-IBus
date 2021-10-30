@@ -123,9 +123,9 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ### 指示
 
-![](https://img-blog.csdnimg.cn/973f884314bf45f4a037259358bc4efb.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_16,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/f1829fc1e3f24618b0833e9153fc4b7c.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
-这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`，`启用右击关闭指示器`，`启用滚动切换输入源`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。还支持设定指示器字体。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。另外可以设定`指示器透明度`，支持设定值为 0 到 255，设定步进为 1。你还可以`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 1。
+这里你可以选择开启`输入源指示器`，默认是当你打字、移动文字光标或者切换输入源时显示指示器。你可以设定`仅当切换输入源时显示指示器`，点击右侧切换按钮即可启用。你还可以设定`仅当使用英文输入时指示`（（对于多模式输入法）），`当使用单模式输入法时不指示`，`启用右击关闭指示器`，`启用滚动切换输入源`，`指示器显示动画`，显示动画支持`无动画`、`滑动`、`渐退`和`两种动画都同时显示`。还支持设定指示器字体。另外支持设定`启用指示器鼠标左击`操作行为，可以设为拖拽移动和切换输入源。另外可以设定`指示器透明度`，支持设定值为 0 到 255，设定步进为 1。你还可以`启用指示器显示时延`、`启用指示器自动隐藏时延`，支持始终显示和 1 秒到 5 秒范围内设定隐藏时延，设定步进为 1。
 
 示例动画：
 ![](https://img-blog.csdnimg.cn/20210507111902567.gif)
@@ -374,7 +374,9 @@ indicator-custom-font='Sans Bold 16'
 indicator-left-click-func=uint32 0
 indicator-opacity=uint32 210
 input-indicator-hide-time=uint32 2
+input-indicator-not-on-single-ime=true
 input-indicator-right-close=true
+input-indicator-show-time=uint32 1
 input-indicator-use-scroll=true
 input-mode-list={'undefined': true, '': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false, 'org.gnome.shell.extensions': true}
 input-mode-remember=uint32 0
@@ -397,6 +399,7 @@ use-indicator-custom-font=true
 use-indicator-left-click=true
 use-indicator-opacity=true
 use-indicator-reposition=true
+use-indicator-show-delay=true
 use-input-indicator=true
 use-popup-animation=true
 use-tray=true
@@ -410,7 +413,7 @@ use-tray-click-source-switch=true
 
 在任何时候，你都可以点击左上角的图标打开此指南：
 
-![](https://img-blog.csdnimg.cn/60ba6c20405b4e0fa0d731fd5596359a.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/66fd74e5d9e449bc9bc7c26354b6f9fc.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 ## 非 GNOME 桌面
 

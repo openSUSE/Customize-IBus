@@ -127,10 +127,9 @@ You can also start or restart IBus by pressing the top button:
 
 ### Indicator
 
-![](https://img-blog.csdnimg.cn/263013182fb144a08b19004aecfd1189.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/99b311fc73be4017a50d873a3bcab862.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
-Here you can set to `Use input source indicator`, default is to show indicator every time you type, move caret or switch input source. You can set to `Indicate only when switching input source` by clicking the switch on the right. You can also set to `Indicate only when using ASCII mode`, `Right click to close indicator`, `Scroll to switch input source`, `Indicator popup animation` supporting `None`, `Slide`, `Fade`, `All`. Also support to `Use custom font`, `Enable indicator left click` to switch input source or drag to move indicator, set `Indicator opacity` supporting range of 0 to 255, and the setting step is 1, `Enable indicator auto-hide timeout (unit: seconds)` and auto-hide timeout (in "
-"seconds) supporting to set the hidden delay in the range of 1 second to 5 seconds, and the setting step is 1.
+Here you can set to `Use input source indicator`, default is to show indicator every time you type, move caret or switch input source. You can set to `Indicate only when switching input source` by clicking the switch on the right. You can also set to `Indicate only when using ASCII mode` (for multi-mode IME), `Don't indicate when using single mode IME`, `Right click to close indicator`, `Scroll to switch input source`, `Indicator popup animation` supporting `None`, `Slide`, `Fade`, `All`. Also support to `Use custom font`, `Enable indicator left click` to switch input source or drag to move indicator, set `Indicator opacity` supporting range of 0 to 255, and the setting step is 1. `Enable indicator show delay (unit: seconds)`, `Enable indicator auto-hide timeout (unit: seconds)` and auto-hide timeout (in seconds) supporting to set the hidden delay in the range of 1 second to 5 seconds, and the setting step is 1.
 
 Example animation:
 ![](https://img-blog.csdnimg.cn/20210507111902567.gif)
@@ -379,7 +378,9 @@ indicator-custom-font='Sans Bold 16'
 indicator-left-click-func=uint32 0
 indicator-opacity=uint32 210
 input-indicator-hide-time=uint32 2
+input-indicator-not-on-single-ime=true
 input-indicator-right-close=true
+input-indicator-show-time=uint32 1
 input-indicator-use-scroll=true
 input-mode-list={'undefined': true, '': false, 'gjs': false, 'org.gnome.nautilus': false, 'google-chrome-beta': false, 'gedit': false, 'gnome-terminal': true, 'code': false, 'org.gnome.shell.extensions': true}
 input-mode-remember=uint32 0
@@ -402,6 +403,7 @@ use-indicator-custom-font=true
 use-indicator-left-click=true
 use-indicator-opacity=true
 use-indicator-reposition=true
+use-indicator-show-delay=true
 use-input-indicator=true
 use-popup-animation=true
 use-tray=true
@@ -414,7 +416,7 @@ Click `Import Settings from File`, you can choose to import the settings file yo
 ### About
 
 At any time, you can click on the icon in the upper left corner to open this guide:
-![](https://img-blog.csdnimg.cn/ee08599e806b43628f86ff112b586616.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/0fe31c35bb81421d8c6560d58d63207e.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 ## Non-GNOME desktop
 
