@@ -56,6 +56,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sun Oct 31 2021 Hollow Man <hollowman@hollowman.ml> - 77
+- Support instantly show indicator when switch window or IME even showing delay is enabled.
+
 * Sat Oct 30 2021 Hollow Man <hollowman@hollowman.ml> - 76
 - Support hide input source indicator when using single mode IME.
 - Add a show delay for input source indicator.

@@ -1863,7 +1863,7 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If you choose to enable the show delay, there won\'t be a show delay when you switch input source.</span>'
+            '<span size="small"><b>Note:</b> If you choose to enable the show delay, there won\'t be a show delay when you switch input source or window.</span>'
           ),
         })
       );

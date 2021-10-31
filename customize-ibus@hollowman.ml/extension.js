@@ -1332,6 +1332,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this.font_style = "";
       this.opacity_style = "";
       this.visible = false;
+      this._justSwitchedWindow = false;
       this.style_class = "candidate-popup-boxpointer";
       this._dummyCursor = new St.Widget({ opacity: 0 });
       Main.layoutManager.uiGroup.add_actor(this._dummyCursor);
@@ -1408,6 +1409,14 @@ const IBusInputSourceIndicator = GObject.registerClass(
           }
         }
       );
+      this._currentSourceChangedID = InputSourceManager.connect(
+        "current-source-changed",
+        () => {
+          this._inputIndicatorLabel.text = this._getInputLabel();
+          this._justSwitchedWindow = true;
+          this._updateVisibility(true);
+        }
+      );
       this._registerPropertyID = panelService.connect(
         "register-properties",
         (engineName, prop) => {
@@ -1458,7 +1467,11 @@ const IBusInputSourceIndicator = GObject.registerClass(
       }
       if (this.visible) {
         this.setPosition(this._dummyCursor, 0);
-        if (this.enableShowDelay && !sourceToggle) {
+        if (
+          this.enableShowDelay &&
+          !sourceToggle &&
+          !this._justSwitchedWindow
+        ) {
           this._inSetPosMode = false;
           this.close(BoxPointer.PopupAnimation.NONE);
           this._lastTimeIn = GLib.timeout_add_seconds(
@@ -1471,6 +1484,8 @@ const IBusInputSourceIndicator = GObject.registerClass(
             }
           );
         } else {
+          if (this.enableShowDelay && !sourceToggle)
+            this._justSwitchedWindow = false;
           this._showIndicator();
         }
       } else {
@@ -1484,6 +1499,11 @@ const IBusInputSourceIndicator = GObject.registerClass(
         this._connectPanelService(IBusManager._panelService);
         global.log(_("IBus panel service connected!"));
         this._inputIndicatorLabel.text = this._getInputLabel();
+      }
+      if (InputSourceManager._getCurrentWindow() && IBusManager._panelService) {
+        this._inputIndicatorLabel.text = this._getInputLabel();
+        this._justSwitchedWindow = true;
+        this._updateVisibility(true);
       }
     }
 
@@ -1893,6 +1913,9 @@ const IBusInputSourceIndicator = GObject.registerClass(
       if (this._updatePropertyID)
         this._panelService.disconnect(this._updatePropertyID),
           (this._updatePropertyID = 0);
+      if (this._currentSourceChangedID)
+        this._panelService.disconnect(this._currentSourceChangedID),
+          (this._currentSourceChangedID = 0);
       if (this._registerPropertyID)
         this._panelService.disconnect(this._registerPropertyID),
           (this._registerPropertyID = 0);

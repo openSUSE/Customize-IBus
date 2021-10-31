@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (77) hirsute; urgency=medium
+
+  * v77: Support instantly show indicator when switch window or IME even showing delay is enabled.
+
+ -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Sat, 30 Oct 2021 12:49:36 +0800
+
 gnome-shell-extension-customize-ibus (76) hirsute; urgency=medium
 
   * v76: Support hide input source indicator when using single mode IME. 

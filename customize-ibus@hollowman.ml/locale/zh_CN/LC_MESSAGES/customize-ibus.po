@@ -5,9 +5,9 @@
 # Hollow Man <hollowman@hollowman.ml>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 76\n"
+"Project-Id-Version: Customize Ibus 77\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-30 19:13+0800\n"
+"POT-Creation-Date: 2021-10-31 12:52+0800\n"
 "PO-Revision-Date: 2021-08-25 16:39+0000\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -19,55 +19,55 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.8.1-dev\n"
 
-#: extension.js:1485
+#: extension.js:1500
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服务连接成功！"
 
-#: extension.js:2069
+#: extension.js:2092
 msgid "loading light user theme for IBus:"
 msgstr "正在为 IBus 加载浅色用户主题:"
 
-#: extension.js:2079
+#: extension.js:2102
 msgid "loading dark user theme for IBus:"
 msgstr "正在为 IBus 加载深色用户主题:"
 
-#: extension.js:2084
+#: extension.js:2107
 msgid "loading default theme for IBus"
 msgstr "正在为 IBus 加载当前系统主题"
 
-#: extension.js:2280
+#: extension.js:2303
 msgid "loading background for IBus:"
 msgstr "正在为 IBus 加载背景:"
 
-#: extension.js:2290
+#: extension.js:2313
 msgid "remove custom background for IBus"
 msgstr "为 IBus 去除自定义背景"
 
-#: extension.js:2863
+#: extension.js:2886
 msgid "Successfully triggered a restart for IBus"
 msgstr "成功触发一次 IBus 的重新启动"
 
-#: extension.js:2881
+#: extension.js:2904
 msgid "Copy Emoji"
 msgstr "复制 Emoji"
 
-#: extension.js:2902 prefs.js:1650 prefs.js:2040
+#: extension.js:2925 prefs.js:1650 prefs.js:2040
 msgid "Customize IBus"
 msgstr "自定义 IBus"
 
-#: extension.js:2926 prefs.js:293 prefs.js:548
+#: extension.js:2949 prefs.js:293 prefs.js:548
 msgid "IBus Preferences"
 msgstr "IBus 首选项"
 
-#: extension.js:2947 extension.js:2962 prefs.js:552
+#: extension.js:2970 extension.js:2985 prefs.js:552
 msgid "IBus Version"
 msgstr "IBus 版本"
 
-#: extension.js:2976
+#: extension.js:2999
 msgid "Restart"
 msgstr "重新启动"
 
-#: extension.js:2997
+#: extension.js:3020
 msgid "Quit"
 msgstr "退出"
 
@@ -582,10 +582,10 @@ msgstr ""
 #: prefs.js:1866
 msgid ""
 "<span size=\"small\"><b>Note:</b> If you choose to enable the show delay, "
-"there won't be a show delay when you switch input source.</span>"
+"there won't be a show delay when you switch input source or window.</span>"
 msgstr ""
-"<span size=\"small\"><b>注：</b> 如果你选择启用显示时延，当你切换输入源时不会"
-"有显示延时。</span>"
+"<span size=\"small\"><b>注：</b> 如果你选择启用显示时延，当你切换输入源或窗口"
+"时不会有显示延时。</span>"
 
 #: prefs.js:1880
 msgid ""
