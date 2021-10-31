@@ -127,9 +127,11 @@ You can also start or restart IBus by pressing the top button:
 
 ### Indicator
 
-![](https://img-blog.csdnimg.cn/99b311fc73be4017a50d873a3bcab862.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/503206da1e374603a9d76f4a9037f0b1.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_19,color_FFFFFF,t_70,g_se,x_16)
 
 Here you can set to `Use input source indicator`, default is to show indicator every time you type, move caret or switch input source. You can set to `Indicate only when switching input source` by clicking the switch on the right. You can also set to `Indicate only when using ASCII mode` (for multi-mode IME), `Don't indicate when using single mode IME`, `Right click to close indicator`, `Scroll to switch input source`, `Indicator popup animation` supporting `None`, `Slide`, `Fade`, `All`. Also support to `Use custom font`, `Enable indicator left click` to switch input source or drag to move indicator, set `Indicator opacity` supporting range of 0 to 255, and the setting step is 1. `Enable indicator show delay (unit: seconds)`, `Enable indicator auto-hide timeout (unit: seconds)` and auto-hide timeout (in seconds) supporting to set the hidden delay in the range of 1 second to 5 seconds, and the setting step is 1.
+
+**Note:** If you choose to enable the show delay, there won't be a show delay when you switch input source or window.
 
 Example animation:
 ![](https://img-blog.csdnimg.cn/20210507111902567.gif)
@@ -416,7 +418,7 @@ Click `Import Settings from File`, you can choose to import the settings file yo
 ### About
 
 At any time, you can click on the icon in the upper left corner to open this guide:
-![](https://img-blog.csdnimg.cn/0fe31c35bb81421d8c6560d58d63207e.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/e679114ca9984772afc18bc755f4b7e5.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 ## Non-GNOME desktop
 
