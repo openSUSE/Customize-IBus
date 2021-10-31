@@ -1,14 +1,14 @@
 Package: gnome-shell-extension-customize-ibus
-Version: 76
+Version: 77
 Architecture: all
 Maintainer: Hollow Man (Domain Address) <hollowman@hollowman.ml>
 Installed-Size: 328
 Depends: gnome-shell, gnome-tweaks
-Filename: ./gnome-shell-extension-customize-ibus_76_all.deb
-Size: 78504
-MD5sum: 0bea9ba819b76de2d91c04f0b4a77f2a
-SHA1: 0c2356f8322e651f71b3bc657fc8ecb27fa8b9c9
-SHA256: ff382cbdddbc83f1594fc31506d28b7370e947a8cc1c075784b1fd2312f86f85
+Filename: ./gnome-shell-extension-customize-ibus_77_all.deb
+Size: 78662
+MD5sum: 179bdacf2444145189633d49a91b1c89
+SHA1: f74ddfebf15d614709e7e2cbaaca6501fef811a4
+SHA256: faf6b9658cdddda597ba4cb23ad5c58d773d19649d0645c9cfadcf8969578c5f
 Section: gnome
 Priority: optional
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/
