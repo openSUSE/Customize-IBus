@@ -415,7 +415,7 @@ use-tray-click-source-switch=true
 
 在任何时候，你都可以点击左上角的图标打开此指南：
 
-![](https://img-blog.csdnimg.cn/4f836d7226a34950bf22ab15638467f5.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/51a4005f89194c318cbe4a8841bffe88.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
 
 ## 非 GNOME 桌面
 
