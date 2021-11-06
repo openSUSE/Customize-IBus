@@ -5,9 +5,9 @@
 # Hollow Man <hollowman@hollowman.ml>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 77\n"
+"Project-Id-Version: Customize Ibus 78\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-10-31 12:52+0800\n"
+"POT-Creation-Date: 2021-11-06 17:58+0800\n"
 "PO-Revision-Date: 2021-08-26 02:53+0000\n"
 "Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -19,55 +19,55 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.8.1-dev\n"
 
-#: extension.js:1500
+#: extension.js:1501
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服務連線成功！"
 
-#: extension.js:2092
+#: extension.js:2091
 msgid "loading light user theme for IBus:"
 msgstr "正在為 IBus 載入淺色使用者主題:"
 
-#: extension.js:2102
+#: extension.js:2101
 msgid "loading dark user theme for IBus:"
 msgstr "正在為 IBus 載入深色使用者主題:"
 
-#: extension.js:2107
+#: extension.js:2106
 msgid "loading default theme for IBus"
 msgstr "正在為 IBus 載入當前系統主題"
 
-#: extension.js:2303
+#: extension.js:2302
 msgid "loading background for IBus:"
 msgstr "正在為 IBus 載入背景:"
 
-#: extension.js:2313
+#: extension.js:2312
 msgid "remove custom background for IBus"
 msgstr "為 IBus 去除自定義背景"
 
-#: extension.js:2886
+#: extension.js:2885
 msgid "Successfully triggered a restart for IBus"
 msgstr "成功觸發一次 IBus 的重新啟動"
 
-#: extension.js:2904
+#: extension.js:2903
 msgid "Copy Emoji"
 msgstr "複製 Emoji"
 
-#: extension.js:2925 prefs.js:1650 prefs.js:2040
+#: extension.js:2924 prefs.js:1650 prefs.js:2040
 msgid "Customize IBus"
 msgstr "自定義 IBus"
 
-#: extension.js:2949 prefs.js:293 prefs.js:548
+#: extension.js:2948 prefs.js:293 prefs.js:548
 msgid "IBus Preferences"
 msgstr "IBus 首選項"
 
-#: extension.js:2970 extension.js:2985 prefs.js:552
+#: extension.js:2969 extension.js:2984 prefs.js:552
 msgid "IBus Version"
 msgstr "IBus 版本"
 
-#: extension.js:2999
+#: extension.js:2998
 msgid "Restart"
 msgstr "重新啟動"
 
-#: extension.js:3020
+#: extension.js:3019
 msgid "Quit"
 msgstr "退出"
 

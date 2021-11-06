@@ -227,8 +227,9 @@ When only the light background or dark background is turned on, the extension wi
 - [x] V75: Fix support for wayland and reposition bug; Rearrange UI.
 - [x] V76: Support hide input source indicator when using single mode IME. Add a show delay for input source indicator.
 - [x] V77: Support instantly show indicator when switch window or IME even showing delay is enabled.
+- [x] V78: Clean up and fix several Bugs.
 
-Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65, v66), 3.34, 3.36, 3.38 and 40(v67, v68, v69, v70), 41(v72, v75, v76, v77).
+Tested on Fedora, OpenSUSE, Manjaro and Ubuntu, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65, v66), 3.34, 3.36, 3.38 and 40(v67, v68, v69, v70), 41(v72, v75, v76, v77, v78).
 
 ## Acknowledgements
 

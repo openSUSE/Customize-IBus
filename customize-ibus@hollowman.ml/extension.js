@@ -1397,7 +1397,6 @@ const IBusInputSourceIndicator = GObject.registerClass(
         // signal's absence.
       }
       this._focusOutID = panelService.connect("focus-out", () => {
-        this._inSetPosMode = false;
         this.close(BoxPointer.PopupAnimation[this.animation]);
       });
       this._updatePropertyID = panelService.connect(
@@ -1440,7 +1439,6 @@ const IBusInputSourceIndicator = GObject.registerClass(
           GLib.PRIORITY_DEFAULT,
           this.hideTime,
           () => {
-            this._inSetPosMode = false;
             this.close(BoxPointer.PopupAnimation[this.animation]);
             this._lastTimeOut = null;
             return GLib.SOURCE_REMOVE;
@@ -1457,6 +1455,11 @@ const IBusInputSourceIndicator = GObject.registerClass(
       if (this.ignoreSingleModeIME)
         if (IgnoreModes.includes(this._inputIndicatorLabel.text))
           this.visible = false;
+      if (this.visible && !sourceToggle) {
+        let position = this._dummyCursor.get_position();
+        if (Math.round(position[0]) == 0 && Math.round(position[1]) == 0)
+          this.visible = false;
+      }
       if (this._lastTimeOut) {
         GLib.source_remove(this._lastTimeOut);
         this._lastTimeOut = null;
@@ -1472,7 +1475,6 @@ const IBusInputSourceIndicator = GObject.registerClass(
           !sourceToggle &&
           !this._justSwitchedWindow
         ) {
-          this._inSetPosMode = false;
           this.close(BoxPointer.PopupAnimation.NONE);
           this._lastTimeIn = GLib.timeout_add_seconds(
             GLib.PRIORITY_DEFAULT,
@@ -1489,7 +1491,6 @@ const IBusInputSourceIndicator = GObject.registerClass(
           this._showIndicator();
         }
       } else {
-        this._inSetPosMode = false;
         this.close(BoxPointer.PopupAnimation[this.animation]);
       }
     }
@@ -1538,7 +1539,6 @@ const IBusInputSourceIndicator = GObject.registerClass(
             let rightButton = "BUTTON3_MASK";
             if (Meta.is_wayland_compositor()) rightButton = "BUTTON2_MASK";
             if (event.get_state() & Clutter.ModifierType[rightButton]) {
-              this._inSetPosMode = false;
               this.close(BoxPointer.PopupAnimation[this.animation]);
             }
           }
@@ -1896,7 +1896,6 @@ const IBusInputSourceIndicator = GObject.registerClass(
     }
 
     _destroy_indicator() {
-      this._inSetPosMode = false;
       this.close(BoxPointer.PopupAnimation[this.animation]);
       this._destroy_lclick();
       if (this._buttonRightPressID)
@@ -1913,12 +1912,12 @@ const IBusInputSourceIndicator = GObject.registerClass(
       if (this._updatePropertyID)
         this._panelService.disconnect(this._updatePropertyID),
           (this._updatePropertyID = 0);
-      if (this._currentSourceChangedID)
-        this._panelService.disconnect(this._currentSourceChangedID),
-          (this._currentSourceChangedID = 0);
       if (this._registerPropertyID)
         this._panelService.disconnect(this._registerPropertyID),
           (this._registerPropertyID = 0);
+      if (this._currentSourceChangedID)
+        InputSourceManager.disconnect(this._currentSourceChangedID),
+          (this._currentSourceChangedID = 0);
       if (this._lastTimeOut) {
         GLib.source_remove(this._lastTimeOut);
         this._lastTimeOut = null;

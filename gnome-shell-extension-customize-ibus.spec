@@ -20,7 +20,7 @@
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        77
+Version:        78
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,6 +56,10 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sat Nov 06 2021 Hollow Man <hollowman@hollowman.ml> - 78
+- Clean up.
+- Fix several bugs.
+
 * Sun Oct 31 2021 Hollow Man <hollowman@hollowman.ml> - 77
 - Support instantly show indicator when switch window or IME even showing delay is enabled.
 

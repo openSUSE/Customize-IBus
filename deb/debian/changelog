@@ -1,8 +1,14 @@
+gnome-shell-extension-customize-ibus (78) hirsute; urgency=medium
+
+  * v78: Clean up and fix several bugs.
+
+ -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Sat, 06 Nov 2021 17:46:16 +0800
+
 gnome-shell-extension-customize-ibus (77) hirsute; urgency=medium
 
   * v77: Support instantly show indicator when switch window or IME even showing delay is enabled.
 
- -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Sat, 30 Oct 2021 12:49:36 +0800
+ -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Sun, 31 Oct 2021 12:49:36 +0800
 
 gnome-shell-extension-customize-ibus (76) hirsute; urgency=medium
 
