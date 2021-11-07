@@ -44,6 +44,7 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 ```sh
 wget https://github.com/openSUSE/Customize-IBus/raw/package-repo/customize_ibus.conf
+sudo mkdir -p /usr/local/etc/pkg/repos/
 sudo mv customize_ibus.conf /usr/local/etc/pkg/repos/
 sudo pkg update
 sudo pkg install gnome-shell-extension-customize-ibus
