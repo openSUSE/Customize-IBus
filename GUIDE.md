@@ -16,12 +16,19 @@ You can refer to here: [https://itsfoss.com/gnome-shell-extensions/](https://its
 
 or
 
+- Linux:
+
 ```bash
 git clone https://github.com/openSUSE/Customize-IBus.git
 cd Customize-IBus && make install
 ```
 
-.
+- FreeBSD:
+
+```sh
+git clone https://github.com/openSUSE/Customize-IBus.git
+cd Customize-IBus && gmake install
+```
 
 If you want to install Customize IBus as a system extension for all users:
 
@@ -63,6 +70,16 @@ sudo apt install gnome-shell-extension-customize-ibus
 ```
 
 You can also download the software packages through [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) for all distributions of Linux.
+
+- FreeBSD:
+
+```sh
+wget https://github.com/openSUSE/Customize-IBus/raw/package-repo/customize_ibus.conf
+sudo mkdir -p /usr/local/etc/pkg/repos/
+sudo mv customize_ibus.conf /usr/local/etc/pkg/repos/
+sudo pkg update
+sudo pkg install gnome-shell-extension-customize-ibus
+```
 
 After installation, you will find that there is an additional entry `Customize IBus` in the IBus input source indicator menu. Click it, and you will open the Customize IBus preferences. If there is no such menu entry, you can press `Alt+F2` to restart the GNOME shell, or log out and log in again. If that still doesn't work, please make sure you have installed the latest version of the extension and have enabled the extension.
 

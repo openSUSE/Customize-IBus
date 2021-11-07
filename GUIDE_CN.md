@@ -14,9 +14,18 @@ CSDN 链接：https://blog.csdn.net/qq_18572023/article/details/116331601
 
 或者
 
+- Linux：
+
 ```bash
 git clone https://github.com/openSUSE/Customize-IBus.git
 cd Customize-IBus && make install
+```
+
+- FreeBSD：
+
+```bash
+git clone https://github.com/openSUSE/Customize-IBus.git
+cd Customize-IBus && gmake install
 ```
 
 如果你想将该插件作为系统插件为所有用户安装：
@@ -59,6 +68,16 @@ sudo apt install gnome-shell-extension-customize-ibus
 ```
 
 所有版本的 Linux 都可以通过 [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) 下载相关安装包后安装。
+
+- FreeBSD:
+
+```sh
+wget https://github.com/openSUSE/Customize-IBus/raw/package-repo/customize_ibus.conf
+sudo mkdir -p /usr/local/etc/pkg/repos/
+sudo mv customize_ibus.conf /usr/local/etc/pkg/repos/
+sudo pkg update
+sudo pkg install gnome-shell-extension-customize-ibus
+```
 
 安装之后，你会发现 IBus 输入源指示面板中多了一个菜单选项`自定义IBus`，点击后即可打开自定义 IBus 配置选项。如果没有该菜单项，你可以`Alt+F2`然后按`r`重启 shell，或者注销之后重新登陆。如果还是不行，请确保你安装了最新版的插件并且已经开启了该插件。
 

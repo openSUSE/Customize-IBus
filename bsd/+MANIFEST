@@ -1,0 +1,8 @@
+name: gnome-shell-extension-customize-ibus
+version: 78
+origin: sysutils/gnome-shell-extension-customize-ibus
+comment: "Customize IBus"
+desc: "Full customization of appearance, behavior, system tray and input source indicator for IBus.\n深度定制 IBus 的外观、行为、系统托盘以及输入指示。"
+maintainer: hollowman@hollowman.ml
+www: https://github.com/openSUSE/Customize-IBus
+prefix: /

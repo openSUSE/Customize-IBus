@@ -27,7 +27,9 @@
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego]
 
-或者手动自行安装：
+### Linux
+
+手动自行安装：
 
 ```bash
 git clone https://github.com/openSUSE/Customize-IBus.git
@@ -74,6 +76,25 @@ sudo apt install gnome-shell-extension-customize-ibus
 [Ubuntu PPA](https://launchpad.net/~hollowman86/+archive/ubuntu/customize-ibus)
 
 所有版本的 Linux 都可以通过 [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) 下载相关安装包后安装。
+
+### FreeBSD
+
+手动自行安装：
+
+```sh
+git clone https://github.com/openSUSE/Customize-IBus.git
+cd Customize-IBus && gmake install
+```
+
+也可使用 Pkg Repository 安装为系统插件:
+
+```sh
+wget https://github.com/openSUSE/Customize-IBus/raw/package-repo/customize_ibus.conf
+sudo mkdir -p /usr/local/etc/pkg/repos/
+sudo mv customize_ibus.conf /usr/local/etc/pkg/repos/
+sudo pkg update
+sudo pkg install gnome-shell-extension-customize-ibus
+```
 
 ## 功能
 
@@ -231,7 +252,7 @@ background-size: cover;
 - [x] V77: 支持当切换窗口或输入法时立刻显示指示器，即使已经启用了显示延迟。
 - [x] V78: 清理并修复几个 Bugs。
 
-在 Fedora，OpenSUSE，Manjaro 和 Ubuntu，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)，3.34，3.36，3.38 和 40(v67，v68，v69，v70)，41(v72，v75，v76，v77，v78)中通过了测试。
+在 Fedora，OpenSUSE，Manjaro，Ubuntu 和 FreeBSD，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)，3.34，3.36，3.38 和 40(v67，v68，v69，v70)，41(v72，v75，v76，v77，v78)中通过了测试。
 
 ## 致谢
 

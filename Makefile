@@ -48,6 +48,7 @@ clean:
 	-rm -fR *.rpm
 	-rm -fR *.pkg.tar.zst
 	-rm -fR *.tar.gz
+	-rm -fR *.pkg
 	-rm -fR pkg src
 	-rm -fR *.dsc
 	-rm -fR *.tar.xz
@@ -61,7 +62,8 @@ clean:
 	-rm -fR $(SCMCPL)
 	-rm -fR $(MSGPOS:.po=.mo)
 	-rm -fR $(MSGPOS:.po=.po~)
-	-rm -fR deb/usr
+	-rm -fR bsd/usr
+	-rm -fR bsd/plist
 	-rm -fR *.upload
 
 $(SCMCPL): $(SCMXML)
@@ -76,7 +78,11 @@ _build: $(SCMCPL) $(MSGPOS:.po=.mo)
 	cp -r $(UUID)/* _build
 	-rm -fR _build/locale/*/LC_MESSAGES/*.po
 	-rm -fR _build/locale/*.pot
-	sed -i 's/"version": [[:digit:]]\+/"version": $(VERSION)/' _build/metadata.json;
+	if [ `uname` = "Linux" ]; then \
+		sed -i 's/"version": [[:digit:]]\+/"version": $(VERSION)/' _build/metadata.json; \
+	else \
+		sed -i '' 's/"version": [[:digit:]]\+/"version": $(VERSION)/' _build/metadata.json; \
+	fi
 
 zip: _build
 	cd _build ; \
@@ -117,6 +123,17 @@ debprepare: _build
 
 deb: debprepare
 	cd deb; dpkg-buildpackage -F
+
+bsdprepare: _build
+	mkdir -p bsd/usr/share/gnome-shell/extensions
+	mv _build bsd/usr/share/gnome-shell/extensions/$(UUID)
+	cd bsd; \
+		for dir in `find usr/share/gnome-shell/extensions/$(UUID) -type f`; do \
+			echo $$dir >> plist; \
+		done
+
+bsd: bsdprepare
+	cd bsd; pkg create -m . -r . -p plist -o ..
 
 ppa: clean debprepare
 	cd deb; \
