@@ -62,8 +62,11 @@ clean:
 	-rm -fR $(SCMCPL)
 	-rm -fR $(MSGPOS:.po=.mo)
 	-rm -fR $(MSGPOS:.po=.po~)
-	-rm -fR bsd/usr
-	-rm -fR bsd/plist
+	-rm -fR bsd/share
+	-rm -fR bsd/All
+	-rm -fR bsd/work
+	-rm -fR bsd/pkg-plist
+	-rm -fR bsd/distinfo
 	-rm -fR *.upload
 
 $(SCMCPL): $(SCMXML)
@@ -124,16 +127,19 @@ debprepare: _build
 deb: debprepare
 	cd deb; dpkg-buildpackage -F
 
-bsdprepare: _build
-	mkdir -p bsd/usr/share/gnome-shell/extensions
-	mv _build bsd/usr/share/gnome-shell/extensions/$(UUID)
+pkg-plist: _build
+	-rm -fR _build/schemas/*.xml
+	mkdir -p bsd/share/gnome-shell/extensions
+	mv _build bsd/share/gnome-shell/extensions/$(UUID)
+	-rm -fR -fR bsd/pkg-plist
 	cd bsd; \
-		for dir in `find usr/share/gnome-shell/extensions/$(UUID) -type f`; do \
-			echo $$dir >> plist; \
+		for dir in `find share/gnome-shell/extensions/$(UUID) -type f`; do \
+			echo $$dir >> pkg-plist; \
 		done
+	rm -r bsd/share
 
-bsd: bsdprepare
-	cd bsd; pkg create -m . -r . -p plist -o ..
+pkg: pkg-plist
+	cd bsd; make makesum; PACKAGES=`pwd` make package; mv All/*.pkg ..
 
 ppa: clean debprepare
 	cd deb; \
