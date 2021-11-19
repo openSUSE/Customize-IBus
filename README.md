@@ -73,6 +73,11 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 [Ubuntu PPA](https://launchpad.net/~hollowman86/+archive/ubuntu/customize-ibus)
 
+```bash
+sudo add-apt-repository ppa:hollowman86/customize-ibus
+sudo apt-get update
+```
+
 You can download the majority of your Linux distributions related packages through [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) and then install.
 
 For Gentoo, to install as a system extension:

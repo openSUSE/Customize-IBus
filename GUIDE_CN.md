@@ -67,6 +67,13 @@ sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
 
+PPA:
+
+```bash
+sudo add-apt-repository ppa:hollowman86/customize-ibus
+sudo apt-get update
+```
+
 你可以通过 [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) 下载绝大部分 Linux 发行版对应的相关安装包后安装。
 
 - Gentoo:
@@ -472,12 +479,45 @@ git clone https://github.com/openSUSE/IBus-Theme-Tools.git
 cd IBus-Theme-Tools && python3 setup.py install
 ```
 
-如果你使用 Arch Linux, 也可使用 AUR 安装为系统插件:
+对于使用包管理器安装：
+
+- Arch Linux, 
+
+你可以使用 AUR 安装:
+
 ```bash
 yay -S ibus-theme-tools
 ```
 
 [![](https://img-blog.csdnimg.cn/20210502152203849.png)](https://aur.archlinux.org/packages/ibus-theme-tools/)
+
+- Ubuntu:
+
+你可以使用 PPA 安装:
+
+```bash
+sudo add-apt-repository ppa:hollowman86/ibus-theme-tools
+sudo apt-get update
+```
+
+- openSUSE
+
+你可以直接通过[ymp 文件](https://software.opensuse.org/ymp/home:hollowman/openSUSE_Factory/ibus-theme-tools.ymp)安装.
+
+你可以通过 [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=ibus-theme-tools) 下载绝大部分 Linux 发行版对应的相关安装包后安装。
+
+- Gentoo:
+
+```bash
+git clone https://github.com/openSUSE/IBus-Theme-Tools.git
+cd IBus-Theme-Tools && make emerge
+```
+
+- NixOS:
+
+```bash
+sudo nix-env -i ibus-theme-tools
+```
 
 2. 然后在终端中运行`ibus-theme-tools`。
 

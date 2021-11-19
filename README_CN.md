@@ -75,6 +75,11 @@ sudo apt install gnome-shell-extension-customize-ibus
 
 [Ubuntu PPA](https://launchpad.net/~hollowman86/+archive/ubuntu/customize-ibus)
 
+```bash
+sudo add-apt-repository ppa:hollowman86/customize-ibus
+sudo apt-get update
+```
+
 你可以通过 [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) 下载绝大部分 Linux 发行版对应的相关安装包后安装。
 
 对于 Gentoo，运行以下命令安装为系统插件:
