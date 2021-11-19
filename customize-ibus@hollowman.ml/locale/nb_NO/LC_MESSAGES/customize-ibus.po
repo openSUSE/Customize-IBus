@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 78\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-06 17:58+0800\n"
+"POT-Creation-Date: 2021-11-19 13:45+0800\n"
 "PO-Revision-Date: 2021-08-26 01:37+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
@@ -18,57 +18,65 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.8.1-dev\n"
 
-#: extension.js:1501
+#: extension.js:1502
 msgid "IBus panel service connected!"
 msgstr ""
 
-#: extension.js:2091
+#: extension.js:2092
 msgid "loading light user theme for IBus:"
 msgstr ""
 
-#: extension.js:2101
+#: extension.js:2102
 msgid "loading dark user theme for IBus:"
 msgstr ""
 
-#: extension.js:2106
+#: extension.js:2107
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:2302
+#: extension.js:2303
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:2312
+#: extension.js:2313
 msgid "remove custom background for IBus"
 msgstr ""
 
-#: extension.js:2885
-msgid "Successfully triggered a restart for IBus"
+#: extension.js:2884
+msgid "Starting / Restarting IBus..."
 msgstr ""
 
-#: extension.js:2903
+#: extension.js:2913
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:2924 prefs.js:1650 prefs.js:2040
+#: extension.js:2934 prefs.js:1651 prefs.js:2041
 msgid "Customize IBus"
 msgstr ""
 
-#: extension.js:2948 prefs.js:293 prefs.js:548
+#: extension.js:2958 prefs.js:293 prefs.js:549
 msgid "IBus Preferences"
 msgstr ""
 
-#: extension.js:2969 extension.js:2984 prefs.js:552
+#: extension.js:2979 extension.js:2992 prefs.js:553
 msgid "IBus Version"
 msgstr ""
 
-#: extension.js:2998
+#: extension.js:3018
 msgid "Restart"
 msgstr ""
 
-#: extension.js:3019
+#: extension.js:3032
+msgid "Restarting IBus..."
+msgstr ""
+
+#: extension.js:3053
 msgid "Quit"
 msgstr "Avslutt"
+
+#: extension.js:3067
+msgid "Exiting IBus..."
+msgstr ""
 
 #: prefs.js:68
 msgid "Custom IME light theme"
@@ -123,18 +131,18 @@ msgid "Candidate box opacity"
 msgstr ""
 
 #: prefs.js:116
-msgid "Start/Restart IBus"
+msgid "Start / Restart IBus"
 msgstr ""
 
 #: prefs.js:122
 msgid "Restore Default Settings"
 msgstr ""
 
-#: prefs.js:128 prefs.js:881
+#: prefs.js:128 prefs.js:882
 msgid "Export Current Settings"
 msgstr ""
 
-#: prefs.js:134 prefs.js:905
+#: prefs.js:134 prefs.js:906
 msgid "Import Settings from File"
 msgstr ""
 
@@ -274,7 +282,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: prefs.js:233 prefs.js:451
+#: prefs.js:233 prefs.js:452
 msgid "IBus Version: "
 msgstr ""
 
@@ -315,168 +323,168 @@ msgstr ""
 msgid "Select an IBus Stylesheet"
 msgstr ""
 
-#: prefs.js:461
+#: prefs.js:462
 msgid "General"
 msgstr ""
 
-#: prefs.js:507
+#: prefs.js:508
 msgid "Fix IME list order"
 msgstr ""
 
-#: prefs.js:511
+#: prefs.js:512
 msgid "Enable drag to reposition candidate box"
 msgstr ""
 
-#: prefs.js:515
+#: prefs.js:516
 msgid "Candidate box page buttons"
 msgstr ""
 
-#: prefs.js:520
+#: prefs.js:521
 msgid "Tray"
 msgstr ""
 
-#: prefs.js:524
+#: prefs.js:525
 msgid "Show IBus tray icon"
 msgstr ""
 
-#: prefs.js:536
+#: prefs.js:537
 msgid "Add Additional Menu Entries"
 msgstr ""
 
-#: prefs.js:540
+#: prefs.js:541
 msgid "Copying Emoji"
 msgstr ""
 
-#: prefs.js:544
+#: prefs.js:545
 msgid "This Extension's Preferences"
 msgstr ""
 
-#: prefs.js:556
+#: prefs.js:557
 msgid "Restarting IBus"
 msgstr ""
 
-#: prefs.js:560
+#: prefs.js:561
 msgid "Exiting IBus"
 msgstr ""
 
-#: prefs.js:565
+#: prefs.js:566
 msgid "Indicator"
 msgstr ""
 
-#: prefs.js:567
+#: prefs.js:568
 msgid "Use input source indicator"
 msgstr ""
 
-#: prefs.js:571
+#: prefs.js:572
 msgid "Indicate only when switching input source"
 msgstr ""
 
-#: prefs.js:575
+#: prefs.js:576
 msgid "Indicate only when using ASCII mode"
 msgstr ""
 
-#: prefs.js:579
+#: prefs.js:580
 msgid "Don't indicate when using single mode IME"
 msgstr ""
 
-#: prefs.js:583
+#: prefs.js:584
 msgid "Enable right click to close indicator"
 msgstr ""
 
-#: prefs.js:587
+#: prefs.js:588
 msgid "Enable scroll to switch input source"
 msgstr ""
 
-#: prefs.js:591
+#: prefs.js:592
 msgid "Indicator popup animation"
 msgstr ""
 
-#: prefs.js:652
+#: prefs.js:653
 msgid "Theme"
 msgstr ""
 
-#: prefs.js:667
+#: prefs.js:668
 msgid "Background"
 msgstr ""
 
-#: prefs.js:685
+#: prefs.js:686
 msgid "Settings"
 msgstr ""
 
-#: prefs.js:691
+#: prefs.js:692
 msgid "Settings for extension"
 msgstr ""
 
-#: prefs.js:705
+#: prefs.js:706
 msgid "Other official IBus customization settings"
 msgstr ""
 
-#: prefs.js:886
+#: prefs.js:887
 msgid "Save"
 msgstr ""
 
-#: prefs.js:910
+#: prefs.js:911
 msgid "Open"
 msgstr ""
 
-#: prefs.js:1584
+#: prefs.js:1585
 msgid "Help"
 msgstr ""
 
-#: prefs.js:1602
+#: prefs.js:1603
 msgid "About"
 msgstr ""
 
-#: prefs.js:1621
+#: prefs.js:1622
 msgid "unknown (self-build ?)"
 msgstr ""
 
-#: prefs.js:1658
+#: prefs.js:1659
 msgid "Version: "
 msgstr ""
 
-#: prefs.js:1669
+#: prefs.js:1670
 msgid ""
 "Full customization of appearance, behavior, system tray and input source "
 "indicator for IBus."
 msgstr ""
 
-#: prefs.js:1691
+#: prefs.js:1692
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
 "HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
 "\">hollowman@hollowman.ml</a>&gt;</span>"
 msgstr ""
 
-#: prefs.js:1703
+#: prefs.js:1704
 msgid ""
 "<span size=\"small\">Source Code: <a href=\"https://github.com/openSUSE/"
 "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
 msgstr ""
 
-#: prefs.js:1715
+#: prefs.js:1716
 msgid ""
 "<span size=\"small\">Sponsored by <a href=\"https://summerofcode.withgoogle."
 "com/archive/2021/projects/6295506795364352/\">Google Summer of Code 2021</a> "
 "<b><a href=\"https://github.com/openSUSE\">@openSUSE</a></b>.</span>"
 msgstr ""
 
-#: prefs.js:1736
+#: prefs.js:1737
 msgid "Current Session"
 msgstr ""
 
-#: prefs.js:1762
+#: prefs.js:1763
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.</span>"
 msgstr ""
 
-#: prefs.js:1774
+#: prefs.js:1775
 msgid ""
 "<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/gpl"
 "\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 
-#: prefs.js:1792
+#: prefs.js:1793
 msgid ""
 "Here you can set the IBus input window orientation, animation, right click "
 "to open menu or switch source, scroll to switch among pages or candidates, "
@@ -486,7 +494,7 @@ msgid ""
 "also show or hide candidate box page buttons."
 msgstr ""
 
-#: prefs.js:1801
+#: prefs.js:1802
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>fix candidate box</b> is enabled, "
 "you can set the candidate box position with 9 options. Recommend to "
@@ -496,7 +504,7 @@ msgid ""
 "restore at next login.</span>"
 msgstr ""
 
-#: prefs.js:1810
+#: prefs.js:1811
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is "
 "enabled, and you have set to <b>Remember Input State</b>, every opened APP's "
@@ -505,7 +513,7 @@ msgid ""
 "APP's Input State will be remembered forever.</span>"
 msgstr ""
 
-#: prefs.js:1819
+#: prefs.js:1820
 msgid ""
 "<span size=\"small\"><b>Note:</b> If you <b>enable drag to reposition "
 "candidate box</b>, and if <b>fix candidate box</b> is enabled, your "
@@ -513,7 +521,7 @@ msgid ""
 "rearranged position will only last for the specific input.</span>"
 msgstr ""
 
-#: prefs.js:1833
+#: prefs.js:1834
 msgid ""
 "Here you can set to show IBus tray icon, enable directly switch source with "
 "click, add additional menu entries to IBus input source indicator menu at "
@@ -521,7 +529,7 @@ msgid ""
 "can also start or restart IBus by pressing the top button."
 msgstr ""
 
-#: prefs.js:1843
+#: prefs.js:1844
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>Directly switch source with click</"
 "b> is enabled, when the left key is selected, if you click the tray icon "
@@ -529,7 +537,7 @@ msgid ""
 "open the menu as normal, vice versa.</span>"
 msgstr ""
 
-#: prefs.js:1857
+#: prefs.js:1858
 msgid ""
 "Here you can set to show input source indicator, default is to show "
 "indicator every time you type, move caret or switch input source. You can "
@@ -541,20 +549,20 @@ msgid ""
 "timeout (in seconds), enable auto-hide and auto-hide timeout (in seconds)."
 msgstr ""
 
-#: prefs.js:1866
+#: prefs.js:1867
 msgid ""
 "<span size=\"small\"><b>Note:</b> If you choose to enable the show delay, "
 "there won't be a show delay when you switch input source or window.</span>"
 msgstr ""
 
-#: prefs.js:1880
+#: prefs.js:1881
 msgid ""
 "Support importing stylesheet generated by <a href=\"https://github.com/"
 "openSUSE/IBus-Theme-Tools\">IBus Theme Tools</a> or provided by <a href="
 "\"https://github.com/openSUSE/IBus-Theme-Hub\">IBus Theme Hub</a>."
 msgstr ""
 
-#: prefs.js:1889
+#: prefs.js:1890
 msgid ""
 "When light theme and dark theme are turned on at the same time, the IBus "
 "theme will automatically follow GNOME Night Light mode, use light theme when "
@@ -562,26 +570,26 @@ msgid ""
 "turned on, the IBus theme will always use the theme that is turned on."
 msgstr ""
 
-#: prefs.js:1898
+#: prefs.js:1899
 msgid ""
 "<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
 "add any classes that's not started with <i>.candidate-*</i> into IBus "
 "stylesheet to prevent from corrupting system themes.</b></span>"
 msgstr ""
 
-#: prefs.js:1907
+#: prefs.js:1908
 msgid ""
 "<span size=\"small\"><b>Note:</b> Support stylesheets hot reload, CSS "
 "changes reflecting in real-time.</span>"
 msgstr ""
 
-#: prefs.js:1921
+#: prefs.js:1922
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than the theme-defined background."
 msgstr ""
 
-#: prefs.js:1930
+#: prefs.js:1931
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -590,7 +598,7 @@ msgid ""
 "always use the background that is turned on."
 msgstr ""
 
-#: prefs.js:1939
+#: prefs.js:1940
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "
@@ -599,7 +607,7 @@ msgid ""
 "after manually mounting.</span>"
 msgstr ""
 
-#: prefs.js:1953
+#: prefs.js:1954
 msgid ""
 "Here you can reset the settings of this extension to default. You can also "
 "export current settings to an ini file for backup, and then import it when "
@@ -607,23 +615,23 @@ msgid ""
 "customization settings for customizations you can't find in this extension."
 msgstr ""
 
-#: prefs.js:2033
+#: prefs.js:2034
 msgid ""
 "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
 msgstr ""
 
-#: prefs.js:2057 prefs.js:2085
+#: prefs.js:2058 prefs.js:2086
 msgid "Cancel"
 msgstr ""
 
-#: prefs.js:2086
+#: prefs.js:2087
 msgid "OK"
 msgstr ""
 
-#: prefs.js:2088
+#: prefs.js:2089
 msgid "Reset All Settings to Default?"
 msgstr ""
 
-#: prefs.js:2094
+#: prefs.js:2095
 msgid "This will discard all the current configurations!"
 msgstr ""

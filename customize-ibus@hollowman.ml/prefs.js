@@ -113,7 +113,7 @@ const CustomizeIBus = GObject.registerClass(
       });
 
       this._restart_ibus = new Gtk.Button({
-        label: _("Start/Restart IBus"),
+        label: _("Start / Restart IBus"),
         hexpand: true,
         halign: Gtk.Align.CENTER,
       });
@@ -442,6 +442,7 @@ const CustomizeIBus = GObject.registerClass(
       let IBusVersion = _("unknown (installed ?)");
       if (IBus.MAJOR_VERSION)
         IBusVersion =
+          "v" +
           IBus.MAJOR_VERSION +
           "." +
           IBus.MINOR_VERSION +

@@ -9,6 +9,7 @@ const { Clutter, Gio, GLib, Meta, Shell, IBus, Pango, St, GObject } =
   imports.gi;
 
 const Main = imports.ui.main;
+const MessageTray = imports.ui.messageTray;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Util = imports.misc.util;
 const gsettings = ExtensionUtils.getSettings();
@@ -2880,11 +2881,20 @@ const Extensions = GObject.registerClass(
     set ibusresttime(ibusresttime) {
       if (this._not_extension_first_start) {
         IBusManager.restartDaemon();
-        Util.spawn([
-          "notify-send",
-          _("Successfully triggered a restart for IBus"),
-          new Date(parseInt(ibusresttime)).toString(),
-        ]);
+        let title = _("Starting / Restarting IBus...");
+        let source = new MessageTray.Source(title, "dialog-information");
+        Main.messageTray.add(source);
+        let notification = new MessageTray.Notification(
+          source,
+          title,
+          new Date(parseInt(ibusresttime)).toString()
+        );
+        try {
+          source.showNotification(notification);
+        } catch (e) {
+          // Add support for GNOME less than 3.36
+          source.notify(notification);
+        }
       }
       this._not_extension_first_start = true;
     }
@@ -2979,15 +2989,25 @@ const Extensions = GObject.registerClass(
 
     _MenuIBusVer() {
       Main.overview.hide();
-      Util.spawn([
-        "notify-send",
-        _("IBus Version"),
-        IBus.MAJOR_VERSION +
+      let title = _("IBus Version");
+      let source = new MessageTray.Source(title, "dialog-information");
+      Main.messageTray.add(source);
+      let notification = new MessageTray.Notification(
+        source,
+        title,
+        "v" +
+          IBus.MAJOR_VERSION +
           "." +
           IBus.MINOR_VERSION +
           "." +
-          IBus.MICRO_VERSION,
-      ]);
+          IBus.MICRO_VERSION
+      );
+      try {
+        source.showNotification(notification);
+      } catch (e) {
+        // Add support for GNOME less than 3.36
+        source.notify(notification);
+      }
     }
 
     // Restarting IBus
@@ -3009,6 +3029,20 @@ const Extensions = GObject.registerClass(
     _MenuIBusRest() {
       Main.overview.hide();
       IBusManager.restartDaemon();
+      let title = _("Restarting IBus...");
+      let source = new MessageTray.Source(title, "dialog-information");
+      Main.messageTray.add(source);
+      let notification = new MessageTray.Notification(
+        source,
+        title,
+        new Date().toString()
+      );
+      try {
+        source.showNotification(notification);
+      } catch (e) {
+        // Add support for GNOME less than 3.36
+        source.notify(notification);
+      }
     }
 
     // Exiting IBus
@@ -3030,6 +3064,20 @@ const Extensions = GObject.registerClass(
     _MenuIBusExit() {
       Main.overview.hide();
       Util.spawn(["ibus", "exit"]);
+      let title = _("Exiting IBus...");
+      let source = new MessageTray.Source(title, "dialog-information");
+      Main.messageTray.add(source);
+      let notification = new MessageTray.Notification(
+        source,
+        title,
+        new Date().toString()
+      );
+      try {
+        source.showNotification(notification);
+      } catch (e) {
+        // Add support for GNOME less than 3.36
+        source.notify(notification);
+      }
     }
 
     destroy() {
