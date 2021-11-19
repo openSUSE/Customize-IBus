@@ -69,7 +69,20 @@ sudo apt update
 sudo apt install gnome-shell-extension-customize-ibus
 ```
 
-You can also download the software packages through [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) for all distributions of Linux.
+You can download the majority of your Linux distributions related packages through [OpenSUSE OBS](https://software.opensuse.org//download.html?project=home%3Ahollowman&package=gnome-shell-extension-customize-ibus) and then install.
+
+- Gentoo:
+
+```bash
+git clone https://github.com/openSUSE/Customize-IBus.git
+cd Customize-IBus && make emerge
+```
+
+- NixOS:
+
+```bash
+sudo nix-env -i gnomeExtensions.customize-ibus
+```
 
 - FreeBSD:
 
