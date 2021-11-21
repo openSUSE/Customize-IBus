@@ -95,6 +95,13 @@ cd Customize-IBus && make emerge
 sudo nix-env -i gnomeExtensions.customize-ibus
 ```
 
+对于 Guix:
+
+```bash
+curl -o /tmp/guix.scm https://github.com/openSUSE/Customize-IBus/raw/main/guix.scm
+guix package -f /tmp/guix.scm
+```
+
 ### FreeBSD
 
 手动自行安装：

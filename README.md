@@ -93,6 +93,13 @@ For NixOS:
 sudo nix-env -i gnomeExtensions.customize-ibus
 ```
 
+For Guix:
+
+```bash
+curl -o /tmp/guix.scm https://github.com/openSUSE/Customize-IBus/raw/main/guix.scm
+guix package -f /tmp/guix.scm
+```
+
 ### FreeBSD
 
 Manually:
