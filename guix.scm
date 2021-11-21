@@ -1,4 +1,4 @@
-(use-modules (guix build-system copy)
+(use-modules (guix build-system gnu)
              (guix git-download)
              ((guix licenses) #:prefix license:)
              (guix packages)

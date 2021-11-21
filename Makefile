@@ -133,6 +133,9 @@ edigest:
 emerge:
 	cd portage/gnome-extra/gnome-shell-extension-customize-ibus; pkexec ebuild `pwd`/*.ebuild merge
 
+guix:
+	guix package -f guix.scm
+
 pkg-plist: _build
 	-rm -fR _build/schemas/*.xml
 	mkdir -p bsd/share/gnome-shell/extensions
