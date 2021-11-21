@@ -92,7 +92,7 @@ sudo nix-env -i gnomeExtensions.customize-ibus
 - Guix:
 
 ```bash
-curl -o /tmp/guix.scm https://github.com/openSUSE/Customize-IBus/raw/main/guix.scm
+curl -o /tmp/guix.scm https://raw.githubusercontent.com/openSUSE/Customize-IBus/main/guix.scm
 guix package -f /tmp/guix.scm
 ```
 
@@ -524,6 +524,13 @@ cd IBus-Theme-Tools && make emerge
 
 ```bash
 sudo nix-env -i ibus-theme-tools
+```
+
+- Guix:
+
+```bash
+curl -o /tmp/guix.scm https://raw.githubusercontent.com/openSUSE/IBus-Theme-Tools/main/guix.scm
+guix package -f /tmp/guix.scm
 ```
 
 2. 然后在终端中运行`ibus-theme-tools`。
