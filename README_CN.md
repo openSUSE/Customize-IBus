@@ -98,8 +98,7 @@ sudo nix-env -i gnomeExtensions.customize-ibus
 对于 Guix:
 
 ```bash
-curl -o /tmp/guix.scm https://raw.githubusercontent.com/openSUSE/Customize-IBus/main/guix.scm
-guix package -f /tmp/guix.scm
+guix install gnome-shell-extension-customize-ibus
 ```
 
 ### FreeBSD

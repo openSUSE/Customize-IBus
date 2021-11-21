@@ -92,8 +92,7 @@ sudo nix-env -i gnomeExtensions.customize-ibus
 - Guix:
 
 ```bash
-curl -o /tmp/guix.scm https://raw.githubusercontent.com/openSUSE/Customize-IBus/main/guix.scm
-guix package -f /tmp/guix.scm
+guix install gnome-shell-extension-customize-ibus
 ```
 
 - FreeBSD:
@@ -529,8 +528,7 @@ sudo nix-env -i ibus-theme-tools
 - Guix:
 
 ```bash
-curl -o /tmp/guix.scm https://raw.githubusercontent.com/openSUSE/IBus-Theme-Tools/main/guix.scm
-guix package -f /tmp/guix.scm
+guix install ibus-theme-tools
 ```
 
 2. 然后在终端中运行`ibus-theme-tools`。
