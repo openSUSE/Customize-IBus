@@ -16,7 +16,7 @@
            (commit (string-append "v" version))))
      (file-name (git-file-name name version))
      (sha256
-      (base32 "1hnnsjriq7xaakk8biwz55mn077lnm9nsmi4wz5zk7clgxmasvq9"))))
+      (base32 "1mp0n757pdrd9jc9wcyxd0qgdjd85rr5skdznfslxs4c6yfplnkd"))))
   (build-system gnu-build-system)
   (arguments
    `(#:make-flags
