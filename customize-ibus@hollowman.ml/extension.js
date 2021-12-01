@@ -2036,6 +2036,10 @@ const IBusThemeManager = GObject.registerClass(
           this._themeContextChangedID
         ),
           (this._themeContextChangedID = 0);
+      if (this._delayForUpdateThemeID) {
+        GLib.source_remove(this._delayForUpdateThemeID);
+        this._delayForUpdateThemeID = null;
+      }
       delete this._proxy;
     }
 
@@ -2044,7 +2048,7 @@ const IBusThemeManager = GObject.registerClass(
       let previousTheme = themeContext.get_theme();
 
       let theme = new St.Theme({
-        application_stylesheet: Main._cssStylesheet,
+        application_stylesheet: Main.getThemeStylesheet(),
         default_stylesheet: Main._getDefaultStylesheet(),
       });
 
@@ -2076,7 +2080,19 @@ const IBusThemeManager = GObject.registerClass(
       themeContext.set_theme(theme);
       this._themeContextChangedID = themeContext.connect(
         "changed",
-        this._changeTheme.bind(this)
+        this._delayForUpdateTheme.bind(this)
+      );
+    }
+
+    _delayForUpdateTheme() {
+      this._delayForUpdateThemeID = GLib.timeout_add(
+        GLib.PRIORITY_DEFAULT,
+        10,
+        () => {
+          this._changeTheme();
+          this._delayForUpdateThemeID = null;
+          return GLib.SOURCE_REMOVE;
+        }
       );
     }
 
