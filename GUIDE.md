@@ -461,7 +461,7 @@ Click `Import Settings from File`, you can choose to import the settings file yo
 ### About
 
 At any time, you can click on the icon in the upper left corner to open this guide:
-![](https://img-blog.csdnimg.cn/1c29cceb9c7545fabae820cc54a59f0f.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/96a7eeea3cce4cd48b08aafd00c085d6.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 ## Non-GNOME desktop
 
@@ -490,7 +490,7 @@ cd IBus-Theme-Tools && python3 setup.py install
 
 For install using package manager:
 
-- Arch Linux 
+- Arch Linux
 
 You can use AUR to install:
 

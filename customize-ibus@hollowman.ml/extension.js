@@ -2031,6 +2031,11 @@ const IBusThemeManager = GObject.registerClass(
 
     destroy() {
       this._changeTheme(false);
+      if (this._themeContextChangedID)
+        St.ThemeContext.get_for_stage(global.stage).disconnect(
+          this._themeContextChangedID
+        ),
+          (this._themeContextChangedID = 0);
       delete this._proxy;
     }
 
@@ -2069,6 +2074,10 @@ const IBusThemeManager = GObject.registerClass(
       }
 
       themeContext.set_theme(theme);
+      this._themeContextChangedID = themeContext.connect(
+        "changed",
+        this._changeTheme.bind(this)
+      );
     }
 
     // Load stylesheet
@@ -2082,6 +2091,12 @@ const IBusThemeManager = GObject.registerClass(
           (this._styleSheetMonitorID = 0);
         this._styleSheetMonitor.cancel();
       }
+
+      if (this._themeContextChangedID)
+        St.ThemeContext.get_for_stage(global.stage).disconnect(
+          this._themeContextChangedID
+        ),
+          (this._themeContextChangedID = 0);
 
       if (
         this._stylesheet &&

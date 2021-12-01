@@ -460,7 +460,7 @@ use-tray-click-source-switch=true
 
 在任何时候，你都可以点击左上角的图标打开此指南：
 
-![](https://img-blog.csdnimg.cn/51a4005f89194c318cbe4a8841bffe88.png?x-oss-process=image/watermark,type_ZHJvaWRzYW5zZmFsbGJhY2s,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_18,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/336d1ce3b3b342adb82f697ef734f4c9.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_19,color_FFFFFF,t_70,g_se,x_16)
 
 ## 非 GNOME 桌面
 
@@ -474,12 +474,14 @@ use-tray-click-source-switch=true
 
 1. 首先安装[ibus-theme-tools](https://github.com/openSUSE/IBus-Theme-Tools)：
 
-推荐使用pip安装：
+推荐使用 pip 安装：
+
 ```bash
 pip install ibus-theme-tools
 ```
 
 你也可以手动进行安装：
+
 ```bash
 git clone https://github.com/openSUSE/IBus-Theme-Tools.git
 cd IBus-Theme-Tools && python3 setup.py install
@@ -487,7 +489,7 @@ cd IBus-Theme-Tools && python3 setup.py install
 
 对于使用包管理器安装：
 
-- Arch Linux, 
+- Arch Linux,
 
 你可以使用 AUR 安装:
 
@@ -551,7 +553,7 @@ guix install ibus-theme-tools
 8. 然后依次选择重复和大小模式，并输入想设置的图片圆角半径（单位为`px`）。
    ![](https://img-blog.csdnimg.cn/71e01d5789444c06b3e81dfdd074b833.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzE4NTcyMDIz,size_16,color_FFFFFF,t_70)
 
-9.  若无任何错误提示，则设定成功。随后你就可以在系统主题设置中选择该生成的主题来应用刚才的设置。
+9. 若无任何错误提示，则设定成功。随后你就可以在系统主题设置中选择该生成的主题来应用刚才的设置。
    ![](https://img-blog.csdnimg.cn/f6f36df22d684518b4c15b9877ffb11a.png)
 
 ### 自定义 IBus 字体字号

@@ -1,3 +1,10 @@
+gnome-shell-extension-customize-ibus (79) hirsute; urgency=medium
+
+  * v79: Relief from libnotify dependency.
+  * v79: Fix IBus theme also get changed when using User Themes to change system themes.
+
+ -- Hollow Man (Domain Address) <hollowman@hollowman.ml>  Wed, 01 Dec 2021 20:18:53 +0800
+
 gnome-shell-extension-customize-ibus (78) hirsute; urgency=medium
 
   * v78: Clean up and fix several bugs.
