@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Maintainer: Hollow Man <hollowman at hollowman dot ml>
-# Contributor: Hollow Man <hollowman at hollowman dot ml>
+# Maintainer: Hollow Man <hollowman at opensuse dot org>
+# Contributor: Hollow Man <hollowman at opensuse dot org>
 
 cd deb
 rm -fr Packages; dpkg-scanpackages . > Packages

@@ -3,4 +3,4 @@ name=Customize IBus RPM
 baseurl=https://opensuse.github.io/Customize-IBus/rpm
 enabled=1 
 gpgcheck=1
-gpgkey=https://opensuse.github.io/Customize-IBus/hollowman.pgp
+gpgkey=https://opensuse.github.io/Customize-IBus/hollowman.asc
