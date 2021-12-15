@@ -2,14 +2,14 @@
 # customize-ibus 軟體包的正體中文翻譯.
 # Copyright (C) 2021 Hollow Man
 # This file is distributed under the same license as the customize-ibus package.
-# Hollow Man <hollowman@hollowman.ml>, 2021.
+# Hollow Man <hollowman@opensuse.org>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 80\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-12-01 22:43+0800\n"
 "PO-Revision-Date: 2021-08-26 02:53+0000\n"
-"Last-Translator: Hollow Man <hollowman@hollowman.ml>\n"
+"Last-Translator: Hollow Man <hollowman@opensuse.org>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
 "customize-ibus/customize-ibus/zh_Hant/>\n"
 "Language: zh_TW\n"
@@ -453,12 +453,12 @@ msgstr "深度定製 IBus 的外觀、行為、系統托盤以及輸入指示。
 #: prefs.js:1692
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
-"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
-"\">hollowman@hollowman.ml</a>&gt;</span>"
+"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse.org"
+"\">hollowman@opensuse.org</a>&gt;</span>"
 msgstr ""
 "<span size=\"small\">版權所有 © 2021 <a href=\"https://github.com/"
-"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
-"\">hollowman@hollowman.ml</a>&gt;</span>"
+"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse.org"
+"\">hollowman@opensuse.org</a>&gt;</span>"
 
 #: prefs.js:1704
 msgid ""

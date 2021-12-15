@@ -210,7 +210,7 @@ sudo pkg install gnome-shell-extension-customize-ibus
 ```css
 /*
  由 IBus 主题工具生成
- 工具作者： Hollow Man <hollowman@hollowman.ml>
+ 工具作者： Hollow Man <hollowman@opensuse.org>
  工具源代码： https://github.com/openSUSE/IBus-Theme-Tools
  工具许可证： GPLv3
  样式表源文件： /usr/share/gnome-shell/theme/gnome-classic-high-contrast.css

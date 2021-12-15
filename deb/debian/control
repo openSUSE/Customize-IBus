@@ -1,7 +1,7 @@
 Source: gnome-shell-extension-customize-ibus
 Section: gnome
 Priority: optional
-Maintainer: Hollow Man (Domain Address) <hollowman@hollowman.ml>
+Maintainer: Hollow Man (Domain Address) <hollowman@opensuse.org>
 Build-Depends: debhelper
 Standards-Version: 80
 Homepage: https://extensions.gnome.org/extension/4112/customize-ibus/

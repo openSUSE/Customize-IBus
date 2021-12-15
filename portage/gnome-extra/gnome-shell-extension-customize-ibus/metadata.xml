@@ -2,7 +2,7 @@
 <!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
   <maintainer type="person" proxied="yes">
-    <email>hollowman@hollowman.ml</email>
+    <email>hollowman@opensuse.org</email>
     <name>Songlin Jiang</name>
   </maintainer>
   <maintainer type="project" proxied="proxy">

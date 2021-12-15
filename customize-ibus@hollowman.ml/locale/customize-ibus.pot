@@ -451,8 +451,8 @@ msgstr ""
 #: prefs.js:1692
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
-"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@hollowman.ml"
-"\">hollowman@hollowman.ml</a>&gt;</span>"
+"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse.org"
+"\">hollowman@opensuse.org</a>&gt;</span>"
 msgstr ""
 
 #: prefs.js:1704

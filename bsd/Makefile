@@ -1,4 +1,4 @@
-# Created by: Hollow Man <hollowman@hollowman.ml>
+# Created by: Hollow Man <hollowman@opensuse.org>
 
 PORTNAME=		gnome-shell-extension-customize-ibus
 PORTVERSION=	${_VER}
@@ -6,7 +6,7 @@ DISTVERSIONPREFIX=	v
 CATEGORIES=	deskutils gnome
 DIST_SUBDIR=	gnome
 
-MAINTAINER=	hollowman@hollowman.ml
+MAINTAINER=	hollowman@opensuse.org
 COMMENT=		Customize IBus
 
 LICENSE=		GPLv3+
