@@ -861,6 +861,9 @@ const CustomizeIBus = GObject.registerClass(
         if (ShellVersion < 40)
           this._fileChooser.transient_for = this.get_toplevel();
         else this._fileChooser.transient_for = this.get_root();
+        this._fileChooser.set_current_folder(
+          Gio.File.new_for_path(
+            gsettings.get_string(Fields.CUSTOMBG)).get_parent());
         this._fileChooser.show();
       });
       this._restart_ibus.connect("clicked", () => {
@@ -958,6 +961,9 @@ const CustomizeIBus = GObject.registerClass(
         if (ShellVersion < 40)
           this._fileDarkChooser.transient_for = this.get_toplevel();
         else this._fileDarkChooser.transient_for = this.get_root();
+        this._fileDarkChooser.set_current_folder(
+          Gio.File.new_for_path(
+            gsettings.get_string(Fields.CUSTOMBGDARK)).get_parent());
         this._fileDarkChooser.show();
       });
       this._cssFileChooser.connect("response", (dlg, response) => {
@@ -968,6 +974,9 @@ const CustomizeIBus = GObject.registerClass(
         if (ShellVersion < 40)
           this._cssFileChooser.transient_for = this.get_toplevel();
         else this._cssFileChooser.transient_for = this.get_root();
+        this._cssFileChooser.set_current_folder(
+          Gio.File.new_for_path(
+            gsettings.get_string(Fields.CUSTOMTHEME)).get_parent());
         this._cssFileChooser.show();
       });
       this._cssDarkFileChooser.connect("response", (dlg, response) => {
@@ -981,6 +990,9 @@ const CustomizeIBus = GObject.registerClass(
         if (ShellVersion < 40)
           this._cssDarkFileChooser.transient_for = this.get_toplevel();
         else this._cssDarkFileChooser.transient_for = this.get_root();
+        this._cssDarkFileChooser.set_current_folder(
+          Gio.File.new_for_path(
+            gsettings.get_string(Fields.CUSTOMTHEMENIGHT)).get_parent());
         this._cssDarkFileChooser.show();
       });
       this._reset_logo_button.connect("clicked", () => {
