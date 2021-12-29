@@ -864,8 +864,11 @@ const CustomizeIBus = GObject.registerClass(
         let path = Gio.File.new_for_path(
           gsettings.get_string(Fields.CUSTOMBG)
         ).get_parent();
-        if (ShellVersion < 40) path = path.get_path();
-        this._fileChooser.set_current_folder(path);
+        if (path) {
+          if (ShellVersion < 40)
+            this._fileChooser.set_current_folder_file(path);
+          else this._fileChooser.set_current_folder(path);
+        }
         this._fileChooser.show();
       });
       this._restart_ibus.connect("clicked", () => {
@@ -966,8 +969,11 @@ const CustomizeIBus = GObject.registerClass(
         let path = Gio.File.new_for_path(
           gsettings.get_string(Fields.CUSTOMBGDARK)
         ).get_parent();
-        if (ShellVersion < 40) path = path.get_path();
-        this._fileDarkChooser.set_current_folder(path);
+        if (path) {
+          if (ShellVersion < 40)
+            this._fileDarkChooser.set_current_folder_file(path);
+          else this._fileDarkChooser.set_current_folder(path);
+        }
         this._fileDarkChooser.show();
       });
       this._cssFileChooser.connect("response", (dlg, response) => {
@@ -981,8 +987,11 @@ const CustomizeIBus = GObject.registerClass(
         let path = Gio.File.new_for_path(
           gsettings.get_string(Fields.CUSTOMTHEME)
         ).get_parent();
-        if (ShellVersion < 40) path = path.get_path();
-        this._cssFileChooser.set_current_folder(path);
+        if (path) {
+          if (ShellVersion < 40)
+            this._cssFileChooser.set_current_folder_file(path);
+          else this._cssFileChooser.set_current_folder(path);
+        }
         this._cssFileChooser.show();
       });
       this._cssDarkFileChooser.connect("response", (dlg, response) => {
@@ -999,8 +1008,11 @@ const CustomizeIBus = GObject.registerClass(
         let path = Gio.File.new_for_path(
           gsettings.get_string(Fields.CUSTOMTHEMENIGHT)
         ).get_parent();
-        if (ShellVersion < 40) path = path.get_path();
-        this._cssDarkFileChooser.set_current_folder(path);
+        if (path) {
+          if (ShellVersion < 40)
+            this._cssDarkFileChooser.set_current_folder_file(path);
+          else this._cssDarkFileChooser.set_current_folder(path);
+        }
         this._cssDarkFileChooser.show();
       });
       this._reset_logo_button.connect("clicked", () => {
