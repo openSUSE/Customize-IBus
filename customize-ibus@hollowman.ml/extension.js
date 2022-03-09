@@ -2911,7 +2911,7 @@ const Extensions = GObject.registerClass(
     // Start/Restart IBus
     set ibusresttime(ibusresttime) {
       if (this._not_extension_first_start) {
-        IBusManager.restartDaemon();
+        Util.spawn(["ibus-daemon", "-rdx"]);
         let title = _("Starting / Restarting IBus...");
         let source = new MessageTray.Source(title, "dialog-information");
         Main.messageTray.add(source);
@@ -3059,7 +3059,7 @@ const Extensions = GObject.registerClass(
 
     _MenuIBusRest() {
       Main.overview.hide();
-      IBusManager.restartDaemon();
+      Util.spawn(["ibus-daemon", "-rdx"]);
       let title = _("Restarting IBus...");
       let source = new MessageTray.Source(title, "dialog-information");
       Main.messageTray.add(source);

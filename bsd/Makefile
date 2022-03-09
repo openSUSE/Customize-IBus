@@ -32,7 +32,7 @@ GH_PROJECT=	Customize-IBus
 
 PKGMESSAGE=	/usr/ports/deskutils/gnome-shell-extra-extensions/pkg-message.slaves
 
-_VER=			80
+_VER=			81
 _UUID=			customize-ibus@hollowman.ml
 _SCHEMA=		org.gnome.shell.extensions.customize-ibus.gschema.xml
 

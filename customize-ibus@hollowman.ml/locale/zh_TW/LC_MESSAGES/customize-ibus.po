@@ -5,9 +5,9 @@
 # Hollow Man <hollowman@opensuse.org>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 80\n"
+"Project-Id-Version: Customize Ibus 81\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-12-29 22:47+0800\n"
+"POT-Creation-Date: 2022-03-09 17:01+0800\n"
 "PO-Revision-Date: 2021-08-26 02:53+0000\n"
 "Last-Translator: Hollow Man <hollowman@opensuse.org>\n"
 "Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
@@ -51,15 +51,15 @@ msgstr "正在啟動 / 重啟 IBus..."
 msgid "Copy Emoji"
 msgstr "複製 Emoji"
 
-#: extension.js:2965 prefs.js:1683 prefs.js:2073
+#: extension.js:2965 prefs.js:1688 prefs.js:2078
 msgid "Customize IBus"
 msgstr "自定義 IBus"
 
-#: extension.js:2989 prefs.js:293 prefs.js:549
+#: extension.js:2989 prefs.js:298 prefs.js:554
 msgid "IBus Preferences"
 msgstr "IBus 首選項"
 
-#: extension.js:3010 extension.js:3023 prefs.js:553
+#: extension.js:3010 extension.js:3023 prefs.js:558
 msgid "IBus Version"
 msgstr "IBus 版本"
 
@@ -79,388 +79,388 @@ msgstr "退出"
 msgid "Exiting IBus..."
 msgstr "正在退出 IBus..."
 
-#: prefs.js:68
+#: prefs.js:73
 msgid "Custom IME light theme"
 msgstr "自定義淺色主題"
 
-#: prefs.js:71
+#: prefs.js:76
 msgid "Custom IME dark theme"
 msgstr "自定義深色主題"
 
-#: prefs.js:73 prefs.js:101
+#: prefs.js:78 prefs.js:106
 msgid "Use custom font"
 msgstr "自定義字型"
 
-#: prefs.js:75
+#: prefs.js:80
 msgid "Use custom light background"
 msgstr "自定義淺色背景"
 
-#: prefs.js:78
+#: prefs.js:83
 msgid "Use custom dark background"
 msgstr "自定義深色背景"
 
-#: prefs.js:81
+#: prefs.js:86
 msgid "Candidates scroll"
 msgstr "候選框滾動"
 
-#: prefs.js:83
+#: prefs.js:88
 msgid "Auto switch ASCII mode"
 msgstr "自動切換源"
 
-#: prefs.js:84
+#: prefs.js:89
 msgid "Candidates orientation"
 msgstr "候選框方向"
 
-#: prefs.js:86
+#: prefs.js:91
 msgid "Candidates popup animation"
 msgstr "候選框動畫"
 
-#: prefs.js:89
+#: prefs.js:94
 msgid "Fix candidate box"
 msgstr "固定候選框"
 
-#: prefs.js:93
+#: prefs.js:98
 msgid "Directly switch source with click"
 msgstr "點選切換輸入源"
 
-#: prefs.js:97
+#: prefs.js:102
 msgid "Candidate box right click"
 msgstr "候選框右擊"
 
-#: prefs.js:106
+#: prefs.js:111
 msgid "Candidate box opacity"
 msgstr "候選框透明"
 
-#: prefs.js:116
+#: prefs.js:121
 msgid "Start / Restart IBus"
 msgstr "啟動 / 重啟 IBus"
 
-#: prefs.js:122
+#: prefs.js:127
 msgid "Restore Default Settings"
 msgstr "恢復預設設定"
 
-#: prefs.js:128 prefs.js:890
+#: prefs.js:133 prefs.js:895
 msgid "Export Current Settings"
 msgstr "匯出當前設定"
 
-#: prefs.js:134 prefs.js:914
+#: prefs.js:139 prefs.js:919
 msgid "Import Settings from File"
 msgstr "從檔案匯入"
 
-#: prefs.js:140
+#: prefs.js:145
 msgid "Vertical"
 msgstr "豎直"
 
-#: prefs.js:141
+#: prefs.js:146
 msgid "Horizontal"
 msgstr "水平"
 
-#: prefs.js:145
+#: prefs.js:150
 msgid "Don't Remember Position"
 msgstr "不記住位置"
 
-#: prefs.js:146
+#: prefs.js:151
 msgid "Remember Last Position"
 msgstr "記住最後位置"
 
-#: prefs.js:150
+#: prefs.js:155
 msgid "Don't Remember State"
 msgstr "不記住狀態"
 
-#: prefs.js:151
+#: prefs.js:156
 msgid "Remember Input State"
 msgstr "記住輸入狀態"
 
-#: prefs.js:155
+#: prefs.js:160
 msgid "Change Page"
 msgstr "切換當前頁面"
 
-#: prefs.js:156
+#: prefs.js:161
 msgid "Change Candidate"
 msgstr "切換選中候選"
 
-#: prefs.js:160
+#: prefs.js:165
 msgid "On"
 msgstr "英文"
 
-#: prefs.js:161
+#: prefs.js:166
 msgid "Off"
 msgstr "中文"
 
-#: prefs.js:162
+#: prefs.js:167
 msgid "Keep"
 msgstr "保持"
 
-#: prefs.js:166
+#: prefs.js:171
 msgid "Left"
 msgstr "左鍵"
 
-#: prefs.js:167
+#: prefs.js:172
 msgid "Right"
 msgstr "右鍵"
 
-#: prefs.js:171
+#: prefs.js:176
 msgid "Drag to Move"
 msgstr "拖拽移動"
 
-#: prefs.js:172 prefs.js:177
+#: prefs.js:177 prefs.js:182
 msgid "Switch Source"
 msgstr "換輸入源"
 
-#: prefs.js:176
+#: prefs.js:181
 msgid "Open Menu"
 msgstr "開啟選單"
 
-#: prefs.js:181
+#: prefs.js:186
 msgid "Center"
 msgstr "居中"
 
-#: prefs.js:182
+#: prefs.js:187
 msgid "Center-Left"
 msgstr "左中"
 
-#: prefs.js:183
+#: prefs.js:188
 msgid "Top-Left"
 msgstr "左上"
 
-#: prefs.js:184
+#: prefs.js:189
 msgid "Top-Center"
 msgstr "中上"
 
-#: prefs.js:185
+#: prefs.js:190
 msgid "Top-Right"
 msgstr "右上"
 
-#: prefs.js:186
+#: prefs.js:191
 msgid "Center-Right"
 msgstr "右中"
 
-#: prefs.js:187
+#: prefs.js:192
 msgid "Bottom-Right"
 msgstr "右下"
 
-#: prefs.js:188
+#: prefs.js:193
 msgid "Bottom-Center"
 msgstr "中下"
 
-#: prefs.js:189
+#: prefs.js:194
 msgid "Bottom-Left"
 msgstr "左下"
 
-#: prefs.js:193 prefs.js:199
+#: prefs.js:198 prefs.js:204
 msgid "Centered"
 msgstr "居中"
 
-#: prefs.js:194 prefs.js:200
+#: prefs.js:199 prefs.js:205
 msgid "Full"
 msgstr "鋪滿"
 
-#: prefs.js:195 prefs.js:201
+#: prefs.js:200 prefs.js:206
 msgid "Zoom"
 msgstr "裁剪"
 
-#: prefs.js:205 prefs.js:210
+#: prefs.js:210 prefs.js:215
 msgid "No repeat"
 msgstr "不重複"
 
-#: prefs.js:206 prefs.js:211
+#: prefs.js:211 prefs.js:216
 msgid "Repeat"
 msgstr "重複"
 
-#: prefs.js:215 prefs.js:222
+#: prefs.js:220 prefs.js:227
 msgid "None"
 msgstr "無"
 
-#: prefs.js:216 prefs.js:223
+#: prefs.js:221 prefs.js:228
 msgid "Slide"
 msgstr "滑動"
 
-#: prefs.js:217 prefs.js:224
+#: prefs.js:222 prefs.js:229
 msgid "Fade"
 msgstr "漸退"
 
-#: prefs.js:218 prefs.js:225
+#: prefs.js:223 prefs.js:230
 msgid "All"
 msgstr "全包含"
 
-#: prefs.js:233 prefs.js:452
+#: prefs.js:238 prefs.js:457
 msgid "IBus Version: "
 msgstr "IBus 版本： "
 
-#: prefs.js:233 prefs.js:442
+#: prefs.js:238 prefs.js:447
 msgid "unknown (installed ?)"
 msgstr "未知（已安裝？）"
 
-#: prefs.js:253
+#: prefs.js:258
 msgid "Enable indicator left click"
 msgstr "啟用指示器滑鼠左擊"
 
-#: prefs.js:257
+#: prefs.js:262
 msgid "Indicator opacity"
 msgstr "指示器透明度"
 
-#: prefs.js:267
+#: prefs.js:272
 msgid "Enable indicator show delay (unit: seconds)"
 msgstr "啟用指示器顯示時延（單位：秒）"
 
-#: prefs.js:277
+#: prefs.js:282
 msgid "Enable indicator auto-hide timeout (unit: seconds)"
 msgstr "啟用指示器自動隱藏時延（單位：秒）"
 
-#: prefs.js:287
+#: prefs.js:292
 msgid "GNOME Settings"
 msgstr "GNOME 設定"
 
-#: prefs.js:320 prefs.js:333
+#: prefs.js:325 prefs.js:338
 msgid "Select an Image"
 msgstr "選擇一個圖片"
 
-#: prefs.js:325 prefs.js:338 prefs.js:357 prefs.js:370 prefs.js:384
-#: prefs.js:399 prefs.js:414 prefs.js:429
+#: prefs.js:330 prefs.js:343 prefs.js:362 prefs.js:375 prefs.js:389
+#: prefs.js:404 prefs.js:419 prefs.js:434
 msgid "(None)"
 msgstr "（無）"
 
-#: prefs.js:352 prefs.js:365
+#: prefs.js:357 prefs.js:370
 msgid "Select an IBus Stylesheet"
 msgstr "選擇一個 IBus 風格樣式表"
 
-#: prefs.js:462
+#: prefs.js:467
 msgid "General"
 msgstr "常規"
 
-#: prefs.js:508
+#: prefs.js:513
 msgid "Fix IME list order"
 msgstr "固定輸入法列表"
 
-#: prefs.js:512
+#: prefs.js:517
 msgid "Enable drag to reposition candidate box"
 msgstr "拖拽移動候選框"
 
-#: prefs.js:516
+#: prefs.js:521
 msgid "Candidate box page buttons"
 msgstr "候選框調頁按鈕"
 
-#: prefs.js:521
+#: prefs.js:526
 msgid "Tray"
 msgstr "托盤"
 
-#: prefs.js:525
+#: prefs.js:530
 msgid "Show IBus tray icon"
 msgstr "顯示 IBus 托盤圖示"
 
-#: prefs.js:537
+#: prefs.js:542
 msgid "Add Additional Menu Entries"
 msgstr "增加額外選單項"
 
-#: prefs.js:541
+#: prefs.js:546
 msgid "Copying Emoji"
 msgstr "複製 Emoji"
 
-#: prefs.js:545
+#: prefs.js:550
 msgid "This Extension's Preferences"
 msgstr "此擴充套件首選項"
 
-#: prefs.js:557
+#: prefs.js:562
 msgid "Restarting IBus"
 msgstr "重啟 IBus"
 
-#: prefs.js:561
+#: prefs.js:566
 msgid "Exiting IBus"
 msgstr "退出 IBus"
 
-#: prefs.js:566
+#: prefs.js:571
 msgid "Indicator"
 msgstr "指示"
 
-#: prefs.js:568
+#: prefs.js:573
 msgid "Use input source indicator"
 msgstr "開啟輸入源指示器"
 
-#: prefs.js:572
+#: prefs.js:577
 msgid "Indicate only when switching input source"
 msgstr "僅當切換輸入源指示"
 
-#: prefs.js:576
+#: prefs.js:581
 msgid "Indicate only when using ASCII mode"
 msgstr "僅當使用英文輸入時指示"
 
-#: prefs.js:580
+#: prefs.js:585
 msgid "Don't indicate when using single mode IME"
 msgstr "當使用單模式輸入法時不指示"
 
-#: prefs.js:584
+#: prefs.js:589
 msgid "Enable right click to close indicator"
 msgstr "右擊關閉指示器"
 
-#: prefs.js:588
+#: prefs.js:593
 msgid "Enable scroll to switch input source"
 msgstr "滾動切換輸入源"
 
-#: prefs.js:592
+#: prefs.js:597
 msgid "Indicator popup animation"
 msgstr "指示器顯示動畫"
 
-#: prefs.js:653
+#: prefs.js:658
 msgid "Theme"
 msgstr "主題"
 
-#: prefs.js:668
+#: prefs.js:673
 msgid "Background"
 msgstr "背景"
 
-#: prefs.js:686
+#: prefs.js:691
 msgid "Settings"
 msgstr "設定"
 
-#: prefs.js:692
+#: prefs.js:697
 msgid "Settings for extension"
 msgstr "配置外掛"
 
-#: prefs.js:706
+#: prefs.js:711
 msgid "Other official IBus customization settings"
 msgstr "其它官方 IBus 自定義設定"
 
-#: prefs.js:895
+#: prefs.js:900
 msgid "Save"
 msgstr "儲存"
 
-#: prefs.js:919
+#: prefs.js:924
 msgid "Open"
 msgstr "開啟"
 
-#: prefs.js:1617
+#: prefs.js:1622
 msgid "Help"
 msgstr "幫助"
 
-#: prefs.js:1635
+#: prefs.js:1640
 msgid "About"
 msgstr "關於"
 
-#: prefs.js:1654
+#: prefs.js:1659
 msgid "unknown (self-build ?)"
 msgstr "未知（自編譯？）"
 
-#: prefs.js:1691
+#: prefs.js:1696
 msgid "Version: "
 msgstr "版本： "
 
-#: prefs.js:1702
+#: prefs.js:1707
 msgid ""
 "Full customization of appearance, behavior, system tray and input source "
 "indicator for IBus."
 msgstr "深度定製 IBus 的外觀、行為、系統托盤以及輸入指示。"
 
-#: prefs.js:1724
+#: prefs.js:1729
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
-"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse.org"
-"\">hollowman@opensuse.org</a>&gt;</span>"
+"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse."
+"org\">hollowman@opensuse.org</a>&gt;</span>"
 msgstr ""
 "<span size=\"small\">版權所有 © 2021 <a href=\"https://github.com/"
-"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse.org"
-"\">hollowman@opensuse.org</a>&gt;</span>"
+"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse."
+"org\">hollowman@opensuse.org</a>&gt;</span>"
 
-#: prefs.js:1736
+#: prefs.js:1741
 msgid ""
 "<span size=\"small\">Source Code: <a href=\"https://github.com/openSUSE/"
 "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
@@ -468,7 +468,7 @@ msgstr ""
 "<span size=\"small\">原始碼：<a href=\"https://github.com/openSUSE/Customize-"
 "IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
 
-#: prefs.js:1748
+#: prefs.js:1753
 msgid ""
 "<span size=\"small\">Sponsored by <a href=\"https://summerofcode.withgoogle."
 "com/archive/2021/projects/6295506795364352/\">Google Summer of Code 2021</a> "
@@ -478,24 +478,24 @@ msgstr ""
 "archive/2021/projects/6295506795364352/\">2021谷歌程式設計之夏</a> <b><a "
 "href=\"https://github.com/openSUSE\">@openSUSE</a></b>資助。</span>"
 
-#: prefs.js:1769
+#: prefs.js:1774
 msgid "Current Session"
 msgstr "當前會話"
 
-#: prefs.js:1795
+#: prefs.js:1800
 msgid ""
 "<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.</span>"
 msgstr "<span size=\"small\">本程式不提供任何擔保。</span>"
 
-#: prefs.js:1807
+#: prefs.js:1812
 msgid ""
-"<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/gpl"
-"\">GNU General Public License, version 3 or later</a> for details.</span>"
+"<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/"
+"gpl\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 "<span size=\"small\">參見 <a href=\"https://www.gnu.org/licenses/gpl\">GNU 通"
 "用公共許可證，第三版或更高版本</a>以瞭解更多細節。</span>"
 
-#: prefs.js:1825
+#: prefs.js:1830
 msgid ""
 "Here you can set the IBus input window orientation, animation, right click "
 "to open menu or switch source, scroll to switch among pages or candidates, "
@@ -509,7 +509,7 @@ msgstr ""
 "預設切換語言、候選框透明度、固定輸入法列表順序、當輸入時透過拖拽移動候選框、"
 "以及顯示或隱藏候選框調頁按鈕。"
 
-#: prefs.js:1834
+#: prefs.js:1839
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>fix candidate box</b> is enabled, "
 "you can set the candidate box position with 9 options. Recommend to "
@@ -523,7 +523,7 @@ msgstr ""
 "置。當選擇 <b>記住最後位置</b> 時，可以永遠記住你上次拖拽的位置，並且在下次登"
 "陸時恢復。</span>"
 
-#: prefs.js:1843
+#: prefs.js:1848
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is "
 "enabled, and you have set to <b>Remember Input State</b>, every opened APP's "
@@ -536,7 +536,7 @@ msgstr ""
 "將會被自動記住。另外，新開啟的應用將會遵循你的輸入源配置，應用的輸入狀態將會"
 "永遠被記住。</span>"
 
-#: prefs.js:1852
+#: prefs.js:1857
 msgid ""
 "<span size=\"small\"><b>Note:</b> If you <b>enable drag to reposition "
 "candidate box</b>, and if <b>fix candidate box</b> is enabled, your "
@@ -547,7 +547,7 @@ msgstr ""
 "用了<b>固定候選框</b>，那麼你手動拖拽移動的位置將會保持到此次會話結束。否則手"
 "動拖拽移動的位置只會在本次輸入中保持。</span>"
 
-#: prefs.js:1866
+#: prefs.js:1871
 msgid ""
 "Here you can set to show IBus tray icon, enable directly switch source with "
 "click, add additional menu entries to IBus input source indicator menu at "
@@ -558,7 +558,7 @@ msgstr ""
 "IBus 輸入源指示選單增加額外的選單項，來複原 IBus 在非GNOME桌面的體驗。你還可"
 "以透過點選最上方的按鈕來啟動或者重啟 IBus。"
 
-#: prefs.js:1876
+#: prefs.js:1881
 msgid ""
 "<span size=\"small\"><b>Note:</b> If <b>Directly switch source with click</"
 "b> is enabled, when the left key is selected, if you click the tray icon "
@@ -569,7 +569,7 @@ msgstr ""
 "左鍵時，如果你用左鍵點選托盤圖示，將會切換輸入源，右鍵點選則會和往常一樣開啟"
 "選單，反之亦然。</span>"
 
-#: prefs.js:1890
+#: prefs.js:1895
 msgid ""
 "Here you can set to show input source indicator, default is to show "
 "indicator every time you type, move caret or switch input source. You can "
@@ -587,7 +587,7 @@ msgstr ""
 "指示器透明度，啟用延時顯示，設定顯示時延和啟用自動隱藏，設定自動隱藏時延（單"
 "位：秒）。"
 
-#: prefs.js:1899
+#: prefs.js:1904
 msgid ""
 "<span size=\"small\"><b>Note:</b> If you choose to enable the show delay, "
 "there won't be a show delay when you switch input source or window.</span>"
@@ -595,17 +595,17 @@ msgstr ""
 "<span size=\"small\"><b>注：</b> 如果你選擇啟用顯示時延，當你切換輸入源或窗口"
 "時不會有顯示延時。</span>"
 
-#: prefs.js:1913
+#: prefs.js:1918
 msgid ""
 "Support importing stylesheet generated by <a href=\"https://github.com/"
-"openSUSE/IBus-Theme-Tools\">IBus Theme Tools</a> or provided by <a href="
-"\"https://github.com/openSUSE/IBus-Theme-Hub\">IBus Theme Hub</a>."
+"openSUSE/IBus-Theme-Tools\">IBus Theme Tools</a> or provided by <a "
+"href=\"https://github.com/openSUSE/IBus-Theme-Hub\">IBus Theme Hub</a>."
 msgstr ""
 "支援匯入由 <a href=\"https://github.com/openSUSE/IBus-Theme-Tools\">IBus 主題"
-"工具</a> 生成的或者由 <a href=\"https://github.com/openSUSE/IBus-Theme-Hub"
-"\">IBus 主題集合</a> 提供的樣式表。"
+"工具</a> 生成的或者由 <a href=\"https://github.com/openSUSE/IBus-Theme-"
+"Hub\">IBus 主題集合</a> 提供的樣式表。"
 
-#: prefs.js:1922
+#: prefs.js:1927
 msgid ""
 "When light theme and dark theme are turned on at the same time, the IBus "
 "theme will automatically follow GNOME Night Light mode, use light theme when "
@@ -616,7 +616,7 @@ msgstr ""
 "使用淺色主題，開啟時使用深色主題。當淺色主題和深色主題只有一個被開啟時，擴充"
 "套件將會始終使用那個開啟的主題。"
 
-#: prefs.js:1931
+#: prefs.js:1936
 msgid ""
 "<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
 "add any classes that's not started with <i>.candidate-*</i> into IBus "
@@ -625,7 +625,7 @@ msgstr ""
 "<span size=\"small\"><b><i>警告：</i> 如非除錯需要，請勿在 IBus 主題樣式表中"
 "加入非 <i>.candidate-*</i> 開頭的類，以免干擾系統主題。</b></span>"
 
-#: prefs.js:1940
+#: prefs.js:1945
 msgid ""
 "<span size=\"small\"><b>Note:</b> Support stylesheets hot reload, CSS "
 "changes reflecting in real-time.</span>"
@@ -633,13 +633,13 @@ msgstr ""
 "<span size=\"small\"><b>注：</b> 支援樣式表熱重載, CSS 的變化會實時地體現出"
 "來。</span>"
 
-#: prefs.js:1954
+#: prefs.js:1959
 msgid ""
 "Support customizing your IBus Input window background with a picture. It has "
 "a higher priority than the theme-defined background."
 msgstr "支援使用圖片來自定義 IBus 候選框背景，其具有比主題背景更高的優先順序。"
 
-#: prefs.js:1963
+#: prefs.js:1968
 msgid ""
 "When light background and dark background are turned on at the same time, "
 "the IBus background will automatically follow GNOME Night Light mode, use "
@@ -651,7 +651,7 @@ msgstr ""
 "使用淺色背景，開啟時使用深色背景。當淺色背景和深色背景只有一個被開啟時，擴充"
 "套件將會始終使用那個開啟的背景。"
 
-#: prefs.js:1972
+#: prefs.js:1977
 msgid ""
 "<span size=\"small\"><b>Note:</b> Please make sure your background picture "
 "can always be visited. If your pictures are stored in the removable device "
@@ -663,7 +663,7 @@ msgstr ""
 "可移動裝置，系統預設不掛載，每次手動掛載後請關閉並重新開啟對應 <b>自定義背景"
 "</b> 來使其生效。</span>"
 
-#: prefs.js:1986
+#: prefs.js:1991
 msgid ""
 "Here you can reset the settings of this extension to default. You can also "
 "export current settings to an ini file for backup, and then import it when "
@@ -674,24 +674,24 @@ msgstr ""
 "備份，後面等需要恢復設定時再匯入。另外供你參考的是，你也可以開啟官方的 IBus "
 "自定義設定來自定義你在此外掛中未曾找到的設定。"
 
-#: prefs.js:2066
+#: prefs.js:2071
 msgid ""
 "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
 msgstr "https://blog.csdn.net/qq_18572023/article/details/116331601"
 
-#: prefs.js:2090 prefs.js:2118
+#: prefs.js:2095 prefs.js:2123
 msgid "Cancel"
 msgstr "取消"
 
-#: prefs.js:2119
+#: prefs.js:2124
 msgid "OK"
 msgstr "確認"
 
-#: prefs.js:2121
+#: prefs.js:2126
 msgid "Reset All Settings to Default?"
 msgstr "是否將所有設定重置為預設值？"
 
-#: prefs.js:2127
+#: prefs.js:2132
 msgid "This will discard all the current configurations!"
 msgstr "這將丟棄當前的所有配置！"
 

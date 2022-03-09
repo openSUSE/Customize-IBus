@@ -46,10 +46,15 @@ function mergeObjects(main, bck) {
 const CustomizeIBus = GObject.registerClass(
   class CustomizeIBus extends Gtk.ScrolledWindow {
     _init() {
-      super._init({
-        height_request: 600,
+      let win_conf = {
         hscrollbar_policy: Gtk.PolicyType.NEVER,
-      });
+      };
+      if (ShellVersion < 42) {
+        win_conf.height_request = 600;
+      } else {
+        win_conf.vscrollbar_policy = Gtk.PolicyType.NEVER;
+      }
+      super._init(win_conf);
 
       this._bulidWidget();
       this._bulidUI();

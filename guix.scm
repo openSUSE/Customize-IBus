@@ -7,7 +7,7 @@
 
 (package
   (name "gnome-shell-extension-customize-ibus")
-  (version "80")
+  (version "81")
   (source
    (origin
      (method git-fetch)
