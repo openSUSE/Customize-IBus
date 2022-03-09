@@ -461,7 +461,7 @@ Click `Import Settings from File`, you can choose to import the settings file yo
 ### About
 
 At any time, you can click on the icon in the upper left corner to open this guide:
-![](https://img-blog.csdnimg.cn/152e3337a00a4ece987d6bded29ce940.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/2cf6b027c81546a0b3b22107919fbc57.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_20,color_FFFFFF,t_70,g_se,x_16)
 
 ## Non-GNOME desktop
 

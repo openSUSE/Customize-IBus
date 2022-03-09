@@ -27,7 +27,7 @@ USE_GITHUB=	yes
 GLIB_SCHEMAS=	${_SCHEMA}
 
 GH_ACCOUNT=	openSUSE
-GH_TAGNAME=	363d687
+GH_TAGNAME=	eae4d96
 GH_PROJECT=	Customize-IBus
 
 PKGMESSAGE=	/usr/ports/deskutils/gnome-shell-extra-extensions/pkg-message.slaves

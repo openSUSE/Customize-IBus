@@ -459,7 +459,7 @@ use-tray-click-source-switch=true
 ### 关于
 
 在任何时候，你都可以点击左上角的图标打开此指南：
-![](https://img-blog.csdnimg.cn/8f2dd2a2a4194d5fa7968bb4f994ad29.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_17,color_FFFFFF,t_70,g_se,x_16)
+![](https://img-blog.csdnimg.cn/c8bef4e906df49c891a81b11a2c31a99.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBASG9sbG93TWFuNg==,size_19,color_FFFFFF,t_70,g_se,x_16)
 
 ## 非 GNOME 桌面
 
