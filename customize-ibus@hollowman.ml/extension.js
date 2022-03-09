@@ -37,6 +37,7 @@ const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 
 const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
 const Fields = Me.imports.fields.Fields;
+const IBUS_SYSTEMD_SERVICE = "org.freedesktop.IBus.session.GNOME.service";
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
 const INDICATORANI = ["NONE", "SLIDE", "FADE", "FULL"];
@@ -2911,7 +2912,22 @@ const Extensions = GObject.registerClass(
     // Start/Restart IBus
     set ibusresttime(ibusresttime) {
       if (this._not_extension_first_start) {
-        Util.spawn(["ibus-daemon", "-rdx"]);
+        IBusManager.restartDaemon();
+        if (IBusManager._ibusSystemdServiceExists)
+          IBusManager._ibusSystemdServiceExists().then((result) => {
+            if (result)
+              Shell.util_stop_systemd_unit(
+                IBUS_SYSTEMD_SERVICE,
+                "fail",
+                null
+              ).then(() => {
+                Shell.util_start_systemd_unit(
+                  IBUS_SYSTEMD_SERVICE,
+                  "replace",
+                  null
+                );
+              });
+          });
         let title = _("Starting / Restarting IBus...");
         let source = new MessageTray.Source(title, "dialog-information");
         Main.messageTray.add(source);
@@ -3059,7 +3075,22 @@ const Extensions = GObject.registerClass(
 
     _MenuIBusRest() {
       Main.overview.hide();
-      Util.spawn(["ibus-daemon", "-rdx"]);
+      IBusManager.restartDaemon();
+      if (IBusManager._ibusSystemdServiceExists)
+        IBusManager._ibusSystemdServiceExists().then((result) => {
+          if (result)
+            Shell.util_stop_systemd_unit(
+              IBUS_SYSTEMD_SERVICE,
+              "fail",
+              null
+            ).then(() => {
+              Shell.util_start_systemd_unit(
+                IBUS_SYSTEMD_SERVICE,
+                "replace",
+                null
+              );
+            });
+        });
       let title = _("Restarting IBus...");
       let source = new MessageTray.Source(title, "dialog-information");
       Main.messageTray.add(source);

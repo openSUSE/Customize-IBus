@@ -1,109 +1,109 @@
-gnome-shell-extension-customize-ibus (81) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (82) jammy; urgency=medium
 
   * v81: Initial support for GNOME 42.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 09 Mar 2022 16:50:11 +0800
 
-gnome-shell-extension-customize-ibus (80) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (80) jammy; urgency=medium
 
   * v80: Relief from libnotify dependency.
   * v80: Fix IBus theme also get changed when using User Themes to change system themes.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 01 Dec 2021 22:39:28 +0800
 
-gnome-shell-extension-customize-ibus (78) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (78) jammy; urgency=medium
 
   * v78: Clean up and fix several bugs.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sat, 06 Nov 2021 17:46:16 +0800
 
-gnome-shell-extension-customize-ibus (77) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (77) jammy; urgency=medium
 
   * v77: Support instantly show indicator when switch window or IME even showing delay is enabled.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sun, 31 Oct 2021 12:49:36 +0800
 
-gnome-shell-extension-customize-ibus (76) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (76) jammy; urgency=medium
 
   * v76: Support hide input source indicator when using single mode IME. 
   * v76: Add a show delay for input source indicator.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sat, 30 Oct 2021 17:20:52 +0800
 
-gnome-shell-extension-customize-ibus (75) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (75) jammy; urgency=medium
 
   * v75: Fix support for wayland and reposition bug; Rearrange UI.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 06 Oct 2021 11:10:58 +0800
 
-gnome-shell-extension-customize-ibus (72) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (72) jammy; urgency=medium
 
   * v72: Add support for GNOME 41. Enable to reset to follow system themes and backgrounds.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 22 Sep 2021 19:06:51 +0800
 
-gnome-shell-extension-customize-ibus (70) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (70) jammy; urgency=medium
 
   * v70: Fix and optimise for GSoC 2021 final submission.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Fri, 13 Aug 2021 10:13:32 +0800
 
-gnome-shell-extension-customize-ibus (69) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (69) jammy; urgency=medium
 
   * v69: Add support for theme style sheets hot reload.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sun, 08 Aug 2021 14:54:43 +0800
 
-gnome-shell-extension-customize-ibus (68) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (68) jammy; urgency=medium
 
   * v68: Add functionality to modify opacity.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Fri, 09 Jul 2021 02:22:28 +0800
 
-gnome-shell-extension-customize-ibus (67) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (67) jammy; urgency=medium
 
   * v67: Further fix support for openSUSE Leap 15.3.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 07 Jul 2021 15:45:31 +0800
 
-gnome-shell-extension-customize-ibus (66) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (66) jammy; urgency=medium
 
   * v66: Add support for openSUSE Leap 15.3.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Tue, 06 Jul 2021 00:31:29 +0800
 
-gnome-shell-extension-customize-ibus (65) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (65) jammy; urgency=medium
 
   * v65: Move project under openSUSE.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Mon, 30 Jun 2021 22:25:30 +0800
 
-gnome-shell-extension-customize-ibus (64) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (64) jammy; urgency=medium
 
   * v64: Fix typos and indicator scroll settings control.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Mon, 28 Jun 2021 21:22:52 +0800
 
-gnome-shell-extension-customize-ibus (63) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (63) jammy; urgency=medium
 
   * v63: Fix to avoid tainting the GNOME Shell environment.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sat, 26 Jun 2021 13:42:15 +0800
 
-gnome-shell-extension-customize-ibus (62) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (62) jammy; urgency=medium
 
   * v62: Fix settings sync problem with ibus-setup (preference).
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sat, 26 Jun 2021 00:39:24 +0800
 
-gnome-shell-extension-customize-ibus (61) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (61) jammy; urgency=medium
 
   * v61: Add scroll on candidates box to switch among pages or candidates.
   Add scroll on indicator to switch input source.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sun, 20 Jun 2021 18:43:54 +0800
 
-gnome-shell-extension-customize-ibus (60) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (60) jammy; urgency=medium
 
   * v60: Add customize font for indicator.
   Add show or hide candidate box page buttons.
@@ -111,70 +111,70 @@ gnome-shell-extension-customize-ibus (60) hirsute; urgency=medium
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Fri, 18 Jun 2021 23:34:44 +0800
 
-gnome-shell-extension-customize-ibus (59) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (59) jammy; urgency=medium
 
   * v59: Add fix IME list order function and buttons to start official customization settings.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 10 Jun 2021 17:26:08 +0800
 
-gnome-shell-extension-customize-ibus (58) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (58) jammy; urgency=medium
 
   * v58: Add icons for opening files directly from Prefs.
   Change *.dconf into *.ini for configurations files.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 09 Jun 2021 23:57:26 +0800
 
-gnome-shell-extension-customize-ibus (57) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (57) jammy; urgency=medium
 
   * v57: Add feature for exporting and restoring settings from file.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Tue, 08 Jun 2021 21:58:15 +0800
 
-gnome-shell-extension-customize-ibus (56) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (56) jammy; urgency=medium
 
   * v56: UI changes. Add restoring default settings option. Clean codebase.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sun, 06 Jun 2021 16:48:39 +0800
 
-gnome-shell-extension-customize-ibus (55) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (55) jammy; urgency=medium
 
   * v55: Merge 3.38 into 40, make some changes for UI.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sat, 05 Jun 2021 12:29:31 +0800
 
-gnome-shell-extension-customize-ibus (54) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (54) jammy; urgency=medium
 
   * v54: Fix support for ibus-rime of candidate box right click and indicator.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sun, 30 May 2021 21:02:28 +0800
 
-gnome-shell-extension-customize-ibus (52) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (52) jammy; urgency=medium
 
   * v52: Add feature for fixing candidate box.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Tue, 25 May 2021 23:53:18 +0800
 
-gnome-shell-extension-customize-ibus (50) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (50) jammy; urgency=medium
 
   * v50: Add open menu for candidate right click.
   Add click Input Source Indicator to switch source.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Tue, 25 May 2021 10:48:47 +0800
 
-gnome-shell-extension-customize-ibus (48) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (48) jammy; urgency=medium
 
   * v48: Add right click candidate box to switch input source. 
   Support show or hide tray icon, directly click tray icon to switch input source.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sun, 23 May 2021 23:16:52 +0800
 
-gnome-shell-extension-customize-ibus (46) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (46) jammy; urgency=medium
 
   * v46: Fix several BUGs. Add right click to close source indicator.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Fri, 21 May 2021 19:14:42 +0800
 
-gnome-shell-extension-customize-ibus (44) hirsute; urgency=medium
+gnome-shell-extension-customize-ibus (44) jammy; urgency=medium
 
   * v44: Initial Debian Package.
 
