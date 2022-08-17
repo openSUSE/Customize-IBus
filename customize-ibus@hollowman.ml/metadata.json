@@ -5,8 +5,8 @@
   "name": "Customize IBus",
   "original-authors": ["hollowman@opensuse.org"],
   "settings-schema": "org.gnome.shell.extensions.customize-ibus",
-  "shell-version": ["3.34", "3.36", "3.38", "40.0", "40", "41", "42"],
+  "shell-version": ["3.34", "3.36", "3.38", "40.0", "40", "41", "42", "43"],
   "url": "https://github.com/openSUSE/Customize-IBus",
   "uuid": "customize-ibus@hollowman.ml",
-  "version": 82
+  "version": 83
 }

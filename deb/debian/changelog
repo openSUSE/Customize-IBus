@@ -1,6 +1,12 @@
+gnome-shell-extension-customize-ibus (83) jammy; urgency=medium
+
+  * v83: Support for GNOME 43.
+
+ -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 17 Aug 2022 16:08:58 +0800
+
 gnome-shell-extension-customize-ibus (82) jammy; urgency=medium
 
-  * v81: Initial support for GNOME 42.
+  * v82: Initial support for GNOME 42.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 09 Mar 2022 16:50:11 +0800
 
