@@ -20,7 +20,7 @@
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        83
+Version:        84
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,6 +56,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Sun Nov 6 2022 Hollow Man <hollowman@opensuse.org> - 84
+- Fix to make lock screen theme get unaffected.
+
 * Wed Aug 17 2022 Hollow Man <hollowman@opensuse.org> - 83
 - Support for GNOME 43.
 

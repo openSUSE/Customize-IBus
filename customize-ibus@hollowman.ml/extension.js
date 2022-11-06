@@ -2051,7 +2051,7 @@ const IBusThemeManager = GObject.registerClass(
       // For compatibility for GNOME less than 3.36
       if (!theme || !theme.unload_stylesheet) {
         let customStylesheets = [];
-        
+
         if (theme) {
           customStylesheets = theme.get_custom_stylesheets();
         }
@@ -2070,7 +2070,7 @@ const IBusThemeManager = GObject.registerClass(
       }
 
       if (this._prevCssStylesheet)
-          theme.unload_stylesheet(Gio.File.new_for_path(this._prevCssStylesheet));
+        theme.unload_stylesheet(Gio.File.new_for_path(this._prevCssStylesheet));
 
       if (newStylesheet) {
         let file = Gio.File.new_for_path(newStylesheet);

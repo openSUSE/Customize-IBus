@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (84) kinetic; urgency=medium
+
+  * v83: Fix to make lock screen theme get unaffected.
+
+ -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sun, 6 Nov 2022 12:23:11 +0200
+
 gnome-shell-extension-customize-ibus (83) jammy; urgency=medium
 
   * v83: Support for GNOME 43.
