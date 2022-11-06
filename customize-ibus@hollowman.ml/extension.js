@@ -2046,24 +2046,31 @@ const IBusThemeManager = GObject.registerClass(
 
     loadTheme(newStylesheet) {
       let themeContext = St.ThemeContext.get_for_stage(global.stage);
-      let previousTheme = themeContext.get_theme();
+      let theme = themeContext.get_theme();
 
-      let theme = new St.Theme({
-        application_stylesheet: Main.getThemeStylesheet(),
-        default_stylesheet: Main._getDefaultStylesheet(),
-      });
+      // For compatibility for GNOME less than 3.36
+      if (!theme || !theme.unload_stylesheet) {
+        let customStylesheets = [];
+        
+        if (theme) {
+          customStylesheets = theme.get_custom_stylesheets();
+        }
 
-      if (previousTheme) {
-        let customStylesheets = previousTheme.get_custom_stylesheets();
+        theme = new St.Theme({
+          application_stylesheet: Main.getThemeStylesheet(),
+          default_stylesheet: Main._getDefaultStylesheet(),
+        });
 
         for (let i = 0; i < customStylesheets.length; i++)
-          // Fix support for GNOME less than 3.36
           if (
             customStylesheets[i] &&
             customStylesheets[i].get_path() != this._prevCssStylesheet
           )
             theme.load_stylesheet(customStylesheets[i]);
       }
+
+      if (this._prevCssStylesheet)
+          theme.unload_stylesheet(Gio.File.new_for_path(this._prevCssStylesheet));
 
       if (newStylesheet) {
         let file = Gio.File.new_for_path(newStylesheet);
