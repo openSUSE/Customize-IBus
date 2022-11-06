@@ -54,23 +54,23 @@ msgstr ""
 
 #: extension.js:3005 prefs.js:298 prefs.js:554
 msgid "IBus Preferences"
-msgstr ""
+msgstr "Agordoj pri IBus"
 
 #: extension.js:3026 extension.js:3039 prefs.js:558
 msgid "IBus Version"
-msgstr ""
+msgstr "Versio de IBus"
 
 #: extension.js:3065
 msgid "Restart"
-msgstr ""
+msgstr "Relanĉi"
 
 #: extension.js:3094
 msgid "Restarting IBus..."
-msgstr ""
+msgstr "Relanĉante IBus…"
 
 #: extension.js:3115
 msgid "Quit"
-msgstr ""
+msgstr "Forlasi"
 
 #: extension.js:3129
 msgid "Exiting IBus..."
@@ -86,15 +86,15 @@ msgstr ""
 
 #: prefs.js:78 prefs.js:106
 msgid "Use custom font"
-msgstr ""
+msgstr "Uzi propran tiparon"
 
 #: prefs.js:80
 msgid "Use custom light background"
-msgstr ""
+msgstr "Uzi propran helan fonon"
 
 #: prefs.js:83
 msgid "Use custom dark background"
-msgstr ""
+msgstr "Uzi propran malhelan fonon"
 
 #: prefs.js:86
 msgid "Candidates scroll"
@@ -146,11 +146,11 @@ msgstr ""
 
 #: prefs.js:145
 msgid "Vertical"
-msgstr ""
+msgstr "Vertikala"
 
 #: prefs.js:146
 msgid "Horizontal"
-msgstr ""
+msgstr "Horizontala"
 
 #: prefs.js:150
 msgid "Don't Remember Position"
@@ -190,11 +190,11 @@ msgstr ""
 
 #: prefs.js:171
 msgid "Left"
-msgstr ""
+msgstr "Maldekstra"
 
 #: prefs.js:172
 msgid "Right"
-msgstr ""
+msgstr "Dekstra"
 
 #: prefs.js:176
 msgid "Drag to Move"
@@ -206,43 +206,43 @@ msgstr ""
 
 #: prefs.js:181
 msgid "Open Menu"
-msgstr ""
+msgstr "Malfermi menuon"
 
 #: prefs.js:186
 msgid "Center"
-msgstr ""
+msgstr "Centra"
 
 #: prefs.js:187
 msgid "Center-Left"
-msgstr ""
+msgstr "Centra-maldekstra"
 
 #: prefs.js:188
 msgid "Top-Left"
-msgstr ""
+msgstr "Supra-maldekstra"
 
 #: prefs.js:189
 msgid "Top-Center"
-msgstr ""
+msgstr "Supra-centra"
 
 #: prefs.js:190
 msgid "Top-Right"
-msgstr ""
+msgstr "Supra-dekstra"
 
 #: prefs.js:191
 msgid "Center-Right"
-msgstr ""
+msgstr "Centra-dekstra"
 
 #: prefs.js:192
 msgid "Bottom-Right"
-msgstr ""
+msgstr "Malsupra-dekstra"
 
 #: prefs.js:193
 msgid "Bottom-Center"
-msgstr ""
+msgstr "Malsupra-centra"
 
 #: prefs.js:194
 msgid "Bottom-Left"
-msgstr ""
+msgstr "Malsupra-maldekstra"
 
 #: prefs.js:198 prefs.js:204
 msgid "Centered"
@@ -266,7 +266,7 @@ msgstr ""
 
 #: prefs.js:220 prefs.js:227
 msgid "None"
-msgstr ""
+msgstr "Nenio"
 
 #: prefs.js:221 prefs.js:228
 msgid "Slide"
@@ -315,7 +315,7 @@ msgstr ""
 #: prefs.js:330 prefs.js:343 prefs.js:362 prefs.js:375 prefs.js:389
 #: prefs.js:404 prefs.js:419 prefs.js:434
 msgid "(None)"
-msgstr ""
+msgstr "(Nenio)"
 
 #: prefs.js:357 prefs.js:370
 msgid "Select an IBus Stylesheet"
@@ -359,7 +359,7 @@ msgstr ""
 
 #: prefs.js:562
 msgid "Restarting IBus"
-msgstr ""
+msgstr "Relanĉante IBus"
 
 #: prefs.js:566
 msgid "Exiting IBus"
@@ -399,15 +399,15 @@ msgstr ""
 
 #: prefs.js:658
 msgid "Theme"
-msgstr ""
+msgstr "Etoso"
 
 #: prefs.js:673
 msgid "Background"
-msgstr ""
+msgstr "Fono"
 
 #: prefs.js:691
 msgid "Settings"
-msgstr ""
+msgstr "Agordoj"
 
 #: prefs.js:697
 msgid "Settings for extension"
@@ -419,19 +419,19 @@ msgstr ""
 
 #: prefs.js:900
 msgid "Save"
-msgstr ""
+msgstr "Konservi"
 
 #: prefs.js:924
 msgid "Open"
-msgstr ""
+msgstr "Malfermi"
 
 #: prefs.js:1622
 msgid "Help"
-msgstr ""
+msgstr "Helpo"
 
 #: prefs.js:1640
 msgid "About"
-msgstr ""
+msgstr "Pri"
 
 #: prefs.js:1659
 msgid "unknown (self-build ?)"
@@ -439,7 +439,7 @@ msgstr ""
 
 #: prefs.js:1696
 msgid "Version: "
-msgstr ""
+msgstr "Versio: "
 
 #: prefs.js:1707
 msgid ""
@@ -450,15 +450,20 @@ msgstr ""
 #: prefs.js:1729
 msgid ""
 "<span size=\"small\">Copyright © 2021 <a href=\"https://github.com/"
-"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse."
-"org\">hollowman@opensuse.org</a>&gt;</span>"
+"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse.org"
+"\">hollowman@opensuse.org</a>&gt;</span>"
 msgstr ""
+"<span size=\"small\">Kopirajtoj © 2021 <a href=\"https://github.com/"
+"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse.org"
+"\">hollowman@opensuse.org</a>&gt;</span>"
 
 #: prefs.js:1741
 msgid ""
 "<span size=\"small\">Source Code: <a href=\"https://github.com/openSUSE/"
 "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
 msgstr ""
+"<span size=\"small\">Fontokodo: <a href=\"https://github.com/openSUSE/"
+"Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
 
 #: prefs.js:1753
 msgid ""
@@ -469,7 +474,7 @@ msgstr ""
 
 #: prefs.js:1774
 msgid "Current Session"
-msgstr ""
+msgstr "Aktuala seanco"
 
 #: prefs.js:1800
 msgid ""
@@ -478,8 +483,8 @@ msgstr ""
 
 #: prefs.js:1812
 msgid ""
-"<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/"
-"gpl\">GNU General Public License, version 3 or later</a> for details.</span>"
+"<span size=\"small\">See the <a href=\"https://www.gnu.org/licenses/gpl"
+"\">GNU General Public License, version 3 or later</a> for details.</span>"
 msgstr ""
 
 #: prefs.js:1830
@@ -556,8 +561,8 @@ msgstr ""
 #: prefs.js:1918
 msgid ""
 "Support importing stylesheet generated by <a href=\"https://github.com/"
-"openSUSE/IBus-Theme-Tools\">IBus Theme Tools</a> or provided by <a "
-"href=\"https://github.com/openSUSE/IBus-Theme-Hub\">IBus Theme Hub</a>."
+"openSUSE/IBus-Theme-Tools\">IBus Theme Tools</a> or provided by <a href="
+"\"https://github.com/openSUSE/IBus-Theme-Hub\">IBus Theme Hub</a>."
 msgstr ""
 
 #: prefs.js:1927
@@ -620,11 +625,11 @@ msgstr ""
 
 #: prefs.js:2095 prefs.js:2123
 msgid "Cancel"
-msgstr ""
+msgstr "Nuligi"
 
 #: prefs.js:2124
 msgid "OK"
-msgstr ""
+msgstr "Bone"
 
 #: prefs.js:2126
 msgid "Reset All Settings to Default?"
