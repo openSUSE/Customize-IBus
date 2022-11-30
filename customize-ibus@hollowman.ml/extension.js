@@ -2037,10 +2037,6 @@ const IBusThemeManager = GObject.registerClass(
           this._themeContextChangedID
         ),
           (this._themeContextChangedID = 0);
-      if (this._delayForUpdateThemeID) {
-        GLib.source_remove(this._delayForUpdateThemeID);
-        this._delayForUpdateThemeID = null;
-      }
       delete this._proxy;
     }
 
@@ -2086,22 +2082,6 @@ const IBusThemeManager = GObject.registerClass(
       }
 
       themeContext.set_theme(theme);
-      this._themeContextChangedID = themeContext.connect(
-        "changed",
-        this._delayForUpdateTheme.bind(this)
-      );
-    }
-
-    _delayForUpdateTheme() {
-      this._delayForUpdateThemeID = GLib.timeout_add(
-        GLib.PRIORITY_DEFAULT,
-        10,
-        () => {
-          this._changeTheme();
-          this._delayForUpdateThemeID = null;
-          return GLib.SOURCE_REMOVE;
-        }
-      );
     }
 
     // Load stylesheet
@@ -2115,12 +2095,6 @@ const IBusThemeManager = GObject.registerClass(
           (this._styleSheetMonitorID = 0);
         this._styleSheetMonitor.cancel();
       }
-
-      if (this._themeContextChangedID)
-        St.ThemeContext.get_for_stage(global.stage).disconnect(
-          this._themeContextChangedID
-        ),
-          (this._themeContextChangedID = 0);
 
       if (
         this._stylesheet &&
