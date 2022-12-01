@@ -16,11 +16,11 @@
 #
 
 
-%global commit 8322177528b58381ebb6132cf01a85fe1cbccf4a
+%global commit d2916f282145fd1ff08e4d80420cbdc84339a4ab
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        84
+Version:        85
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,6 +56,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Thu Dec 1 2022 Hollow Man <hollowman@opensuse.org> - 85
+- Fix loading theme after unlocking the screen.
+
 * Sun Nov 6 2022 Hollow Man <hollowman@opensuse.org> - 84
 - Fix to make lock screen theme get unaffected.
 

@@ -1,6 +1,12 @@
+gnome-shell-extension-customize-ibus (85) kinetic; urgency=medium
+
+  * v85: Fix loading theme after unlocking the screen.
+
+ -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Thu, 1 Dec 2022 10:29:28 +0200
+
 gnome-shell-extension-customize-ibus (84) kinetic; urgency=medium
 
-  * v83: Fix to make lock screen theme get unaffected.
+  * v84: Fix to make lock screen theme get unaffected.
 
  -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Sun, 6 Nov 2022 12:23:11 +0200
 

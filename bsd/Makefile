@@ -27,12 +27,12 @@ USE_GITHUB=	yes
 GLIB_SCHEMAS=	${_SCHEMA}
 
 GH_ACCOUNT=	openSUSE
-GH_TAGNAME=	ab10fb9
+GH_TAGNAME=	d2916f2
 GH_PROJECT=	Customize-IBus
 
 PKGMESSAGE=	/usr/ports/deskutils/gnome-shell-extra-extensions/pkg-message.slaves
 
-_VER=			83
+_VER=			85
 _UUID=			customize-ibus@hollowman.ml
 _SCHEMA=		org.gnome.shell.extensions.customize-ibus.gschema.xml
 
