@@ -9,7 +9,7 @@ pkgbase = gnome-shell-extension-customize-ibus
 	makedepends = gettext
 	makedepends = glib2
 	makedepends = make
-	source = https://github.com/openSUSE/Customize-IBus/archive/d2916f282145fd1ff08e4d80420cbdc84339a4ab/Customize-IBus-d2916f282145fd1ff08e4d80420cbdc84339a4ab.tar.gz
+	source = https://github.com/openSUSE/Customize-IBus/archive/5eed0b430d40014a3b5e6b15600c7f1ef95b96d8/Customize-IBus-5eed0b430d40014a3b5e6b15600c7f1ef95b96d8.tar.gz
 	sha512sums = SKIP
 
 pkgname = gnome-shell-extension-customize-ibus
