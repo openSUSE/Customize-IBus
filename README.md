@@ -6,9 +6,6 @@
 [![GPL Licence](https://img.shields.io/badge/license-GPL-blue)](https://opensource.org/licenses/GPL-3.0/)
 [![Repo-Size](https://img.shields.io/github/repo-size/openSUSE/Customize-IBus.svg)](https://github.com/openSUSE/Customize-IBus/archive/main.zip)
 
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/context:javascript)
-
 ### Welcome to contribute your translation on Weblate!
 
 [![Translation Status](https://hosted.weblate.org/widgets/ibus-customize/-/287x66-grey.png)](https://hosted.weblate.org/engage/ibus-customize/)
@@ -40,7 +37,7 @@ If you use Arch Linux, you can also use AUR to install as a system extension:
 yay -S gnome-shell-extension-customize-ibus
 ```
 
-[![AUR](https://aur.archlinux.org/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
+[![AUR](https://aur.archlinux.org/static/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
 
 You can also use RPM Repository to install as a system extension under [Fedora](../../tree/package-repo#fedora):
 
@@ -278,8 +275,9 @@ When only the light background or dark background is turned on, the extension wi
 - [x] V83: Support for GNOME 43.
 - [x] V84: Fix to make lock screen theme get unaffected.
 - [x] V85: Fix loading theme after unlocking the screen.
+- [x] V86: Add support for GNOME 44.
 
-Tested on Fedora, OpenSUSE, Manjaro, Ubuntu and FreeBSD, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65, v66), 3.34, 3.36, 3.38 and 40(v67, v68, v69, v70), 41(v72, v75, v76, v77, v78, v80), 42(v82), 43(v83, v84, v85).
+Tested on Fedora, OpenSUSE, Manjaro, Ubuntu and FreeBSD, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65, v66), 3.34, 3.36, 3.38 and 40(v67, v68, v69, v70), 41(v72, v75, v76, v77, v78, v80), 42(v82), 43(v83, v84, v85), 44(v86).
 
 ## Acknowledgements
 

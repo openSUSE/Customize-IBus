@@ -5,9 +5,9 @@
 # Hollow Man <hollowman@opensuse.org>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 85\n"
+"Project-Id-Version: Customize Ibus 86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-01 10:35+0200\n"
+"POT-Creation-Date: 2023-03-08 00:07+0200\n"
 "PO-Revision-Date: 2021-08-25 16:39+0000\n"
 "Last-Translator: Hollow Man <hollowman@opensuse.org>\n"
 "Language-Team: Chinese (Traditional, Hong Kong) <https://hosted.weblate.org/"
@@ -19,63 +19,63 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 4.8.1-dev\n"
 
-#: extension.js:1503
+#: extension.js:1504
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服務連接成功！"
 
-#: extension.js:2105
+#: extension.js:2106
 msgid "loading light user theme for IBus:"
 msgstr "正在為 IBus 加載淺色用户主題:"
 
-#: extension.js:2115
+#: extension.js:2116
 msgid "loading dark user theme for IBus:"
 msgstr "正在為 IBus 加載深色用户主題:"
 
-#: extension.js:2120
+#: extension.js:2121
 msgid "loading default theme for IBus"
 msgstr "正在為 IBus 加載當前系統主題"
 
-#: extension.js:2316
+#: extension.js:2317
 msgid "loading background for IBus:"
 msgstr "正在為 IBus 加載背景:"
 
-#: extension.js:2326
+#: extension.js:2327
 msgid "remove custom background for IBus"
 msgstr "為 IBus 去除自定義背景"
 
-#: extension.js:2912
+#: extension.js:2913
 msgid "Starting / Restarting IBus..."
 msgstr "正在啓動 / 重啓 IBus..."
 
-#: extension.js:2941
+#: extension.js:2942
 msgid "Copy Emoji"
 msgstr "複製 Emoji"
 
-#: extension.js:2962 prefs.js:1688 prefs.js:2078
+#: extension.js:2963 prefs.js:1688 prefs.js:2078
 msgid "Customize IBus"
 msgstr "自定義 IBus"
 
-#: extension.js:2986 prefs.js:298 prefs.js:554
+#: extension.js:2987 prefs.js:298 prefs.js:554
 msgid "IBus Preferences"
 msgstr "IBus 首選項"
 
-#: extension.js:3007 extension.js:3020 prefs.js:558
+#: extension.js:3008 extension.js:3021 prefs.js:558
 msgid "IBus Version"
 msgstr "IBus 版本"
 
-#: extension.js:3046
+#: extension.js:3047
 msgid "Restart"
 msgstr "重新啓動"
 
-#: extension.js:3075
+#: extension.js:3076
 msgid "Restarting IBus..."
 msgstr "正在重啓 IBus..."
 
-#: extension.js:3096
+#: extension.js:3097
 msgid "Quit"
 msgstr "退出"
 
-#: extension.js:3110
+#: extension.js:3111
 msgid "Exiting IBus..."
 msgstr "正在退出 IBus..."
 

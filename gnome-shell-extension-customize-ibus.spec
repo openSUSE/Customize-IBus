@@ -20,7 +20,7 @@
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
-Version:        85
+Version:        86
 Release:        0
 Summary:        Customize IBus extension for GNOME Shell
 License:        GPL-3.0-or-later
@@ -56,6 +56,9 @@ mv _build %{buildroot}%{_datadir}/gnome-shell/extensions/%{uuid}
 %{_datadir}/gnome-shell/extensions/%{uuid}/
 
 %changelog
+* Wed Mar 8 2023 Hollow Man <hollowman@opensuse.org> - 86
+- Add support for GNOME 44.
+
 * Thu Dec 1 2022 Hollow Man <hollowman@opensuse.org> - 85
 - Fix loading theme after unlocking the screen.
 

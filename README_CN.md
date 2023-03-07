@@ -6,9 +6,6 @@
 [![GPL Licence](https://img.shields.io/badge/license-GPL-blue)](https://opensource.org/licenses/GPL-3.0/)
 [![Repo-Size](https://img.shields.io/github/repo-size/openSUSE/Customize-IBus.svg)](https://github.com/openSUSE/Customize-IBus/archive/main.zip)
 
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/openSUSE/Customize-IBus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/openSUSE/Customize-IBus/context:javascript)
-
 ### 欢迎在 Weblate 中贡献你的翻译！
 
 [![翻译状态](https://hosted.weblate.org/widgets/ibus-customize/-/287x66-grey.png)](https://hosted.weblate.org/engage/ibus-customize/)
@@ -42,7 +39,7 @@ cd Customize-IBus && make install
 yay -S gnome-shell-extension-customize-ibus
 ```
 
-[![AUR](https://aur.archlinux.org/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
+[![AUR](https://aur.archlinux.org/static/css/archnavbar/aurlogo.png)](https://aur.archlinux.org/packages/gnome-shell-extension-customize-ibus/)
 
 [Fedora](../../tree/package-repo#fedora)也可使用 RPM Repository 安装为系统插件:
 
@@ -280,8 +277,9 @@ background-size: cover;
 - [x] V83: 支持 GNOME 43。
 - [x] V84: 修复锁屏界面主题受影响问题。
 - [x] V85: 修复屏幕解锁后主题加载问题。
+- [x] V86: 支持 GNOME 44。
 
-在 Fedora，OpenSUSE，Manjaro，Ubuntu 和 FreeBSD，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)，3.34，3.36，3.38 和 40(v67，v68，v69，v70)，41(v72，v75，v76，v77，v78，v80)，42(v82)，43(v83，v84，v85)中通过了测试。
+在 Fedora，OpenSUSE，Manjaro，Ubuntu 和 FreeBSD，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)，3.34，3.36，3.38 和 40(v67，v68，v69，v70)，41(v72，v75，v76，v77，v78，v80)，42(v82)，43(v83，v84，v85)，44(v86)中通过了测试。
 
 ## 致谢
 

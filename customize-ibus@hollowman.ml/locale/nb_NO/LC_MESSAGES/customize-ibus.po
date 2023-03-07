@@ -4,9 +4,9 @@
 # Allan Nordhøy <epost@anotheragency.no>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 84\n"
+"Project-Id-Version: Customize Ibus 86\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-01 10:35+0200\n"
+"POT-Creation-Date: 2023-03-08 00:07+0200\n"
 "PO-Revision-Date: 2021-08-26 01:37+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
@@ -18,63 +18,63 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 4.8.1-dev\n"
 
-#: extension.js:1503
+#: extension.js:1504
 msgid "IBus panel service connected!"
 msgstr ""
 
-#: extension.js:2105
+#: extension.js:2106
 msgid "loading light user theme for IBus:"
 msgstr ""
 
-#: extension.js:2115
+#: extension.js:2116
 msgid "loading dark user theme for IBus:"
 msgstr ""
 
-#: extension.js:2120
+#: extension.js:2121
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:2316
+#: extension.js:2317
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:2326
+#: extension.js:2327
 msgid "remove custom background for IBus"
 msgstr ""
 
-#: extension.js:2912
+#: extension.js:2913
 msgid "Starting / Restarting IBus..."
 msgstr ""
 
-#: extension.js:2941
+#: extension.js:2942
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:2962 prefs.js:1688 prefs.js:2078
+#: extension.js:2963 prefs.js:1688 prefs.js:2078
 msgid "Customize IBus"
 msgstr ""
 
-#: extension.js:2986 prefs.js:298 prefs.js:554
+#: extension.js:2987 prefs.js:298 prefs.js:554
 msgid "IBus Preferences"
 msgstr ""
 
-#: extension.js:3007 extension.js:3020 prefs.js:558
+#: extension.js:3008 extension.js:3021 prefs.js:558
 msgid "IBus Version"
 msgstr ""
 
-#: extension.js:3046
+#: extension.js:3047
 msgid "Restart"
 msgstr ""
 
-#: extension.js:3075
+#: extension.js:3076
 msgid "Restarting IBus..."
 msgstr ""
 
-#: extension.js:3096
+#: extension.js:3097
 msgid "Quit"
 msgstr "Avslutt"
 
-#: extension.js:3110
+#: extension.js:3111
 msgid "Exiting IBus..."
 msgstr ""
 

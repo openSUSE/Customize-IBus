@@ -1,3 +1,9 @@
+gnome-shell-extension-customize-ibus (86) kinetic; urgency=medium
+
+  * v86: Add support for GNOME 44.
+
+ -- Hollow Man (Domain Address) <hollowman@opensuse.org>  Wed, 8 Mar 2023 00:05:18 +0200
+
 gnome-shell-extension-customize-ibus (85) kinetic; urgency=medium
 
   * v85: Fix loading theme after unlocking the screen.

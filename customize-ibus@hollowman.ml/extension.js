@@ -1170,13 +1170,12 @@ const IBusTrayClickSwitch = GObject.registerClass(
 
     set traysswitchkey(traysswitchkey) {
       if (this._buttonPressID)
-        InputSourceIndicator.container.disconnect(this._buttonPressID),
+        InputSourceIndicator.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
       let keyNum = traysswitchkey == 0 ? "1" : "3";
       if (Meta.is_wayland_compositor())
         keyNum = traysswitchkey == 0 ? "1" : "2";
-      InputSourceIndicator.container.reactive = true;
-      this._buttonPressID = InputSourceIndicator.container.connect(
+      this._buttonPressID = InputSourceIndicator.connect(
         "button-press-event",
         function (actor, event) {
           if (
@@ -1185,6 +1184,9 @@ const IBusTrayClickSwitch = GObject.registerClass(
           ) {
             IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
             InputSourceIndicator.menu.close();
+            // A hack to make it work in GNOME 44
+            InputSourceIndicator.menu.open();
+            InputSourceIndicator.menu.close();
           }
         }
       );
@@ -1192,9 +1194,8 @@ const IBusTrayClickSwitch = GObject.registerClass(
 
     destroy() {
       if (this._buttonPressID)
-        InputSourceIndicator.container.disconnect(this._buttonPressID),
+        InputSourceIndicator.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
-      InputSourceIndicator.container.reactive = false;
     }
   }
 );
