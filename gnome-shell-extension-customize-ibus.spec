@@ -16,7 +16,7 @@
 #
 
 
-%global commit 5eed0b430d40014a3b5e6b15600c7f1ef95b96d8
+%global commit 959f1c27c21b76ca98c2a44b03b902d6748feee8
 %global uuid customize-ibus@hollowman.ml
 %global forgeurl https://github.com/openSUSE/Customize-IBus
 Name:           gnome-shell-extension-customize-ibus
