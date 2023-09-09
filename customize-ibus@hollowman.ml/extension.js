@@ -4,17 +4,26 @@
 
 "use strict";
 
-/* Constant Variables */
-const { Clutter, Gio, GLib, Meta, Shell, IBus, Pango, St, GObject } =
-  imports.gi;
+/* Imports */
+import Clutter from "gi://Clutter";
+import GObject from "gi://GObject";
+import GLib from "gi://GLib";
+import Gio from "gi://Gio";
+import Meta from "gi://Meta";
+import Shell from "gi://Shell";
+import IBus from "gi://IBus";
+import Pango from "gi://Pango";
+import St from "gi://St";
 
-const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
-const ExtensionUtils = imports.misc.extensionUtils;
-const Util = imports.misc.util;
-const gsettings = ExtensionUtils.getSettings();
-const Me = ExtensionUtils.getCurrentExtension();
-const { loadInterfaceXML } = imports.misc.fileUtils;
+import {
+  Extension,
+  gettext as _,
+} from "resource:///org/gnome/shell/extensions/extension.js";
+
+import * as Main from "resource:///org/gnome/shell/ui/main.js";
+import * as ExtensionUtils from "resource:///org/gnome/shell/misc/extensionUtils.js";
+import * as Util from "resource:///org/gnome/shell/misc/util.js";
+import { loadInterfaceXML } from "resource:///org/gnome/shell/misc/fileUtils.js";
 const System = {
   LIGHT: "night-light-enabled",
   PROPERTY: "g-properties-changed",
@@ -24,19 +33,24 @@ const System = {
 const ColorInterface = loadInterfaceXML(System.BUS_NAME);
 const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
 
-const BoxPointer = imports.ui.boxpointer;
-const InputSourceManager = imports.ui.status.keyboard.getInputSourceManager();
-const InputSourcePopup = imports.ui.status.keyboard.InputSourcePopup;
+import * as BoxPointer from "resource:///org/gnome/shell/ui/boxpointer.js";
+import * as keyboard from "resource:///org/gnome/shell/ui/status/keyboard.js";
+import * as MessageTray from "resource:///org/gnome/shell/ui/messageTray.js";
+const InputSourceManager = keyboard.getInputSourceManager();
+const InputSourcePopup = keyboard.InputSourcePopup;
 const InputSourceIndicator = Main.panel.statusArea.keyboard;
-const IBusManager = imports.misc.ibusManager.getIBusManager();
+import * as IBusManagerImported from "resource:///org/gnome/shell/misc/ibusManager.js";
+const IBusManager = IBusManagerImported.getIBusManager();
 if (IBusManager._candidatePopup._boxPointer)
   var CandidatePopup = IBusManager._candidatePopup._boxPointer;
 else var CandidatePopup = IBusManager._candidatePopup;
 const CandidateArea = IBusManager._candidatePopup._candidateArea;
 const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 
-const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
-const Fields = Me.imports.fields.Fields;
+let gsettings = null;
+let UUID = null;
+
+import { Fields } from "./fields.js";
 const IBUS_SYSTEMD_SERVICE = "org.freedesktop.IBus.session.GNOME.service";
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
@@ -68,7 +82,7 @@ const IBusOrientation = GObject.registerClass(
         0,
         1,
         1,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
@@ -82,20 +96,20 @@ const IBusOrientation = GObject.registerClass(
         Fields.ORIENTATION,
         this,
         "orientation",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       this._orienChangeID = IBusSettings.connect(
         `changed::lookup-table-orientation`,
         () => {
           let value = IBusSettings.get_int("lookup-table-orientation");
           gsettings.set_uint(Fields.ORIENTATION, 1 - value);
-        }
+        },
       );
     }
 
     set orientation(orientation) {
       this._originalSetOrientation(
-        orientation ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL
+        orientation ? IBus.Orientation.HORIZONTAL : IBus.Orientation.VERTICAL,
       );
       IBusSettings.set_int("lookup-table-orientation", 1 - orientation);
     }
@@ -105,7 +119,7 @@ const IBusOrientation = GObject.registerClass(
       if (this._orienChangeID)
         IBusSettings.disconnect(this._orienChangeID), (this._orienChangeID = 0);
     }
-  }
+  },
 );
 
 // Candidates popup animation
@@ -119,7 +133,7 @@ const IBusAnimation = GObject.registerClass(
         0,
         3,
         3,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
@@ -131,7 +145,7 @@ const IBusAnimation = GObject.registerClass(
         Fields.CANDANIMATION,
         this,
         "animation",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
     }
 
@@ -155,7 +169,7 @@ const IBusAnimation = GObject.registerClass(
     destroy() {
       if (this._openOrig) CandidatePopup.open = this._openOrig;
     }
-  }
+  },
 );
 
 // Candidate box right click
@@ -169,7 +183,7 @@ const IBusClickSwitch = GObject.registerClass(
         0,
         1,
         0,
-        GObject.ParamFlags.READWRITE
+        GObject.ParamFlags.READWRITE,
       ),
     },
   },
@@ -180,7 +194,7 @@ const IBusClickSwitch = GObject.registerClass(
         Fields.CANDRIGHTFUNC,
         this,
         "switchfunction",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       CandidatePopup.reactive = true;
       let deviceManager = null;
@@ -188,24 +202,20 @@ const IBusClickSwitch = GObject.registerClass(
         deviceManager = Clutter.DeviceManager.get_default();
       else deviceManager = Clutter.get_default_backend().get_default_seat();
       this._virtualDevice = deviceManager.create_virtual_device(
-        Clutter.InputDeviceType.KEYBOARD_DEVICE
+        Clutter.InputDeviceType.KEYBOARD_DEVICE,
       );
 
-      this._CandidateAreaActor = CandidateArea;
-      if (!(CandidateArea instanceof St.BoxLayout))
-        this._CandidateAreaActor = CandidateArea.actor;
-
-      this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
+      this._mouseCandidateEnterID = CandidateArea.connect(
         "enter-event",
         (actor, event) => {
           this._mouseInCandidate = true;
-        }
+        },
       );
-      this._mouseCandidateLeaveID = this._CandidateAreaActor.connect(
+      this._mouseCandidateLeaveID = CandidateArea.connect(
         "leave-event",
         (actor, event) => {
           this._mouseInCandidate = false;
-        }
+        },
       );
       this._buttonPressID = CandidatePopup.connect(
         "button-press-event",
@@ -219,12 +229,12 @@ const IBusClickSwitch = GObject.registerClass(
               this._virtualDevice.notify_keyval(
                 Clutter.get_current_event_time(),
                 Clutter.KEY_Return,
-                Clutter.KeyState.PRESSED
+                Clutter.KeyState.PRESSED,
               );
               this._virtualDevice.notify_keyval(
                 Clutter.get_current_event_time(),
                 Clutter.KEY_Return,
-                Clutter.KeyState.RELEASED
+                Clutter.KeyState.RELEASED,
               );
             }
             this._delayAfterPress = GLib.timeout_add(
@@ -236,22 +246,22 @@ const IBusClickSwitch = GObject.registerClass(
                 if (this._clickSwitch) {
                   IBusManager.activateProperty(
                     INPUTMODE,
-                    IBus.PropState.CHECKED
+                    IBus.PropState.CHECKED,
                   );
                 } else {
                   InputSourceIndicator.menu.open(
                     InputSourceIndicator.menu.activeMenu
                       ? BoxPointer.PopupAnimation.FADE
-                      : BoxPointer.PopupAnimation.FULL
+                      : BoxPointer.PopupAnimation.FULL,
                   );
                   Main.panel.menuManager.ignoreRelease();
                 }
                 this._delayAfterPress = null;
                 return GLib.SOURCE_REMOVE;
-              }
+              },
             );
           }
-        }
+        },
       );
     }
 
@@ -264,10 +274,10 @@ const IBusClickSwitch = GObject.registerClass(
         CandidatePopup.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
       if (this._mouseCandidateEnterID)
-        this._CandidateAreaActor.disconnect(this._mouseCandidateEnterID),
+        CandidateArea.disconnect(this._mouseCandidateEnterID),
           (this._mouseCandidateEnterID = 0);
       if (this._mouseCandidateLeaveID)
-        this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
+        CandidateArea.disconnect(this._mouseCandidateLeaveID),
           (this._mouseCandidateLeaveID = 0);
       if (this._delayAfterPress) {
         GLib.source_remove(this._delayAfterPress);
@@ -275,7 +285,7 @@ const IBusClickSwitch = GObject.registerClass(
       }
       delete this.candidateBoxesID;
     }
-  }
+  },
 );
 
 // Candidates scroll
@@ -289,23 +299,19 @@ const IBusScroll = GObject.registerClass(
         0,
         1,
         1,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
   class IBusScroll extends GObject.Object {
     _init() {
       super._init();
-      // Support for GNOME version less than 3.36
-      this._CandidateAreaActor = CandidateArea;
-      if (!(CandidateArea instanceof St.BoxLayout))
-        this._CandidateAreaActor = CandidateArea.actor;
 
       gsettings.bind(
         Fields.SCROLLMODE,
         this,
         "scrollmode",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
     }
 
@@ -315,7 +321,7 @@ const IBusScroll = GObject.registerClass(
     }
 
     scroll_page() {
-      this._scrollID = this._CandidateAreaActor.connect(
+      this._scrollID = CandidateArea.connect(
         "scroll-event",
         (actor, scrollEvent) => {
           switch (scrollEvent.get_scroll_direction()) {
@@ -328,16 +334,15 @@ const IBusScroll = GObject.registerClass(
               CandidateArea.emit("cursor-up");
               break;
           }
-        }
+        },
       );
     }
 
     destroy() {
       if (this._scrollID)
-        this._CandidateAreaActor.disconnect(this._scrollID),
-          (this._scrollID = 0);
+        CandidateArea.disconnect(this._scrollID), (this._scrollID = 0);
     }
-  }
+  },
 );
 
 // Fix Candidate box
@@ -351,7 +356,7 @@ const IBusNotFollowCaret = GObject.registerClass(
         0,
         8,
         0,
-        GObject.ParamFlags.READWRITE
+        GObject.ParamFlags.READWRITE,
       ),
       remember: GObject.param_spec_uint(
         "remember",
@@ -360,7 +365,7 @@ const IBusNotFollowCaret = GObject.registerClass(
         0,
         1,
         1,
-        GObject.ParamFlags.READWRITE
+        GObject.ParamFlags.READWRITE,
       ),
     },
   },
@@ -378,13 +383,13 @@ const IBusNotFollowCaret = GObject.registerClass(
         Fields.CANDSTILLPOS,
         this,
         "position",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.REMCANDPOS,
         this,
         "remember",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
     }
 
@@ -404,7 +409,7 @@ const IBusNotFollowCaret = GObject.registerClass(
         successGetRem = false;
       if (this._remember && !this._hasSetRember) {
         let state = new Map(
-          Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack())
+          Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack()),
         );
         if (state.has("x") && state.has("y")) {
           x = state.get("x");
@@ -463,7 +468,7 @@ const IBusNotFollowCaret = GObject.registerClass(
         IBusManager._candidatePopup._setDummyCursorGeometry =
           this._setDummyCursorGeometryOrig;
     }
-  }
+  },
 );
 
 // Use custom font
@@ -475,7 +480,7 @@ const IBusFontSetting = GObject.registerClass(
         "fontname",
         "font name",
         "Sans 16",
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
@@ -486,14 +491,14 @@ const IBusFontSetting = GObject.registerClass(
         Fields.CUSTOMFONT,
         this,
         "fontname",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       this._fontChangeID = IBusSettings.connect(
         `changed::${Fields.CUSTOMFONT}`,
         () => {
           let value = IBusSettings.get_string(Fields.CUSTOMFONT);
           gsettings.set_string(Fields.CUSTOMFONT, value);
-        }
+        },
       );
     }
 
@@ -513,15 +518,15 @@ const IBusFontSetting = GObject.registerClass(
           get_weight(),
           desc.get_family(),
           (desc.get_size() / Pango.SCALE) * scale,
-          Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
+          Object.keys(Pango.Style)[desc.get_style()].toLowerCase(),
         );
       CandidatePopup.set_style(fontStyle + opacityStyle);
       CandidateArea._candidateBoxes.forEach((x) => {
         x._candidateLabel.set_style(
-          "font-size: %dpt;".format(desc.get_size() / Pango.SCALE)
+          "font-size: %dpt;".format(desc.get_size() / Pango.SCALE),
         );
         x._indexLabel.set_style(
-          "padding: %dpx 4px 0 0;".format((1 - scale) * 2)
+          "padding: %dpx 4px 0 0;".format((1 - scale) * 2),
         );
       });
     }
@@ -536,7 +541,7 @@ const IBusFontSetting = GObject.registerClass(
       if (this._fontChangeID)
         IBusSettings.disconnect(this._fontChangeID), (this._fontChangeID = 0);
     }
-  }
+  },
 );
 
 // Auto switch ASCII mode
@@ -550,7 +555,7 @@ const IBusAutoSwitch = GObject.registerClass(
         0,
         2,
         0,
-        GObject.ParamFlags.READWRITE
+        GObject.ParamFlags.READWRITE,
       ),
       remember: GObject.param_spec_uint(
         "remember",
@@ -559,7 +564,7 @@ const IBusAutoSwitch = GObject.registerClass(
         0,
         1,
         1,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
@@ -570,15 +575,15 @@ const IBusAutoSwitch = GObject.registerClass(
       this._tmpWindow = null;
       this._overviewHiddenID = Main.overview.connect(
         "hidden",
-        this._onWindowChanged.bind(this)
+        this._onWindowChanged.bind(this),
       );
       this._overviewShowingID = Main.overview.connect(
         "showing",
-        this._onWindowChanged.bind(this)
+        this._onWindowChanged.bind(this),
       );
       this._onWindowChangedID = global.display.connect(
         "notify::focus-window",
-        this._onWindowChanged.bind(this)
+        this._onWindowChanged.bind(this),
       );
     }
 
@@ -632,23 +637,23 @@ const IBusAutoSwitch = GObject.registerClass(
         Fields.REMEMBERINPUT,
         this,
         "remember",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.UNKNOWNSTATE,
         this,
         "unknown",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       this._states = new Map(
-        Object.entries(gsettings.get_value(Fields.INPUTLIST).deep_unpack())
+        Object.entries(gsettings.get_value(Fields.INPUTLIST).deep_unpack()),
       );
     }
 
     destroy() {
       gsettings.set_value(
         Fields.INPUTLIST,
-        new GLib.Variant("a{sb}", Object.fromEntries(this._states))
+        new GLib.Variant("a{sb}", Object.fromEntries(this._states)),
       );
       if (this._onWindowChangedID)
         global.display.disconnect(this._onWindowChangedID),
@@ -660,7 +665,7 @@ const IBusAutoSwitch = GObject.registerClass(
         Main.overview.disconnect(this._overviewHiddenID),
           (this._overviewHiddenID = 0);
     }
-  }
+  },
 );
 
 // Candidate box opacity
@@ -674,19 +679,15 @@ const IBusOpacity = GObject.registerClass(
         0,
         255,
         255,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
   class IBusOpacity extends GObject.Object {
     _init() {
       super._init();
-      // Support for GNOME version less than 3.36
-      this._CandidateAreaActor = CandidateArea;
-      if (!(CandidateArea instanceof St.BoxLayout))
-        this._CandidateAreaActor = CandidateArea.actor;
 
-      this._area_opacity = this._CandidateAreaActor.get_opacity();
+      this._area_opacity = CandidateArea.get_opacity();
       this._child_opacity = [];
       let candidate_child = CandidatePopup.bin.get_children();
       for (let i in candidate_child) {
@@ -696,7 +697,7 @@ const IBusOpacity = GObject.registerClass(
         Fields.CANDOPACITY,
         this,
         "opacity",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
     }
 
@@ -710,7 +711,7 @@ const IBusOpacity = GObject.registerClass(
         this._themeContext.disconnect(this._themeContextChangedID),
           (this._themeContextChangedID = 0);
 
-      this._CandidateAreaActor.set_opacity(this._opacity);
+      CandidateArea.set_opacity(this._opacity);
       let candidate_child = CandidatePopup.bin.get_children();
       for (let i in candidate_child)
         candidate_child[i].set_opacity(this._opacity);
@@ -725,20 +726,19 @@ const IBusOpacity = GObject.registerClass(
           backgroundColor.red,
           backgroundColor.green,
           backgroundColor.blue,
-          this._opacity / 255
+          this._opacity / 255,
         );
       }
       CandidatePopup.set_style(fontStyle + opacityStyle);
       this._themeContext = St.ThemeContext.get_for_stage(global.stage);
       this._themeContextChangedID = this._themeContext.connect(
         "changed",
-        this._update_opacity.bind(this)
+        this._update_opacity.bind(this),
       );
     }
 
     destroy() {
-      if (this._area_opacity)
-        this._CandidateAreaActor.set_opacity(this._area_opacity);
+      if (this._area_opacity) CandidateArea.set_opacity(this._area_opacity);
       if (this._child_opacity) {
         let candidate_child = CandidatePopup.bin.get_children();
         for (let i in candidate_child)
@@ -751,7 +751,7 @@ const IBusOpacity = GObject.registerClass(
       opacityStyle = "";
       CandidatePopup.set_style(fontStyle + opacityStyle);
     }
-  }
+  },
 );
 
 // Fix IME List order
@@ -784,7 +784,7 @@ const IBusFixIMEList = GObject.registerClass(
         InputSourcePopup.prototype._initialSelection;
       InputSourcePopup.prototype._initialSelection = function (
         backward,
-        _binding
+        _binding,
       ) {
         if (backward) {
           this._select(this._previous());
@@ -802,7 +802,7 @@ const IBusFixIMEList = GObject.registerClass(
       InputSourceManager._switchInputSource = function (
         display,
         window,
-        binding
+        binding,
       ) {
         if (this._mruSources.length < 2) {
           return;
@@ -823,7 +823,7 @@ const IBusFixIMEList = GObject.registerClass(
         let popup = new InputSourcePopup(
           this._mruSources,
           this._keybindingAction,
-          this._keybindingActionBackward
+          this._keybindingActionBackward,
         );
         // By default InputSourcePopup starts at 0, this is ok for MRU.
         // But we need to set popup current index to current source.
@@ -836,7 +836,7 @@ const IBusFixIMEList = GObject.registerClass(
           !popup.show(
             binding.is_reversed(),
             binding.get_name(),
-            binding.get_mask()
+            binding.get_mask(),
           )
         ) {
           popup.fadeAndDestroy();
@@ -852,7 +852,7 @@ const IBusFixIMEList = GObject.registerClass(
       InputSourceManager.reload = function () {
         this._reloading = true;
         this._keyboardManager.setKeyboardOptions(
-          this._settings.keyboardOptions
+          this._settings.keyboardOptions,
         );
         this._inputSourcesChanged();
         // _inputSourcesChanged() will active the first one so we must
@@ -881,7 +881,7 @@ const IBusFixIMEList = GObject.registerClass(
         this._keyboardManager.setUserLayouts(
           sourcesList.map((x) => {
             return x.xkbId;
-          })
+          }),
         );
 
         if (!this._disableIBus && this._mruSourcesBackup) {
@@ -917,7 +917,7 @@ const IBusFixIMEList = GObject.registerClass(
         new Gio.Settings({ schema_id: "org.gnome.desktop.wm.keybindings" }),
         Meta.KeyBindingFlags.NONE,
         Shell.ActionMode.ALL,
-        InputSourceManager._switchInputSource.bind(InputSourceManager)
+        InputSourceManager._switchInputSource.bind(InputSourceManager),
       );
       Main.wm.removeKeybinding("switch-input-source-backward");
       InputSourceManager._keybindingActionBackward = Main.wm.addKeybinding(
@@ -925,7 +925,7 @@ const IBusFixIMEList = GObject.registerClass(
         new Gio.Settings({ schema_id: "org.gnome.desktop.wm.keybindings" }),
         Meta.KeyBindingFlags.IS_REVERSED,
         Shell.ActionMode.ALL,
-        InputSourceManager._switchInputSource.bind(InputSourceManager)
+        InputSourceManager._switchInputSource.bind(InputSourceManager),
       );
 
       // The input source list may already be messed.
@@ -982,7 +982,7 @@ const IBusFixIMEList = GObject.registerClass(
         new Gio.Settings({ schema_id: "org.gnome.desktop.wm.keybindings" }),
         Meta.KeyBindingFlags.NONE,
         Shell.ActionMode.ALL,
-        InputSourceManager._switchInputSource.bind(InputSourceManager)
+        InputSourceManager._switchInputSource.bind(InputSourceManager),
       );
       Main.wm.removeKeybinding("switch-input-source-backward");
       InputSourceManager._keybindingActionBackward = Main.wm.addKeybinding(
@@ -990,7 +990,7 @@ const IBusFixIMEList = GObject.registerClass(
         new Gio.Settings({ schema_id: "org.gnome.desktop.wm.keybindings" }),
         Meta.KeyBindingFlags.IS_REVERSED,
         Shell.ActionMode.ALL,
-        InputSourceManager._switchInputSource.bind(InputSourceManager)
+        InputSourceManager._switchInputSource.bind(InputSourceManager),
       );
 
       // Load the MRU list from settings.
@@ -1008,7 +1008,7 @@ const IBusFixIMEList = GObject.registerClass(
         InputSourceManager._currentSource.activate(true);
       }
     }
-  }
+  },
 );
 
 // Enable drag to reposition candidate box
@@ -1032,27 +1032,23 @@ const IBusReposition = GObject.registerClass(
             this._location_handler = GLib.timeout_add(
               GLib.PRIORITY_DEFAULT,
               10,
-              this._updatePos.bind(this)
+              this._updatePos.bind(this),
             );
           }
-        }
+        },
       );
 
-      this._CandidateAreaActor = CandidateArea;
-      if (!(CandidateArea instanceof St.BoxLayout))
-        this._CandidateAreaActor = CandidateArea.actor;
-
-      this._mouseCandidateEnterID = this._CandidateAreaActor.connect(
+      this._mouseCandidateEnterID = CandidateArea.connect(
         "enter-event",
         (actor, event) => {
           this._mouseInCandidate = true;
-        }
+        },
       );
-      this._mouseCandidateLeaveID = this._CandidateAreaActor.connect(
+      this._mouseCandidateLeaveID = CandidateArea.connect(
         "leave-event",
         (actor, event) => {
           this._mouseInCandidate = false;
-        }
+        },
       );
       this._sideChangeID = CandidatePopup.connect("arrow-side-changed", () => {
         let themeNode = CandidatePopup.get_theme_node();
@@ -1093,7 +1089,7 @@ const IBusReposition = GObject.registerClass(
     _move(x, y) {
       CandidateDummyCursor.set_position(
         Math.round(x - CandidatePopup._relativePosX),
-        Math.round(y - CandidatePopup._relativePosY)
+        Math.round(y - CandidatePopup._relativePosY),
       );
       CandidatePopup.setPosition(CandidateDummyCursor, 0);
     }
@@ -1106,14 +1102,14 @@ const IBusReposition = GObject.registerClass(
       this._location_handler = null;
       global.display.set_cursor(Meta.Cursor.DEFAULT);
       let state = new Map(
-        Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack())
+        Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack()),
       );
       let [boxX, boxY] = CandidateDummyCursor.get_position();
       state.set("x", boxX);
       state.set("y", boxY);
       gsettings.set_value(
         Fields.CANDBOXPOS,
-        new GLib.Variant("a{su}", Object.fromEntries(state))
+        new GLib.Variant("a{su}", Object.fromEntries(state)),
       );
       return GLib.SOURCE_REMOVE;
     }
@@ -1130,15 +1126,15 @@ const IBusReposition = GObject.registerClass(
           (this._location_handler = 0);
       }
       if (this._mouseCandidateEnterID)
-        this._CandidateAreaActor.disconnect(this._mouseCandidateEnterID),
+        CandidateArea.disconnect(this._mouseCandidateEnterID),
           (this._mouseCandidateEnterID = 0);
       if (this._mouseCandidateLeaveID)
-        this._CandidateAreaActor.disconnect(this._mouseCandidateLeaveID),
+        CandidateArea.disconnect(this._mouseCandidateLeaveID),
           (this._mouseCandidateLeaveID = 0);
       CandidatePopup._relativePosX = null;
       CandidatePopup._relativePosY = null;
     }
-  }
+  },
 );
 
 /* Tray */
@@ -1153,7 +1149,7 @@ const IBusTrayClickSwitch = GObject.registerClass(
         0,
         1,
         0,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
@@ -1164,7 +1160,7 @@ const IBusTrayClickSwitch = GObject.registerClass(
         Fields.TRAYSSWITCHKEY,
         this,
         "traysswitchkey",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
     }
 
@@ -1188,7 +1184,7 @@ const IBusTrayClickSwitch = GObject.registerClass(
             InputSourceIndicator.menu.open();
             InputSourceIndicator.menu.close();
           }
-        }
+        },
       );
     }
 
@@ -1197,7 +1193,7 @@ const IBusTrayClickSwitch = GObject.registerClass(
         InputSourceIndicator.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
     }
-  }
+  },
 );
 
 /* Indicator */
@@ -1209,35 +1205,35 @@ const IBusInputSourceIndicator = GObject.registerClass(
         "inputindtog",
         "inputindtog",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       inputindASCII: GObject.param_spec_boolean(
         "inputindASCII",
         "inputindASCII",
         "inputindASCII",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       inputindsingle: GObject.param_spec_boolean(
         "inputindsingle",
         "inputindsingle",
         "inputindsingle",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       inputindrigc: GObject.param_spec_boolean(
         "inputindrigc",
         "inputindrigc",
         "inputindrigc",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       inputindscroll: GObject.param_spec_boolean(
         "inputindscroll",
         "inputindscroll",
         "inputindscroll",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       inputindanim: GObject.param_spec_uint(
         "inputindanim",
@@ -1246,28 +1242,28 @@ const IBusInputSourceIndicator = GObject.registerClass(
         0,
         3,
         1,
-        GObject.ParamFlags.READWRITE
+        GObject.ParamFlags.READWRITE,
       ),
       inputindusef: GObject.param_spec_boolean(
         "inputindusef",
         "inputindusef",
         "inputindusef",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       fontname: GObject.param_spec_string(
         "fontname",
         "fontname",
         "font name",
         "Sans 16",
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       useinputindlclk: GObject.param_spec_boolean(
         "useinputindlclk",
         "useinputindlclk",
         "useinputindlclk",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       inputindlclick: GObject.param_spec_uint(
         "inputindlclick",
@@ -1276,14 +1272,14 @@ const IBusInputSourceIndicator = GObject.registerClass(
         0,
         1,
         0,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       useindopacity: GObject.param_spec_boolean(
         "useindopacity",
         "useindopacity",
         "useindopacity",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       indopacity: GObject.param_spec_uint(
         "indopacity",
@@ -1292,14 +1288,14 @@ const IBusInputSourceIndicator = GObject.registerClass(
         0,
         255,
         255,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       useindshowd: GObject.param_spec_boolean(
         "useindshowd",
         "useindshowd",
         "useindshowd",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       inputindshow: GObject.param_spec_uint(
         "inputindshow",
@@ -1308,14 +1304,14 @@ const IBusInputSourceIndicator = GObject.registerClass(
         1,
         5,
         1,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       useindautohid: GObject.param_spec_boolean(
         "useindautohid",
         "useindautohid",
         "useindautohid",
         true,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       inputindhid: GObject.param_spec_uint(
         "inputindhid",
@@ -1324,7 +1320,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
         1,
         5,
         1,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
@@ -1362,15 +1358,15 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this._panelService = null;
       this._overviewHiddenID = Main.overview.connect(
         "hidden",
-        this._onWindowChanged.bind(this)
+        this._onWindowChanged.bind(this),
       );
       this._overviewShowingID = Main.overview.connect(
         "showing",
-        this._onWindowChanged.bind(this)
+        this._onWindowChanged.bind(this),
       );
       this._onWindowChangedID = global.display.connect(
         "notify::focus-window",
-        this._onWindowChanged.bind(this)
+        this._onWindowChanged.bind(this),
       );
     }
 
@@ -1382,7 +1378,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
         "set-cursor-location",
         (ps, x, y, w, h) => {
           this._setDummyCursorGeometry(x, y, w, h);
-        }
+        },
       );
       try {
         this._setCursorLocationRelativeID = panelService.connect(
@@ -1391,7 +1387,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             if (!global.display.focus_window) return;
             let window = global.display.focus_window.get_compositor_private();
             this._setDummyCursorGeometry(window.x + x, window.y + y, w, h);
-          }
+          },
         );
       } catch (e) {
         // Only recent IBus versions have support for this signal
@@ -1409,7 +1405,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._inputIndicatorLabel.text = this._getInputLabel();
             this._updateVisibility(true);
           }
-        }
+        },
       );
       this._currentSourceChangedID = InputSourceManager.connect(
         "current-source-changed",
@@ -1417,13 +1413,13 @@ const IBusInputSourceIndicator = GObject.registerClass(
           this._inputIndicatorLabel.text = this._getInputLabel();
           this._justSwitchedWindow = true;
           this._updateVisibility(true);
-        }
+        },
       );
       this._registerPropertyID = panelService.connect(
         "register-properties",
         (engineName, prop) => {
           this._inputIndicatorLabel.text = this._getInputLabel();
-        }
+        },
       );
     }
 
@@ -1445,7 +1441,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this.close(BoxPointer.PopupAnimation[this.animation]);
             this._lastTimeOut = null;
             return GLib.SOURCE_REMOVE;
-          }
+          },
         );
     }
 
@@ -1486,7 +1482,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
               this._lastTimeIn = null;
               this._showIndicator();
               return GLib.SOURCE_REMOVE;
-            }
+            },
           );
         } else {
           if (this.enableShowDelay && !sourceToggle)
@@ -1501,7 +1497,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
     _onWindowChanged() {
       if (IBusManager._panelService !== this._panelService) {
         this._connectPanelService(IBusManager._panelService);
-        global.log(_("IBus panel service connected!"));
+        console.log(_("IBus panel service connected!"));
         this._inputIndicatorLabel.text = this._getInputLabel();
       }
       if (InputSourceManager._getCurrentWindow() && IBusManager._panelService) {
@@ -1544,7 +1540,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             if (event.get_state() & Clutter.ModifierType[rightButton]) {
               this.close(BoxPointer.PopupAnimation[this.animation]);
             }
-          }
+          },
         );
       } else {
         if (this._buttonRightPressID)
@@ -1558,9 +1554,9 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this.use_scroll = inputindscroll;
     }
 
-    vfunc_scroll_event(scrollEvent) {
+    vfunc_scroll_event(event) {
       if (this.use_scroll)
-        switch (scrollEvent.direction) {
+        switch (event.get_scroll_direction()) {
           case Clutter.ScrollDirection.UP:
           case Clutter.ScrollDirection.DOWN:
             IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
@@ -1601,7 +1597,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             get_weight(),
             desc.get_family(),
             (desc.get_size() / Pango.SCALE) * scale,
-            Object.keys(Pango.Style)[desc.get_style()].toLowerCase()
+            Object.keys(Pango.Style)[desc.get_style()].toLowerCase(),
           );
         this.set_style(this.opacity_style + this.font_style);
       } else {
@@ -1639,7 +1635,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
           if (event.get_state() & Clutter.ModifierType.BUTTON1_MASK) {
             IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
           }
-        }
+        },
       );
     }
 
@@ -1657,10 +1653,10 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._location_handler = GLib.timeout_add(
               GLib.PRIORITY_DEFAULT,
               10,
-              this._updatePos.bind(this)
+              this._updatePos.bind(this),
             );
           }
-        }
+        },
       );
       this._sideChangeID = this.connect("arrow-side-changed", () => {
         let themeNode = this.get_theme_node();
@@ -1699,7 +1695,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
     _move(x, y) {
       this._dummyCursor.set_position(
         Math.round(x - this._relativePosX),
-        Math.round(y - this._relativePosY)
+        Math.round(y - this._relativePosY),
       );
       this.setPosition(this._dummyCursor, 0);
     }
@@ -1760,14 +1756,14 @@ const IBusInputSourceIndicator = GObject.registerClass(
               backgroundColor.red,
               backgroundColor.green,
               backgroundColor.blue,
-              this._opacity / 255
+              this._opacity / 255,
             );
         }
         this.set_style(this.opacity_style + this.font_style);
         this._themeContext = St.ThemeContext.get_for_stage(global.stage);
         this._themeContextChangedID = this._themeContext.connect(
           "changed",
-          this._update_opacity.bind(this)
+          this._update_opacity.bind(this),
         );
       } else {
         if (this._child_opacity) {
@@ -1804,97 +1800,97 @@ const IBusInputSourceIndicator = GObject.registerClass(
         Fields.INPUTINDTOG,
         this,
         "inputindtog",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDASCII,
         this,
         "inputindASCII",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDSINGLE,
         this,
         "inputindsingle",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDRIGC,
         this,
         "inputindrigc",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDSCROLL,
         this,
         "inputindscroll",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDANIM,
         this,
         "inputindanim",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDUSEF,
         this,
         "inputindusef",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDCUSTOMFONT,
         this,
         "fontname",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USEINPUTINDLCLK,
         this,
         "useinputindlclk",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDLCLICK,
         this,
         "inputindlclick",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USEINDOPACITY,
         this,
         "useindopacity",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INDOPACITY,
         this,
         "indopacity",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USEINDSHOWD,
         this,
         "useindshowd",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDSHOW,
         this,
         "inputindshow",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USEINDAUTOHID,
         this,
         "useindautohid",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.INPUTINDHID,
         this,
         "inputindhid",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
     }
 
@@ -1943,7 +1939,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
           (this._overviewHiddenID = 0);
       this._destroy_indicator();
     }
-  }
+  },
 );
 
 /* Theme */
@@ -1955,21 +1951,21 @@ const IBusThemeManager = GObject.registerClass(
         "theme",
         "theme",
         "",
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       themeDark: GObject.param_spec_string(
         "themedark",
         "themedark",
         "themeDark",
         "",
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       night: GObject.ParamSpec.boolean(
         "night",
         "night",
         "night",
         GObject.ParamFlags.READWRITE,
-        false
+        false,
       ),
     },
   },
@@ -1983,13 +1979,13 @@ const IBusThemeManager = GObject.registerClass(
         Fields.CUSTOMTHEME,
         this,
         "theme",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.CUSTOMTHEMENIGHT,
         this,
         "themedark",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       this._buildWidgets();
     }
@@ -2004,10 +2000,10 @@ const IBusThemeManager = GObject.registerClass(
             this._onProxyChanged();
             this._proxy.connect(
               System.PROPERTY,
-              this._onProxyChanged.bind(this)
+              this._onProxyChanged.bind(this),
             );
           }
-        }
+        },
       );
     }
 
@@ -2035,7 +2031,7 @@ const IBusThemeManager = GObject.registerClass(
       this._changeTheme(false);
       if (this._themeContextChangedID)
         St.ThemeContext.get_for_stage(global.stage).disconnect(
-          this._themeContextChangedID
+          this._themeContextChangedID,
         ),
           (this._themeContextChangedID = 0);
       delete this._proxy;
@@ -2045,27 +2041,6 @@ const IBusThemeManager = GObject.registerClass(
       let themeContext = St.ThemeContext.get_for_stage(global.stage);
       let theme = themeContext.get_theme();
 
-      // For compatibility for GNOME less than 3.36
-      if (!theme || !theme.unload_stylesheet) {
-        let customStylesheets = [];
-
-        if (theme) {
-          customStylesheets = theme.get_custom_stylesheets();
-        }
-
-        theme = new St.Theme({
-          application_stylesheet: Main.getThemeStylesheet(),
-          default_stylesheet: Main._getDefaultStylesheet(),
-        });
-
-        for (let i = 0; i < customStylesheets.length; i++)
-          if (
-            customStylesheets[i] &&
-            customStylesheets[i].get_path() != this._prevCssStylesheet
-          )
-            theme.load_stylesheet(customStylesheets[i]);
-      }
-
       if (this._prevCssStylesheet)
         theme.unload_stylesheet(Gio.File.new_for_path(this._prevCssStylesheet));
 
@@ -2073,11 +2048,11 @@ const IBusThemeManager = GObject.registerClass(
         let file = Gio.File.new_for_path(newStylesheet);
         this._styleSheetMonitor = file.monitor_file(
           Gio.FileMonitorFlags.NONE,
-          null
+          null,
         );
         this._styleSheetMonitorID = this._styleSheetMonitor.connect(
           "changed",
-          this._changeTheme.bind(this)
+          this._changeTheme.bind(this),
         );
         if (file.query_exists(null)) theme.load_stylesheet(file);
       }
@@ -2103,7 +2078,7 @@ const IBusThemeManager = GObject.registerClass(
         toEnable &&
         (!this._atNight || !enabledNight)
       ) {
-        global.log(_("loading light user theme for IBus:") + this._stylesheet);
+        console.log(_("loading light user theme for IBus:") + this._stylesheet);
         this.loadTheme(this._stylesheet);
         this._prevCssStylesheet = this._stylesheet;
       } else if (
@@ -2112,18 +2087,18 @@ const IBusThemeManager = GObject.registerClass(
         toEnable &&
         (this._atNight || !enabled)
       ) {
-        global.log(
-          _("loading dark user theme for IBus:") + this._stylesheetNight
+        console.log(
+          _("loading dark user theme for IBus:") + this._stylesheetNight,
         );
         this.loadTheme(this._stylesheetNight);
         this._prevCssStylesheet = this._stylesheetNight;
       } else {
-        global.log(_("loading default theme for IBus"));
+        console.log(_("loading default theme for IBus"));
         this.loadTheme();
         this._prevCssStylesheet = "";
       }
     }
-  }
+  },
 );
 
 /* Background */
@@ -2135,21 +2110,21 @@ const IBusBGSetting = GObject.registerClass(
         "bg",
         "background",
         "",
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       backgroundDark: GObject.param_spec_string(
         "bgdark",
         "bgdark",
         "backgroundDark",
         "",
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       night: GObject.ParamSpec.boolean(
         "night",
         "night",
         "night",
         GObject.ParamFlags.READWRITE,
-        false
+        false,
       ),
       backgroundMode: GObject.param_spec_uint(
         "bgmode",
@@ -2158,7 +2133,7 @@ const IBusBGSetting = GObject.registerClass(
         0,
         2,
         2,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       backgroundDarkMode: GObject.param_spec_uint(
         "bgdarkmode",
@@ -2167,7 +2142,7 @@ const IBusBGSetting = GObject.registerClass(
         0,
         2,
         2,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       backgroundRepeatMode: GObject.param_spec_uint(
         "bgrepeatmode",
@@ -2176,7 +2151,7 @@ const IBusBGSetting = GObject.registerClass(
         0,
         3,
         3,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       backgroundDarkRepeatMode: GObject.param_spec_uint(
         "bgdarkrepeatmode",
@@ -2185,7 +2160,7 @@ const IBusBGSetting = GObject.registerClass(
         0,
         3,
         3,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
@@ -2198,26 +2173,26 @@ const IBusBGSetting = GObject.registerClass(
         Fields.CUSTOMBGDARK,
         this,
         "bgdark",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(Fields.BGMODE, this, "bgmode", Gio.SettingsBindFlags.GET);
       gsettings.bind(
         Fields.BGDARKMODE,
         this,
         "bgdarkmode",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.BGREPEATMODE,
         this,
         "bgrepeatmode",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.BGDARKREPEATMODE,
         this,
         "bgdarkrepeatmode",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       this._candidateBox = CandidatePopup.bin.get_children();
       if (this._candidateBox) this._candidateBox = this._candidateBox[0];
@@ -2234,10 +2209,10 @@ const IBusBGSetting = GObject.registerClass(
             this._onProxyChanged();
             this._proxy.connect(
               System.PROPERTY,
-              this._onProxyChanged.bind(this)
+              this._onProxyChanged.bind(this),
             );
           }
-        }
+        },
       );
     }
 
@@ -2314,17 +2289,17 @@ const IBusBGSetting = GObject.registerClass(
       }
       if (this._candidateBox) {
         if (this._bgPic) {
-          global.log(_("loading background for IBus:") + this._bgPic);
+          console.log(_("loading background for IBus:") + this._bgPic);
           this._candidateBox.set_style(
             'background: url("%s"); background-repeat: %s; background-size: %s; box-shadow: none;'.format(
               this._bgPic,
               this._bgRepeatMode,
-              this._bgMode
-            )
+              this._bgMode,
+            ),
           );
           this._candidateBox.add_style_class_name("candidate-popup-content");
         } else {
-          global.log(_("remove custom background for IBus"));
+          console.log(_("remove custom background for IBus"));
           this._candidateBox.set_style("");
         }
       }
@@ -2335,7 +2310,7 @@ const IBusBGSetting = GObject.registerClass(
       if (this._candidateBox) delete this._candidateBox;
       delete this._proxy;
     }
-  }
+  },
 );
 
 const Extensions = GObject.registerClass(
@@ -2346,175 +2321,175 @@ const Extensions = GObject.registerClass(
         "font",
         "font",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       opacity: GObject.param_spec_boolean(
         "opacity",
         "opacity",
         "opacity",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       bg: GObject.param_spec_boolean(
         "bg",
         "bg",
         "bg",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       bgdark: GObject.param_spec_boolean(
         "bgdark",
         "bgdark",
         "bgdark",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       input: GObject.param_spec_boolean(
         "input",
         "input",
         "input",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       orien: GObject.param_spec_boolean(
         "orien",
         "orien",
         "orien",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       theme: GObject.param_spec_boolean(
         "theme",
         "theme",
         "theme",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       themenight: GObject.param_spec_boolean(
         "themenight",
         "themenight",
         "themenight",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       menuibusemoji: GObject.param_spec_boolean(
         "menuibusemoji",
         "menuibusemoji",
         "menuibusemoji",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       menuextpref: GObject.param_spec_boolean(
         "menuextpref",
         "menuextpref",
         "menuextpref",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       menuibuspref: GObject.param_spec_boolean(
         "menuibuspref",
         "menuibuspref",
         "menuibuspref",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       menuibusver: GObject.param_spec_boolean(
         "menuibusver",
         "menuibusver",
         "menuibusver",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       menuibusrest: GObject.param_spec_boolean(
         "menuibusrest",
         "menuibusrest",
         "menuibusrest",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       menuibusexit: GObject.param_spec_boolean(
         "menuibusexit",
         "menuibusexit",
         "menuibusexit",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       ibusresttime: GObject.param_spec_string(
         "ibusresttime",
         "ibusresttime",
         "ibusresttime",
         "",
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       useinputind: GObject.param_spec_boolean(
         "useinputind",
         "useinputind",
         "useinputind",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       animation: GObject.param_spec_boolean(
         "animation",
         "animation",
         "animation",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       reposition: GObject.param_spec_boolean(
         "reposition",
         "reposition",
         "reposition",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       fiximelist: GObject.param_spec_boolean(
         "fiximelist",
         "fiximelist",
         "fiximelist",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       usetray: GObject.param_spec_boolean(
         "usetray",
         "usetray",
         "usetray",
         true,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       usetraysswitch: GObject.param_spec_boolean(
         "usetraysswitch",
         "usetraysswitch",
         "usetraysswitch",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       usecandrightswitch: GObject.param_spec_boolean(
         "usecandrightswitch",
         "usecandrightswitch",
         "usecandrightswitch",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       usecandstill: GObject.param_spec_boolean(
         "usecandstill",
         "usecandstill",
         "usecandstill",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       usebuttons: GObject.param_spec_boolean(
         "usebuttons",
         "usebuttons",
         "usebuttons",
         true,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
       usescroll: GObject.param_spec_boolean(
         "usescroll",
         "usescroll",
         "usescroll",
         false,
-        GObject.ParamFlags.WRITABLE
+        GObject.ParamFlags.WRITABLE,
       ),
     },
   },
@@ -2529,160 +2504,160 @@ const Extensions = GObject.registerClass(
         Fields.AUTOSWITCH,
         this,
         "input",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USECUSTOMFONT,
         this,
         "font",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USECANDOPACITY,
         this,
         "opacity",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(Fields.USECUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
       gsettings.bind(
         Fields.USECUSTOMBGDARK,
         this,
         "bgdark",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.ENABLEORIEN,
         this,
         "orien",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.ENABLECUSTOMTHEME,
         this,
         "theme",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.ENABLECUSTOMTHEMENIGHT,
         this,
         "themenight",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.MENUIBUSEMOJI,
         this,
         "menuibusemoji",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.MENUEXTPREF,
         this,
         "menuextpref",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.MENUIBUSPREF,
         this,
         "menuibuspref",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.MENUIBUSVER,
         this,
         "menuibusver",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.MENUIBUSREST,
         this,
         "menuibusrest",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.MENUIBUSEXIT,
         this,
         "menuibusexit",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.IBUSRESTTIME,
         this,
         "ibusresttime",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USEINPUTIND,
         this,
         "useinputind",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USECANDANIM,
         this,
         "animation",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USEREPOSITION,
         this,
         "reposition",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.FIXIMELIST,
         this,
         "fiximelist",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USETRAY,
         this,
         "usetray",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USETRAYSSWITCH,
         this,
         "usetraysswitch",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USECANDRIGHTSWITCH,
         this,
         "usecandrightswitch",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USECANDSTILL,
         this,
         "usecandstill",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USEBUTTONS,
         this,
         "usebuttons",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
         Fields.USESCROLL,
         this,
         "usescroll",
-        Gio.SettingsBindFlags.GET
+        Gio.SettingsBindFlags.GET,
       );
       this._useFontChangeID = IBusSettings.connect(
         `changed::${Fields.USECUSTOMFONT}`,
         () => {
           let value = IBusSettings.get_boolean(Fields.USECUSTOMFONT);
           gsettings.set_boolean(Fields.USECUSTOMFONT, value);
-        }
+        },
       );
       this._useTrayChangeID = IBusSettings.connect(
         `changed::show-icon-on-systray`,
         () => {
           let value = IBusSettings.get_boolean("show-icon-on-systray");
           gsettings.set_boolean(Fields.USETRAY, value);
-        }
+        },
       );
     }
 
@@ -2901,12 +2876,12 @@ const Extensions = GObject.registerClass(
               Shell.util_stop_systemd_unit(
                 IBUS_SYSTEMD_SERVICE,
                 "fail",
-                null
+                null,
               ).then(() => {
                 Shell.util_start_systemd_unit(
                   IBUS_SYSTEMD_SERVICE,
                   "replace",
-                  null
+                  null,
                 );
               });
           });
@@ -2916,14 +2891,9 @@ const Extensions = GObject.registerClass(
         let notification = new MessageTray.Notification(
           source,
           title,
-          new Date(parseInt(ibusresttime)).toString()
+          new Date(parseInt(ibusresttime)).toString(),
         );
-        try {
-          source.showNotification(notification);
-        } catch (e) {
-          // Add support for GNOME less than 3.36
-          source.notify(notification);
-        }
+        source.showNotification(notification);
       }
       this._not_extension_first_start = true;
     }
@@ -2940,7 +2910,7 @@ const Extensions = GObject.registerClass(
         if (this._menuibusemoji) return;
         this._menuibusemoji = InputSourceIndicator.menu.addAction(
           _("Copy Emoji"),
-          this._MenuIBusEmoji.bind(InputSourceIndicator)
+          this._MenuIBusEmoji.bind(InputSourceIndicator),
         );
         this._menuibusemoji.visible = true;
       } else {
@@ -2961,7 +2931,7 @@ const Extensions = GObject.registerClass(
         if (this._menuextpref) return;
         this._menuextpref = InputSourceIndicator.menu.addAction(
           _("Customize IBus"),
-          this._MenuExtPref.bind(InputSourceIndicator)
+          this._MenuExtPref.bind(InputSourceIndicator),
         );
         this._menuextpref.visible = true;
       } else {
@@ -2973,10 +2943,8 @@ const Extensions = GObject.registerClass(
 
     _MenuExtPref() {
       Main.overview.hide();
-      if (ExtensionUtils.openPrefs)
-        ExtensionUtils.openPrefs(Me.metadata.uuid.toString());
-      else
-        Util.spawn(["gnome-extensions", "prefs", Me.metadata.uuid.toString()]);
+      if (ExtensionUtils.openPrefs) ExtensionUtils.openPrefs(UUID.toString());
+      else Util.spawn(["gnome-extensions", "prefs", UUID.toString()]);
     }
 
     // IBus Preferences
@@ -2985,7 +2953,7 @@ const Extensions = GObject.registerClass(
         if (this._menuibuspref) return;
         this._menuibuspref = InputSourceIndicator.menu.addAction(
           _("IBus Preferences"),
-          this._menuIBusPref.bind(InputSourceIndicator)
+          this._menuIBusPref.bind(InputSourceIndicator),
         );
         this._menuibuspref.visible = true;
       } else {
@@ -3006,7 +2974,7 @@ const Extensions = GObject.registerClass(
         if (this._menuibusver) return;
         this._menuibusver = InputSourceIndicator.menu.addAction(
           _("IBus Version"),
-          this._MenuIBusVer.bind(InputSourceIndicator)
+          this._MenuIBusVer.bind(InputSourceIndicator),
         );
         this._menuibusver.visible = true;
       } else {
@@ -3029,14 +2997,9 @@ const Extensions = GObject.registerClass(
           "." +
           IBus.MINOR_VERSION +
           "." +
-          IBus.MICRO_VERSION
+          IBus.MICRO_VERSION,
       );
-      try {
-        source.showNotification(notification);
-      } catch (e) {
-        // Add support for GNOME less than 3.36
-        source.notify(notification);
-      }
+      source.showNotification(notification);
     }
 
     // Restarting IBus
@@ -3045,7 +3008,7 @@ const Extensions = GObject.registerClass(
         if (this._menuibusrest) return;
         this._menuibusrest = InputSourceIndicator.menu.addAction(
           _("Restart"),
-          this._MenuIBusRest.bind(InputSourceIndicator)
+          this._MenuIBusRest.bind(InputSourceIndicator),
         );
         this._menuibusrest.visible = true;
       } else {
@@ -3064,12 +3027,12 @@ const Extensions = GObject.registerClass(
             Shell.util_stop_systemd_unit(
               IBUS_SYSTEMD_SERVICE,
               "fail",
-              null
+              null,
             ).then(() => {
               Shell.util_start_systemd_unit(
                 IBUS_SYSTEMD_SERVICE,
                 "replace",
-                null
+                null,
               );
             });
         });
@@ -3079,14 +3042,9 @@ const Extensions = GObject.registerClass(
       let notification = new MessageTray.Notification(
         source,
         title,
-        new Date().toString()
+        new Date().toString(),
       );
-      try {
-        source.showNotification(notification);
-      } catch (e) {
-        // Add support for GNOME less than 3.36
-        source.notify(notification);
-      }
+      source.showNotification(notification);
     }
 
     // Exiting IBus
@@ -3095,7 +3053,7 @@ const Extensions = GObject.registerClass(
         if (this._menuibusexit) return;
         this._menuibusexit = InputSourceIndicator.menu.addAction(
           _("Quit"),
-          this._MenuIBusExit.bind(InputSourceIndicator)
+          this._MenuIBusExit.bind(InputSourceIndicator),
         );
         this._menuibusexit.visible = true;
       } else {
@@ -3114,14 +3072,9 @@ const Extensions = GObject.registerClass(
       let notification = new MessageTray.Notification(
         source,
         title,
-        new Date().toString()
+        new Date().toString(),
       );
-      try {
-        source.showNotification(notification);
-      } catch (e) {
-        // Add support for GNOME less than 3.36
-        source.notify(notification);
-      }
+      source.showNotification(notification);
     }
 
     destroy() {
@@ -3157,12 +3110,26 @@ const Extensions = GObject.registerClass(
         IBusSettings.disconnect(this._useTrayChangeID),
           (this._useTrayChangeID = 0);
     }
-  }
+  },
 );
 
-const Extension = class Extension {
-  constructor() {
-    ExtensionUtils.initTranslations();
+export default class CustomizeIBusExtension extends Extension {
+  /**
+   * This class is constructed once when your extension is loaded, not
+   * enabled. This is a good time to setup translations or anything else you
+   * only do once.
+   *
+   * You MUST NOT make any changes to GNOME Shell, connect any signals or add
+   * any event sources here.
+   *
+   * @param {ExtensionMeta} metadata - An extension meta object
+   */
+  constructor(metadata) {
+    super(metadata);
+
+    this.initTranslations();
+    gsettings = this.getSettings();
+    UUID = this.uuid;
   }
 
   updateIgnoreModes() {
@@ -3172,16 +3139,15 @@ const Extension = class Extension {
     }
   }
 
-  enable() {
-    // Add support for GNOME less than 3.36
-    if (!Object.fromEntries)
-      Object.fromEntries = function (pairs) {
-        return Array.from(pairs).reduce(
-          (acc, [key, value]) => Object.assign(acc, { [key]: value }),
-          {}
-        );
-      };
+  /**
+   * This function is called when your extension is enabled, which could be
+   * done in GNOME Extensions, when you log in or when the screen is unlocked.
+   *
+   * This is when you should setup any UI for your extension, change existing
+   * widgets, connect signals or modify GNOME Shell's behavior.
+   */
 
+  enable() {
     IBusSettings = new Gio.Settings({
       schema_id: "org.freedesktop.ibus.panel",
     });
@@ -3191,11 +3157,18 @@ const Extension = class Extension {
     this.updateIgnoreModes();
     this._updateIgnoreModesID = InputSourceManager.connect(
       "sources-changed",
-      this.updateIgnoreModes.bind(this)
+      this.updateIgnoreModes.bind(this),
     );
     this._ext = new Extensions();
   }
 
+  /**
+   * This function is called when your extension is uninstalled, disabled in
+   * GNOME Extensions or when the screen locks.
+   *
+   * Anything you created, modified or setup in enable() MUST be undone here.
+   * Not doing so is the most common reason extensions are rejected in review!
+   */
   disable() {
     if (this._ext) {
       this._ext.destroy();
@@ -3209,8 +3182,4 @@ const Extension = class Extension {
     opacityStyle = "";
     fontStyle = "";
   }
-};
-
-function init() {
-  return new Extension();
 }

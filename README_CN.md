@@ -20,7 +20,7 @@
 
 ## 安装
 
-从 GNOME 扩展商店中获取：
+从 GNOME 扩展商店中获取 **_（因GNOME 45版本失去了对任何旧版GNOME Shell的支持，现该方法为推荐安装方法）_**：
 
 [<img src="https://raw.githubusercontent.com/andyholmes/gnome-shell-extensions-badge/master/get-it-on-ego.svg?sanitize=true" alt="Get it on GNOME Extensions" height="100" align="middle">][ego]
 
@@ -278,8 +278,9 @@ background-size: cover;
 - [x] V84: 修复锁屏界面主题受影响问题。
 - [x] V85: 修复屏幕解锁后主题加载问题。
 - [x] V86: 支持 GNOME 44。
+- [x] V87: 支持 GNOME 45 (现无任何之前GNOME版本支持)。
 
-在 Fedora，OpenSUSE，Manjaro，Ubuntu 和 FreeBSD，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)，3.34，3.36，3.38 和 40(v67，v68，v69，v70)，41(v72，v75，v76，v77，v78，v80)，42(v82)，43(v83，v84，v85)，44(v86)中通过了测试。
+在 Fedora，OpenSUSE，Manjaro，Ubuntu 和 FreeBSD，GNOME-shell [3.38](../../tree/3.38)(v3，v5，v9，v11，v14，v15，v17，v19，v21，v23，v25，v27，v29，v31，v35，v37，v39，v41，v43，v45，v47，v49，v51，v53(之后的合并进了主版本))，40.0(v4，v8，v10，v12，v13，v16，v18，v20，v22，v24，v26，v28，v30，v32，v36，v38，v40，v42，v44，v46，v48，v50，v52，v54)，3.38 和 40(v55，v56，v57，v58，v59，v60，v61，v62，v63，v64，v65，v66)，3.34，3.36，3.38 和 40(v67，v68，v69，v70)，41(v72，v75，v76，v77，v78，v80)，42(v82)，43(v83，v84，v85)，44(v86)，45(v87)中通过了测试。
 
 ## 致谢
 

@@ -4,7 +4,7 @@
 
 "use strict";
 
-var Fields = {
+export const Fields = {
   ASCIIMODE: "ascii-mode",
   CUSTOMFONT: "custom-font",
   USECANDOPACITY: "use-candidate-opacity",

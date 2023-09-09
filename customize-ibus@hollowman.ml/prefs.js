@@ -4,16 +4,23 @@
 
 "use strict";
 
-const { Gio, Gtk, GObject, GLib, IBus, GdkPixbuf } = imports.gi;
+import Gio from "gi://Gio";
+import Gtk from "gi://Gtk";
+import GObject from "gi://GObject";
+import GLib from "gi://GLib";
+import IBus from "gi://IBus";
+import GdkPixbuf from "gi://GdkPixbuf";
 
-const ExtensionUtils = imports.misc.extensionUtils;
-const Me = ExtensionUtils.getCurrentExtension();
-const gsettings = ExtensionUtils.getSettings();
-const Fields = Me.imports.fields.Fields;
-const Config = imports.misc.config;
-const _ = imports.gettext.domain(Me.metadata["gettext-domain"]).gettext;
+import {
+  ExtensionPreferences,
+  gettext as _,
+} from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
+import { Fields } from "./fields.js";
 
-const ShellVersion = parseFloat(Config.PACKAGE_VERSION);
+let gsettings = null;
+let dir = null;
+let thisMetadata = null;
+
 const SessionType =
   GLib.getenv("XDG_SESSION_TYPE") == "wayland" ? "Wayland" : "Xorg";
 const SCHEMA_PATH = "/org/gnome/shell/extensions/customize-ibus/";
@@ -24,14 +31,6 @@ const BoxSettings = {
   margin_top: 10,
   margin_bottom: 10,
 };
-
-function buildPrefsWidget() {
-  return new CustomizeIBus();
-}
-
-function init() {
-  ExtensionUtils.initTranslations();
-}
 
 function mergeObjects(main, bck) {
   for (var prop in bck) {
@@ -45,15 +44,15 @@ function mergeObjects(main, bck) {
 
 const CustomizeIBus = GObject.registerClass(
   class CustomizeIBus extends Gtk.ScrolledWindow {
+    constructor() {
+      super();
+    }
+
     _init() {
       let win_conf = {
         hscrollbar_policy: Gtk.PolicyType.NEVER,
       };
-      if (ShellVersion < 42) {
-        win_conf.height_request = 600;
-      } else {
-        win_conf.vscrollbar_policy = Gtk.PolicyType.NEVER;
-      }
+      win_conf.vscrollbar_policy = Gtk.PolicyType.NEVER;
       super._init(win_conf);
 
       this._bulidWidget();
@@ -61,7 +60,6 @@ const CustomizeIBus = GObject.registerClass(
       this._bindValues();
       this._syncStatus();
       this._buildHeaderBar();
-      if (ShellVersion < 40) this.show_all();
     }
 
     _bulidWidget() {
@@ -70,45 +68,45 @@ const CustomizeIBus = GObject.registerClass(
       });
 
       this._field_enable_custom_theme = this._checkMaker(
-        _("Custom IME light theme")
+        _("Custom IME light theme"),
       );
       this._field_enable_custom_theme_dark = this._checkMaker(
-        _("Custom IME dark theme")
+        _("Custom IME dark theme"),
       );
       this._field_use_custom_font = this._checkMaker(_("Use custom font"));
       this._field_use_custom_bg = this._checkMaker(
-        _("Use custom light background")
+        _("Use custom light background"),
       );
       this._field_use_custom_bg_dark = this._checkMaker(
-        _("Use custom dark background")
+        _("Use custom dark background"),
       );
       this._field_use_candidate_scroll = this._checkMaker(
-        _("Candidates scroll")
+        _("Candidates scroll"),
       );
       this._field_enable_ASCII = this._checkMaker(_("Auto switch ASCII mode"));
       this._field_enable_orien = this._checkMaker(_("Candidates orientation"));
       this._field_use_candidate_animation = this._checkMaker(
-        _("Candidates popup animation")
+        _("Candidates popup animation"),
       );
       this._field_use_candidate_still = this._checkMaker(
-        _("Fix candidate box")
+        _("Fix candidate box"),
       );
 
       this._field_use_tray_source_switch_key = this._checkMaker(
-        _("Directly switch source with click")
+        _("Directly switch source with click"),
       );
 
       this._field_use_candidate_right_click = this._checkMaker(
-        _("Candidate box right click")
+        _("Candidate box right click"),
       );
 
       this._field_indicator_use_custom_font = this._checkMaker(
-        _("Use custom font")
+        _("Use custom font"),
       );
 
       let adjustment = this._createAdjustment(Fields.CANDOPACITY, 1);
       this._field_use_candidate_opacity = this._checkMaker(
-        _("Candidate box opacity")
+        _("Candidate box opacity"),
       );
       this._field_candidate_opacity = new Gtk.Scale({
         adjustment,
@@ -255,11 +253,11 @@ const CustomizeIBus = GObject.registerClass(
       this._field_indicator_scroll = new Gtk.Switch();
 
       this._field_indicator_enable_left_click = this._checkMaker(
-        _("Enable indicator left click")
+        _("Enable indicator left click"),
       );
       adjustment = this._createAdjustment(Fields.INDOPACITY, 1);
       this._field_indicator_use_opacity = this._checkMaker(
-        _("Indicator opacity")
+        _("Indicator opacity"),
       );
       this._field_indicator_opacity = new Gtk.Scale({
         adjustment,
@@ -269,7 +267,7 @@ const CustomizeIBus = GObject.registerClass(
       });
       adjustment = this._createAdjustment(Fields.INPUTINDSHOW, 1);
       this._field_indicator_enable_show_delay = this._checkMaker(
-        _("Enable indicator show delay (unit: seconds)")
+        _("Enable indicator show delay (unit: seconds)"),
       );
       this._field_indicator_show_time = new Gtk.Scale({
         adjustment,
@@ -279,7 +277,7 @@ const CustomizeIBus = GObject.registerClass(
       });
       adjustment = this._createAdjustment(Fields.INPUTINDHID, 1);
       this._field_indicator_enable_autohide = this._checkMaker(
-        _("Enable indicator auto-hide timeout (unit: seconds)")
+        _("Enable indicator auto-hide timeout (unit: seconds)"),
       );
       this._field_indicator_hide_time = new Gtk.Scale({
         adjustment,
@@ -300,23 +298,13 @@ const CustomizeIBus = GObject.registerClass(
         halign: Gtk.Align.CENTER,
       });
 
-      if (ShellVersion < 40)
-        this._field_custom_font = new Gtk.FontButton({
-          font_name: gsettings.get_string(Fields.CUSTOMFONT),
-        });
-      else
-        this._field_custom_font = new Gtk.FontButton({
-          font: gsettings.get_string(Fields.CUSTOMFONT),
-        });
+      this._field_custom_font = new Gtk.FontButton({
+        font: gsettings.get_string(Fields.CUSTOMFONT),
+      });
 
-      if (ShellVersion < 40)
-        this._field_indicator_custom_font = new Gtk.FontButton({
-          font_name: gsettings.get_string(Fields.INPUTINDCUSTOMFONT),
-        });
-      else
-        this._field_indicator_custom_font = new Gtk.FontButton({
-          font: gsettings.get_string(Fields.INPUTINDCUSTOMFONT),
-        });
+      this._field_indicator_custom_font = new Gtk.FontButton({
+        font: gsettings.get_string(Fields.INPUTINDCUSTOMFONT),
+      });
 
       const filter = new Gtk.FileFilter();
       filter.add_pixbuf_formats();
@@ -329,7 +317,7 @@ const CustomizeIBus = GObject.registerClass(
       this._logoPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._reset_logo_button = this._iconButtonMaker("", "edit-clear");
+      this._reset_logo_button = this._iconButtonMaker("edit-clear");
       this._reset_logo_button.visible = false;
       this._open_logo_button = this._iconLinkButtonMaker("", "document-open");
       this._open_logo_button.visible = false;
@@ -342,11 +330,11 @@ const CustomizeIBus = GObject.registerClass(
       this._logoDarkPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._reset_logoDark_button = this._iconButtonMaker("", "edit-clear");
+      this._reset_logoDark_button = this._iconButtonMaker("edit-clear");
       this._reset_logoDark_button.visible = false;
       this._open_logoDark_button = this._iconLinkButtonMaker(
         "",
-        "document-open"
+        "document-open",
       );
       this._open_logoDark_button.visible = false;
 
@@ -361,7 +349,7 @@ const CustomizeIBus = GObject.registerClass(
       this._cssPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._reset_css_button = this._iconButtonMaker("", "edit-clear");
+      this._reset_css_button = this._iconButtonMaker("edit-clear");
       this._reset_css_button.visible = false;
       this._open_css_button = this._iconLinkButtonMaker("", "document-open");
       this._open_css_button.visible = false;
@@ -374,11 +362,11 @@ const CustomizeIBus = GObject.registerClass(
       this._cssDarkPicker = new Gtk.Button({
         label: _("(None)"),
       });
-      this._reset_cssDark_button = this._iconButtonMaker("", "edit-clear");
+      this._reset_cssDark_button = this._iconButtonMaker("edit-clear");
       this._reset_cssDark_button.visible = false;
       this._open_cssDark_button = this._iconLinkButtonMaker(
         "",
-        "document-open"
+        "document-open",
       );
       this._open_cssDark_button.visible = false;
     }
@@ -461,65 +449,51 @@ const CustomizeIBus = GObject.registerClass(
       this._notebook = new Gtk.Notebook({
         enable_popup: true,
       });
-      if (ShellVersion < 40) this.add(this._notebook);
-      else this.set_child(this._notebook);
+      this.set_child(this._notebook);
 
       this._ibus_basic = this._listFrameMaker(_("General"));
       this._ibus_basic._add(this._field_enable_orien, this._field_orientation);
       this._ibus_basic._add(
         this._field_use_candidate_animation,
-        this._field_candidate_animation
+        this._field_candidate_animation,
       );
       this._ibus_basic._add(
         this._field_use_candidate_right_click,
-        this._field_candidate_right_click
+        this._field_candidate_right_click,
       );
       this._ibus_basic._add(
         this._field_use_candidate_scroll,
-        this._field_candidate_scroll_mode
+        this._field_candidate_scroll_mode,
       );
       this._ibus_basic._add(
         this._field_use_candidate_still,
         this._field_candidate_remember_position,
-        this._field_candidate_still_position
+        this._field_candidate_still_position,
       );
       this._ibus_basic._add(
         this._field_use_custom_font,
-        this._field_custom_font
+        this._field_custom_font,
       );
       this._ibus_basic._add(
         this._field_enable_ASCII,
         this._field_remember_input,
-        this._field_unkown_state
+        this._field_unkown_state,
       );
-      if (ShellVersion < 40) {
-        let hbox = new Gtk.Box(BoxSettings);
-        hbox.pack_start(this._field_use_candidate_opacity, true, true, 4);
-        hbox.pack_start(this._field_candidate_opacity, true, true, 4);
-        this._ibus_basic.grid.attach(
-          hbox,
-          0,
-          this._ibus_basic.grid._row++,
-          1,
-          1
-        );
-      } else {
-        this._ibus_basic._add(
-          this._field_use_candidate_opacity,
-          this._field_candidate_opacity
-        );
-      }
+      this._ibus_basic._add(
+        this._field_use_candidate_opacity,
+        this._field_candidate_opacity,
+      );
       this._ibus_basic._add(
         this._switchLabelMaker(_("Fix IME list order")),
-        this._field_fix_ime_list
+        this._field_fix_ime_list,
       );
       this._ibus_basic._add(
         this._switchLabelMaker(_("Enable drag to reposition candidate box")),
-        this._field_candidate_reposition
+        this._field_candidate_reposition,
       );
       this._ibus_basic._add(
         this._switchLabelMaker(_("Candidate box page buttons")),
-        this._field_candidate_buttons
+        this._field_candidate_buttons,
       );
       this._basicHelpPage(this._ibus_basic);
 
@@ -528,11 +502,11 @@ const CustomizeIBus = GObject.registerClass(
       this._ibus_tray._add(this._restart_ibus);
       this._ibus_tray._add(
         this._switchLabelMaker(_("Show IBus tray icon")),
-        this._field_use_tray
+        this._field_use_tray,
       );
       this._ibus_tray._add(
         this._field_use_tray_source_switch_key,
-        this._field_tray_source_switch_key
+        this._field_tray_source_switch_key,
       );
       this._ibus_tray._add(
         new Gtk.Label({
@@ -540,119 +514,83 @@ const CustomizeIBus = GObject.registerClass(
           hexpand: true,
           halign: Gtk.Align.CENTER,
           label: "<b>" + _("Add Additional Menu Entries") + "</b>",
-        })
+        }),
       );
       this._ibus_tray._add(
         this._switchLabelMaker(_("Copying Emoji")),
-        this._field_ibus_emoji
+        this._field_ibus_emoji,
       );
       this._ibus_tray._add(
         this._switchLabelMaker(_("This Extension's Preferences")),
-        this._field_extension_entry
+        this._field_extension_entry,
       );
       this._ibus_tray._add(
         this._switchLabelMaker(_("IBus Preferences")),
-        this._field_ibus_preference
+        this._field_ibus_preference,
       );
       this._ibus_tray._add(
         this._switchLabelMaker(_("IBus Version")),
-        this._field_ibus_version
+        this._field_ibus_version,
       );
       this._ibus_tray._add(
         this._switchLabelMaker(_("Restarting IBus")),
-        this._field_ibus_restart
+        this._field_ibus_restart,
       );
       this._ibus_tray._add(
         this._switchLabelMaker(_("Exiting IBus")),
-        this._field_ibus_exit
+        this._field_ibus_exit,
       );
       this._trayHelpPage(this._ibus_tray);
 
       this._ibus_indicator = this._listFrameMaker(_("Indicator"));
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Use input source indicator")),
-        this._field_use_indicator
+        this._field_use_indicator,
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicate only when switching input source")),
-        this._field_indicator_only_toggle
+        this._field_indicator_only_toggle,
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicate only when using ASCII mode")),
-        this._field_indicator_only_in_ASCII
+        this._field_indicator_only_in_ASCII,
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Don't indicate when using single mode IME")),
-        this._field_indicator_not_single_IME
+        this._field_indicator_not_single_IME,
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Enable right click to close indicator")),
-        this._field_indicator_right_close
+        this._field_indicator_right_close,
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Enable scroll to switch input source")),
-        this._field_indicator_scroll
+        this._field_indicator_scroll,
       );
       this._ibus_indicator._add(
         this._switchLabelMaker(_("Indicator popup animation")),
-        this._field_indicator_animation
+        this._field_indicator_animation,
       );
       this._ibus_indicator._add(
         this._field_indicator_use_custom_font,
-        this._field_indicator_custom_font
+        this._field_indicator_custom_font,
       );
       this._ibus_indicator._add(
         this._field_indicator_enable_left_click,
-        this._field_indicator_left_click
+        this._field_indicator_left_click,
       );
-      if (ShellVersion < 40) {
-        let hbox = new Gtk.Box(BoxSettings);
-        hbox.pack_start(this._field_indicator_use_opacity, true, true, 4);
-        hbox.pack_start(this._field_indicator_opacity, true, true, 4);
-        this._ibus_indicator.grid.attach(
-          hbox,
-          0,
-          this._ibus_indicator.grid._row++,
-          1,
-          1
-        );
-      } else
-        this._ibus_indicator._add(
-          this._field_indicator_use_opacity,
-          this._field_indicator_opacity
-        );
-      if (ShellVersion < 40) {
-        let hbox = new Gtk.Box(BoxSettings);
-        hbox.pack_start(this._field_indicator_enable_show_delay, true, true, 4);
-        hbox.pack_start(this._field_indicator_show_time, true, true, 4);
-        this._ibus_indicator.grid.attach(
-          hbox,
-          0,
-          this._ibus_indicator.grid._row++,
-          1,
-          1
-        );
-      } else
-        this._ibus_indicator._add(
-          this._field_indicator_enable_show_delay,
-          this._field_indicator_show_time
-        );
-      if (ShellVersion < 40) {
-        let hbox = new Gtk.Box(BoxSettings);
-        hbox.pack_start(this._field_indicator_enable_autohide, true, true, 4);
-        hbox.pack_start(this._field_indicator_hide_time, true, true, 4);
-        this._ibus_indicator.grid.attach(
-          hbox,
-          0,
-          this._ibus_indicator.grid._row++,
-          1,
-          1
-        );
-      } else
-        this._ibus_indicator._add(
-          this._field_indicator_enable_autohide,
-          this._field_indicator_hide_time
-        );
+      this._ibus_indicator._add(
+        this._field_indicator_use_opacity,
+        this._field_indicator_opacity,
+      );
+      this._ibus_indicator._add(
+        this._field_indicator_enable_show_delay,
+        this._field_indicator_show_time,
+      );
+      this._ibus_indicator._add(
+        this._field_indicator_enable_autohide,
+        this._field_indicator_hide_time,
+      );
       this._indicatorHelpPage(this._ibus_indicator);
 
       this._ibus_theme = this._listFrameMaker(_("Theme"));
@@ -660,13 +598,13 @@ const CustomizeIBus = GObject.registerClass(
         this._field_enable_custom_theme,
         this._cssPicker,
         this._reset_css_button,
-        this._open_css_button
+        this._open_css_button,
       );
       this._ibus_theme._add(
         this._field_enable_custom_theme_dark,
         this._cssDarkPicker,
         this._reset_cssDark_button,
-        this._open_cssDark_button
+        this._open_cssDark_button,
       );
       this._themeHelpPage(this._ibus_theme);
 
@@ -677,7 +615,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_bg_repeat_mode,
         this._logoPicker,
         this._reset_logo_button,
-        this._open_logo_button
+        this._open_logo_button,
       );
       this._ibus_bg._add(
         this._field_use_custom_bg_dark,
@@ -685,7 +623,7 @@ const CustomizeIBus = GObject.registerClass(
         this._field_bg_dark_repeat_mode,
         this._logoDarkPicker,
         this._reset_logoDark_button,
-        this._open_logoDark_button
+        this._open_logoDark_button,
       );
       this._bgHelpPage(this._ibus_bg);
       this._ibus_settings = this._listFrameMaker(_("Settings"));
@@ -695,12 +633,12 @@ const CustomizeIBus = GObject.registerClass(
           hexpand: true,
           halign: Gtk.Align.CENTER,
           label: "<b>" + _("Settings for extension") + "</b>",
-        })
+        }),
       );
       this._ibus_settings._add(
         this._reset_extension,
         this._export_settings,
-        this._import_settings
+        this._import_settings,
       );
       this._ibus_settings._add(
         new Gtk.Label({
@@ -709,11 +647,11 @@ const CustomizeIBus = GObject.registerClass(
           halign: Gtk.Align.CENTER,
           label:
             "<b>" + _("Other official IBus customization settings") + "</b>",
-        })
+        }),
       );
       this._ibus_settings._add(
         this._field_open_system_settings,
-        this._field_open_ibus_pref
+        this._field_open_ibus_pref,
       );
       this._settingsHelpPage(this._ibus_settings);
       this._aboutPage();
@@ -731,7 +669,7 @@ const CustomizeIBus = GObject.registerClass(
         "notify::active",
         (widget) => {
           this._field_candidate_animation.set_sensitive(widget.active);
-        }
+        },
       );
       this._field_use_candidate_scroll.connect("notify::active", (widget) => {
         this._field_candidate_scroll_mode.set_sensitive(widget.active);
@@ -740,7 +678,7 @@ const CustomizeIBus = GObject.registerClass(
         "notify::active",
         (widget) => {
           this._field_candidate_right_click.set_sensitive(widget.active);
-        }
+        },
       );
       this._field_use_candidate_still.connect("notify::active", (widget) => {
         this._field_candidate_remember_position.set_sensitive(widget.active);
@@ -750,11 +688,11 @@ const CustomizeIBus = GObject.registerClass(
         "notify::active",
         (widget) => {
           this._field_tray_source_switch_key.set_sensitive(widget.active);
-        }
+        },
       );
       this._field_use_tray.connect("notify::active", (widget) => {
         this._field_tray_source_switch_key.set_sensitive(
-          this._field_use_tray_source_switch_key && widget.active
+          this._field_use_tray_source_switch_key && widget.active,
         );
         this._field_use_tray_source_switch_key.set_sensitive(widget.active);
         this._field_ibus_emoji.set_sensitive(widget.active);
@@ -773,19 +711,19 @@ const CustomizeIBus = GObject.registerClass(
         this._field_indicator_scroll.set_sensitive(widget.active);
         this._field_indicator_animation.set_sensitive(widget.active);
         this._field_indicator_left_click.set_sensitive(
-          this._field_indicator_enable_left_click.active && widget.active
+          this._field_indicator_enable_left_click.active && widget.active,
         );
         this._field_indicator_opacity.set_sensitive(
-          this._field_indicator_use_opacity.active && widget.active
+          this._field_indicator_use_opacity.active && widget.active,
         );
         this._field_indicator_show_time.set_sensitive(
-          this._field_indicator_enable_show_delay.active && widget.active
+          this._field_indicator_enable_show_delay.active && widget.active,
         );
         this._field_indicator_hide_time.set_sensitive(
-          this._field_indicator_enable_autohide.active && widget.active
+          this._field_indicator_enable_autohide.active && widget.active,
         );
         this._field_indicator_custom_font.set_sensitive(
-          this._field_indicator_use_custom_font.active && widget.active
+          this._field_indicator_use_custom_font.active && widget.active,
         );
         this._field_indicator_use_custom_font.set_sensitive(widget.active);
         this._field_indicator_enable_left_click.set_sensitive(widget.active);
@@ -797,7 +735,7 @@ const CustomizeIBus = GObject.registerClass(
         "notify::active",
         (widget) => {
           this._field_indicator_left_click.set_sensitive(widget.active);
-        }
+        },
       );
       this._field_indicator_use_opacity.connect("notify::active", (widget) => {
         this._field_indicator_opacity.set_sensitive(widget.active);
@@ -806,26 +744,26 @@ const CustomizeIBus = GObject.registerClass(
         "notify::active",
         (widget) => {
           this._field_indicator_show_time.set_sensitive(widget.active);
-        }
+        },
       );
       this._field_indicator_enable_autohide.connect(
         "notify::active",
         (widget) => {
           this._field_indicator_hide_time.set_sensitive(widget.active);
-        }
+        },
       );
       this._field_indicator_use_custom_font.connect(
         "notify::active",
         (widget) => {
           this._field_indicator_custom_font.set_sensitive(widget.active);
-        }
+        },
       );
       this._field_use_custom_font.connect("notify::active", (widget) => {
         this._field_custom_font.set_sensitive(widget.active);
         this.ibus_settings.set_boolean(Fields.USECUSTOMFONT, widget.active);
         this.ibus_settings.set_string(
           Fields.CUSTOMFONT,
-          gsettings.get_string(Fields.CUSTOMFONT)
+          gsettings.get_string(Fields.CUSTOMFONT),
         );
       });
       this._field_use_candidate_opacity.connect("notify::active", (widget) => {
@@ -856,30 +794,26 @@ const CustomizeIBus = GObject.registerClass(
           this._cssDarkPicker.set_sensitive(widget.active);
           this._reset_cssDark_button.set_sensitive(widget.active);
           this._open_cssDark_button.set_sensitive(widget.active);
-        }
+        },
       );
       this._fileChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
         gsettings.set_string(Fields.CUSTOMBG, dlg.get_file().get_path());
       });
       this._logoPicker.connect("clicked", () => {
-        if (ShellVersion < 40)
-          this._fileChooser.transient_for = this.get_toplevel();
-        else this._fileChooser.transient_for = this.get_root();
+        this._fileChooser.transient_for = this.get_root();
         let path = Gio.File.new_for_path(
-          gsettings.get_string(Fields.CUSTOMBG)
+          gsettings.get_string(Fields.CUSTOMBG),
         ).get_parent();
         if (path) {
-          if (ShellVersion < 40)
-            this._fileChooser.set_current_folder_file(path);
-          else this._fileChooser.set_current_folder(path);
+          this._fileChooser.set_current_folder(path);
         }
         this._fileChooser.show();
       });
       this._restart_ibus.connect("clicked", () => {
         gsettings.set_string(
           Fields.IBUSRESTTIME,
-          new Date().getTime().toString()
+          new Date().getTime().toString(),
         );
         this._updateIBusVersion();
       });
@@ -906,11 +840,11 @@ const CustomizeIBus = GObject.registerClass(
 
             out.write_all(
               GLib.spawn_command_line_sync("dconf dump " + SCHEMA_PATH)[1],
-              null
+              null,
             );
             out.close(null);
           },
-          true
+          true,
         );
       });
       // Import Settings from file
@@ -930,7 +864,7 @@ const CustomizeIBus = GObject.registerClass(
                 ["dconf", "load", SCHEMA_PATH],
                 null,
                 GLib.SpawnFlags.SEARCH_PATH | GLib.SpawnFlags.DO_NOT_REAP_CHILD,
-                null
+                null,
               );
 
               stdin = new Gio.UnixOutputStream({ fd: stdin, close_fd: true });
@@ -938,26 +872,24 @@ const CustomizeIBus = GObject.registerClass(
               GLib.close(stderr);
 
               // // Disable and then re-enable extension
-              // let [ , , , retCode] = GLib.spawn_command_line_sync('gnome-extensions disable ' + Me.uuid);
+              // let [ , , , retCode] = GLib.spawn_command_line_sync('gnome-extensions disable ' + this.uuid);
               // if (retCode == 0) {
-              //     GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, () => GLib.spawn_command_line_sync('gnome-extensions disable ' + Me.uuid));
+              //     GLib.child_watch_add(GLib.PRIORITY_DEFAULT, pid, () => GLib.spawn_command_line_sync('gnome-extensions disable ' + this.uuid));
               // }
 
               stdin.splice(
                 settingsFile.read(null),
                 Gio.OutputStreamSpliceFlags.CLOSE_SOURCE |
                   Gio.OutputStreamSpliceFlags.CLOSE_TARGET,
-                null
+                null,
               );
             }
-          }
+          },
         );
       });
       // GNOME Settings
       this._field_open_system_settings.connect("clicked", () => {
-        if (ShellVersion < 40)
-          GLib.spawn_command_line_async("gnome-control-center region");
-        else GLib.spawn_command_line_async("gnome-control-center keyboard");
+        GLib.spawn_command_line_async("gnome-control-center keyboard");
       });
       // IBus Preferences
       this._field_open_ibus_pref.connect("clicked", () => {
@@ -968,16 +900,12 @@ const CustomizeIBus = GObject.registerClass(
         gsettings.set_string(Fields.CUSTOMBGDARK, dlg.get_file().get_path());
       });
       this._logoDarkPicker.connect("clicked", () => {
-        if (ShellVersion < 40)
-          this._fileDarkChooser.transient_for = this.get_toplevel();
-        else this._fileDarkChooser.transient_for = this.get_root();
+        this._fileDarkChooser.transient_for = this.get_root();
         let path = Gio.File.new_for_path(
-          gsettings.get_string(Fields.CUSTOMBGDARK)
+          gsettings.get_string(Fields.CUSTOMBGDARK),
         ).get_parent();
         if (path) {
-          if (ShellVersion < 40)
-            this._fileDarkChooser.set_current_folder_file(path);
-          else this._fileDarkChooser.set_current_folder(path);
+          this._fileDarkChooser.set_current_folder(path);
         }
         this._fileDarkChooser.show();
       });
@@ -986,16 +914,12 @@ const CustomizeIBus = GObject.registerClass(
         gsettings.set_string(Fields.CUSTOMTHEME, dlg.get_file().get_path());
       });
       this._cssPicker.connect("clicked", () => {
-        if (ShellVersion < 40)
-          this._cssFileChooser.transient_for = this.get_toplevel();
-        else this._cssFileChooser.transient_for = this.get_root();
+        this._cssFileChooser.transient_for = this.get_root();
         let path = Gio.File.new_for_path(
-          gsettings.get_string(Fields.CUSTOMTHEME)
+          gsettings.get_string(Fields.CUSTOMTHEME),
         ).get_parent();
         if (path) {
-          if (ShellVersion < 40)
-            this._cssFileChooser.set_current_folder_file(path);
-          else this._cssFileChooser.set_current_folder(path);
+          this._cssFileChooser.set_current_folder(path);
         }
         this._cssFileChooser.show();
       });
@@ -1003,20 +927,16 @@ const CustomizeIBus = GObject.registerClass(
         if (response !== Gtk.ResponseType.ACCEPT) return;
         gsettings.set_string(
           Fields.CUSTOMTHEMENIGHT,
-          dlg.get_file().get_path()
+          dlg.get_file().get_path(),
         );
       });
       this._cssDarkPicker.connect("clicked", () => {
-        if (ShellVersion < 40)
-          this._cssDarkFileChooser.transient_for = this.get_toplevel();
-        else this._cssDarkFileChooser.transient_for = this.get_root();
+        this._cssDarkFileChooser.transient_for = this.get_root();
         let path = Gio.File.new_for_path(
-          gsettings.get_string(Fields.CUSTOMTHEMENIGHT)
+          gsettings.get_string(Fields.CUSTOMTHEMENIGHT),
         ).get_parent();
         if (path) {
-          if (ShellVersion < 40)
-            this._cssDarkFileChooser.set_current_folder_file(path);
-          else this._cssDarkFileChooser.set_current_folder(path);
+          this._cssDarkFileChooser.set_current_folder(path);
         }
         this._cssDarkFileChooser.show();
       });
@@ -1037,26 +957,26 @@ const CustomizeIBus = GObject.registerClass(
       this._field_unkown_state.set_sensitive(this._field_enable_ASCII.active);
       this._field_orientation.set_sensitive(this._field_enable_orien.active);
       this._field_candidate_animation.set_sensitive(
-        this._field_use_candidate_animation.active
+        this._field_use_candidate_animation.active,
       );
       this._field_candidate_scroll_mode.set_sensitive(
-        this._field_use_candidate_scroll.active
+        this._field_use_candidate_scroll.active,
       );
       this._field_candidate_right_click.set_sensitive(
-        this._field_use_candidate_right_click.active
+        this._field_use_candidate_right_click.active,
       );
       this._field_candidate_remember_position.set_sensitive(
-        this._field_use_candidate_still.active
+        this._field_use_candidate_still.active,
       );
       this._field_candidate_still_position.set_sensitive(
-        this._field_use_candidate_still.active
+        this._field_use_candidate_still.active,
       );
       this._field_use_tray_source_switch_key.set_sensitive(
-        this._field_use_tray.active
+        this._field_use_tray.active,
       );
       this._field_tray_source_switch_key.set_sensitive(
         this._field_use_tray.active &&
-          this._field_use_tray_source_switch_key.active
+          this._field_use_tray_source_switch_key.active,
       );
       this._field_ibus_emoji.set_sensitive(this._field_use_tray.active);
       this._field_extension_entry.set_sensitive(this._field_use_tray.active);
@@ -1065,97 +985,97 @@ const CustomizeIBus = GObject.registerClass(
       this._field_ibus_restart.set_sensitive(this._field_use_tray.active);
       this._field_ibus_exit.set_sensitive(this._field_use_tray.active);
       this._field_indicator_only_toggle.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_only_in_ASCII.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_not_single_IME.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_right_close.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_scroll.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_animation.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_left_click.set_sensitive(
         this._field_use_indicator.active &&
-          this._field_indicator_enable_left_click.active
+          this._field_indicator_enable_left_click.active,
       );
       this._field_indicator_opacity.set_sensitive(
         this._field_use_indicator.active &&
-          this._field_indicator_use_opacity.active
+          this._field_indicator_use_opacity.active,
       );
       this._field_indicator_show_time.set_sensitive(
         this._field_use_indicator.active &&
-          this._field_indicator_enable_show_delay.active
+          this._field_indicator_enable_show_delay.active,
       );
       this._field_indicator_hide_time.set_sensitive(
         this._field_use_indicator.active &&
-          this._field_indicator_enable_autohide.active
+          this._field_indicator_enable_autohide.active,
       );
       this._field_indicator_enable_left_click.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_use_opacity.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_enable_show_delay.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_enable_autohide.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_indicator_custom_font.set_sensitive(
         this._field_use_indicator.active &&
-          this._field_indicator_use_custom_font.active
+          this._field_indicator_use_custom_font.active,
       );
       this._field_indicator_use_custom_font.set_sensitive(
-        this._field_use_indicator.active
+        this._field_use_indicator.active,
       );
       this._field_custom_font.set_sensitive(this._field_use_custom_font.active);
       this._field_candidate_opacity.set_sensitive(
-        this._field_use_candidate_opacity.active
+        this._field_use_candidate_opacity.active,
       );
       this._field_bg_mode.set_sensitive(this._field_use_custom_bg.active);
       this._field_bg_dark_mode.set_sensitive(
-        this._field_use_custom_bg_dark.active
+        this._field_use_custom_bg_dark.active,
       );
       this._field_bg_repeat_mode.set_sensitive(
-        this._field_use_custom_bg.active
+        this._field_use_custom_bg.active,
       );
       this._field_bg_dark_repeat_mode.set_sensitive(
-        this._field_use_custom_bg_dark.active
+        this._field_use_custom_bg_dark.active,
       );
       this._logoPicker.set_sensitive(this._field_use_custom_bg.active);
       this._reset_logo_button.set_sensitive(this._field_use_custom_bg.active);
       this._open_logo_button.set_sensitive(this._field_use_custom_bg.active);
       this._logoDarkPicker.set_sensitive(this._field_use_custom_bg_dark.active);
       this._reset_logoDark_button.set_sensitive(
-        this._field_use_custom_bg_dark.active
+        this._field_use_custom_bg_dark.active,
       );
       this._open_logoDark_button.set_sensitive(
-        this._field_use_custom_bg_dark.active
+        this._field_use_custom_bg_dark.active,
       );
       this._cssPicker.set_sensitive(this._field_enable_custom_theme.active);
       this._reset_css_button.set_sensitive(
-        this._field_enable_custom_theme.active
+        this._field_enable_custom_theme.active,
       );
       this._open_css_button.set_sensitive(
-        this._field_enable_custom_theme.active
+        this._field_enable_custom_theme.active,
       );
       this._cssDarkPicker.set_sensitive(
-        this._field_enable_custom_theme_dark.active
+        this._field_enable_custom_theme_dark.active,
       );
       this._reset_cssDark_button.set_sensitive(
-        this._field_enable_custom_theme_dark.active
+        this._field_enable_custom_theme_dark.active,
       );
       this._open_cssDark_button.set_sensitive(
-        this._field_enable_custom_theme_dark.active
+        this._field_enable_custom_theme_dark.active,
       );
     }
 
@@ -1164,367 +1084,350 @@ const CustomizeIBus = GObject.registerClass(
         Fields.AUTOSWITCH,
         this._field_enable_ASCII,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.ENABLECUSTOMTHEME,
         this._field_enable_custom_theme,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.ENABLECUSTOMTHEMENIGHT,
         this._field_enable_custom_theme_dark,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.ENABLEORIEN,
         this._field_enable_orien,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.ORIENTATION,
         this._field_orientation,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USECANDANIM,
         this._field_use_candidate_animation,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.CANDANIMATION,
         this._field_candidate_animation,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USESCROLL,
         this._field_use_candidate_scroll,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.SCROLLMODE,
         this._field_candidate_scroll_mode,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USECANDRIGHTSWITCH,
         this._field_use_candidate_right_click,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.CANDRIGHTFUNC,
         this._field_candidate_right_click,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USECANDSTILL,
         this._field_use_candidate_still,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.CANDSTILLPOS,
         this._field_candidate_still_position,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USETRAYSSWITCH,
         this._field_use_tray_source_switch_key,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.TRAYSSWITCHKEY,
         this._field_tray_source_switch_key,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.REMCANDPOS,
         this._field_candidate_remember_position,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.REMEMBERINPUT,
         this._field_remember_input,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.UNKNOWNSTATE,
         this._field_unkown_state,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USECANDOPACITY,
         this._field_use_candidate_opacity,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.CANDOPACITY,
         this._field_candidate_opacity,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USECUSTOMFONT,
         this._field_use_custom_font,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
-      if (ShellVersion < 40)
-        gsettings.bind(
-          Fields.CUSTOMFONT,
-          this._field_custom_font,
-          "font_name",
-          Gio.SettingsBindFlags.DEFAULT
-        );
-      else {
-        gsettings.bind(
-          Fields.CUSTOMFONT,
-          this._field_custom_font,
-          "font",
-          Gio.SettingsBindFlags.DEFAULT
-        );
-      }
+      gsettings.bind(
+        Fields.CUSTOMFONT,
+        this._field_custom_font,
+        "font",
+        Gio.SettingsBindFlags.DEFAULT,
+      );
       gsettings.bind(
         Fields.INPUTINDUSEF,
         this._field_indicator_use_custom_font,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
-      if (ShellVersion < 40)
-        gsettings.bind(
-          Fields.INPUTINDCUSTOMFONT,
-          this._field_indicator_custom_font,
-          "font_name",
-          Gio.SettingsBindFlags.DEFAULT
-        );
-      else
-        gsettings.bind(
-          Fields.INPUTINDCUSTOMFONT,
-          this._field_indicator_custom_font,
-          "font",
-          Gio.SettingsBindFlags.DEFAULT
-        );
+      gsettings.bind(
+        Fields.INPUTINDCUSTOMFONT,
+        this._field_indicator_custom_font,
+        "font",
+        Gio.SettingsBindFlags.DEFAULT,
+      );
       gsettings.bind(
         Fields.USECUSTOMBG,
         this._field_use_custom_bg,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USECUSTOMBGDARK,
         this._field_use_custom_bg_dark,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.BGMODE,
         this._field_bg_mode,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.BGDARKMODE,
         this._field_bg_dark_mode,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.BGREPEATMODE,
         this._field_bg_repeat_mode,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.BGDARKREPEATMODE,
         this._field_bg_dark_repeat_mode,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.MENUIBUSEMOJI,
         this._field_ibus_emoji,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USEREPOSITION,
         this._field_candidate_reposition,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USEBUTTONS,
         this._field_candidate_buttons,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.FIXIMELIST,
         this._field_fix_ime_list,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USETRAY,
         this._field_use_tray,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.MENUEXTPREF,
         this._field_extension_entry,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.MENUIBUSPREF,
         this._field_ibus_preference,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.MENUIBUSVER,
         this._field_ibus_version,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.MENUIBUSREST,
         this._field_ibus_restart,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.MENUIBUSEXIT,
         this._field_ibus_exit,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USEINPUTIND,
         this._field_use_indicator,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDTOG,
         this._field_indicator_only_toggle,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDASCII,
         this._field_indicator_only_in_ASCII,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDSINGLE,
         this._field_indicator_not_single_IME,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USEINPUTINDLCLK,
         this._field_indicator_enable_left_click,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDLCLICK,
         this._field_indicator_left_click,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDRIGC,
         this._field_indicator_right_close,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDSCROLL,
         this._field_indicator_scroll,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDANIM,
         this._field_indicator_animation,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USEINDOPACITY,
         this._field_indicator_use_opacity,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INDOPACITY,
         this._field_indicator_opacity,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USEINDSHOWD,
         this._field_indicator_enable_show_delay,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDSHOW,
         this._field_indicator_show_time,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.USEINDAUTOHID,
         this._field_indicator_enable_autohide,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.bind(
         Fields.INPUTINDHID,
         this._field_indicator_hide_time,
         "active",
-        Gio.SettingsBindFlags.DEFAULT
+        Gio.SettingsBindFlags.DEFAULT,
       );
       gsettings.connect(
         `changed::${Fields.CUSTOMBG}`,
-        this._updateLogoPicker.bind(this)
+        this._updateLogoPicker.bind(this),
       );
       this._updateLogoPicker();
       gsettings.connect(
         `changed::${Fields.CUSTOMBGDARK}`,
-        this._updateLogoDarkPicker.bind(this)
+        this._updateLogoDarkPicker.bind(this),
       );
       this._updateLogoDarkPicker();
       gsettings.connect(
         `changed::${Fields.CUSTOMTHEME}`,
-        this._updateCssPicker.bind(this)
+        this._updateCssPicker.bind(this),
       );
       this._updateCssPicker();
       gsettings.connect(
         `changed::${Fields.CUSTOMTHEMENIGHT}`,
-        this._updateCssDarkPicker.bind(this)
+        this._updateCssDarkPicker.bind(this),
       );
       this._updateCssDarkPicker();
       this._updateIBusVersion();
@@ -1551,8 +1454,7 @@ const CustomizeIBus = GObject.registerClass(
         margin_top: 10,
       });
 
-      if (ShellVersion < 40) box.add(frame);
-      else box.append(frame);
+      box.append(frame);
       this._notebook.append_page(box, new Gtk.Label({ label: lbl }));
 
       frame.grid = new Gtk.Grid({
@@ -1562,8 +1464,7 @@ const CustomizeIBus = GObject.registerClass(
       });
 
       frame.grid._row = 0;
-      if (ShellVersion < 40) frame.add(frame.grid);
-      else frame.set_child(frame.grid);
+      frame.set_child(frame.grid);
 
       frame._add = (x, y, z, a, b, c) => {
         const boxrow = new Gtk.ListBoxRow({
@@ -1571,25 +1472,15 @@ const CustomizeIBus = GObject.registerClass(
           selectable: false,
         });
         const hbox = new Gtk.Box(BoxSettings);
-        if (ShellVersion < 40) boxrow.add(hbox);
-        else boxrow.set_child(hbox);
+        boxrow.set_child(hbox);
         let spacing = 4;
-        if (ShellVersion < 40) {
-          hbox.pack_start(x, true, true, spacing);
-          if (y) hbox.pack_start(y, false, false, spacing);
-          if (z) hbox.pack_start(z, false, false, spacing);
-          if (a) hbox.pack_start(a, false, false, spacing);
-          if (b) hbox.pack_start(b, false, false, spacing);
-          if (c) hbox.pack_start(c, false, false, spacing);
-        } else {
-          hbox.set_spacing(spacing);
-          hbox.append(x);
-          if (y) hbox.append(y);
-          if (z) hbox.append(z);
-          if (a) hbox.append(a);
-          if (b) hbox.append(b);
-          if (c) hbox.append(c);
-        }
+        hbox.set_spacing(spacing);
+        hbox.append(x);
+        if (y) hbox.append(y);
+        if (z) hbox.append(z);
+        if (a) hbox.append(a);
+        if (b) hbox.append(b);
+        if (c) hbox.append(c);
         frame.grid.attach(boxrow, 0, frame.grid._row++, 1, 1);
       };
       return frame;
@@ -1612,8 +1503,7 @@ const CustomizeIBus = GObject.registerClass(
         halign: Gtk.Align.CENTER,
       });
       expanderFrame.grid._row = 0;
-      if (ShellVersion < 40) expanderFrame.add(expanderFrame.grid);
-      else expanderFrame.set_child(expanderFrame.grid);
+      expanderFrame.set_child(expanderFrame.grid);
 
       let expander = new Gtk.Expander({
         use_markup: true,
@@ -1635,8 +1525,7 @@ const CustomizeIBus = GObject.registerClass(
         margin_top: 10,
       });
 
-      if (ShellVersion < 40) box.add(frame);
-      else box.append(frame);
+      box.append(frame);
       this._notebook.append_page(box, new Gtk.Label({ label: _("About") }));
 
       frame.grid = new Gtk.Grid({
@@ -1653,35 +1542,18 @@ const CustomizeIBus = GObject.registerClass(
       });
 
       frame.grid._row = 0;
-      if (ShellVersion < 40) frame.add(frame.grid);
-      else frame.set_child(frame.grid);
+      frame.set_child(frame.grid);
 
       var version = _("unknown (self-build ?)");
-      if (Me.metadata.version !== undefined) {
-        version = Me.metadata.version.toString();
+      if (thisMetadata.version !== undefined) {
+        version = thisMetadata.version.toString();
       }
-      let iconFile = GLib.build_filenamev([
-        Me.dir.get_path(),
-        "img",
-        "logo.png",
-      ]);
-      if (ShellVersion < 40) {
-        frame.grid.attach(
-          new Gtk.Image({
-            pixbuf: GdkPixbuf.Pixbuf.new_from_file_at_size(iconFile, 80, 80),
-          }),
-          0,
-          frame.grid._row++,
-          1,
-          1
-        );
-      } else {
-        let logo = Gtk.Image.new_from_pixbuf(
-          GdkPixbuf.Pixbuf.new_from_file(iconFile)
-        );
-        logo.set_pixel_size(80);
-        frame.grid.attach(logo, 0, frame.grid._row++, 1, 1);
-      }
+      let iconFile = GLib.build_filenamev([dir.get_path(), "img", "logo.png"]);
+      let logo = Gtk.Image.new_from_pixbuf(
+        GdkPixbuf.Pixbuf.new_from_file(iconFile),
+      );
+      logo.set_pixel_size(80);
+      frame.grid.attach(logo, 0, frame.grid._row++, 1, 1);
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
@@ -1690,27 +1562,27 @@ const CustomizeIBus = GObject.registerClass(
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({ label: _("Version: ") + version }),
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
           label:
             "😎 " +
             _(
-              "Full customization of appearance, behavior, system tray and input source indicator for IBus."
+              "Full customization of appearance, behavior, system tray and input source indicator for IBus.",
             ),
         }),
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
@@ -1720,43 +1592,43 @@ const CustomizeIBus = GObject.registerClass(
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           label: _(
-            '<span size="small">Copyright © 2021 <a href="https://github.com/HollowMan6">Hollow Man</a> &lt;<a href="mailto:hollowman@opensuse.org">hollowman@opensuse.org</a>&gt;</span>'
+            '<span size="small">Copyright © 2021-2023 <a href="https://github.com/HollowMan6">Hollow Man</a> &lt;<a href="mailto:hollowman@opensuse.org">hollowman@opensuse.org</a>&gt;</span>',
           ),
         }),
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           label: _(
-            '<span size="small">Source Code: <a href="https://github.com/openSUSE/Customize-IBus">https://github.com/openSUSE/Customize-IBus</a></span>'
+            '<span size="small">Source Code: <a href="https://github.com/openSUSE/Customize-IBus">https://github.com/openSUSE/Customize-IBus</a></span>',
           ),
         }),
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           label: _(
-            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/archive/2021/projects/6295506795364352/">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE">@openSUSE</a></b>.</span>'
+            '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/archive/2021/projects/6295506795364352/">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE">@openSUSE</a></b>.</span>',
           ),
         }),
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
@@ -1766,22 +1638,16 @@ const CustomizeIBus = GObject.registerClass(
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
-          label:
-            _("Current Session") +
-            ": GNOME " +
-            Config.PACKAGE_VERSION +
-            " (" +
-            SessionType +
-            ")",
+          label: _("Current Session") + ": " + SessionType,
         }),
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
@@ -1791,31 +1657,31 @@ const CustomizeIBus = GObject.registerClass(
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           label: _(
-            '<span size="small">This program comes with ABSOLUTELY NO WARRANTY.</span>'
+            '<span size="small">This program comes with ABSOLUTELY NO WARRANTY.</span>',
           ),
         }),
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
       frame.grid.attach(
         new Gtk.Label({
           use_markup: true,
           label: _(
-            '<span size="small">See the <a href="https://www.gnu.org/licenses/gpl">GNU General Public License, version 3 or later</a> for details.</span>'
+            '<span size="small">See the <a href="https://www.gnu.org/licenses/gpl">GNU General Public License, version 3 or later</a> for details.</span>',
           ),
         }),
         0,
         frame.grid._row++,
         1,
-        1
+        1,
       );
     }
 
@@ -1827,36 +1693,36 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, scroll to switch among pages or candidates, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, candidate box opacity, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons."
+            "Here you can set the IBus input window orientation, animation, right click to open menu or switch source, scroll to switch among pages or candidates, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, candidate box opacity, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons.",
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If <b>fix candidate box</b> is enabled, you can set the candidate box position with 9 options. Recommend to <b>enable drag to reposition candidate box</b> at the same time so that you can rearrange the position at any time. Will remember candidate position forever after reposition if you set to <b>remember last position</b>, and restore at next login.</span>'
+            '<span size="small"><b>Note:</b> If <b>fix candidate box</b> is enabled, you can set the candidate box position with 9 options. Recommend to <b>enable drag to reposition candidate box</b> at the same time so that you can rearrange the position at any time. Will remember candidate position forever after reposition if you set to <b>remember last position</b>, and restore at next login.</span>',
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is enabled, and you have set to <b>Remember Input State</b>, every opened APP's input mode will be remembered if you have switched the input source manually in the APP's window, and the newly-opened APP will follow the configuration. APP's Input State will be remembered forever.</span>"
+            "<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is enabled, and you have set to <b>Remember Input State</b>, every opened APP's input mode will be remembered if you have switched the input source manually in the APP's window, and the newly-opened APP will follow the configuration. APP's Input State will be remembered forever.</span>",
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If you <b>enable drag to reposition candidate box</b>, and if <b>fix candidate box</b> is enabled, your rearranged position will last until the end of this session. If not the rearranged position will only last for the specific input.</span>'
+            '<span size="small"><b>Note:</b> If you <b>enable drag to reposition candidate box</b>, and if <b>fix candidate box</b> is enabled, your rearranged position will last until the end of this session. If not the rearranged position will only last for the specific input.</span>',
           ),
-        })
+        }),
       );
     }
 
@@ -1868,9 +1734,9 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show IBus tray icon, enable directly switch source with click, add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment. You can also start or restart IBus by pressing the top button."
+            "Here you can set to show IBus tray icon, enable directly switch source with click, add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment. You can also start or restart IBus by pressing the top button.",
           ),
-        })
+        }),
       );
 
       expanderFrame._add(
@@ -1878,9 +1744,9 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If <b>Directly switch source with click</b> is enabled, when the left key is selected, if you click the tray icon with left key, you will have input source switched, and click right key will open the menu as normal, vice versa.</span>'
+            '<span size="small"><b>Note:</b> If <b>Directly switch source with click</b> is enabled, when the left key is selected, if you click the tray icon with left key, you will have input source switched, and click right key will open the menu as normal, vice versa.</span>',
           ),
-        })
+        }),
       );
     }
 
@@ -1892,18 +1758,18 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode (for multi-mode IME), not notify when using single mode IME, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable show delay and show timeout (in seconds), enable auto-hide and auto-hide timeout (in seconds)."
+            "Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode (for multi-mode IME), not notify when using single mode IME, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable show delay and show timeout (in seconds), enable auto-hide and auto-hide timeout (in seconds).",
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> If you choose to enable the show delay, there won\'t be a show delay when you switch input source or window.</span>'
+            '<span size="small"><b>Note:</b> If you choose to enable the show delay, there won\'t be a show delay when you switch input source or window.</span>',
           ),
-        })
+        }),
       );
     }
 
@@ -1915,36 +1781,36 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            'Support importing stylesheet generated by <a href="https://github.com/openSUSE/IBus-Theme-Tools">IBus Theme Tools</a> or provided by <a href="https://github.com/openSUSE/IBus-Theme-Hub">IBus Theme Hub</a>.'
+            'Support importing stylesheet generated by <a href="https://github.com/openSUSE/IBus-Theme-Tools">IBus Theme Tools</a> or provided by <a href="https://github.com/openSUSE/IBus-Theme-Hub">IBus Theme Hub</a>.',
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            "When light theme and dark theme are turned on at the same time, the IBus theme will automatically follow GNOME Night Light mode, use light theme when off, and use dark theme when on. When only the light theme or dark theme is turned on, the IBus theme will always use the theme that is turned on."
+            "When light theme and dark theme are turned on at the same time, the IBus theme will automatically follow GNOME Night Light mode, use light theme when off, and use dark theme when on. When only the light theme or dark theme is turned on, the IBus theme will always use the theme that is turned on.",
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b><i>Warning:</i> If not for debugging, please DO NOT add any classes that\'s not started with <i>.candidate-*</i> into IBus stylesheet to prevent from corrupting system themes.</b></span>'
+            '<span size="small"><b><i>Warning:</i> If not for debugging, please DO NOT add any classes that\'s not started with <i>.candidate-*</i> into IBus stylesheet to prevent from corrupting system themes.</b></span>',
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> Support stylesheets hot reload, CSS changes reflecting in real-time.</span>'
+            '<span size="small"><b>Note:</b> Support stylesheets hot reload, CSS changes reflecting in real-time.</span>',
           ),
-        })
+        }),
       );
     }
 
@@ -1956,27 +1822,27 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Support customizing your IBus Input window background with a picture. It has a higher priority than the theme-defined background."
+            "Support customizing your IBus Input window background with a picture. It has a higher priority than the theme-defined background.",
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            "When light background and dark background are turned on at the same time, the IBus background will automatically follow GNOME Night Light mode, use light background when off, and use dark background when on. When only the light background or dark background is turned on, the IBus background will always use the background that is turned on."
+            "When light background and dark background are turned on at the same time, the IBus background will automatically follow GNOME Night Light mode, use light background when off, and use dark background when on. When only the light background or dark background is turned on, the IBus background will always use the background that is turned on.",
           ),
-        })
+        }),
       );
       expanderFrame._add(
         new Gtk.Label({
           use_markup: true,
           wrap: true,
           label: _(
-            '<span size="small"><b>Note:</b> Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn\'t mount it by default, please disable and then enable the corresponding <b>Use custom background</b> again to make it effective after manually mounting.</span>'
+            '<span size="small"><b>Note:</b> Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn\'t mount it by default, please disable and then enable the corresponding <b>Use custom background</b> again to make it effective after manually mounting.</span>',
           ),
-        })
+        }),
       );
     }
 
@@ -1988,9 +1854,9 @@ const CustomizeIBus = GObject.registerClass(
           use_markup: true,
           wrap: true,
           label: _(
-            "Here you can reset the settings of this extension to default. You can also export current settings to an ini file for backup, and then import it when you need restore. For your information, you may also open the official IBus customization settings for customizations you can't find in this extension."
+            "Here you can reset the settings of this extension to default. You can also export current settings to an ini file for backup, and then import it when you need restore. For your information, you may also open the official IBus customization settings for customizations you can't find in this extension.",
           ),
-        })
+        }),
       );
     }
 
@@ -2022,57 +1888,31 @@ const CustomizeIBus = GObject.registerClass(
       return c;
     }
 
-    _iconButtonMaker(uri, icon_name) {
-      if (ShellVersion < 40)
-        return new Gtk.Button({
-          image: new Gtk.Image({
-            gicon: new Gio.ThemedIcon({
-              name: icon_name,
-            }),
-            icon_size: Gtk.IconSize.BUTTON,
-            visible: true,
-          }),
-          visible: true,
-        });
-      else
-        return new Gtk.Button({
-          icon_name: icon_name,
-          visible: true,
-        });
+    _iconButtonMaker(icon_name) {
+      return new Gtk.Button({
+        icon_name: icon_name,
+        visible: true,
+      });
     }
 
     _iconLinkButtonMaker(uri, icon_name) {
-      if (ShellVersion < 40)
-        return new Gtk.LinkButton({
-          uri,
-          image: new Gtk.Image({
-            gicon: new Gio.ThemedIcon({
-              name: icon_name,
-            }),
-            icon_size: Gtk.IconSize.BUTTON,
-            visible: true,
-          }),
-          visible: true,
-        });
-      else
-        return new Gtk.LinkButton({
-          uri,
-          icon_name: icon_name,
-          visible: true,
-        });
+      return new Gtk.LinkButton({
+        uri,
+        icon_name: icon_name,
+        visible: true,
+      });
     }
 
     _buildHeaderBar() {
       this.connect("realize", () => {
-        if (ShellVersion < 40) this.toplevel = this.get_toplevel();
-        else this.toplevel = this.get_root();
+        this.toplevel = this.get_root();
         this.headerBar = this.toplevel.get_titlebar();
         let uri = _(
-          "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
+          "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/",
         );
         let helpButton = this._iconLinkButtonMaker(
           uri,
-          "dialog-information-symbolic"
+          "dialog-information-symbolic",
         );
         this.headerBar.pack_start(helpButton);
         this.toplevel.set_title(_("Customize IBus"));
@@ -2082,15 +1922,13 @@ const CustomizeIBus = GObject.registerClass(
 
     _showFileChooser(title, params, acceptBtn, acceptHandler, setDefaultName) {
       var transient_for;
-      if (ShellVersion < 40)
-        transient_for = this.get_toplevel ? this.get_toplevel() : this;
-      else transient_for = this.get_root ? this.get_root() : this;
+      transient_for = this.get_root ? this.get_root() : this;
       let dialog = new Gtk.FileChooserDialog(
-        mergeObjects({ title: title, transient_for: transient_for }, params)
+        mergeObjects({ title: title, transient_for: transient_for }, params),
       );
       if (setDefaultName)
         dialog.set_current_name(
-          "Customize_IBus_Settings_" + new Date().getTime().toString() + ".ini"
+          "Customize_IBus_Settings_" + new Date().getTime().toString() + ".ini",
         );
       dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
       dialog.add_button(acceptBtn, Gtk.ResponseType.ACCEPT);
@@ -2110,10 +1948,7 @@ const CustomizeIBus = GObject.registerClass(
     /* Settings */
     // Restore Default Settings
     _resetExtension() {
-      var transient_for;
-      if (ShellVersion < 40)
-        transient_for = this.get_toplevel ? this.get_toplevel() : this;
-      else transient_for = this.get_root ? this.get_root() : this;
+      let transient_for = this.get_root ? this.get_root() : this;
       let dialog = new Gtk.MessageDialog({
         transient_for,
         modal: true,
@@ -2123,7 +1958,7 @@ const CustomizeIBus = GObject.registerClass(
       dialog.add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
       dialog.add_button(_("OK"), Gtk.ResponseType.OK);
       dialog.set_markup(
-        "<big><b>" + _("Reset All Settings to Default?") + "</b></big>"
+        "<big><b>" + _("Reset All Settings to Default?") + "</b></big>",
       );
       let message = new Gtk.Label({
         wrap: true,
@@ -2131,20 +1966,17 @@ const CustomizeIBus = GObject.registerClass(
         use_markup: true,
         label: _("This will discard all the current configurations!"),
       });
-      if (ShellVersion < 40)
-        dialog.get_message_area().pack_start(message, true, true, 0);
-      else dialog.get_message_area().append(message);
+      dialog.get_message_area().append(message);
       dialog.connect("response", (dialog, id) => {
         if (id != Gtk.ResponseType.OK) {
           dialog.destroy();
           return;
         }
-        for (var field in Fields)
+        for (let field in Fields)
           if (field != "IBUSRESTTIME") gsettings.reset(Fields[field]);
         dialog.destroy();
       });
-      if (ShellVersion < 40) dialog.show_all();
-      else dialog.show();
+      dialog.show();
     }
 
     destroy() {
@@ -2157,5 +1989,36 @@ const CustomizeIBus = GObject.registerClass(
       if (this._cssDarkFileChooser) this._cssDarkFileChooser.destroy();
       this._cssDarkFileChooser = null;
     }
-  }
+  },
 );
+
+export default class Preferences extends ExtensionPreferences {
+  /**
+   * This class is constructed once when your extension preferences are
+   * about to be opened. This is a good time to setup translations or anything
+   * else you only do once.
+   *
+   * @param {ExtensionMeta} metadata - An extension meta object
+   */
+  constructor(metadata) {
+    super(metadata);
+    this.initTranslations();
+    gsettings = this.getSettings();
+    thisMetadata = metadata;
+    dir = this.dir;
+  }
+
+  /**
+   * This function is called when the preferences window is first created to
+   * build and return a GTK4 widget.
+   *
+   * The preferences window will be a `Adw.PreferencesWindow`, and the widget
+   * returned by this function will be added to an `Adw.PreferencesPage` or
+   * `Adw.PreferencesGroup` if necessary.
+   *
+   * @returns {Gtk.Widget} the preferences widget
+   */
+  getPreferencesWidget() {
+    return new CustomizeIBus();
+  }
+}
