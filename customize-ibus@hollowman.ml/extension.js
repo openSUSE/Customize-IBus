@@ -3155,7 +3155,7 @@ export default class CustomizeIBusExtension extends Extension {
       "sources-changed",
       this.updateIgnoreModes.bind(this),
     );
-    this._ext = new Extensions(this);
+    this._ext = new Extensions();
   }
 
   /**
