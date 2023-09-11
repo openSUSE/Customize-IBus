@@ -21,7 +21,6 @@ import {
 } from "resource:///org/gnome/shell/extensions/extension.js";
 
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
-import * as ExtensionUtils from "resource:///org/gnome/shell/misc/extensionUtils.js";
 import * as Util from "resource:///org/gnome/shell/misc/util.js";
 import { loadInterfaceXML } from "resource:///org/gnome/shell/misc/fileUtils.js";
 const System = {
@@ -36,19 +35,17 @@ const ColorProxy = Gio.DBusProxy.makeProxyWrapper(ColorInterface);
 import * as BoxPointer from "resource:///org/gnome/shell/ui/boxpointer.js";
 import * as keyboard from "resource:///org/gnome/shell/ui/status/keyboard.js";
 import * as MessageTray from "resource:///org/gnome/shell/ui/messageTray.js";
-const InputSourceManager = keyboard.getInputSourceManager();
 const InputSourcePopup = keyboard.InputSourcePopup;
 const InputSourceIndicator = Main.panel.statusArea.keyboard;
 import * as IBusManagerImported from "resource:///org/gnome/shell/misc/ibusManager.js";
-const IBusManager = IBusManagerImported.getIBusManager();
-if (IBusManager._candidatePopup._boxPointer)
-  var CandidatePopup = IBusManager._candidatePopup._boxPointer;
-else var CandidatePopup = IBusManager._candidatePopup;
-const CandidateArea = IBusManager._candidatePopup._candidateArea;
-const CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
 
+let Me = null;
+let InputSourceManager = null;
+let IBusManager = null;
+let CandidatePopup = null;
+let CandidateArea = null;
+let CandidateDummyCursor = null;
 let gsettings = null;
-let UUID = null;
 
 import { Fields } from "./fields.js";
 const IBUS_SYSTEMD_SERVICE = "org.freedesktop.IBus.session.GNOME.service";
@@ -1179,9 +1176,6 @@ const IBusTrayClickSwitch = GObject.registerClass(
             Clutter.ModifierType["BUTTON" + keyNum + "_MASK"]
           ) {
             IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-            InputSourceIndicator.menu.close();
-            // A hack to make it work in GNOME 44
-            InputSourceIndicator.menu.open();
             InputSourceIndicator.menu.close();
           }
         },
@@ -2943,8 +2937,7 @@ const Extensions = GObject.registerClass(
 
     _MenuExtPref() {
       Main.overview.hide();
-      if (ExtensionUtils.openPrefs) ExtensionUtils.openPrefs(UUID.toString());
-      else Util.spawn(["gnome-extensions", "prefs", UUID.toString()]);
+      Me.openPreferences();
     }
 
     // IBus Preferences
@@ -3126,10 +3119,6 @@ export default class CustomizeIBusExtension extends Extension {
    */
   constructor(metadata) {
     super(metadata);
-
-    this.initTranslations();
-    gsettings = this.getSettings();
-    UUID = this.uuid;
   }
 
   updateIgnoreModes() {
@@ -3154,12 +3143,19 @@ export default class CustomizeIBusExtension extends Extension {
     ngsettings = new Gio.Settings({
       schema: "org.gnome.settings-daemon.plugins.color",
     });
+    gsettings = this.getSettings();
+    InputSourceManager = keyboard.getInputSourceManager();
+    IBusManager = IBusManagerImported.getIBusManager();
+    CandidatePopup = IBusManager._candidatePopup;
+    CandidateArea = IBusManager._candidatePopup._candidateArea;
+    CandidateDummyCursor = IBusManager._candidatePopup._dummyCursor;
+    Me = this;
     this.updateIgnoreModes();
     this._updateIgnoreModesID = InputSourceManager.connect(
       "sources-changed",
       this.updateIgnoreModes.bind(this),
     );
-    this._ext = new Extensions();
+    this._ext = new Extensions(this);
   }
 
   /**
@@ -3178,8 +3174,15 @@ export default class CustomizeIBusExtension extends Extension {
       InputSourceManager.disconnect(this._updateIgnoreModesID),
         (this._updateIgnoreModesID = 0);
     IBusSettings = null;
+    gsettings = null;
     ngsettings = null;
     opacityStyle = "";
     fontStyle = "";
+    InputSourceManager = null;
+    IBusManager = null;
+    CandidatePopup = null;
+    CandidateArea = null;
+    CandidateDummyCursor = null;
+    Me = null;
   }
 }

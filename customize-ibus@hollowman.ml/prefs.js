@@ -4,6 +4,7 @@
 
 "use strict";
 
+import Adw from "gi://Adw";
 import Gio from "gi://Gio";
 import Gtk from "gi://Gtk";
 import GObject from "gi://GObject";
@@ -16,10 +17,6 @@ import {
   gettext as _,
 } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 import { Fields } from "./fields.js";
-
-let gsettings = null;
-let dir = null;
-let thisMetadata = null;
 
 const SessionType =
   GLib.getenv("XDG_SESSION_TYPE") == "wayland" ? "Wayland" : "Xorg";
@@ -44,8 +41,16 @@ function mergeObjects(main, bck) {
 
 const CustomizeIBus = GObject.registerClass(
   class CustomizeIBus extends Gtk.ScrolledWindow {
-    constructor() {
+    constructor(gsettings, metadata, dir) {
       super();
+      this.gsettings = gsettings;
+      this.metadata = metadata;
+      this.dir = dir;
+
+      this._bulidWidget();
+      this._bulidUI();
+      this._bindValues();
+      this._syncStatus();
     }
 
     _init() {
@@ -54,12 +59,6 @@ const CustomizeIBus = GObject.registerClass(
       };
       win_conf.vscrollbar_policy = Gtk.PolicyType.NEVER;
       super._init(win_conf);
-
-      this._bulidWidget();
-      this._bulidUI();
-      this._bindValues();
-      this._syncStatus();
-      this._buildHeaderBar();
     }
 
     _bulidWidget() {
@@ -299,11 +298,11 @@ const CustomizeIBus = GObject.registerClass(
       });
 
       this._field_custom_font = new Gtk.FontButton({
-        font: gsettings.get_string(Fields.CUSTOMFONT),
+        font: this.gsettings.get_string(Fields.CUSTOMFONT),
       });
 
       this._field_indicator_custom_font = new Gtk.FontButton({
-        font: gsettings.get_string(Fields.INPUTINDCUSTOMFONT),
+        font: this.gsettings.get_string(Fields.INPUTINDCUSTOMFONT),
       });
 
       const filter = new Gtk.FileFilter();
@@ -372,7 +371,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _updateLogoPicker() {
-      const filename = gsettings.get_string(Fields.CUSTOMBG);
+      const filename = this.gsettings.get_string(Fields.CUSTOMBG);
       if (!GLib.basename(filename)) {
         this._logoPicker.label = _("(None)");
         this._open_logo_button.uri = "";
@@ -387,7 +386,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _updateLogoDarkPicker() {
-      const filename = gsettings.get_string(Fields.CUSTOMBGDARK);
+      const filename = this.gsettings.get_string(Fields.CUSTOMBGDARK);
       if (!GLib.basename(filename)) {
         this._logoDarkPicker.label = _("(None)");
         this._open_logoDark_button.uri = "";
@@ -402,7 +401,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _updateCssPicker() {
-      const filename = gsettings.get_string(Fields.CUSTOMTHEME);
+      const filename = this.gsettings.get_string(Fields.CUSTOMTHEME);
       if (!GLib.basename(filename)) {
         this._cssPicker.label = _("(None)");
         this._open_css_button.uri = "";
@@ -417,7 +416,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _updateCssDarkPicker() {
-      const filename = gsettings.get_string(Fields.CUSTOMTHEMENIGHT);
+      const filename = this.gsettings.get_string(Fields.CUSTOMTHEMENIGHT);
       if (!GLib.basename(filename)) {
         this._cssDarkPicker.label = _("(None)");
         this._open_cssDark_button.uri = "";
@@ -763,7 +762,7 @@ const CustomizeIBus = GObject.registerClass(
         this.ibus_settings.set_boolean(Fields.USECUSTOMFONT, widget.active);
         this.ibus_settings.set_string(
           Fields.CUSTOMFONT,
-          gsettings.get_string(Fields.CUSTOMFONT),
+          this.gsettings.get_string(Fields.CUSTOMFONT),
         );
       });
       this._field_use_candidate_opacity.connect("notify::active", (widget) => {
@@ -798,12 +797,12 @@ const CustomizeIBus = GObject.registerClass(
       );
       this._fileChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
-        gsettings.set_string(Fields.CUSTOMBG, dlg.get_file().get_path());
+        this.gsettings.set_string(Fields.CUSTOMBG, dlg.get_file().get_path());
       });
       this._logoPicker.connect("clicked", () => {
         this._fileChooser.transient_for = this.get_root();
         let path = Gio.File.new_for_path(
-          gsettings.get_string(Fields.CUSTOMBG),
+          this.gsettings.get_string(Fields.CUSTOMBG),
         ).get_parent();
         if (path) {
           this._fileChooser.set_current_folder(path);
@@ -811,7 +810,7 @@ const CustomizeIBus = GObject.registerClass(
         this._fileChooser.show();
       });
       this._restart_ibus.connect("clicked", () => {
-        gsettings.set_string(
+        this.gsettings.set_string(
           Fields.IBUSRESTTIME,
           new Date().getTime().toString(),
         );
@@ -897,12 +896,15 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._fileDarkChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
-        gsettings.set_string(Fields.CUSTOMBGDARK, dlg.get_file().get_path());
+        this.gsettings.set_string(
+          Fields.CUSTOMBGDARK,
+          dlg.get_file().get_path(),
+        );
       });
       this._logoDarkPicker.connect("clicked", () => {
         this._fileDarkChooser.transient_for = this.get_root();
         let path = Gio.File.new_for_path(
-          gsettings.get_string(Fields.CUSTOMBGDARK),
+          this.gsettings.get_string(Fields.CUSTOMBGDARK),
         ).get_parent();
         if (path) {
           this._fileDarkChooser.set_current_folder(path);
@@ -911,12 +913,15 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._cssFileChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
-        gsettings.set_string(Fields.CUSTOMTHEME, dlg.get_file().get_path());
+        this.gsettings.set_string(
+          Fields.CUSTOMTHEME,
+          dlg.get_file().get_path(),
+        );
       });
       this._cssPicker.connect("clicked", () => {
         this._cssFileChooser.transient_for = this.get_root();
         let path = Gio.File.new_for_path(
-          gsettings.get_string(Fields.CUSTOMTHEME),
+          this.gsettings.get_string(Fields.CUSTOMTHEME),
         ).get_parent();
         if (path) {
           this._cssFileChooser.set_current_folder(path);
@@ -925,7 +930,7 @@ const CustomizeIBus = GObject.registerClass(
       });
       this._cssDarkFileChooser.connect("response", (dlg, response) => {
         if (response !== Gtk.ResponseType.ACCEPT) return;
-        gsettings.set_string(
+        this.gsettings.set_string(
           Fields.CUSTOMTHEMENIGHT,
           dlg.get_file().get_path(),
         );
@@ -933,7 +938,7 @@ const CustomizeIBus = GObject.registerClass(
       this._cssDarkPicker.connect("clicked", () => {
         this._cssDarkFileChooser.transient_for = this.get_root();
         let path = Gio.File.new_for_path(
-          gsettings.get_string(Fields.CUSTOMTHEMENIGHT),
+          this.gsettings.get_string(Fields.CUSTOMTHEMENIGHT),
         ).get_parent();
         if (path) {
           this._cssDarkFileChooser.set_current_folder(path);
@@ -941,16 +946,16 @@ const CustomizeIBus = GObject.registerClass(
         this._cssDarkFileChooser.show();
       });
       this._reset_logo_button.connect("clicked", () => {
-        gsettings.set_string(Fields.CUSTOMBG, "");
+        this.gsettings.set_string(Fields.CUSTOMBG, "");
       });
       this._reset_logoDark_button.connect("clicked", () => {
-        gsettings.set_string(Fields.CUSTOMBGDARK, "");
+        this.gsettings.set_string(Fields.CUSTOMBGDARK, "");
       });
       this._reset_css_button.connect("clicked", () => {
-        gsettings.set_string(Fields.CUSTOMTHEME, "");
+        this.gsettings.set_string(Fields.CUSTOMTHEME, "");
       });
       this._reset_cssDark_button.connect("clicked", () => {
-        gsettings.set_string(Fields.CUSTOMTHEMENIGHT, "");
+        this.gsettings.set_string(Fields.CUSTOMTHEMENIGHT, "");
       });
 
       this._field_remember_input.set_sensitive(this._field_enable_ASCII.active);
@@ -1080,352 +1085,352 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _bindValues() {
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.AUTOSWITCH,
         this._field_enable_ASCII,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.ENABLECUSTOMTHEME,
         this._field_enable_custom_theme,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.ENABLECUSTOMTHEMENIGHT,
         this._field_enable_custom_theme_dark,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.ENABLEORIEN,
         this._field_enable_orien,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.ORIENTATION,
         this._field_orientation,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USECANDANIM,
         this._field_use_candidate_animation,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.CANDANIMATION,
         this._field_candidate_animation,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USESCROLL,
         this._field_use_candidate_scroll,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.SCROLLMODE,
         this._field_candidate_scroll_mode,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USECANDRIGHTSWITCH,
         this._field_use_candidate_right_click,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.CANDRIGHTFUNC,
         this._field_candidate_right_click,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USECANDSTILL,
         this._field_use_candidate_still,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.CANDSTILLPOS,
         this._field_candidate_still_position,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USETRAYSSWITCH,
         this._field_use_tray_source_switch_key,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.TRAYSSWITCHKEY,
         this._field_tray_source_switch_key,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.REMCANDPOS,
         this._field_candidate_remember_position,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.REMEMBERINPUT,
         this._field_remember_input,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.UNKNOWNSTATE,
         this._field_unkown_state,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USECANDOPACITY,
         this._field_use_candidate_opacity,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.CANDOPACITY,
         this._field_candidate_opacity,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USECUSTOMFONT,
         this._field_use_custom_font,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.CUSTOMFONT,
         this._field_custom_font,
         "font",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDUSEF,
         this._field_indicator_use_custom_font,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDCUSTOMFONT,
         this._field_indicator_custom_font,
         "font",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USECUSTOMBG,
         this._field_use_custom_bg,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USECUSTOMBGDARK,
         this._field_use_custom_bg_dark,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.BGMODE,
         this._field_bg_mode,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.BGDARKMODE,
         this._field_bg_dark_mode,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.BGREPEATMODE,
         this._field_bg_repeat_mode,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.BGDARKREPEATMODE,
         this._field_bg_dark_repeat_mode,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.MENUIBUSEMOJI,
         this._field_ibus_emoji,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USEREPOSITION,
         this._field_candidate_reposition,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USEBUTTONS,
         this._field_candidate_buttons,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.FIXIMELIST,
         this._field_fix_ime_list,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USETRAY,
         this._field_use_tray,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.MENUEXTPREF,
         this._field_extension_entry,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.MENUIBUSPREF,
         this._field_ibus_preference,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.MENUIBUSVER,
         this._field_ibus_version,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.MENUIBUSREST,
         this._field_ibus_restart,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.MENUIBUSEXIT,
         this._field_ibus_exit,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USEINPUTIND,
         this._field_use_indicator,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDTOG,
         this._field_indicator_only_toggle,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDASCII,
         this._field_indicator_only_in_ASCII,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDSINGLE,
         this._field_indicator_not_single_IME,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USEINPUTINDLCLK,
         this._field_indicator_enable_left_click,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDLCLICK,
         this._field_indicator_left_click,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDRIGC,
         this._field_indicator_right_close,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDSCROLL,
         this._field_indicator_scroll,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDANIM,
         this._field_indicator_animation,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USEINDOPACITY,
         this._field_indicator_use_opacity,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INDOPACITY,
         this._field_indicator_opacity,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USEINDSHOWD,
         this._field_indicator_enable_show_delay,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDSHOW,
         this._field_indicator_show_time,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.USEINDAUTOHID,
         this._field_indicator_enable_autohide,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.bind(
+      this.gsettings.bind(
         Fields.INPUTINDHID,
         this._field_indicator_hide_time,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
-      gsettings.connect(
+      this.gsettings.connect(
         `changed::${Fields.CUSTOMBG}`,
         this._updateLogoPicker.bind(this),
       );
       this._updateLogoPicker();
-      gsettings.connect(
+      this.gsettings.connect(
         `changed::${Fields.CUSTOMBGDARK}`,
         this._updateLogoDarkPicker.bind(this),
       );
       this._updateLogoDarkPicker();
-      gsettings.connect(
+      this.gsettings.connect(
         `changed::${Fields.CUSTOMTHEME}`,
         this._updateCssPicker.bind(this),
       );
       this._updateCssPicker();
-      gsettings.connect(
+      this.gsettings.connect(
         `changed::${Fields.CUSTOMTHEMENIGHT}`,
         this._updateCssDarkPicker.bind(this),
       );
@@ -1434,7 +1439,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _createAdjustment(key, step_increment) {
-      let schemaKey = gsettings.settings_schema.get_key(key);
+      let schemaKey = this.gsettings.settings_schema.get_key(key);
       let [type, variant] = schemaKey.get_range().deep_unpack();
       if (type !== "range")
         throw new Error('Invalid key type "%s" for adjustment'.format(type));
@@ -1444,7 +1449,7 @@ const CustomizeIBus = GObject.registerClass(
         upper,
         step_increment,
       });
-      gsettings.bind(key, adj, "value", Gio.SettingsBindFlags.DEFAULT);
+      this.gsettings.bind(key, adj, "value", Gio.SettingsBindFlags.DEFAULT);
       return adj;
     }
 
@@ -1545,10 +1550,14 @@ const CustomizeIBus = GObject.registerClass(
       frame.set_child(frame.grid);
 
       var version = _("unknown (self-build ?)");
-      if (thisMetadata.version !== undefined) {
-        version = thisMetadata.version.toString();
+      if (this.metadata.version !== undefined) {
+        version = this.metadata.version.toString();
       }
-      let iconFile = GLib.build_filenamev([dir.get_path(), "img", "logo.png"]);
+      let iconFile = GLib.build_filenamev([
+        this.dir.get_path(),
+        "img",
+        "logo.png",
+      ]);
       let logo = Gtk.Image.new_from_pixbuf(
         GdkPixbuf.Pixbuf.new_from_file(iconFile),
       );
@@ -1903,23 +1912,6 @@ const CustomizeIBus = GObject.registerClass(
       });
     }
 
-    _buildHeaderBar() {
-      this.connect("realize", () => {
-        this.toplevel = this.get_root();
-        this.headerBar = this.toplevel.get_titlebar();
-        let uri = _(
-          "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/",
-        );
-        let helpButton = this._iconLinkButtonMaker(
-          uri,
-          "dialog-information-symbolic",
-        );
-        this.headerBar.pack_start(helpButton);
-        this.toplevel.set_title(_("Customize IBus"));
-        return GLib.SOURCE_REMOVE;
-      });
-    }
-
     _showFileChooser(title, params, acceptBtn, acceptHandler, setDefaultName) {
       var transient_for;
       transient_for = this.get_root ? this.get_root() : this;
@@ -1973,7 +1965,7 @@ const CustomizeIBus = GObject.registerClass(
           return;
         }
         for (let field in Fields)
-          if (field != "IBUSRESTTIME") gsettings.reset(Fields[field]);
+          if (field != "IBUSRESTTIME") this.gsettings.reset(Fields[field]);
         dialog.destroy();
       });
       dialog.show();
@@ -2002,10 +1994,23 @@ export default class Preferences extends ExtensionPreferences {
    */
   constructor(metadata) {
     super(metadata);
-    this.initTranslations();
-    gsettings = this.getSettings();
-    thisMetadata = metadata;
-    dir = this.dir;
+  }
+
+  /**
+   * Fill the preferences window with preferences.
+   *
+   * If this method is overridden, `getPreferencesWidget()` will NOT be called.
+   *
+   * @param {Adw.PreferencesWindow} window - the preferences window
+   */
+  fillPreferencesWindow(window) {
+    const widget = this.getPreferencesWidget();
+    const page = new Adw.PreferencesPage();
+    const group = new Adw.PreferencesGroup();
+    group.add(widget);
+    page.add(group);
+    window.set_title(_("Customize IBus"));
+    window.add(page);
   }
 
   /**
@@ -2019,6 +2024,6 @@ export default class Preferences extends ExtensionPreferences {
    * @returns {Gtk.Widget} the preferences widget
    */
   getPreferencesWidget() {
-    return new CustomizeIBus();
+    return new CustomizeIBus(this.getSettings(), this.metadata, this.dir);
   }
 }
