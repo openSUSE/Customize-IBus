@@ -1328,8 +1328,8 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this._justSwitchedWindow = false;
       this.style_class = "candidate-popup-boxpointer";
       this._dummyCursor = new St.Widget({ opacity: 0 });
-      Main.layoutManager.uiGroup.add_actor(this._dummyCursor);
-      Main.layoutManager.addChrome(this);
+      Main.layoutManager.uiGroup.add_child(this._dummyCursor);
+      Main.layoutManager.addTopChrome(this);
       let box = new St.BoxLayout({
         style_class: "candidate-popup-content",
         vertical: true,
@@ -1339,7 +1339,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
         style_class: "candidate-popup-text",
         visible: true,
       });
-      box.add(this._inputIndicatorLabel);
+      box.add_child(this._inputIndicatorLabel);
 
       this._child_opacity = [];
       let candidate_child = this.bin.get_children();
@@ -2880,14 +2880,17 @@ const Extensions = GObject.registerClass(
               });
           });
         let title = _("Starting / Restarting IBus...");
-        let source = new MessageTray.Source(title, "dialog-information");
+        let source = new MessageTray.Source({
+          title,
+          iconName: "dialog-information",
+        });
         Main.messageTray.add(source);
-        let notification = new MessageTray.Notification(
+        let notification = new MessageTray.Notification({
           source,
           title,
-          new Date(parseInt(ibusresttime)).toString(),
-        );
-        source.showNotification(notification);
+          datetime: GLib.DateTime.new_from_unix_local(parseInt(ibusresttime)),
+        });
+        source.addNotification(notification);
       }
       this._not_extension_first_start = true;
     }
@@ -2980,19 +2983,24 @@ const Extensions = GObject.registerClass(
     _MenuIBusVer() {
       Main.overview.hide();
       let title = _("IBus Version");
-      let source = new MessageTray.Source(title, "dialog-information");
+      let source = new MessageTray.Source({
+        title,
+        iconName: "dialog-information",
+      });
       Main.messageTray.add(source);
-      let notification = new MessageTray.Notification(
+      let notification = new MessageTray.Notification({
         source,
         title,
-        "v" +
+        body:
+          "v" +
           IBus.MAJOR_VERSION +
           "." +
           IBus.MINOR_VERSION +
           "." +
           IBus.MICRO_VERSION,
-      );
-      source.showNotification(notification);
+        datetime: GLib.DateTime.new_now_local(),
+      });
+      source.addNotification(notification);
     }
 
     // Restarting IBus
@@ -3030,14 +3038,17 @@ const Extensions = GObject.registerClass(
             });
         });
       let title = _("Restarting IBus...");
-      let source = new MessageTray.Source(title, "dialog-information");
+      let source = new MessageTray.Source({
+        title,
+        iconName: "dialog-information",
+      });
       Main.messageTray.add(source);
-      let notification = new MessageTray.Notification(
+      let notification = new MessageTray.Notification({
         source,
         title,
-        new Date().toString(),
-      );
-      source.showNotification(notification);
+        datetime: GLib.DateTime.new_now_local(),
+      });
+      source.addNotification(notification);
     }
 
     // Exiting IBus
@@ -3060,14 +3071,17 @@ const Extensions = GObject.registerClass(
       Main.overview.hide();
       Util.spawn(["ibus", "exit"]);
       let title = _("Exiting IBus...");
-      let source = new MessageTray.Source(title, "dialog-information");
+      let source = new MessageTray.Source({
+        title,
+        iconName: "dialog-information",
+      });
       Main.messageTray.add(source);
-      let notification = new MessageTray.Notification(
+      let notification = new MessageTray.Notification({
         source,
         title,
-        new Date().toString(),
-      );
-      source.showNotification(notification);
+        datetime: GLib.DateTime.new_now_local(),
+      });
+      source.addNotification(notification);
     }
 
     destroy() {

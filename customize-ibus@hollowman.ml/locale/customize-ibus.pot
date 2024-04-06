@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 87\n"
+"Project-Id-Version: Customize Ibus 89\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-11 20:45+0200\n"
+"POT-Creation-Date: 2024-04-06 18:06+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,35 +45,35 @@ msgstr ""
 msgid "Starting / Restarting IBus..."
 msgstr ""
 
-#: extension.js:2906
+#: extension.js:2909
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:2927 prefs.js:1569 prefs.js:2012
+#: extension.js:2930 prefs.js:1569 prefs.js:2012
 msgid "Customize IBus"
 msgstr ""
 
-#: extension.js:2948 prefs.js:295 prefs.js:527
+#: extension.js:2951 prefs.js:295 prefs.js:527
 msgid "IBus Preferences"
 msgstr ""
 
-#: extension.js:2969 extension.js:2982 prefs.js:531
+#: extension.js:2972 extension.js:2985 prefs.js:531
 msgid "IBus Version"
 msgstr ""
 
-#: extension.js:3003
+#: extension.js:3011
 msgid "Restart"
 msgstr ""
 
-#: extension.js:3032
+#: extension.js:3040
 msgid "Restarting IBus..."
 msgstr ""
 
-#: extension.js:3048
+#: extension.js:3059
 msgid "Quit"
 msgstr ""
 
-#: extension.js:3062
+#: extension.js:3073
 msgid "Exiting IBus..."
 msgstr ""
 
