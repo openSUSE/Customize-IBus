@@ -1,20 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the Customize Ibus package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# phlostically <phlostically@mailinator.com>, 2024.
 msgid ""
 msgstr ""
 "Project-Id-Version: Customize Ibus 89\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: hollowman@opensuse.org\n"
 "POT-Creation-Date: 2024-04-06 18:06+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2024-04-22 21:07+0000\n"
+"Last-Translator: phlostically <phlostically@mailinator.com>\n"
+"Language-Team: Esperanto <https://hosted.weblate.org/projects/ibus-customize/"
+"customize-ibus/eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 #: extension.js:1494
 msgid "IBus panel service connected!"
@@ -22,27 +24,27 @@ msgstr ""
 
 #: extension.js:2075
 msgid "loading light user theme for IBus:"
-msgstr ""
+msgstr "ŝargante propran helan etoson por IBus:"
 
 #: extension.js:2085
 msgid "loading dark user theme for IBus:"
-msgstr ""
+msgstr "ŝargante propran malhelan etoson por IBus:"
 
 #: extension.js:2090
 msgid "loading default theme for IBus"
-msgstr ""
+msgstr "ŝargante implicitan etoson por IBus"
 
 #: extension.js:2286
 msgid "loading background for IBus:"
-msgstr ""
+msgstr "ŝargante fonon por IBus:"
 
 #: extension.js:2296
 msgid "remove custom background for IBus"
-msgstr ""
+msgstr "forigi propran fonon por IBus"
 
 #: extension.js:2882
 msgid "Starting / Restarting IBus..."
-msgstr ""
+msgstr "Lanĉante/relanĉante IBus…"
 
 #: extension.js:2909
 msgid "Copy Emoji"
@@ -50,7 +52,7 @@ msgstr ""
 
 #: extension.js:2930 prefs.js:1569 prefs.js:2012
 msgid "Customize IBus"
-msgstr ""
+msgstr "Adapti IBus"
 
 #: extension.js:2951 prefs.js:295 prefs.js:527
 msgid "IBus Preferences"
@@ -74,15 +76,15 @@ msgstr "Forlasi"
 
 #: extension.js:3073
 msgid "Exiting IBus..."
-msgstr ""
+msgstr "Forlasante IBus…"
 
 #: prefs.js:70
 msgid "Custom IME light theme"
-msgstr ""
+msgstr "Propra enigmetoda hela etoso"
 
 #: prefs.js:73
 msgid "Custom IME dark theme"
-msgstr ""
+msgstr "Propra enigmetoda malhela etoso"
 
 #: prefs.js:75 prefs.js:103
 msgid "Use custom font"
@@ -98,11 +100,11 @@ msgstr "Uzi propran malhelan fonon"
 
 #: prefs.js:83
 msgid "Candidates scroll"
-msgstr ""
+msgstr "Rulumado de kandidatoj"
 
 #: prefs.js:85
 msgid "Auto switch ASCII mode"
-msgstr ""
+msgstr "Aŭtomate baskuligi Askian reĝimon"
 
 #: prefs.js:86
 msgid "Candidates orientation"
@@ -126,23 +128,23 @@ msgstr ""
 
 #: prefs.js:108
 msgid "Candidate box opacity"
-msgstr ""
+msgstr "Opako de skatolo de kandidatoj"
 
 #: prefs.js:118
 msgid "Start / Restart IBus"
-msgstr ""
+msgstr "Lanĉi/relanĉi IBus"
 
 #: prefs.js:124
 msgid "Restore Default Settings"
-msgstr ""
+msgstr "Restaŭri implicitajn agordojn"
 
 #: prefs.js:130 prefs.js:828
 msgid "Export Current Settings"
-msgstr ""
+msgstr "Elporti aktualajn agordojn"
 
 #: prefs.js:136 prefs.js:852
 msgid "Import Settings from File"
-msgstr ""
+msgstr "Enporti agordojn de dosiero"
 
 #: prefs.js:142
 msgid "Vertical"
@@ -154,35 +156,35 @@ msgstr "Horizontala"
 
 #: prefs.js:147
 msgid "Don't Remember Position"
-msgstr ""
+msgstr "Ne memori pozicion"
 
 #: prefs.js:148
 msgid "Remember Last Position"
-msgstr ""
+msgstr "Memori lastan pozicion"
 
 #: prefs.js:152
 msgid "Don't Remember State"
-msgstr ""
+msgstr "Ne memori staton"
 
 #: prefs.js:153
 msgid "Remember Input State"
-msgstr ""
+msgstr "Memori enigan staton"
 
 #: prefs.js:157
 msgid "Change Page"
-msgstr ""
+msgstr "Ŝanĝi paĝon"
 
 #: prefs.js:158
 msgid "Change Candidate"
-msgstr ""
+msgstr "Ŝanĝi kandidaton"
 
 #: prefs.js:162
 msgid "On"
-msgstr ""
+msgstr "Ŝaltita"
 
 #: prefs.js:163
 msgid "Off"
-msgstr ""
+msgstr "Malŝaltita"
 
 #: prefs.js:164
 msgid "Keep"
@@ -202,7 +204,7 @@ msgstr ""
 
 #: prefs.js:174 prefs.js:179
 msgid "Switch Source"
-msgstr ""
+msgstr "Ŝanĝi fonton"
 
 #: prefs.js:178
 msgid "Open Menu"
@@ -246,23 +248,23 @@ msgstr "Malsupra-maldekstra"
 
 #: prefs.js:195 prefs.js:201
 msgid "Centered"
-msgstr ""
+msgstr "Centra"
 
 #: prefs.js:196 prefs.js:202
 msgid "Full"
-msgstr ""
+msgstr "Plena"
 
 #: prefs.js:197 prefs.js:203
 msgid "Zoom"
-msgstr ""
+msgstr "Zomo"
 
 #: prefs.js:207 prefs.js:212
 msgid "No repeat"
-msgstr ""
+msgstr "Ne ripeti"
 
 #: prefs.js:208 prefs.js:213
 msgid "Repeat"
-msgstr ""
+msgstr "Ripeti"
 
 #: prefs.js:217 prefs.js:224
 msgid "None"
@@ -270,23 +272,23 @@ msgstr "Nenio"
 
 #: prefs.js:218 prefs.js:225
 msgid "Slide"
-msgstr ""
+msgstr "Deŝovi"
 
 #: prefs.js:219 prefs.js:226
 msgid "Fade"
-msgstr ""
+msgstr "Dissolvi"
 
 #: prefs.js:220 prefs.js:227
 msgid "All"
-msgstr ""
+msgstr "Ĉiuj"
 
 #: prefs.js:235 prefs.js:444
 msgid "IBus Version: "
-msgstr ""
+msgstr "Versio de IBus: "
 
 #: prefs.js:235 prefs.js:434
 msgid "unknown (installed ?)"
-msgstr ""
+msgstr "nesciata (ĉu instalita?)"
 
 #: prefs.js:255
 msgid "Enable indicator left click"
@@ -294,7 +296,7 @@ msgstr ""
 
 #: prefs.js:259
 msgid "Indicator opacity"
-msgstr ""
+msgstr "Opako de indikilo"
 
 #: prefs.js:269
 msgid "Enable indicator show delay (unit: seconds)"
@@ -306,11 +308,11 @@ msgstr ""
 
 #: prefs.js:289
 msgid "GNOME Settings"
-msgstr ""
+msgstr "Agordoj de GNOME"
 
 #: prefs.js:312 prefs.js:325
 msgid "Select an Image"
-msgstr ""
+msgstr "Elektu bildon"
 
 #: prefs.js:317 prefs.js:330 prefs.js:349 prefs.js:362 prefs.js:376
 #: prefs.js:391 prefs.js:406 prefs.js:421
@@ -319,11 +321,11 @@ msgstr "(Nenio)"
 
 #: prefs.js:344 prefs.js:357
 msgid "Select an IBus Stylesheet"
-msgstr ""
+msgstr "Elektu stilfolion por IBus"
 
 #: prefs.js:453
 msgid "General"
-msgstr ""
+msgstr "Ĝenerala"
 
 #: prefs.js:486
 msgid "Fix IME list order"
@@ -363,11 +365,11 @@ msgstr "Relanĉante IBus"
 
 #: prefs.js:539
 msgid "Exiting IBus"
-msgstr ""
+msgstr "Forlasante IBus"
 
 #: prefs.js:544
 msgid "Indicator"
-msgstr ""
+msgstr "Indikilo"
 
 #: prefs.js:546
 msgid "Use input source indicator"
