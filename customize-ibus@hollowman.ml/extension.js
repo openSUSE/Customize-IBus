@@ -1327,7 +1327,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this.visible = false;
       this._justSwitchedWindow = false;
       this.style_class = "candidate-popup-boxpointer";
-      this._dummyCursor = new St.Widget({ opacity: 0 });
+      this._dummyCursor = new Clutter.Actor({ opacity: 0 });;
       Main.layoutManager.uiGroup.add_child(this._dummyCursor);
       Main.layoutManager.addTopChrome(this);
       let box = new St.BoxLayout({
@@ -1426,7 +1426,12 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
     _showIndicator() {
       this.open(BoxPointer.PopupAnimation[this.animation]);
-      this.get_parent().set_child_above_sibling(this, null);
+      // We shouldn't be above some components like the screenshot UI,
+      // so don't raise to the top.
+      // The on-screen keyboard is expected to be above any entries,
+      // so just above the keyboard gets us to the right layer.
+      const { keyboardBox } = Main.layoutManager;
+      this.get_parent().set_child_above_sibling(this, keyboardBox);
       if (this.enableAutoHide)
         this._lastTimeOut = GLib.timeout_add_seconds(
           GLib.PRIORITY_DEFAULT,
