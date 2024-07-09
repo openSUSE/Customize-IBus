@@ -3,33 +3,18 @@
   "version": "89.0.0",
   "description": "Full customization of appearance, behavior, system tray and input source indicator for IBus.",
   "dependencies": {
-    "eslint": "^9.0.0",
+    "eslint": "^9.6.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
     "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
-    "prettier": "^3.2.5"
+    "lint-staged": "^15.2.7",
+    "prettier": "^3.3.2"
   },
   "scripts": {
     "lint": "eslint .",
-    "postinstall": "husky install",
-    "pre-commit": "lint-staged && eslint . --fix"
-  },
-  "eslintConfig": {
-    "plugins": [
-      "prettier"
-    ],
-    "extends": [
-      "plugin:prettier/recommended"
-    ],
-    "ignorePatterns": [],
-    "rules": {
-      "prettier/prettier": "error"
-    },
-    "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module"
-    }
+    "postinstall": "husky init",
+    "pre-commit": "lint-staged && eslint . --fix",
+    "prepare": "husky"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx,json,css,scss,md,html}": [

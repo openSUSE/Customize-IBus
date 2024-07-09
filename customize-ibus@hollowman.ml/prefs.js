@@ -19,7 +19,7 @@ import {
 import { Fields } from "./fields.js";
 
 const SessionType =
-  GLib.getenv("XDG_SESSION_TYPE") == "wayland" ? "Wayland" : "Xorg";
+  GLib.getenv("XDG_SESSION_TYPE") === "wayland" ? "Wayland" : "Xorg";
 const SCHEMA_PATH = "/org/gnome/shell/extensions/customize-ibus/";
 
 const BoxSettings = {
@@ -30,8 +30,11 @@ const BoxSettings = {
 };
 
 function mergeObjects(main, bck) {
-  for (var prop in bck) {
-    if (!main.hasOwnProperty(prop) && bck.hasOwnProperty(prop)) {
+  for (let prop in bck) {
+    if (
+      Object.prototype.hasOwnProperty.call(main, prop) === false &&
+      Object.prototype.hasOwnProperty.call(bck, prop)
+    ) {
       main[prop] = bck[prop];
     }
   }
@@ -51,14 +54,6 @@ const CustomizeIBus = GObject.registerClass(
       this._bulidUI();
       this._bindValues();
       this._syncStatus();
-    }
-
-    _init() {
-      let win_conf = {
-        hscrollbar_policy: Gtk.PolicyType.NEVER,
-      };
-      win_conf.vscrollbar_policy = Gtk.PolicyType.NEVER;
-      super._init(win_conf);
     }
 
     _bulidWidget() {
@@ -1549,7 +1544,7 @@ const CustomizeIBus = GObject.registerClass(
       frame.grid._row = 0;
       frame.set_child(frame.grid);
 
-      var version = _("unknown (self-build ?)");
+      let version = _("unknown (self-build ?)");
       if (this.metadata.version !== undefined) {
         version = this.metadata.version.toString();
       }
@@ -1913,7 +1908,7 @@ const CustomizeIBus = GObject.registerClass(
     }
 
     _showFileChooser(title, params, acceptBtn, acceptHandler, setDefaultName) {
-      var transient_for;
+      let transient_for;
       transient_for = this.get_root ? this.get_root() : this;
       let dialog = new Gtk.FileChooserDialog(
         mergeObjects({ title: title, transient_for: transient_for }, params),
@@ -1927,13 +1922,13 @@ const CustomizeIBus = GObject.registerClass(
 
       dialog.show();
 
-      dialog.connect("response", (dialog, id) => {
-        if (id != Gtk.ResponseType.ACCEPT) {
-          dialog.destroy();
+      dialog.connect("response", (d, id) => {
+        if (id !== Gtk.ResponseType.ACCEPT) {
+          d.destroy();
           return;
         }
-        acceptHandler.call(this, dialog.get_file().get_path());
-        dialog.destroy();
+        acceptHandler.call(this, d.get_file().get_path());
+        d.destroy();
       });
     }
 
@@ -1959,14 +1954,14 @@ const CustomizeIBus = GObject.registerClass(
         label: _("This will discard all the current configurations!"),
       });
       dialog.get_message_area().append(message);
-      dialog.connect("response", (dialog, id) => {
-        if (id != Gtk.ResponseType.OK) {
-          dialog.destroy();
+      dialog.connect("response", (d, id) => {
+        if (id !== Gtk.ResponseType.OK) {
+          d.destroy();
           return;
         }
         for (let field in Fields)
-          if (field != "IBUSRESTTIME") this.gsettings.reset(Fields[field]);
-        dialog.destroy();
+          if (field !== "IBUSRESTTIME") this.gsettings.reset(Fields[field]);
+        d.destroy();
       });
       dialog.show();
     }

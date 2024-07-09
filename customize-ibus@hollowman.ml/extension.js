@@ -61,11 +61,12 @@ const BGMODESACTIONS = {
   Zoom: "cover",
 };
 
-var IgnoreModes = [];
-var IBusSettings = null;
-var ngsettings = null;
-var opacityStyle = "";
-var fontStyle = "";
+const global = Shell.Global.get();
+let IgnoreModes = [];
+let IBusSettings = null;
+let ngsettings = null;
+let opacityStyle = "";
+let fontStyle = "";
 
 /* General */
 // Candidates orientation
@@ -84,8 +85,8 @@ const IBusOrientation = GObject.registerClass(
     },
   },
   class IBusOrientation extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       this._originalSetOrientation =
         CandidateArea.setOrientation.bind(CandidateArea);
       CandidateArea.setOrientation = () => {};
@@ -135,8 +136,8 @@ const IBusAnimation = GObject.registerClass(
     },
   },
   class IBusAnimation extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       this._openOrig = CandidatePopup.open;
       gsettings.bind(
         Fields.CANDANIMATION,
@@ -185,8 +186,8 @@ const IBusClickSwitch = GObject.registerClass(
     },
   },
   class IBusClickSwitch extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       gsettings.bind(
         Fields.CANDRIGHTFUNC,
         this,
@@ -202,18 +203,12 @@ const IBusClickSwitch = GObject.registerClass(
         Clutter.InputDeviceType.KEYBOARD_DEVICE,
       );
 
-      this._mouseCandidateEnterID = CandidateArea.connect(
-        "enter-event",
-        (actor, event) => {
-          this._mouseInCandidate = true;
-        },
-      );
-      this._mouseCandidateLeaveID = CandidateArea.connect(
-        "leave-event",
-        (actor, event) => {
-          this._mouseInCandidate = false;
-        },
-      );
+      this._mouseCandidateEnterID = CandidateArea.connect("enter-event", () => {
+        this._mouseInCandidate = true;
+      });
+      this._mouseCandidateLeaveID = CandidateArea.connect("leave-event", () => {
+        this._mouseInCandidate = false;
+      });
       this._buttonPressID = CandidatePopup.connect(
         "button-press-event",
         (actor, event) => {
@@ -263,7 +258,7 @@ const IBusClickSwitch = GObject.registerClass(
     }
 
     set switchfunction(switchfunction) {
-      this._clickSwitch = switchfunction == 0 ? false : true;
+      this._clickSwitch = switchfunction === 0 ? false : true;
     }
 
     destroy() {
@@ -301,8 +296,8 @@ const IBusScroll = GObject.registerClass(
     },
   },
   class IBusScroll extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
 
       gsettings.bind(
         Fields.SCROLLMODE,
@@ -367,8 +362,8 @@ const IBusNotFollowCaret = GObject.registerClass(
     },
   },
   class IBusNotFollowCaret extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       this._setDummyCursorGeometryOrig =
         IBusManager._candidatePopup._setDummyCursorGeometry;
       IBusManager._candidatePopup._setDummyCursorGeometry = (x, y, w, h) => {
@@ -482,8 +477,8 @@ const IBusFontSetting = GObject.registerClass(
     },
   },
   class IBusFontSetting extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       gsettings.bind(
         Fields.CUSTOMFONT,
         this,
@@ -566,8 +561,8 @@ const IBusAutoSwitch = GObject.registerClass(
     },
   },
   class IBusAutoSwitch extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       this._bindSettings();
       this._tmpWindow = null;
       this._overviewHiddenID = Main.overview.connect(
@@ -600,20 +595,22 @@ const IBusAutoSwitch = GObject.registerClass(
       let stateConf = false;
       if (this._remember) {
         let store = this._states.get(this._tmpWindow);
-        if (state != store) this._states.set(this._tmpWindow, state);
+        if (state !== store) this._states.set(this._tmpWindow, state);
 
         this._tmpWindow = win.wm_class ? win.wm_class.toLowerCase() : "";
         if (!this._states.has(this._tmpWindow)) {
           let unknown =
-            this.unknown == UNKNOWN.DEFAULT
+            this.unknown === UNKNOWN.DEFAULT
               ? state
-              : this.unknown == UNKNOWN.ON;
+              : this.unknown === UNKNOWN.ON;
           this._states.set(this._tmpWindow, unknown);
         }
         stateConf = this._states.get(this._tmpWindow);
       } else {
         stateConf =
-          this.unknown == UNKNOWN.DEFAULT ? state : this.unknown == UNKNOWN.ON;
+          this.unknown === UNKNOWN.DEFAULT
+            ? state
+            : this.unknown === UNKNOWN.ON;
       }
 
       return state ^ stateConf;
@@ -681,8 +678,8 @@ const IBusOpacity = GObject.registerClass(
     },
   },
   class IBusOpacity extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
 
       this._area_opacity = CandidateArea.get_opacity();
       this._child_opacity = [];
@@ -718,7 +715,7 @@ const IBusOpacity = GObject.registerClass(
       CandidatePopup.set_style(fontStyle + opacityStyle);
       let themeNode = CandidatePopup.get_theme_node();
       let backgroundColor = themeNode.get_color("-arrow-background-color");
-      if (backgroundColor.alpha != 0) {
+      if (backgroundColor.alpha !== 0) {
         opacityStyle = "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
           backgroundColor.red,
           backgroundColor.green,
@@ -754,8 +751,8 @@ const IBusOpacity = GObject.registerClass(
 // Fix IME List order
 const IBusFixIMEList = GObject.registerClass(
   class IBusFixIMEList extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       // Solution Provided by
       // https://github.com/AlynxZhou/gnome-shell-extension-fixed-ime-list/blob/master/extension.js
 
@@ -825,7 +822,7 @@ const IBusFixIMEList = GObject.registerClass(
         // By default InputSourcePopup starts at 0, this is ok for MRU.
         // But we need to set popup current index to current source.
         // I think it's OK to start from 0 if we don't have current source.
-        if (this._currentSource != null) {
+        if (this._currentSource !== null) {
           popup._selectedIndex = this._mruSources.indexOf(this._currentSource);
         }
 
@@ -855,8 +852,8 @@ const IBusFixIMEList = GObject.registerClass(
         // _inputSourcesChanged() will active the first one so we must
         // restore after it.
         if (
-          this.activeSource != null &&
-          this._currentSource != this.activeSource
+          this.activeSource !== null &&
+          this._currentSource !== this.activeSource
         ) {
           this.activeSource.activate(true);
           // We only restore once.
@@ -999,7 +996,7 @@ const IBusFixIMEList = GObject.registerClass(
       // InputSourcePopup assume the first one is selected,
       // so we re-activate current source to make it the first.
       if (
-        InputSourceManager._currentSource != null &&
+        InputSourceManager._currentSource !== null &&
         InputSourceManager._mruSources[0] !== InputSourceManager._currentSource
       ) {
         InputSourceManager._currentSource.activate(true);
@@ -1011,8 +1008,8 @@ const IBusFixIMEList = GObject.registerClass(
 // Enable drag to reposition candidate box
 const IBusReposition = GObject.registerClass(
   class IBusReposition extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       CandidatePopup.reactive = true;
       this._buttonPressID = CandidatePopup.connect(
         "button-press-event",
@@ -1035,18 +1032,12 @@ const IBusReposition = GObject.registerClass(
         },
       );
 
-      this._mouseCandidateEnterID = CandidateArea.connect(
-        "enter-event",
-        (actor, event) => {
-          this._mouseInCandidate = true;
-        },
-      );
-      this._mouseCandidateLeaveID = CandidateArea.connect(
-        "leave-event",
-        (actor, event) => {
-          this._mouseInCandidate = false;
-        },
-      );
+      this._mouseCandidateEnterID = CandidateArea.connect("enter-event", () => {
+        this._mouseInCandidate = true;
+      });
+      this._mouseCandidateLeaveID = CandidateArea.connect("leave-event", () => {
+        this._mouseInCandidate = false;
+      });
       this._sideChangeID = CandidatePopup.connect("arrow-side-changed", () => {
         let themeNode = CandidatePopup.get_theme_node();
         let gap = themeNode.get_length("-boxpointer-gap");
@@ -1151,8 +1142,8 @@ const IBusTrayClickSwitch = GObject.registerClass(
     },
   },
   class IBusTrayClickSwitch extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       gsettings.bind(
         Fields.TRAYSSWITCHKEY,
         this,
@@ -1165,9 +1156,9 @@ const IBusTrayClickSwitch = GObject.registerClass(
       if (this._buttonPressID)
         InputSourceIndicator.disconnect(this._buttonPressID),
           (this._buttonPressID = 0);
-      let keyNum = traysswitchkey == 0 ? "1" : "3";
+      let keyNum = traysswitchkey === 0 ? "1" : "3";
       if (Meta.is_wayland_compositor())
-        keyNum = traysswitchkey == 0 ? "1" : "2";
+        keyNum = traysswitchkey === 0 ? "1" : "2";
       this._buttonPressID = InputSourceIndicator.connect(
         "button-press-event",
         function (actor, event) {
@@ -1320,14 +1311,14 @@ const IBusInputSourceIndicator = GObject.registerClass(
   },
   class IBusInputSourceIndicator extends BoxPointer.BoxPointer {
     /* Main */
-    _init() {
-      super._init(St.Side.TOP);
+    constructor() {
+      super(St.Side.TOP);
       this.font_style = "";
       this.opacity_style = "";
       this.visible = false;
       this._justSwitchedWindow = false;
       this.style_class = "candidate-popup-boxpointer";
-      this._dummyCursor = new Clutter.Actor({ opacity: 0 });;
+      this._dummyCursor = new Clutter.Actor({ opacity: 0 });
       Main.layoutManager.uiGroup.add_child(this._dummyCursor);
       Main.layoutManager.addTopChrome(this);
       let box = new St.BoxLayout({
@@ -1388,6 +1379,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
         // which is used for wayland clients. In order to work
         // with older IBus versions we can silently ignore the
         // signal's absence.
+        console.log(e);
       }
       this._focusOutID = panelService.connect("focus-out", () => {
         this.close(BoxPointer.PopupAnimation[this.animation]);
@@ -1395,7 +1387,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
       this._updatePropertyID = panelService.connect(
         "update-property",
         (engineName, prop) => {
-          if (prop.get_key() == INPUTMODE) {
+          if (prop.get_key() === INPUTMODE) {
             this._inputIndicatorLabel.text = this._getInputLabel();
             this._updateVisibility(true);
           }
@@ -1411,7 +1403,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
       );
       this._registerPropertyID = panelService.connect(
         "register-properties",
-        (engineName, prop) => {
+        () => {
           this._inputIndicatorLabel.text = this._getInputLabel();
         },
       );
@@ -1455,7 +1447,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
           this.visible = false;
       if (this.visible && !sourceToggle) {
         let position = this._dummyCursor.get_position();
-        if (Math.round(position[0]) == 0 && Math.round(position[1]) == 0)
+        if (Math.round(position[0]) === 0 && Math.round(position[1]) === 0)
           this.visible = false;
       }
       if (this._lastTimeOut) {
@@ -1749,7 +1741,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
         this.set_style(this.opacity_style + this.font_style);
         let themeNode = this.get_theme_node();
         let backgroundColor = themeNode.get_color("-arrow-background-color");
-        if (backgroundColor.alpha != 0) {
+        if (backgroundColor.alpha !== 0) {
           this.opacity_style =
             "-arrow-background-color: rgba(%d, %d, %d, %f);".format(
               backgroundColor.red,
@@ -1969,8 +1961,8 @@ const IBusThemeManager = GObject.registerClass(
     },
   },
   class IBusThemeManager extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       this._prevCssStylesheet = null;
       this._atNight = false;
       ngsettings.bind(System.LIGHT, this, "night", Gio.SettingsBindFlags.GET);
@@ -2164,8 +2156,8 @@ const IBusBGSetting = GObject.registerClass(
     },
   },
   class IBusBGSetting extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       ngsettings.bind(System.LIGHT, this, "night", Gio.SettingsBindFlags.GET);
       gsettings.bind(Fields.CUSTOMBG, this, "bg", Gio.SettingsBindFlags.GET);
       gsettings.bind(
@@ -2493,8 +2485,8 @@ const Extensions = GObject.registerClass(
     },
   },
   class Extensions extends GObject.Object {
-    _init() {
-      super._init();
+    constructor() {
+      super();
       this._bindSettings();
     }
 
