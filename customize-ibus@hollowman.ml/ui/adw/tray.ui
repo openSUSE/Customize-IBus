@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="AdwPreferencesPage" id="tray">
+    <property name="name">tray</property>
+    <property name="title" translatable="yes">Tray</property>
+    <property name="icon-name">utilities-terminal-symbolic</property>
+
+    <child>
+      <object class="AdwPreferencesGroup" id="tray_group">
+        <property name="title" translatable="yes">IBus Version: </property>
+        
+        <child>
+          <object class="AdwActionRow" id="start_restart_row">
+            <property name="title" translatable="yes">Start / Restart IBus</property>
+            <child>
+              <object class="GtkButton" id="start_restart_button">
+                <property name="label" translatable="yes">Start / Restart IBus</property>
+                <property name="hexpand">false</property>
+                <property name="vexpand">false</property>
+                <property name="halign">end</property>
+                <property name="valign">center</property>
+                <property name="height-request">16</property>
+                <property name="width-request">80</property>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwSwitchRow" id="use_tray_row">
+            <property name="title" translatable="yes">Show IBus tray icon</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwSwitchRow" id="use_tray_click_source_switch_row">
+            <property name="title" translatable="yes">Use tray icon click source</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwComboRow" id="tray_source_switch_click_key_row">
+            <property name="title" translatable="yes">Tray icon click source key</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">Left</item>
+                  <item translatable="yes">Right</item>
+                </items>
+              </object>
+            </property>
+            <property name="selected">0</property>
+          </object>
+        </child>
+
+      </object>
+    </child>
+
+    <child>
+      <object class="AdwPreferencesGroup" id="additional_menu_entries_group">
+        <property name="title" translatable="yes">Add Additional Menu Entries</property>
+
+        <child>
+          <object class="AdwSwitchRow" id="menu_ibus_emoji_row">
+            <property name="title" translatable="yes">Copying Emoji</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwSwitchRow" id="menu_ibus_preferences_row">
+            <property name="title" translatable="yes">This Extension's Preferences</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwSwitchRow" id="menu_ibus_preference_row">
+            <property name="title" translatable="yes">IBus Preferences</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwSwitchRow" id="menu_ibus_about_row">
+            <property name="title" translatable="yes">IBus Version</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwSwitchRow" id="menu_ibus_restart_row">
+            <property name="title" translatable="yes">Restarting IBus</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <child>
+          <object class="AdwSwitchRow" id="menu_ibus_exit_row">
+            <property name="title" translatable="yes">Exiting IBus</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <!-- Help ExpanderRow moved inside the additional_menu_entries_group -->
+        <child>
+          <object class="AdwExpanderRow" id="tray_help_expander_row">
+            <property name="title" translatable="yes">Help</property>
+            <property name="subtitle" translatable="yes">Click to expand for more information</property>
+            
+            <child>
+              <object class="AdwPreferencesRow">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">12</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Here you can set to show IBus tray icon, enable directly switch source with click, add additional menu entries to IBus input source indicator menu at system tray to restore the feelings on Non-GNOME desktop environment. You can also start or restart IBus by pressing the top button.</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">&lt;span size="small"&gt;&lt;b&gt;Note:&lt;/b&gt; If &lt;b&gt;Directly switch source with click&lt;/b&gt; is enabled, when the left key is selected, if you click the tray icon with left key, you will have input source switched, and click right key will open the menu as normal, vice versa.&lt;/span&gt;</property>
+                        <property name="use_markup">true</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+      </object>
+    </child>
+    
+  </object>
+</interface>

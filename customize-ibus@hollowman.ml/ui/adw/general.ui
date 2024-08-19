@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="AdwPreferencesPage" id="general">
+    <property name="name">general</property>
+    <property name="title" translatable="yes">General</property>
+    <property name="icon-name">preferences-desktop-symbolic</property>
+    
+    <child>
+      <object class="AdwPreferencesGroup" id="general_group">
+        <property name="title" translatable="yes">General Settings</property>
+        <property name="hexpand">true</property> 
+
+        <!-- Candidates Orientation -->
+        <child>
+          <object class="AdwPreferencesRow" id="candidate_orientation_row">
+            <property name="height-request">50</property>
+            <child>
+              <object class="GtkBox" id="container_box_orientation">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
+                <child>
+                  <object class="GtkCheckButton" id="candidate_orientation_checkbutton">
+                    <property name="active">true</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Candidates Orientation</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">false</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="AdwComboRow" id="candidate_orientation_combo">
+                    <property name="model">
+                      <object class="GtkStringList">
+                        <items>
+                          <item translatable="yes">Vertical</item>
+                          <item translatable="yes">Horizontal</item>
+                        </items>
+                      </object>
+                    </property>
+                    <property name="selected">0</property>
+                    <property name="hexpand">true</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Candidates Popup Animation -->
+        <child>
+          <object class="AdwComboRow" id="candidate_popup_animation_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Candidates Popup Animation</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">None</item>
+                  <item translatable="yes">Slide</item>
+                  <item translatable="yes">Fade</item>
+                  <item translatable="yes">All</item>
+                </items>
+              </object>
+            </property>
+            <property name="selected">0</property>
+          </object>
+        </child>
+
+        <!-- Candidate Box Right Click -->
+        <child>
+          <object class="AdwComboRow" id="candidate_box_right_click_func_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Candidate Box Right Click</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">Open Menu</item>
+                  <item translatable="yes">Switch Source</item>
+                </items>
+              </object>
+            </property>
+            <property name="selected">0</property>
+          </object>
+        </child>
+
+        <!-- Candidates Scroll -->
+        <child>
+          <object class="AdwComboRow" id="candidate_scroll_mode_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Candidates Scroll</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">Change Page</item>
+                  <item translatable="yes">Change Candidate</item>
+                </items>
+              </object>
+            </property>
+            <property name="selected">0</property>
+          </object>
+        </child>
+
+        <!-- Fix Candidate Box -->
+        <child>
+          <object class="AdwComboRow" id="remember_candidate_position_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Fix Candidate Box</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">Remember Last Position</item>
+                  <item translatable="yes">Don't Remember Position</item>
+                </items>
+              </object>
+            </property>
+            <property name="selected">0</property>
+          </object>
+        </child>
+
+        <!-- Candidate Box Position -->
+        <child>
+          <object class="AdwComboRow" id="candidate_still_position_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Candidate Box Position</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">Center</item>
+                  <item translatable="yes">Center-Left</item>
+                  <item translatable="yes">Top-Left</item>
+                  <item translatable="yes">Top-Center</item>
+                  <item translatable="yes">Top-Right</item>
+                  <item translatable="yes">Center-Right</item>
+                  <item translatable="yes">Bottom-Right</item>
+                  <item translatable="yes">Bottom-Center</item>
+                  <item translatable="yes">Bottom-Left</item>
+                </items>
+              </object>
+            </property>
+            <property name="selected">0</property>
+          </object>
+        </child>
+
+        <!-- Use custom font -->
+        <child>
+          <object class="AdwPreferencesRow" id="custom_font_row">
+            <property name="height-request">50</property>
+            <child>
+              <object class="GtkBox" id="custom_font_box">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">310</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Use custom font</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">false</property>
+                        <property name="valign">center</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkFontButton" id="custom_font_button">
+                    <property name="hexpand">false</property>
+                    <property name="vexpand">false</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="height-request">16</property>
+                    <property name="width-request">80</property>
+                    <property name="font">Sans Regular 16</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Auto Switch ASCII Mode -->
+        <child>
+          <object class="AdwSwitchRow" id="ascii_mode_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Auto Switch ASCII Mode</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <!-- Candidate Box Opacity Switch -->
+        <child>
+          <object class="AdwSwitchRow" id="candidate_box_opacity_switch_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Candidate Box Opacity</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+        
+        <!-- Candidate Box Opacity -->
+        <child>
+          <object class="AdwPreferencesRow" id="candidate_box_opacity_row">
+            <property name="visible">false</property>
+            <property name="height-request">50</property>
+            <child>
+              <object class="GtkBox" id="container_box_opacity_box">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">15</property>
+                <property name="visible">true</property>
+                <property name="sensitive">true</property>
+                <property name="margin-start">12</property>
+                <property name="margin-end">12</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
+                <child>
+                  <object class="GtkLabel" id="candidate_box_opacity_label">
+                    <property name="label" translatable="yes">Candidate Box Opacity</property>
+                    <property name="hexpand">false</property>
+                    <property name="visible">true</property>
+                    <property name="sensitive">true</property>
+                    <property name="valign">center</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="scale_and_value_box">
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">5</property>
+                    <property name="hexpand">true</property>
+                    <child>
+                      <object class="GtkScale" id="candidate_box_opacity_scale">
+                        <property name="orientation">horizontal</property>
+                        <property name="hexpand">true</property>
+                        <property name="sensitive">true</property>
+                        <property name="draw-value">false</property>
+                        <property name="adjustment">
+                          <object class="GtkAdjustment">
+                            <property name="lower">0</property>
+                            <property name="upper">255</property>
+                            <property name="value">255</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                        <style>
+                          <class name="slider"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="opacity_value_label">
+                        <property name="label">255</property>
+                        <property name="visible">true</property>
+                        <property name="sensitive">true</property>
+                        <property name="width-chars">3</property>
+                        <property name="xalign">1</property>
+                        <style>
+                          <class name="dim-label"/>
+                          <class name="numeric"/>
+                        </style>
+                        <attributes>
+                          <attribute name="scale" value="0.8"/>
+                        </attributes>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Fix IME List Order -->
+        <child>
+          <object class="AdwSwitchRow" id="fix_ime_list_order_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Fix IME List Order</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <!-- Enable Drag to Reposition Candidate Box -->
+        <child>
+          <object class="AdwSwitchRow" id="use_candidate_reposition_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Enable Drag to Reposition Candidate Box</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <!-- Candidate Box Page Buttons -->
+        <child>
+          <object class="AdwSwitchRow" id="use_candidate_buttons_row">
+            <property name="height-request">50</property>
+            <property name="title" translatable="yes">Candidate Box Page Buttons</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <!-- Help ExpanderRow -->
+        <child>
+          <object class="AdwExpanderRow" id="help_expander_row">
+            <property name="title" translatable="yes">Help</property>
+            <property name="subtitle" translatable="yes">Click to expand for more information</property>
+            
+            <child>
+              <object class="AdwPreferencesRow">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">12</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Here you can set the IBus input window orientation, animation, right click to open menu or switch source, scroll to switch among pages or candidates, fix candidate box to not follow caret position, font, ASCII mode auto-switch when windows are switched by users, candidate box opacity, fix IME list order when switching, reposition candidate box by dragging when input, and also show or hide candidate box page buttons.</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">&lt;span size="small"&gt;&lt;b&gt;Note:&lt;/b&gt; If &lt;b&gt;fix candidate box&lt;/b&gt; is enabled, you can set the candidate box position with 9 options. Recommend to &lt;b&gt;enable drag to reposition candidate box&lt;/b&gt; at the same time so that you can rearrange the position at any time. Will remember candidate position forever after reposition if you set to &lt;b&gt;remember last position&lt;/b&gt;, and restore at next login.&lt;/span&gt;</property>
+                        <property name="use_markup">true</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">&lt;span size="small"&gt;&lt;b&gt;Note:&lt;/b&gt; If &lt;b&gt;auto switch ASCII mode&lt;/b&gt; is enabled, and you have set to &lt;b&gt;Remember Input State&lt;/b&gt;, every opened APP's input mode will be remembered if you have switched the input source manually in the APP's window, and the newly-opened APP will follow the configuration. APP's Input State will be remembered forever.&lt;/span&gt;</property>
+                        <property name="use_markup">true</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">&lt;span size="small"&gt;&lt;b&gt;Note:&lt;/b&gt; If you &lt;b&gt;enable drag to reposition candidate box&lt;/b&gt;, and if &lt;b&gt;fix candidate box&lt;/b&gt; is enabled, your rearranged position will last until the end of this session. If not the rearranged position will only last for the specific input.&lt;/span&gt;</property>
+                        <property name="use_markup">true</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+      </object>
+    </child>
+  </object>
+</interface>

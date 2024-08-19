@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="AdwPreferencesPage" id="about">
+    <property name="name">about</property>
+    <property name="title" translatable="yes">About</property>
+    <property name="icon-name">help-about-symbolic</property>
+    <child>
+      <object class="AdwPreferencesGroup" id="about_group">
+        <property name="title" translatable="yes"></property>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">20</property>
+            <property name="margin-top">20</property>
+            <property name="margin-bottom">20</property>
+            <property name="margin-start">20</property>
+            <property name="margin-end">20</property>
+            <child>
+              <object class="GtkImage" id="app_icon">
+                <property name="file">/home/jas/.local/share/gnome-shell/extensions/customize-ibus@hollowman.ml/img/logo.png</property>
+                <property name="pixel-size">128</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="app_name">
+                <property name="label">Customize IBus</property>
+                <property name="justify">center</property>
+                <style>
+                  <class name="title-1"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="app_version">
+                <property name="label">Version: 89</property>
+                <property name="justify">center</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="app_description">
+                <property name="label">Full customization of appearance, behavior, system tray and input source indicator for IBus.</property>
+                <property name="justify">center</property>
+                <property name="wrap">True</property>
+                <property name="max-width-chars">50</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="copyright_box">
+                <property name="orientation">horizontal</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkLabel" id="copyright_text">
+                    <property name="label">Copyright © 2021-2023 </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLinkButton" id="author_link">
+                    <property name="label">Hollow Man</property>
+                    <property name="uri">https://github.com/HollowMan6</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="email">
+                    <property name="label"> &lt;hollowman@opensuse.org&gt;</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLinkButton" id="source_code_link">
+                <property name="label">Source Code</property>
+                <property name="uri">https://github.com/openSUSE/Customize-IBus</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="sponsor">
+                <property name="label">Sponsored by Google Summer of Code 2021 @openSUSE</property>
+                <property name="justify">center</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="current_session">
+                <property name="label">Current Session: Wayland</property>
+                <property name="justify">center</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="disclaimer">
+                <property name="label">This program comes with ABSOLUTELY NO WARRANTY.</property>
+                <property name="justify">center</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox" id="see_details_box">
+                <property name="orientation">horizontal</property>
+                <property name="halign">center</property>
+                <property name="spacing">5</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">See the</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLinkButton" id="gpl_link">
+                    <property name="label">GNU General Public License, version 3 or later</property>
+                    <property name="uri">https://www.gnu.org/licenses/gpl-3.0.html</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label">for details.</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

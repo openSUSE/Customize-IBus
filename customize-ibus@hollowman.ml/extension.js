@@ -48,6 +48,7 @@ let CandidateDummyCursor = null;
 let gsettings = null;
 
 import { Fields } from "./fields.js";
+import { PrefsKeys } from "./lib/Prefs/PrefsKeys.js";
 const IBUS_SYSTEMD_SERVICE = "org.freedesktop.IBus.session.GNOME.service";
 const UNKNOWN = { ON: 0, OFF: 1, DEFAULT: 2 };
 const ASCIIMODES = ["en", "A", "英"];
@@ -91,7 +92,7 @@ const IBusOrientation = GObject.registerClass(
         CandidateArea.setOrientation.bind(CandidateArea);
       CandidateArea.setOrientation = () => {};
       gsettings.bind(
-        Fields.ORIENTATION,
+        PrefsKeys.keys['candidate_orientation'].name,
         this,
         "orientation",
         Gio.SettingsBindFlags.GET,
@@ -100,7 +101,7 @@ const IBusOrientation = GObject.registerClass(
         `changed::lookup-table-orientation`,
         () => {
           let value = IBusSettings.get_int("lookup-table-orientation");
-          gsettings.set_uint(Fields.ORIENTATION, 1 - value);
+          gsettings.set_uint(PrefsKeys.keys['candidate_orientation'].name, 1 - value);
         },
       );
     }
@@ -140,7 +141,7 @@ const IBusAnimation = GObject.registerClass(
       super();
       this._openOrig = CandidatePopup.open;
       gsettings.bind(
-        Fields.CANDANIMATION,
+        PrefsKeys.keys['candidate_popup_animation'].name,
         this,
         "animation",
         Gio.SettingsBindFlags.GET,
@@ -189,7 +190,7 @@ const IBusClickSwitch = GObject.registerClass(
     constructor() {
       super();
       gsettings.bind(
-        Fields.CANDRIGHTFUNC,
+        PrefsKeys.keys['candidate-box-right-click-func'].name,
         this,
         "switchfunction",
         Gio.SettingsBindFlags.GET,
@@ -300,7 +301,7 @@ const IBusScroll = GObject.registerClass(
       super();
 
       gsettings.bind(
-        Fields.SCROLLMODE,
+        PrefsKeys.keys['candidate-scroll-mode'].name,
         this,
         "scrollmode",
         Gio.SettingsBindFlags.GET,
@@ -372,13 +373,13 @@ const IBusNotFollowCaret = GObject.registerClass(
           CandidatePopup.setPosition(CandidateDummyCursor, 0);
       };
       gsettings.bind(
-        Fields.CANDSTILLPOS,
+        PrefsKeys.keys['candidate-still-position'].name,
         this,
         "position",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.REMCANDPOS,
+        PrefsKeys.keys['remember-candidate-position'].name,
         this,
         "remember",
         Gio.SettingsBindFlags.GET,
@@ -401,7 +402,7 @@ const IBusNotFollowCaret = GObject.registerClass(
         successGetRem = false;
       if (this._remember && !this._hasSetRember) {
         let state = new Map(
-          Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack()),
+          Object.entries(gsettings.get_value(PrefsKeys.keys['candidate-box-position'].name).deep_unpack()),
         );
         if (state.has("x") && state.has("y")) {
           x = state.get("x");
@@ -480,22 +481,22 @@ const IBusFontSetting = GObject.registerClass(
     constructor() {
       super();
       gsettings.bind(
-        Fields.CUSTOMFONT,
+        PrefsKeys.keys['custom-font'].name,
         this,
         "fontname",
         Gio.SettingsBindFlags.GET,
       );
       this._fontChangeID = IBusSettings.connect(
-        `changed::${Fields.CUSTOMFONT}`,
+        `changed::${PrefsKeys.keys['custom-font'].name}`,
         () => {
-          let value = IBusSettings.get_string(Fields.CUSTOMFONT);
-          gsettings.set_string(Fields.CUSTOMFONT, value);
+          let value = IBusSettings.get_string(PrefsKeys.keys['custom-font'].name);
+          gsettings.set_string(PrefsKeys.keys['custom-font'].name, value);
         },
       );
     }
 
     set fontname(fontname) {
-      IBusSettings.set_string(Fields.CUSTOMFONT, fontname);
+      IBusSettings.set_string(PrefsKeys.keys['custom-font'].name, fontname);
       let scale = 15 / 16; // the fonts-size difference between index and candidate
       let desc = Pango.FontDescription.from_string(fontname);
       let get_weight = () => {
@@ -688,7 +689,7 @@ const IBusOpacity = GObject.registerClass(
         this._child_opacity.push(candidate_child[i].get_opacity());
       }
       gsettings.bind(
-        Fields.CANDOPACITY,
+        PrefsKeys.keys['candidate-opacity'].name,
         this,
         "opacity",
         Gio.SettingsBindFlags.GET,
@@ -1090,13 +1091,13 @@ const IBusReposition = GObject.registerClass(
       this._location_handler = null;
       global.display.set_cursor(Meta.Cursor.DEFAULT);
       let state = new Map(
-        Object.entries(gsettings.get_value(Fields.CANDBOXPOS).deep_unpack()),
+        Object.entries(gsettings.get_value(PrefsKeys.keys['candidate-box-position'].name).deep_unpack()),
       );
       let [boxX, boxY] = CandidateDummyCursor.get_position();
       state.set("x", boxX);
       state.set("y", boxY);
       gsettings.set_value(
-        Fields.CANDBOXPOS,
+        PrefsKeys.keys['candidate-box-position'].name,
         new GLib.Variant("a{su}", Object.fromEntries(state)),
       );
       return GLib.SOURCE_REMOVE;
@@ -1145,7 +1146,7 @@ const IBusTrayClickSwitch = GObject.registerClass(
     constructor() {
       super();
       gsettings.bind(
-        Fields.TRAYSSWITCHKEY,
+        PrefsKeys.keys['tray-source-switch-click-key'].name,
         this,
         "traysswitchkey",
         Gio.SettingsBindFlags.GET,
@@ -1788,102 +1789,103 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
     _bindSettings() {
       gsettings.bind(
-        Fields.INPUTINDTOG,
+        PrefsKeys.keys['input-indicator-only-on-toggle'].name,
         this,
         "inputindtog",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDASCII,
+        PrefsKeys.keys['input-indicator-only-use-ascii'].name,
         this,
         "inputindASCII",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDSINGLE,
+        PrefsKeys.keys['input-indicator-not-on-single-ime'].name,
         this,
         "inputindsingle",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDRIGC,
+        PrefsKeys.keys['input-indicator-right-close'].name,
         this,
         "inputindrigc",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDSCROLL,
+        PrefsKeys.keys['input-indicator-use-scroll'].name,
         this,
         "inputindscroll",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDANIM,
+        PrefsKeys.keys['input-indicator-animation'].name,
         this,
         "inputindanim",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDUSEF,
+        PrefsKeys.keys['use-indicator-custom-font'].name,
         this,
         "inputindusef",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDCUSTOMFONT,
+        PrefsKeys.keys['indicator-custom-font'].name,
         this,
         "fontname",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USEINPUTINDLCLK,
+        PrefsKeys.keys['use-indicator-left-click'].name,
         this,
         "useinputindlclk",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDLCLICK,
+        PrefsKeys.keys['indicator-left-click-func'].name,
         this,
         "inputindlclick",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USEINDOPACITY,
+        PrefsKeys.keys['use-indicator-auto-hide'].name,
         this,
         "useindopacity",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INDOPACITY,
+        PrefsKeys.keys['input-indicator-hide-time'].name,
         this,
         "indopacity",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USEINDSHOWD,
+        PrefsKeys.keys['use-indicator-show-delay'].name,
         this,
         "useindshowd",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDSHOW,
+        PrefsKeys.keys['input-indicator-show-time'].name,
         this,
         "inputindshow",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USEINDAUTOHID,
+        PrefsKeys.keys['use-indicator-auto-hide'].name,
         this,
         "useindautohid",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.INPUTINDHID,
+        PrefsKeys.keys['input-indicator-hide-time'].name,
         this,
         "inputindhid",
         Gio.SettingsBindFlags.GET,
       );
     }
+    
 
     _destroy_indicator() {
       this.close(BoxPointer.PopupAnimation[this.animation]);
@@ -2535,49 +2537,49 @@ const Extensions = GObject.registerClass(
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.MENUIBUSEMOJI,
+        PrefsKeys.keys['menu-ibus-emoji'].name,
         this,
         "menuibusemoji",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.MENUEXTPREF,
+        PrefsKeys.keys['menu-extensions-preference'].name,
         this,
         "menuextpref",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.MENUIBUSPREF,
+        PrefsKeys.keys['menu-ibus-preference'].name,
         this,
         "menuibuspref",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.MENUIBUSVER,
+        PrefsKeys.keys['menu-ibus-version'].name,
         this,
         "menuibusver",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.MENUIBUSREST,
+        PrefsKeys.keys['menu-ibus-restart'].name,
         this,
         "menuibusrest",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.MENUIBUSEXIT,
+        PrefsKeys.keys['menu-ibus-exit'].name,
         this,
         "menuibusexit",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.IBUSRESTTIME,
+        PrefsKeys.keys['ibus-restart-time'].name,
         this,
         "ibusresttime",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USEINPUTIND,
+        PrefsKeys.keys['use-input-indicator'].name,
         this,
         "useinputind",
         Gio.SettingsBindFlags.GET,
@@ -2589,25 +2591,25 @@ const Extensions = GObject.registerClass(
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USEREPOSITION,
+        PrefsKeys.keys['use-candidate-reposition'].name,
         this,
         "reposition",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.FIXIMELIST,
+        PrefsKeys.keys['fix-ime-list'].name,
         this,
         "fiximelist",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USETRAY,
+        PrefsKeys.keys['use-tray'].name,
         this,
         "usetray",
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USETRAYSSWITCH,
+        PrefsKeys.keys['use-tray-click-source-switch'].name,
         this,
         "usetraysswitch",
         Gio.SettingsBindFlags.GET,
@@ -2625,7 +2627,7 @@ const Extensions = GObject.registerClass(
         Gio.SettingsBindFlags.GET,
       );
       gsettings.bind(
-        Fields.USEBUTTONS,
+        PrefsKeys.keys['use-candidate-buttons'].name,
         this,
         "usebuttons",
         Gio.SettingsBindFlags.GET,
@@ -2647,7 +2649,7 @@ const Extensions = GObject.registerClass(
         `changed::show-icon-on-systray`,
         () => {
           let value = IBusSettings.get_boolean("show-icon-on-systray");
-          gsettings.set_boolean(Fields.USETRAY, value);
+          gsettings.set_boolean(PrefsKeys.keys['use-tray'].name, value);
         },
       );
     }
