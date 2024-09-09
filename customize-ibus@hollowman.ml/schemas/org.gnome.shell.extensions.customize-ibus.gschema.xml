@@ -10,7 +10,7 @@
         <summary>use custom font</summary>
     </key>
     <key type="b" name="use-candidate-opacity">
-        <default>false</default>
+        <default>true</default>
         <summary>use custom candidate box opacity</summary>
     </key>
     <key type="b" name="use-indicator-opacity">
@@ -255,7 +255,7 @@
         <summary>candidate popup box right click function</summary>
     </key>
     <key type="b" name="use-candidate-still">
-        <default>false</default>
+        <default>true</default>
         <summary>use candidate popup box not follow caret</summary>
     </key>
     <key type="u" name="candidate-still-position">

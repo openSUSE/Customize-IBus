@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="AdwPreferencesPage" id="indicator">
+    <property name="name">indicator</property>
+    <property name="title" translatable="yes">Indicator</property>
+    <property name="icon-name">input-keyboard-symbolic</property>
+
+    <child>
+      <object class="AdwPreferencesGroup" id="indicator_group">
+        <property name="title" translatable="yes">Indicator Settings</property>
+
+        <!-- Use input source indicator -->
+        <child>
+          <object class="AdwSwitchRow" id="use_input_indicator_row">
+            <property name="title" translatable="yes">Use input source indicator</property>
+            <property name="active">true</property>
+          </object>
+        </child>
+
+        <!-- Indicate only when switching input source -->
+        <child>
+          <object class="AdwSwitchRow" id="input_indicator_only_on_toggle_row">
+            <property name="title" translatable="yes">Indicate only when switching input source</property>
+            <property name="active">true</property>
+          </object>
+        </child>
+
+        <!-- Indicate only when using ASCII mode -->
+        <child>
+          <object class="AdwSwitchRow" id="input_indicator_only_use_ascii_row">
+            <property name="title" translatable="yes">Indicate only when using ASCII mode</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <!-- Don't indicate when using single mode IME -->
+        <child>
+          <object class="AdwSwitchRow" id="input_indicator_not_on_single_ime_row">
+            <property name="title" translatable="yes">Don’t indicate when using single mode IME</property>
+            <property name="active">true</property>
+          </object>
+        </child>
+
+        <!-- Enable right click to close indicator -->
+        <child>
+          <object class="AdwSwitchRow" id="input_indicator_right_close_row">
+            <property name="title" translatable="yes">Enable right click to close indicator</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <!-- Enable scroll to switch input source -->
+        <child>
+          <object class="AdwSwitchRow" id="input_indicator_use_scroll_row">
+            <property name="title" translatable="yes">Enable scroll to switch input source</property>
+            <property name="active">false</property>
+          </object>
+        </child>
+
+        <!-- Indicator popup animation -->
+        <child>
+          <object class="AdwComboRow" id="input_indicator_animation_row">
+            <property name="title" translatable="yes">Indicator popup animation</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">None</item>
+                  <item translatable="yes">Slide</item>
+                  <item translatable="yes">Fade</item>
+                  <item translatable="yes">All</item>
+                </items>
+              </object>
+            </property>
+            <property name="selected">0</property>
+          </object>
+        </child>
+
+        <!-- Use custom font -->
+        <child>
+          <object class="AdwPreferencesRow" id="use_custom_font_row">
+            <child>
+              <object class="GtkBox" id="container_box_custom_font">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">310</property>
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">horizontal</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Use custom font</property>
+                        <property name="halign">start</property>
+                        <property name="hexpand">false</property>
+                        <property name="margin-start">12</property> 
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkFontButton" id="custom_font_button">
+                    <property name="hexpand">false</property>
+                    <property name="vexpand">false</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="height-request">16</property>
+                    <property name="width-request">80</property>
+                    <property name="font">Sans Regular 16</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Enable indicator left click -->
+        <child>
+          <object class="AdwComboRow" id="use_indicator_left_click_row">
+            <property name="title" translatable="yes">Enable indicator left click</property>
+            <property name="model">
+              <object class="GtkStringList">
+                <items>
+                  <item translatable="yes">Drag to Move</item>
+                  <item translatable="yes">Switch Source</item>
+                </items>
+              </object>
+            </property>
+            <property name="selected">0</property>
+          </object>
+        </child>
+
+
+        <!-- Indicator Opacity -->
+        <child>
+          <object class="AdwPreferencesRow" id="indicator_opacity_row">
+            <property name="visible">false</property>
+            <child>
+              <object class="GtkBox" id="container_box_opacity">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">15</property>
+                <property name="visible">true</property>
+                <property name="sensitive">true</property>
+                <child>
+                  <object class="GtkLabel" id="indicator_opacity_label">
+                    <property name="label" translatable="yes">Indicator Opacity</property>
+                    <property name="hexpand">false</property>
+                    <property name="margin-start">12</property>
+                    <property name="visible">true</property>
+                    <property name="sensitive">true</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="indicator_scale_and_value_box">
+                    <property name="orientation">horizontal</property>
+                    <property name="spacing">5</property>
+                    <property name="hexpand">true</property>
+                    <child>
+                      <object class="GtkScale" id="indicator_opacity_scale">
+                        <property name="orientation">horizontal</property>
+                        <property name="hexpand">true</property>
+                        <property name="sensitive">true</property>
+                        <property name="draw-value">false</property>
+                        <property name="adjustment">
+                          <object class="GtkAdjustment">
+                            <property name="lower">0</property>
+                            <property name="upper">255</property>
+                            <property name="value">255</property>
+                            <property name="step-increment">1</property>
+                          </object>
+                        </property>
+                        <style>
+                          <class name="slider"/>
+                        </style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="indicator_opacity_value_label">
+                        <property name="label">255</property>
+                        <property name="visible">true</property>
+                        <property name="sensitive">true</property>
+                        <property name="width-chars">3</property>
+                        <property name="xalign">1</property>
+                        <style>
+                          <class name="dim-label"/>
+                          <class name="numeric"/>
+                        </style>
+                        <attributes>
+                          <attribute name="scale" value="0.8"/>
+                        </attributes>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+
+
+        <!-- Enable indicator show delay -->
+        <child>
+          <object class="AdwPreferencesRow" id="use-indicator_show_delay_row">
+            <child>
+              <object class="GtkBox" id="container_box_show_delay">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkCheckButton" id="indicator_show_delay_checkbutton">
+                    <property name="active">true</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Enable indicator show delay (unit: seconds)</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">false</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="show_delay_min_label">
+                    <property name="label">0.0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScale" id="indicator_show_delay_scale">
+                    <property name="orientation">horizontal</property>
+                    <property name="hexpand">true</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment">
+                        <property name="lower">0</property>
+                        <property name="upper">10</property>
+                        <property name="value">1</property>
+                        <property name="step-increment">0.1</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="show_delay_max_label">
+                    <property name="label">10.0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="show_delay_value_label">
+                    <property name="label">1.0</property>
+                    <property name="width-chars">3</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Enable indicator auto-hide timeout -->
+        <child>
+          <object class="AdwPreferencesRow" id="enable_indicator_auto_hide_timeout">
+            <child>
+              <object class="GtkBox" id="container_box_auto_hide">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkCheckButton" id="indicator_auto_hide_timeout_checkbutton">
+                    <property name="active">true</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Enable indicator auto-hide timeout (unit: seconds)</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">false</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="auto_hide_min_label">
+                    <property name="label">0.0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScale" id="input-indicator-hide-time">
+                    <property name="orientation">horizontal</property>
+                    <property name="hexpand">true</property>
+                    <property name="adjustment">
+                      <object class="GtkAdjustment">
+                        <property name="lower">0</property>
+                        <property name="upper">10</property>
+                        <property name="value">1</property>
+                        <property name="step-increment">0.1</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="auto_hide_max_label">
+                    <property name="label">10.0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="auto_hide_value_label">
+                    <property name="label">1.0</property>
+                    <property name="width-chars">3</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+         
+
+        <!-- Help ExpanderRow -->
+        <child>
+          <object class="AdwExpanderRow" id="indicator_help_expander_row">
+            <property name="title" translatable="yes">Help</property>
+            <property name="subtitle" translatable="yes">Click to expand for more information</property>
+            
+            <child>
+              <object class="AdwPreferencesRow">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">12</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Here you can set to show input source indicator, default is to show indicator every time you type, move caret or switch input source. You can set to show indicator only when switching input source. You can also set to only notify in ASCII mode (for multi-mode IME), not notify when using single mode IME, mouse right click to close indicator, scroll to switch input source, popup animation, font, mouse left click to switch input source or drag to move indicator, indicator opacity, enable show delay and show timeout (in seconds), enable auto-hide and auto-hide timeout (in seconds).</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">&lt;span size="small"&gt;&lt;b&gt;Note:&lt;/b&gt; If you choose to enable the show delay, there won&apos;t be a show delay when you switch input source or window.&lt;/span&gt;</property>
+                        <property name="use_markup">true</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+      </object>
+    </child>
+  </object>
+</interface>
+
+
+
+
+
+
+

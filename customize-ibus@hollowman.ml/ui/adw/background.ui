@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object class="AdwPreferencesPage" id="background">
+    <property name="name">background</property>
+    <property name="title" translatable="yes">Background</property>
+    <property name="icon-name">preferences-desktop-wallpaper-symbolic</property>
+
+    <child>
+      <object class="AdwPreferencesGroup" id="background_group">
+        <property name="title" translatable="yes">Background Settings</property>
+
+        <!-- Custom Light Background -->
+        <child>
+          <object class="AdwPreferencesRow" id="custom-bg_row">
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkCheckButton" id="custom_light_background_check">
+                    <property name="active">false</property>
+                    <property name="halign">start</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Use custom light background</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">false</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="custom_light_background_zoom_combo">
+                    <items>
+                      <item translatable="yes">Zoom</item>
+                      <item translatable="yes">Centered</item>
+                      <item translatable="yes">Full</item>
+                    </items>
+                    <property name="halign">end</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="custom_light_background_repeat_combo">
+                    <items>
+                      <item translatable="yes">Repeat</item>
+                      <item translatable="yes">No Repeat</item>
+                    </items>
+                    <property name="halign">end</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="custom_light_background_none_combo">
+                    <items>
+                      <item translatable="yes">(None)</item>
+                      <!-- Add additional options here -->
+                    </items>
+                    <property name="halign">end</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Custom Dark Background -->
+        <child>
+          <object class="AdwPreferencesRow" id="custom-bg-dark_row">
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkCheckButton" id="custom_dark_background_check">
+                    <property name="active">false</property>
+                    <property name="halign">start</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="label" translatable="yes">Use custom dark background</property>
+                    <property name="halign">start</property>
+                    <property name="hexpand">false</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="custom_dark_background_zoom_combo">
+                    <items>
+                      <item translatable="yes">Zoom</item>
+                      <item translatable="yes">Centered</item>
+                      <item translatable="yes">Full</item>
+                    </items>
+                    <property name="halign">end</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="custom_dark_background_repeat_combo">
+                    <items>
+                      <item translatable="yes">Repeat</item>
+                      <item translatable="yes">No Repeat</item>
+                    </items>
+                    <property name="halign">end</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="custom_dark_background_none_combo">
+                    <items>
+                      <item translatable="yes">(None)</item>
+                      <!-- Add additional options here -->
+                    </items>
+                    <property name="halign">end</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+
+        <!-- Background Help ExpanderRow -->
+        <child>
+          <object class="AdwExpanderRow" id="background_help_expander_row">
+            <property name="title" translatable="yes">Help</property>
+            <property name="subtitle" translatable="yes">Click to expand for more information</property>
+            
+            <child>
+              <object class="AdwPreferencesRow">
+                <child>
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">12</property>
+                    <property name="margin-start">12</property>
+                    <property name="margin-end">12</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Support customizing your IBus Input window background with a picture. It has a higher priority than the theme-defined background.</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">When light background and dark background are turned on at the same time, the IBus background will automatically follow GNOME Night Light mode, use light background when off, and use dark background when on. When only the light background or dark background is turned on, the IBus background will always use the background that is turned on.</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">&lt;span size="small"&gt;&lt;b&gt;Note:&lt;/b&gt; Please make sure your background picture can always be visited. If your pictures are stored in the removable device and the system doesn&apos;t mount it by default, please disable and then enable the corresponding &lt;b&gt;Use custom background&lt;/b&gt; again to make it effective after manually mounting.&lt;/span&gt;</property>
+                        <property name="use_markup">true</property>
+                        <property name="wrap">true</property>
+                        <property name="xalign">0</property>
+                      </object>
+                    </child>
+
+                  </object>
+                </child>
+              </object>
+            </child>
+
+          </object>
+        </child>
+
+      </object>
+    </child>
+  </object>
+</interface>
