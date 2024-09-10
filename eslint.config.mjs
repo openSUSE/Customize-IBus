@@ -13,6 +13,7 @@ export default [
         ignores: [], // Adjust according to your needs
         languageOptions: {
             globals: {
+                global: 'readonly',
                 ARGV: 'readonly',
                 Debugger: 'readonly',
                 GIRepositoryGType: 'readonly',

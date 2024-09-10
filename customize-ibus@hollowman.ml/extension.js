@@ -61,7 +61,6 @@ const BGMODESACTIONS = {
     Zoom: 'cover',
 };
 
-const global = Shell.Global.get();
 let IgnoreModes = [];
 let IBusSettings = null;
 let ngsettings = null;
