@@ -13,7 +13,6 @@ export default [
         ignores: [], // Adjust according to your needs
         languageOptions: {
             globals: {
-                global: 'readonly',
                 ARGV: 'readonly',
                 Debugger: 'readonly',
                 GIRepositoryGType: 'readonly',
@@ -33,6 +32,12 @@ export default [
                 setInterval: 'readonly',
                 clearTimeout: 'readonly',
                 clearInterval: 'readonly',
+                // GNOME Shell Only
+                global: 'readonly',
+                _: 'readonly',
+                C_: 'readonly',
+                N_: 'readonly',
+                ngettext: 'readonly',
             },
             parserOptions: {
                 ecmaVersion: 2022,
