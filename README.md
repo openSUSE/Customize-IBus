@@ -9,6 +9,7 @@
 ### Welcome to contribute your translation on Weblate!
 
 [![Translation Status](https://hosted.weblate.org/widgets/ibus-customize/-/287x66-grey.png)](https://hosted.weblate.org/engage/ibus-customize/)
+[<img src="https://api.gitsponsors.com/api/badge/img?id=349979748" height="90" width="1">](https://api.gitsponsors.com/api/badge/link?p=3Tv0PqoLHseRWhLwJ9g18SZbU0WphwSg5wcgLiCsS7u9GKayAQVnr6kK+b46IJvLzVHStsQu4ng+kK+yW4IZEOUcfWM2UlhLzMmFAsxr0t6wMhN0M2dBnoHvKE0iIELavwPDxWWJU/mzqICn6PpXkg==)
 
 [中文 Chinese](README_CN.md)
 
