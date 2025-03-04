@@ -208,13 +208,8 @@ const IBusClickSwitch = GObject.registerClass(
                 Gio.SettingsBindFlags.GET
             );
             CandidatePopup.reactive = true;
-            let deviceManager = null;
-            if (Clutter.DeviceManager)
-                deviceManager = Clutter.DeviceManager.get_default();
-            else
-                deviceManager =
-                    Clutter.get_default_backend().get_default_seat();
-            this._virtualDevice = deviceManager.create_virtual_device(
+            let seat = global.stage.context.get_backend().get_default_seat();
+            this._virtualDevice = seat.create_virtual_device(
                 Clutter.InputDeviceType.KEYBOARD_DEVICE
             );
 
@@ -241,12 +236,12 @@ const IBusClickSwitch = GObject.registerClass(
                             !this._mouseInCandidate || !this._clickSwitch;
                         if (shouldPressReturn) {
                             this._virtualDevice.notify_keyval(
-                                Clutter.get_current_event_time(),
+                                Clutter.get_current_event_time() * 1000,
                                 Clutter.KEY_Return,
                                 Clutter.KeyState.PRESSED
                             );
                             this._virtualDevice.notify_keyval(
-                                Clutter.get_current_event_time(),
+                                Clutter.get_current_event_time() * 1000,
                                 Clutter.KEY_Return,
                                 Clutter.KeyState.RELEASED
                             );
@@ -298,6 +293,11 @@ const IBusClickSwitch = GObject.registerClass(
             if (this._delayAfterPress) {
                 GLib.source_remove(this._delayAfterPress);
                 this._delayAfterPress = null;
+            }
+            if (this._virtualDevice) {
+                // Make sure any buttons pressed by the virtual device are released
+                // immediately instead of waiting for the next GC cycle
+                this._virtualDevice.run_dispose();
             }
             delete this.candidateBoxesID;
         }
@@ -597,6 +597,7 @@ const IBusAutoSwitch = GObject.registerClass(
             super();
             this._bindSettings();
             this._tmpWindow = null;
+            this.last_null = false;
             this._overviewHiddenID = Main.overview.connect(
                 'hidden',
                 this._onWindowChanged.bind(this)
@@ -621,17 +622,23 @@ const IBusAutoSwitch = GObject.registerClass(
 
         get _toggle() {
             let win = InputSourceManager._getCurrentWindow();
-            if (!win) return false;
-
+            if (!win) {
+                this.last_null = true;
+                return false;
+            }
+            if (this.last_null) {
+                this.last_null = false;
+                return false;
+            }
             let state = this._state;
             let stateConf = false;
             if (this._remember) {
                 let store = this._states.get(this._tmpWindow);
                 if (state !== store) this._states.set(this._tmpWindow, state);
-
                 this._tmpWindow = win.wm_class
                     ? win.wm_class.toLowerCase()
-                    : '';
+                    : 'undefined';
+                if (this._tmpWindow === 'undefined') return false;
                 if (!this._states.has(this._tmpWindow)) {
                     let unknown =
                         this.unknown === UNKNOWN.DEFAULT
@@ -841,6 +848,7 @@ const IBusFixIMEList = GObject.registerClass(
             InputSourceManager._switchInputSource = function (
                 display,
                 window,
+                event,
                 binding
             ) {
                 if (this._mruSources.length < 2) {
@@ -859,29 +867,30 @@ const IBusFixIMEList = GObject.registerClass(
                     return;
                 }
 
-                let popup = new InputSourcePopup(
+                this._switcherPopup = new InputSourcePopup(
                     this._mruSources,
                     this._keybindingAction,
                     this._keybindingActionBackward
                 );
+                this._switcherPopup.connect('destroy', () => {
+                    this._switcherPopup = null;
+                });
                 // By default InputSourcePopup starts at 0, this is ok for MRU.
                 // But we need to set popup current index to current source.
                 // I think it's OK to start from 0 if we don't have current source.
                 if (this._currentSource !== null) {
-                    popup._selectedIndex = this._mruSources.indexOf(
-                        this._currentSource
-                    );
+                    this._switcherPopup._selectedIndex =
+                        this._mruSources.indexOf(this._currentSource);
                 }
 
                 if (
-                    !popup.show(
+                    !this._switcherPopup.show(
                         binding.is_reversed(),
                         binding.get_name(),
                         binding.get_mask()
                     )
-                ) {
-                    popup.fadeAndDestroy();
-                }
+                )
+                    this._switcherPopup.fadeAndDestroy();
             };
 
             // A dirty hack because iBus will set content type with a password entry,

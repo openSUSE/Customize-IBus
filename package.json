@@ -1,44 +1,45 @@
 {
-  "name": "customize-ibus",
-  "version": "90.0.0",
-  "description": "Full customization of appearance, behavior, system tray and input source indicator for IBus.",
-  "dependencies": {
-    "eslint": "^9.21.0",
-    "eslint-config-prettier": "^10.0.2",
-    "eslint-plugin-prettier": "^5.2.3",
-    "husky": "^9.1.7",
-    "lint-staged": "^15.4.3",
-    "prettier": "^3.5.3"
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "postinstall": "husky init",
-    "pre-commit": "lint-staged && eslint . --fix",
-    "prepare": "husky"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,json,css,scss,md,html}": [
-      "prettier --write"
-    ]
-  },
-  "prettier/prettier": [
-    "error",
-    {
-      "endOfLine": "auto"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@github.com:openSUSE/Customize-IBus.git"
-  },
-  "keywords": [
-    "ibus",
-    "theme"
-  ],
-  "author": "Hollow Man",
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/openSUSE/Customize-IBus/issues"
-  },
-  "homepage": "https://github.com/openSUSE/Customize-IBus#readme"
+    "name": "customize-ibus",
+    "version": "91.0.0",
+    "description": "Full customization of appearance, behavior, system tray and input source indicator for IBus.",
+    "dependencies": {
+        "eslint": "^9.21.0",
+        "eslint-config-prettier": "^10.0.2",
+        "eslint-plugin-prettier": "^5.2.3",
+        "husky": "^9.1.7",
+        "lint-staged": "^15.4.3",
+        "prettier": "^3.5.3"
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "postinstall": "husky init",
+        "pre-commit": "lint-staged && eslint . --fix",
+        "prepare": "husky",
+        "test": "echo \"Error: no test specified\""
+    },
+    "lint-staged": {
+        "**/*.{js,jsx,ts,tsx,json,css,scss,md,html}": [
+            "prettier --write"
+        ]
+    },
+    "prettier/prettier": [
+        "error",
+        {
+            "endOfLine": "auto"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "ssh://git@github.com:openSUSE/Customize-IBus.git"
+    },
+    "keywords": [
+        "ibus",
+        "theme"
+    ],
+    "author": "Hollow Man",
+    "license": "GPL-3.0",
+    "bugs": {
+        "url": "https://github.com/openSUSE/Customize-IBus/issues"
+    },
+    "homepage": "https://github.com/openSUSE/Customize-IBus#readme"
 }

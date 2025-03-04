@@ -4,9 +4,9 @@
 # phlostically <phlostically@mailinator.com>, 2024.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 90\n"
+"Project-Id-Version: Customize Ibus 91\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-09-11 00:01+0300\n"
+"POT-Creation-Date: 2025-03-04 22:27+0200\n"
 "PO-Revision-Date: 2024-07-09 20:16+0000\n"
 "Last-Translator: phlostically <phlostically@mailinator.com>\n"
 "Language-Team: Esperanto <https://hosted.weblate.org/projects/ibus-customize/"
@@ -18,63 +18,63 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: extension.js:1583
+#: extension.js:1592
 msgid "IBus panel service connected!"
 msgstr ""
 
-#: extension.js:2198
+#: extension.js:2207
 msgid "loading light user theme for IBus:"
 msgstr "ŝargante propran helan etoson por IBus:"
 
-#: extension.js:2209
+#: extension.js:2218
 msgid "loading dark user theme for IBus:"
 msgstr "ŝargante propran malhelan etoson por IBus:"
 
-#: extension.js:2215
+#: extension.js:2224
 msgid "loading default theme for IBus"
 msgstr "ŝargante implicitan etoson por IBus"
 
-#: extension.js:2433
+#: extension.js:2442
 msgid "loading background for IBus:"
 msgstr "ŝargante fonon por IBus:"
 
-#: extension.js:2446
+#: extension.js:2455
 msgid "remove custom background for IBus"
 msgstr "forigi propran fonon por IBus"
 
-#: extension.js:3039
+#: extension.js:3048
 msgid "Starting / Restarting IBus..."
 msgstr "Lanĉante/relanĉante IBus…"
 
-#: extension.js:3068
+#: extension.js:3077
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:3089 prefs.js:1703 prefs.js:2158
+#: extension.js:3098 prefs.js:1703 prefs.js:2158
 msgid "Customize IBus"
 msgstr "Adapti IBus"
 
-#: extension.js:3110 prefs.js:302 prefs.js:545
+#: extension.js:3119 prefs.js:302 prefs.js:545
 msgid "IBus Preferences"
 msgstr "Agordoj pri IBus"
 
-#: extension.js:3131 extension.js:3144 prefs.js:549
+#: extension.js:3140 extension.js:3153 prefs.js:549
 msgid "IBus Version"
 msgstr "Versio de IBus"
 
-#: extension.js:3170
+#: extension.js:3179
 msgid "Restart"
 msgstr "Relanĉi"
 
-#: extension.js:3199
+#: extension.js:3208
 msgid "Restarting IBus..."
 msgstr "Relanĉante IBus…"
 
-#: extension.js:3218
+#: extension.js:3227
 msgid "Quit"
 msgstr "Forlasi"
 
-#: extension.js:3232
+#: extension.js:3241
 msgid "Exiting IBus..."
 msgstr "Forlasante IBus…"
 
@@ -451,13 +451,13 @@ msgstr ""
 
 #: prefs.js:1744
 msgid ""
-"<span size=\"small\">Copyright © 2021-2023 <a href=\"https://github.com/"
-"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse."
-"org\">hollowman@opensuse.org</a>&gt;</span>"
+"<span size=\"small\">Copyleft 🄯 2021-2025 <a href=\"https://github.com/"
+"HollowMan6\">ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟</a> &lt;<a "
+"href=\"mailto:hollowman@opensuse.org\">hollowman@opensuse.org</a>&gt;</span>"
 msgstr ""
-"<span size=\"small\">Kopirajtoj © 2021-2023 <a href=\"https://github.com/"
-"HollowMan6\">Hollow Man</a> &lt;<a href=\"mailto:hollowman@opensuse."
-"org\">hollowman@opensuse.org</a>&gt;</span>"
+"<span size=\"small\">Kopirajtoj 🄯 2021-2025 <a href=\"https://github.com/"
+"HollowMan6\">ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟</a> &lt;<a "
+"href=\"mailto:hollowman@opensuse.org\">hollowman@opensuse.org</a>&gt;</span>"
 
 #: prefs.js:1756
 msgid ""
@@ -469,9 +469,10 @@ msgstr ""
 
 #: prefs.js:1768
 msgid ""
-"<span size=\"small\">Sponsored by <a href=\"https://summerofcode.withgoogle."
-"com/archive/2021/projects/6295506795364352/\">Google Summer of Code 2021</a> "
-"<b><a href=\"https://github.com/openSUSE\">@openSUSE</a></b>.</span>"
+"<span size=\"small\">Sponsored by <a href=\"https://"
+"summerofcode.withgoogle.com/archive/2021/projects/6295506795364352/\">Google "
+"Summer of Code 2021</a> <b><a href=\"https://github.com/"
+"openSUSE\">@openSUSE</a></b>.</span>"
 msgstr ""
 
 #: prefs.js:1788

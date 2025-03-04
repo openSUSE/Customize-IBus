@@ -1741,7 +1741,7 @@ const CustomizeIBus = GObject.registerClass(
                 new Gtk.Label({
                     use_markup: true,
                     label: _(
-                        '<span size="small">Copyright © 2021-2023 <a href="https://github.com/HollowMan6">Hollow Man</a> &lt;<a href="mailto:hollowman@opensuse.org">hollowman@opensuse.org</a>&gt;</span>'
+                        '<span size="small">Copyleft 🄯 2021-2025 <a href="https://github.com/HollowMan6">ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟</a> &lt;<a href="mailto:hollowman@opensuse.org">hollowman@opensuse.org</a>&gt;</span>'
                     ),
                 }),
                 0,
