@@ -13,9 +13,8 @@
     "scripts": {
         "lint": "eslint .",
         "postinstall": "husky init",
-        "pre-commit": "lint-staged && eslint . --fix",
         "prepare": "husky",
-        "test": "echo \"Error: no test specified\""
+        "test": "lint-staged && eslint . --fix"
     },
     "lint-staged": {
         "**/*.{js,jsx,ts,tsx,json,css,scss,md,html}": [
