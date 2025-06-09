@@ -3020,9 +3020,7 @@ const Extensions = GObject.registerClass(
         /* General */
         // Candidate box page buttons
         set usebuttons(usebuttons) {
-            CandidateArea._buttonBox.visible = usebuttons;
-            CandidateArea._previousButton.visible = usebuttons;
-            CandidateArea._nextButton.visible = usebuttons;
+            CandidateArea._buttonBox.set_height(usebuttons ? -1 : 0);
         }
 
         /* Tray */
