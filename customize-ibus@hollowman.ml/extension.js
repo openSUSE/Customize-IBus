@@ -118,8 +118,8 @@ const IBusOrientation = GObject.registerClass(
         destroy() {
             CandidateArea.setOrientation = this._originalSetOrientation;
             if (this._orienChangeID)
-                IBusSettings.disconnect(this._orienChangeID),
-                    (this._orienChangeID = 0);
+                (IBusSettings.disconnect(this._orienChangeID),
+                    (this._orienChangeID = 0));
         }
     }
 );
@@ -282,14 +282,14 @@ const IBusClickSwitch = GObject.registerClass(
 
         destroy() {
             if (this._buttonPressID)
-                CandidatePopup.disconnect(this._buttonPressID),
-                    (this._buttonPressID = 0);
+                (CandidatePopup.disconnect(this._buttonPressID),
+                    (this._buttonPressID = 0));
             if (this._mouseCandidateEnterID)
-                CandidateArea.disconnect(this._mouseCandidateEnterID),
-                    (this._mouseCandidateEnterID = 0);
+                (CandidateArea.disconnect(this._mouseCandidateEnterID),
+                    (this._mouseCandidateEnterID = 0));
             if (this._mouseCandidateLeaveID)
-                CandidateArea.disconnect(this._mouseCandidateLeaveID),
-                    (this._mouseCandidateLeaveID = 0);
+                (CandidateArea.disconnect(this._mouseCandidateLeaveID),
+                    (this._mouseCandidateLeaveID = 0));
             if (this._delayAfterPress) {
                 GLib.source_remove(this._delayAfterPress);
                 this._delayAfterPress = null;
@@ -356,7 +356,8 @@ const IBusScroll = GObject.registerClass(
 
         destroy() {
             if (this._scrollID)
-                CandidateArea.disconnect(this._scrollID), (this._scrollID = 0);
+                (CandidateArea.disconnect(this._scrollID),
+                    (this._scrollID = 0));
         }
     }
 );
@@ -562,8 +563,8 @@ const IBusFontSetting = GObject.registerClass(
                 x._indexLabel.set_style('');
             });
             if (this._fontChangeID)
-                IBusSettings.disconnect(this._fontChangeID),
-                    (this._fontChangeID = 0);
+                (IBusSettings.disconnect(this._fontChangeID),
+                    (this._fontChangeID = 0));
         }
     }
 );
@@ -693,14 +694,14 @@ const IBusAutoSwitch = GObject.registerClass(
                 new GLib.Variant('a{sb}', Object.fromEntries(this._states))
             );
             if (this._onWindowChangedID)
-                global.display.disconnect(this._onWindowChangedID),
-                    (this._onWindowChangedID = 0);
+                (global.display.disconnect(this._onWindowChangedID),
+                    (this._onWindowChangedID = 0));
             if (this._overviewShowingID)
-                Main.overview.disconnect(this._overviewShowingID),
-                    (this._overviewShowingID = 0);
+                (Main.overview.disconnect(this._overviewShowingID),
+                    (this._overviewShowingID = 0));
             if (this._overviewHiddenID)
-                Main.overview.disconnect(this._overviewHiddenID),
-                    (this._overviewHiddenID = 0);
+                (Main.overview.disconnect(this._overviewHiddenID),
+                    (this._overviewHiddenID = 0));
         }
     }
 );
@@ -745,8 +746,8 @@ const IBusOpacity = GObject.registerClass(
 
         _update_opacity() {
             if (this._themeContextChangedID)
-                this._themeContext.disconnect(this._themeContextChangedID),
-                    (this._themeContextChangedID = 0);
+                (this._themeContext.disconnect(this._themeContextChangedID),
+                    (this._themeContextChangedID = 0));
 
             CandidateArea.set_opacity(this._opacity);
             let candidate_child = CandidatePopup.bin.get_children();
@@ -787,8 +788,8 @@ const IBusOpacity = GObject.registerClass(
             }
 
             if (this._themeContextChangedID)
-                this._themeContext.disconnect(this._themeContextChangedID),
-                    (this._themeContextChangedID = 0);
+                (this._themeContext.disconnect(this._themeContextChangedID),
+                    (this._themeContextChangedID = 0));
             opacityStyle = '';
             CandidatePopup.set_style(fontStyle + opacityStyle);
         }
@@ -1192,22 +1193,22 @@ const IBusReposition = GObject.registerClass(
 
         destroy() {
             if (this._buttonPressID)
-                CandidatePopup.disconnect(this._buttonPressID),
-                    (this._buttonPressID = 0);
+                (CandidatePopup.disconnect(this._buttonPressID),
+                    (this._buttonPressID = 0));
             if (this._sideChangeID)
-                CandidatePopup.disconnect(this._sideChangeID),
-                    (this._sideChangeID = 0);
+                (CandidatePopup.disconnect(this._sideChangeID),
+                    (this._sideChangeID = 0));
             if (this._location_handler) {
                 global.display.set_cursor(Meta.Cursor.DEFAULT);
-                GLib.source_remove(this._location_handler),
-                    (this._location_handler = 0);
+                (GLib.source_remove(this._location_handler),
+                    (this._location_handler = 0));
             }
             if (this._mouseCandidateEnterID)
-                CandidateArea.disconnect(this._mouseCandidateEnterID),
-                    (this._mouseCandidateEnterID = 0);
+                (CandidateArea.disconnect(this._mouseCandidateEnterID),
+                    (this._mouseCandidateEnterID = 0));
             if (this._mouseCandidateLeaveID)
-                CandidateArea.disconnect(this._mouseCandidateLeaveID),
-                    (this._mouseCandidateLeaveID = 0);
+                (CandidateArea.disconnect(this._mouseCandidateLeaveID),
+                    (this._mouseCandidateLeaveID = 0));
             CandidatePopup._relativePosX = null;
             CandidatePopup._relativePosY = null;
         }
@@ -1243,8 +1244,8 @@ const IBusTrayClickSwitch = GObject.registerClass(
 
         set traysswitchkey(traysswitchkey) {
             if (this._buttonPressID)
-                InputSourceIndicator.disconnect(this._buttonPressID),
-                    (this._buttonPressID = 0);
+                (InputSourceIndicator.disconnect(this._buttonPressID),
+                    (this._buttonPressID = 0));
             let keyNum = traysswitchkey === 0 ? '1' : '3';
             if (Meta.is_wayland_compositor())
                 keyNum = traysswitchkey === 0 ? '1' : '2';
@@ -1267,8 +1268,8 @@ const IBusTrayClickSwitch = GObject.registerClass(
 
         destroy() {
             if (this._buttonPressID)
-                InputSourceIndicator.disconnect(this._buttonPressID),
-                    (this._buttonPressID = 0);
+                (InputSourceIndicator.disconnect(this._buttonPressID),
+                    (this._buttonPressID = 0));
         }
     }
 );
@@ -1645,8 +1646,8 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 );
             } else {
                 if (this._buttonRightPressID)
-                    this.disconnect(this._buttonRightPressID),
-                        (this._buttonRightPressID = 0);
+                    (this.disconnect(this._buttonRightPressID),
+                        (this._buttonRightPressID = 0));
             }
         }
 
@@ -1821,13 +1822,14 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
         _destroy_lclick() {
             if (this._buttonPressID)
-                this.disconnect(this._buttonPressID), (this._buttonPressID = 0);
+                (this.disconnect(this._buttonPressID),
+                    (this._buttonPressID = 0));
             if (this._sideChangeID)
-                this.disconnect(this._sideChangeID), (this._sideChangeID = 0);
+                (this.disconnect(this._sideChangeID), (this._sideChangeID = 0));
             if (this._location_handler) {
                 global.display.set_cursor(Meta.Cursor.DEFAULT);
-                GLib.source_remove(this._location_handler),
-                    (this._location_handler = 0);
+                (GLib.source_remove(this._location_handler),
+                    (this._location_handler = 0));
             }
             this._relativePosX = null;
             this._relativePosY = null;
@@ -1846,8 +1848,8 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
         _update_opacity() {
             if (this._themeContextChangedID)
-                this._themeContext.disconnect(this._themeContextChangedID),
-                    (this._themeContextChangedID = 0);
+                (this._themeContext.disconnect(this._themeContextChangedID),
+                    (this._themeContextChangedID = 0));
 
             if (this._use_opacity && this._opacity) {
                 let candidate_child = this.bin.get_children();
@@ -2011,28 +2013,28 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this.close(BoxPointer.PopupAnimation[this.animation]);
             this._destroy_lclick();
             if (this._buttonRightPressID)
-                this.disconnect(this._buttonRightPressID),
-                    (this._buttonRightPressID = 0);
+                (this.disconnect(this._buttonRightPressID),
+                    (this._buttonRightPressID = 0));
             if (this._setCursorLocationID)
-                this._panelService.disconnect(this._setCursorLocationID),
-                    (this._setCursorLocationID = 0);
+                (this._panelService.disconnect(this._setCursorLocationID),
+                    (this._setCursorLocationID = 0));
             if (this._setCursorLocationRelativeID)
-                this._panelService.disconnect(
+                (this._panelService.disconnect(
                     this._setCursorLocationRelativeID
                 ),
-                    (this._setCursorLocationRelativeID = 0);
+                    (this._setCursorLocationRelativeID = 0));
             if (this._focusOutID)
-                this._panelService.disconnect(this._focusOutID),
-                    (this._focusOutID = 0);
+                (this._panelService.disconnect(this._focusOutID),
+                    (this._focusOutID = 0));
             if (this._updatePropertyID)
-                this._panelService.disconnect(this._updatePropertyID),
-                    (this._updatePropertyID = 0);
+                (this._panelService.disconnect(this._updatePropertyID),
+                    (this._updatePropertyID = 0));
             if (this._registerPropertyID)
-                this._panelService.disconnect(this._registerPropertyID),
-                    (this._registerPropertyID = 0);
+                (this._panelService.disconnect(this._registerPropertyID),
+                    (this._registerPropertyID = 0));
             if (this._currentSourceChangedID)
-                InputSourceManager.disconnect(this._currentSourceChangedID),
-                    (this._currentSourceChangedID = 0);
+                (InputSourceManager.disconnect(this._currentSourceChangedID),
+                    (this._currentSourceChangedID = 0));
             if (this._lastTimeOut) {
                 GLib.source_remove(this._lastTimeOut);
                 this._lastTimeOut = null;
@@ -2045,14 +2047,14 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
         destroy() {
             if (this._onWindowChangedID)
-                global.display.disconnect(this._onWindowChangedID),
-                    (this._onWindowChangedID = 0);
+                (global.display.disconnect(this._onWindowChangedID),
+                    (this._onWindowChangedID = 0));
             if (this._overviewShowingID)
-                Main.overview.disconnect(this._overviewShowingID),
-                    (this._overviewShowingID = 0);
+                (Main.overview.disconnect(this._overviewShowingID),
+                    (this._overviewShowingID = 0));
             if (this._overviewHiddenID)
-                Main.overview.disconnect(this._overviewHiddenID),
-                    (this._overviewHiddenID = 0);
+                (Main.overview.disconnect(this._overviewHiddenID),
+                    (this._overviewHiddenID = 0));
             this._destroy_indicator();
         }
     }
@@ -2151,10 +2153,10 @@ const IBusThemeManager = GObject.registerClass(
         destroy() {
             this._changeTheme(false);
             if (this._themeContextChangedID)
-                St.ThemeContext.get_for_stage(global.stage).disconnect(
+                (St.ThemeContext.get_for_stage(global.stage).disconnect(
                     this._themeContextChangedID
                 ),
-                    (this._themeContextChangedID = 0);
+                    (this._themeContextChangedID = 0));
             delete this._proxy;
         }
 
@@ -2192,8 +2194,8 @@ const IBusThemeManager = GObject.registerClass(
             );
 
             if (this._styleSheetMonitorID) {
-                this._styleSheetMonitor.disconnect(this._styleSheetMonitorID),
-                    (this._styleSheetMonitorID = 0);
+                (this._styleSheetMonitor.disconnect(this._styleSheetMonitorID),
+                    (this._styleSheetMonitorID = 0));
                 this._styleSheetMonitor.cancel();
             }
 
@@ -3281,11 +3283,11 @@ const Extensions = GObject.registerClass(
             this.menuibusexit = false;
             this._not_extension_first_start = false;
             if (this._useFontChangeID)
-                IBusSettings.disconnect(this._useFontChangeID),
-                    (this._useFontChangeID = 0);
+                (IBusSettings.disconnect(this._useFontChangeID),
+                    (this._useFontChangeID = 0));
             if (this._useTrayChangeID)
-                IBusSettings.disconnect(this._useTrayChangeID),
-                    (this._useTrayChangeID = 0);
+                (IBusSettings.disconnect(this._useTrayChangeID),
+                    (this._useTrayChangeID = 0));
         }
     }
 );
@@ -3355,8 +3357,8 @@ export default class CustomizeIBusExtension extends Extension {
             delete this._ext;
         }
         if (this._updateIgnoreModesID)
-            InputSourceManager.disconnect(this._updateIgnoreModesID),
-                (this._updateIgnoreModesID = 0);
+            (InputSourceManager.disconnect(this._updateIgnoreModesID),
+                (this._updateIgnoreModesID = 0));
         IBusSettings = null;
         gsettings = null;
         ngsettings = null;
