@@ -4,7 +4,7 @@
     "description": "Full customization of appearance, behavior, system tray and input source indicator for IBus.",
     "dependencies": {
         "eslint": "^9.32.0",
-        "eslint-config-prettier": "^10.1.5",
+        "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.3",
         "husky": "^9.1.7",
         "lint-staged": "^16.1.2",
