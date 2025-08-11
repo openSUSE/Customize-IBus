@@ -133,22 +133,22 @@ Support Customization of:
 - Drag Candidate Box to Reposition
 - Show or Hide Candidate Box Page Buttons
 - System Tray Menus and Interaction Settings
-  - Show or Hide Tray Icon
-  - Directly Click Tray Icon to Switch Input Mode
-  - Add Additional Menu
+    - Show or Hide Tray Icon
+    - Directly Click Tray Icon to Switch Input Mode
+    - Add Additional Menu
 - Input Source Indicator Appearance and Interaction Settings
-  - Enable Indicator
-  - Only Indicate when Switching Input Mode
-  - Only Indicate when Using ASCII Input Mode
-  - Not Indicate when Using Single Mode IME
-  - Right-click Indicator to Hide
-  - Scroll on Indicator to Switch Input Mode
-  - Indicator Animation
-  - Customize Font
-  - Left-click Indicator to Drag to Move Indicator or Switch Input Mode
-  - Change Opacity
-  - Enable Indicator Show Delay and Configure Showing Timeout
-  - Enable Auto-hide Indicator and Configure Auto-hide Timeout
+    - Enable Indicator
+    - Only Indicate when Switching Input Mode
+    - Only Indicate when Using ASCII Input Mode
+    - Not Indicate when Using Single Mode IME
+    - Right-click Indicator to Hide
+    - Scroll on Indicator to Switch Input Mode
+    - Indicator Animation
+    - Customize Font
+    - Left-click Indicator to Drag to Move Indicator or Switch Input Mode
+    - Change Opacity
+    - Enable Indicator Show Delay and Configure Showing Timeout
+    - Enable Auto-hide Indicator and Configure Auto-hide Timeout
 - Theme (Stylesheet Provided or Extracted from GNOME Shell Themes, Refer to Help Instructions in Extension for More)
 - Candidate Box Background and its Displaying Style
 - Theme and Background Picture Follow GNOME Night Light Mode
@@ -205,7 +205,7 @@ Themes in IBus Tweaker have been converted by me as IBus theme stylesheets colle
 During [fixing Unity8-Wood theme and add support for IBus Background](https://github.com/openSUSE/mentoring/issues/158#issuecomment-813837436), if adding the following style for class `.candidate-popup-content`：
 
 ```css
-background: url("assets/bg.png");
+background: url('assets/bg.png');
 background-repeat: no-repeat;
 background-size: cover;
 ```
@@ -282,8 +282,9 @@ When only the light background or dark background is turned on, the extension wi
 - [x] V89: Have support for GNOME 46 (No support for GNOME version 45 now).
 - [x] V90: Have support for GNOME 47.
 - [x] V91: Have support for GNOME 48.
+- [x] V92: Have support for GNOME 49.
 
-Tested on Fedora, OpenSUSE, Manjaro, Ubuntu and FreeBSD, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65, v66), 3.34, 3.36, 3.38 and 40(v67, v68, v69, v70), 41(v72, v75, v76, v77, v78, v80), 42(v82), 43(v83, v84, v85), 44(v86), 45(v88), 46(v89), 47(v90), 48(v91).
+Tested on Fedora, OpenSUSE, Manjaro, Ubuntu and FreeBSD, GNOME-shell [3.38](../../tree/3.38)(v3, v5, v9, v11, v14, v15, v17, v19, v21, v23, v25, v27, v29, v31, v35, v37, v39, v41, v43, v45, v47, v49, v51, v53(merged into main in later version)), 40.0(v4, v8, v10, v12, v13, v16, v18, v20, v22, v24, v26, v28, v30, v32, v36, v38, v40, v42, v44, v46, v48, v50, v52, v54), 3.38 and 40(v55, v56, v57, v58, v59, v60, v61, v62, v63, v64, v65, v66), 3.34, 3.36, 3.38 and 40(v67, v68, v69, v70), 41(v72, v75, v76, v77, v78, v80), 42(v82), 43(v83, v84, v85), 44(v86), 45(v88), 46(v89), 47(v90), 48(v91, v92), 49(v92).
 
 ## Acknowledgements
 
