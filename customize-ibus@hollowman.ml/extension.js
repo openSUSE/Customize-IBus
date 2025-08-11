@@ -1096,9 +1096,7 @@ const IBusReposition = GObject.registerClass(
                         let [mouseX, mouseY] = event.get_coords();
                         CandidatePopup._relativePosX = mouseX - boxX;
                         CandidatePopup._relativePosY = mouseY - boxY;
-                        global.display.set_cursor(
-                            Meta.Cursor.MOVE_OR_RESIZE_WINDOW
-                        );
+                        global.display.set_cursor(Meta.Cursor.MOVE);
                         this._location_handler = GLib.timeout_add(
                             GLib.PRIORITY_DEFAULT,
                             10,
@@ -1757,9 +1755,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
                         let [mouseX, mouseY] = event.get_coords();
                         this._relativePosX = mouseX - boxX;
                         this._relativePosY = mouseY - boxY;
-                        global.display.set_cursor(
-                            Meta.Cursor.MOVE_OR_RESIZE_WINDOW
-                        );
+                        global.display.set_cursor(Meta.Cursor.MOVE);
                         this._location_handler = GLib.timeout_add(
                             GLib.PRIORITY_DEFAULT,
                             10,
