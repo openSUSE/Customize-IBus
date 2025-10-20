@@ -3,7 +3,7 @@
     "version": "92.0.0",
     "description": "Full customization of appearance, behavior, system tray and input source indicator for IBus.",
     "dependencies": {
-        "eslint": "^9.37.0",
+        "eslint": "^9.38.0",
         "eslint-config-prettier": "^10.1.8",
         "eslint-plugin-prettier": "^5.5.4",
         "husky": "^9.1.7",
