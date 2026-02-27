@@ -53,7 +53,7 @@ function mergeObjects(main, bck) {
 }
 
 const CustomizeIBus = GObject.registerClass(
-    class extends Gtk.ScrolledWindow {
+    class _CustomizeIBus extends Gtk.ScrolledWindow {
         constructor(gsettings, metadata, dir) {
             super({
                 hscrollbar_policy: Gtk.PolicyType.NEVER,

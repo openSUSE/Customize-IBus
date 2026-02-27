@@ -117,7 +117,7 @@ const IBusOrientation = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusOrientation extends GObject.Object {
         constructor() {
             super();
             this._originalSetOrientation =
@@ -173,7 +173,7 @@ const IBusAnimation = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusAnimation extends GObject.Object {
         constructor() {
             super();
             this._openOrig = CandidatePopup.open;
@@ -232,7 +232,7 @@ const IBusClickSwitch = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusClickSwitch extends GObject.Object {
         constructor() {
             super();
             gsettings.bind(
@@ -356,7 +356,7 @@ const IBusScroll = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusScroll extends GObject.Object {
         constructor() {
             super();
 
@@ -423,7 +423,7 @@ const IBusNotFollowCaret = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusNotFollowCaret extends GObject.Object {
         constructor() {
             super();
             this._setDummyCursorGeometryOrig =
@@ -545,7 +545,7 @@ const IBusFontSetting = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusFontSetting extends GObject.Object {
         constructor() {
             super();
             gsettings.bind(
@@ -630,7 +630,7 @@ const IBusAutoSwitch = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusAutoSwitch extends GObject.Object {
         constructor() {
             super();
             this._bindSettings();
@@ -758,7 +758,7 @@ const IBusOpacity = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusOpacity extends GObject.Object {
         constructor() {
             super();
 
@@ -835,7 +835,7 @@ const IBusOpacity = GObject.registerClass(
 
 // Fix IME List order
 const IBusFixIMEList = GObject.registerClass(
-    class extends GObject.Object {
+    class _IBusFixIMEList extends GObject.Object {
         constructor() {
             super();
             // Solution Provided by
@@ -1118,7 +1118,7 @@ const IBusFixIMEList = GObject.registerClass(
 
 // Enable drag to reposition candidate box
 const IBusReposition = GObject.registerClass(
-    class extends GObject.Object {
+    class _IBusReposition extends GObject.Object {
         constructor() {
             super();
             CandidatePopup.reactive = true;
@@ -1263,7 +1263,7 @@ const IBusTrayClickSwitch = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusTrayClickSwitch extends GObject.Object {
         constructor() {
             super();
             gsettings.bind(
@@ -1430,7 +1430,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             ),
         },
     },
-    class extends BoxPointer.BoxPointer {
+    class _IBusInputSourceIndicator extends BoxPointer.BoxPointer {
         /* Main */
         constructor() {
             super(St.Side.TOP);
@@ -2108,7 +2108,7 @@ const IBusThemeManager = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusThemeManager extends GObject.Object {
         constructor() {
             super();
             this._prevCssStylesheet = null;
@@ -2315,7 +2315,7 @@ const IBusBGSetting = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _IBusBGSetting extends GObject.Object {
         constructor() {
             super();
             ngsettings.bind(
@@ -2669,7 +2669,7 @@ const Extensions = GObject.registerClass(
             ),
         },
     },
-    class extends GObject.Object {
+    class _Extensions extends GObject.Object {
         constructor() {
             super();
             this._bindSettings();
