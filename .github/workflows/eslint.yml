@@ -23,8 +23,8 @@ jobs:
 
       - name: Install
         run: |
-          npm install eslint@^8.0.0
-          npm install @microsoft/eslint-formatter-sarif@2.1.7
+          npm install
+          npm install --legacy-peer-deps @microsoft/eslint-formatter-sarif@2.1.7
 
       - name: Lint
         run: npx eslint .
