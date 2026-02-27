@@ -632,7 +632,7 @@ const IBusAutoSwitch = GObject.registerClass(
                 return false;
             }
             let state = this._state;
-            let stateConf = false;
+            let stateConf;
             if (this._remember) {
                 let store = this._states.get(this._tmpWindow);
                 if (state !== store) this._states.set(this._tmpWindow, state);
