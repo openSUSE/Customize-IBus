@@ -21,6 +21,16 @@ import {Fields} from './fields.js';
 const SessionType =
     GLib.getenv('XDG_SESSION_TYPE') === 'wayland' ? 'Wayland' : 'Xorg';
 const SCHEMA_PATH = '/org/gnome/shell/extensions/customize-ibus/';
+const AUTHOR_URL = 'https://github.com/HollowMan6';
+const AUTHOR_EMAIL = 'hollowman@opensuse.org';
+const SOURCE_URL = 'https://github.com/openSUSE/Customize-IBus';
+const GSOC_URL =
+    'https://summerofcode.withgoogle.com/archive/2021/projects/6295506795364352/';
+const OPENSUSE_URL = 'https://github.com/openSUSE';
+const GPL_URL = 'https://www.gnu.org/licenses/gpl';
+const IBUS_THEME_TOOLS_URL = 'https://github.com/openSUSE/IBus-Theme-Tools';
+const IBUS_THEME_HUB_URL = 'https://github.com/openSUSE/IBus-Theme-Hub';
+const AUTHOR_MAILTO = `mailto:${AUTHOR_EMAIL}`;
 
 const BoxSettings = {
     margin_start: 10,
@@ -43,11 +53,11 @@ function mergeObjects(main, bck) {
 }
 
 const CustomizeIBus = GObject.registerClass(
-    class CustomizeIBus extends Gtk.ScrolledWindow {
+    class extends Gtk.ScrolledWindow {
         constructor(gsettings, metadata, dir) {
             super({
                 hscrollbar_policy: Gtk.PolicyType.NEVER,
-                vscrollbar_policy: Gtk.PolicyType.NEVER,
+                vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
             });
             this.gsettings = gsettings;
             this.metadata = metadata;
@@ -1327,12 +1337,6 @@ const CustomizeIBus = GObject.registerClass(
                 Gio.SettingsBindFlags.DEFAULT
             );
             this.gsettings.bind(
-                Fields.CANDOPACITY,
-                this._field_candidate_opacity,
-                'active',
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            this.gsettings.bind(
                 Fields.USECUSTOMFONT,
                 this._field_use_custom_font,
                 'active',
@@ -1513,32 +1517,14 @@ const CustomizeIBus = GObject.registerClass(
                 Gio.SettingsBindFlags.DEFAULT
             );
             this.gsettings.bind(
-                Fields.INDOPACITY,
-                this._field_indicator_opacity,
-                'active',
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            this.gsettings.bind(
                 Fields.USEINDSHOWD,
                 this._field_indicator_enable_show_delay,
                 'active',
                 Gio.SettingsBindFlags.DEFAULT
             );
             this.gsettings.bind(
-                Fields.INPUTINDSHOW,
-                this._field_indicator_show_time,
-                'active',
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            this.gsettings.bind(
                 Fields.USEINDAUTOHID,
                 this._field_indicator_enable_autohide,
-                'active',
-                Gio.SettingsBindFlags.DEFAULT
-            );
-            this.gsettings.bind(
-                Fields.INPUTINDHID,
-                this._field_indicator_hide_time,
                 'active',
                 Gio.SettingsBindFlags.DEFAULT
             );
@@ -1741,8 +1727,8 @@ const CustomizeIBus = GObject.registerClass(
                 new Gtk.Label({
                     use_markup: true,
                     label: _(
-                        '<span size="small">Copyleft 🄯 2021-2025 <a href="https://github.com/HollowMan6">ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟</a> &lt;<a href="mailto:hollowman@opensuse.org">hollowman@opensuse.org</a>&gt;</span>'
-                    ),
+                        '<span size="small">Copyleft 🄯 2021-2026 <a href="%s">ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟</a> &lt;<a href="%s">%s</a>&gt;</span>'
+                    ).format(AUTHOR_URL, AUTHOR_MAILTO, AUTHOR_EMAIL),
                 }),
                 0,
                 frame.grid._row++,
@@ -1753,8 +1739,8 @@ const CustomizeIBus = GObject.registerClass(
                 new Gtk.Label({
                     use_markup: true,
                     label: _(
-                        '<span size="small">Source Code: <a href="https://github.com/openSUSE/Customize-IBus">https://github.com/openSUSE/Customize-IBus</a></span>'
-                    ),
+                        '<span size="small">Source Code: <a href="%s">%s</a></span>'
+                    ).format(SOURCE_URL, SOURCE_URL),
                 }),
                 0,
                 frame.grid._row++,
@@ -1765,8 +1751,8 @@ const CustomizeIBus = GObject.registerClass(
                 new Gtk.Label({
                     use_markup: true,
                     label: _(
-                        '<span size="small">Sponsored by <a href="https://summerofcode.withgoogle.com/archive/2021/projects/6295506795364352/">Google Summer of Code 2021</a> <b><a href="https://github.com/openSUSE">@openSUSE</a></b>.</span>'
-                    ),
+                        '<span size="small">Sponsored by <a href="%s">Google Summer of Code 2021</a> <b><a href="%s">@openSUSE</a></b>.</span>'
+                    ).format(GSOC_URL, OPENSUSE_URL),
                 }),
                 0,
                 frame.grid._row++,
@@ -1818,8 +1804,8 @@ const CustomizeIBus = GObject.registerClass(
                 new Gtk.Label({
                     use_markup: true,
                     label: _(
-                        '<span size="small">See the <a href="https://www.gnu.org/licenses/gpl">GNU General Public License, version 3 or later</a> for details.</span>'
-                    ),
+                        '<span size="small">See the <a href="%s">GNU General Public License, version 3 or later</a> for details.</span>'
+                    ).format(GPL_URL),
                 }),
                 0,
                 frame.grid._row++,
@@ -1924,8 +1910,8 @@ const CustomizeIBus = GObject.registerClass(
                     use_markup: true,
                     wrap: true,
                     label: _(
-                        'Support importing stylesheet generated by <a href="https://github.com/openSUSE/IBus-Theme-Tools">IBus Theme Tools</a> or provided by <a href="https://github.com/openSUSE/IBus-Theme-Hub">IBus Theme Hub</a>.'
-                    ),
+                        'Support importing stylesheet generated by <a href="%s">IBus Theme Tools</a> or provided by <a href="%s">IBus Theme Hub</a>.'
+                    ).format(IBUS_THEME_TOOLS_URL, IBUS_THEME_HUB_URL),
                 })
             );
             expanderFrame._add(

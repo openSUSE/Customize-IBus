@@ -67,6 +67,40 @@ let ngsettings = null;
 let opacityStyle = '';
 let fontStyle = '';
 
+function _isWaylandCompositor() {
+    if (Meta.is_wayland_compositor instanceof Function)
+        return Meta.is_wayland_compositor();
+    if (global.display?.is_wayland_compositor instanceof Function)
+        return global.display.is_wayland_compositor();
+    return GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
+}
+
+function _setGlobalCursor(cursorName) {
+    if (
+        global.stage &&
+        typeof global.stage.set_cursor_type === 'function' &&
+        Clutter.CursorType?.[cursorName] !== undefined
+    ) {
+        global.stage.set_cursor_type(Clutter.CursorType[cursorName]);
+        return;
+    }
+    if (
+        global.display &&
+        typeof global.display.set_cursor === 'function' &&
+        Meta.Cursor?.[cursorName] !== undefined
+    ) {
+        global.display.set_cursor(Meta.Cursor[cursorName]);
+    }
+}
+
+function _eventHasButton(event, buttonNum) {
+    const eventButton =
+        event.get_button instanceof Function ? event.get_button() : 0;
+    if (eventButton === buttonNum) return true;
+    const mask = Clutter.ModifierType['BUTTON' + buttonNum + '_MASK'];
+    return (event.get_state() & mask) !== 0;
+}
+
 /* General */
 // Candidates orientation
 const IBusOrientation = GObject.registerClass(
@@ -83,7 +117,7 @@ const IBusOrientation = GObject.registerClass(
             ),
         },
     },
-    class IBusOrientation extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             this._originalSetOrientation =
@@ -139,7 +173,7 @@ const IBusAnimation = GObject.registerClass(
             ),
         },
     },
-    class IBusAnimation extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             this._openOrig = CandidatePopup.open;
@@ -198,7 +232,7 @@ const IBusClickSwitch = GObject.registerClass(
             ),
         },
     },
-    class IBusClickSwitch extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             gsettings.bind(
@@ -228,10 +262,8 @@ const IBusClickSwitch = GObject.registerClass(
             this._buttonPressID = CandidatePopup.connect(
                 'button-press-event',
                 (actor, event) => {
-                    let rightButton = 'BUTTON3_MASK';
-                    if (Meta.is_wayland_compositor())
-                        rightButton = 'BUTTON2_MASK';
-                    if (event.get_state() & Clutter.ModifierType[rightButton]) {
+                    const rightButtonNum = _isWaylandCompositor() ? 2 : 3;
+                    if (_eventHasButton(event, rightButtonNum)) {
                         let shouldPressReturn =
                             !this._mouseInCandidate || !this._clickSwitch;
                         if (shouldPressReturn) {
@@ -265,7 +297,12 @@ const IBusClickSwitch = GObject.registerClass(
                                             ? BoxPointer.PopupAnimation.FADE
                                             : BoxPointer.PopupAnimation.FULL
                                     );
-                                    Main.panel.menuManager.ignoreRelease();
+                                    if (
+                                        Main.panel.menuManager
+                                            ?.ignoreRelease instanceof Function
+                                    ) {
+                                        Main.panel.menuManager.ignoreRelease();
+                                    }
                                 }
                                 this._delayAfterPress = null;
                                 return GLib.SOURCE_REMOVE;
@@ -319,7 +356,7 @@ const IBusScroll = GObject.registerClass(
             ),
         },
     },
-    class IBusScroll extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
 
@@ -386,7 +423,7 @@ const IBusNotFollowCaret = GObject.registerClass(
             ),
         },
     },
-    class IBusNotFollowCaret extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             this._setDummyCursorGeometryOrig =
@@ -508,7 +545,7 @@ const IBusFontSetting = GObject.registerClass(
             ),
         },
     },
-    class IBusFontSetting extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             gsettings.bind(
@@ -593,7 +630,7 @@ const IBusAutoSwitch = GObject.registerClass(
             ),
         },
     },
-    class IBusAutoSwitch extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             this._bindSettings();
@@ -721,7 +758,7 @@ const IBusOpacity = GObject.registerClass(
             ),
         },
     },
-    class IBusOpacity extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
 
@@ -798,7 +835,7 @@ const IBusOpacity = GObject.registerClass(
 
 // Fix IME List order
 const IBusFixIMEList = GObject.registerClass(
-    class IBusFixIMEList extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             // Solution Provided by
@@ -1081,22 +1118,19 @@ const IBusFixIMEList = GObject.registerClass(
 
 // Enable drag to reposition candidate box
 const IBusReposition = GObject.registerClass(
-    class IBusReposition extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             CandidatePopup.reactive = true;
             this._buttonPressID = CandidatePopup.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (
-                        event.get_state() & Clutter.ModifierType.BUTTON1_MASK &&
-                        !this._mouseInCandidate
-                    ) {
+                    if (_eventHasButton(event, 1) && !this._mouseInCandidate) {
                         let [boxX, boxY] = CandidateDummyCursor.get_position();
                         let [mouseX, mouseY] = event.get_coords();
                         CandidatePopup._relativePosX = mouseX - boxX;
                         CandidatePopup._relativePosY = mouseY - boxY;
-                        global.display.set_cursor(Meta.Cursor.MOVE);
+                        _setGlobalCursor('MOVE');
                         this._location_handler = GLib.timeout_add(
                             GLib.PRIORITY_DEFAULT,
                             10,
@@ -1173,7 +1207,7 @@ const IBusReposition = GObject.registerClass(
             mask &= Clutter.ModifierType.BUTTON1_MASK;
             if (mask) return GLib.SOURCE_CONTINUE;
             this._location_handler = null;
-            global.display.set_cursor(Meta.Cursor.DEFAULT);
+            _setGlobalCursor('DEFAULT');
             let state = new Map(
                 Object.entries(
                     gsettings.get_value(Fields.CANDBOXPOS).deep_unpack()
@@ -1197,7 +1231,7 @@ const IBusReposition = GObject.registerClass(
                 (CandidatePopup.disconnect(this._sideChangeID),
                     (this._sideChangeID = 0));
             if (this._location_handler) {
-                global.display.set_cursor(Meta.Cursor.DEFAULT);
+                _setGlobalCursor('DEFAULT');
                 (GLib.source_remove(this._location_handler),
                     (this._location_handler = 0));
             }
@@ -1229,7 +1263,7 @@ const IBusTrayClickSwitch = GObject.registerClass(
             ),
         },
     },
-    class IBusTrayClickSwitch extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             gsettings.bind(
@@ -1244,16 +1278,12 @@ const IBusTrayClickSwitch = GObject.registerClass(
             if (this._buttonPressID)
                 (InputSourceIndicator.disconnect(this._buttonPressID),
                     (this._buttonPressID = 0));
-            let keyNum = traysswitchkey === 0 ? '1' : '3';
-            if (Meta.is_wayland_compositor())
-                keyNum = traysswitchkey === 0 ? '1' : '2';
+            let keyNum = traysswitchkey === 0 ? 1 : 3;
+            if (_isWaylandCompositor()) keyNum = traysswitchkey === 0 ? 1 : 2;
             this._buttonPressID = InputSourceIndicator.connect(
                 'button-press-event',
                 function (actor, event) {
-                    if (
-                        event.get_state() &
-                        Clutter.ModifierType['BUTTON' + keyNum + '_MASK']
-                    ) {
+                    if (_eventHasButton(event, keyNum)) {
                         IBusManager.activateProperty(
                             INPUTMODE,
                             IBus.PropState.CHECKED
@@ -1400,7 +1430,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             ),
         },
     },
-    class IBusInputSourceIndicator extends BoxPointer.BoxPointer {
+    class extends BoxPointer.BoxPointer {
         /* Main */
         constructor() {
             super(St.Side.TOP);
@@ -1629,13 +1659,8 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 this._buttonRightPressID = this.connect(
                     'button-press-event',
                     (actor, event) => {
-                        let rightButton = 'BUTTON3_MASK';
-                        if (Meta.is_wayland_compositor())
-                            rightButton = 'BUTTON2_MASK';
-                        if (
-                            event.get_state() &
-                            Clutter.ModifierType[rightButton]
-                        ) {
+                        const rightButtonNum = _isWaylandCompositor() ? 2 : 3;
+                        if (_eventHasButton(event, rightButtonNum)) {
                             this.close(
                                 BoxPointer.PopupAnimation[this.animation]
                             );
@@ -1735,7 +1760,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._buttonPressID = this.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (event.get_state() & Clutter.ModifierType.BUTTON1_MASK) {
+                    if (_eventHasButton(event, 1)) {
                         IBusManager.activateProperty(
                             INPUTMODE,
                             IBus.PropState.CHECKED
@@ -1750,12 +1775,12 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._buttonPressID = this.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (event.get_state() & Clutter.ModifierType.BUTTON1_MASK) {
+                    if (_eventHasButton(event, 1)) {
                         let [boxX, boxY] = this._dummyCursor.get_position();
                         let [mouseX, mouseY] = event.get_coords();
                         this._relativePosX = mouseX - boxX;
                         this._relativePosY = mouseY - boxY;
-                        global.display.set_cursor(Meta.Cursor.MOVE);
+                        _setGlobalCursor('MOVE');
                         this._location_handler = GLib.timeout_add(
                             GLib.PRIORITY_DEFAULT,
                             10,
@@ -1812,7 +1837,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             mask &= Clutter.ModifierType.BUTTON1_MASK;
             if (mask) return GLib.SOURCE_CONTINUE;
             this._location_handler = null;
-            global.display.set_cursor(Meta.Cursor.DEFAULT);
+            _setGlobalCursor('DEFAULT');
             return GLib.SOURCE_REMOVE;
         }
 
@@ -1823,7 +1848,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             if (this._sideChangeID)
                 (this.disconnect(this._sideChangeID), (this._sideChangeID = 0));
             if (this._location_handler) {
-                global.display.set_cursor(Meta.Cursor.DEFAULT);
+                _setGlobalCursor('DEFAULT');
                 (GLib.source_remove(this._location_handler),
                     (this._location_handler = 0));
             }
@@ -2083,7 +2108,7 @@ const IBusThemeManager = GObject.registerClass(
             ),
         },
     },
-    class IBusThemeManager extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             this._prevCssStylesheet = null;
@@ -2290,7 +2315,7 @@ const IBusBGSetting = GObject.registerClass(
             ),
         },
     },
-    class IBusBGSetting extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             ngsettings.bind(
@@ -2644,7 +2669,7 @@ const Extensions = GObject.registerClass(
             ),
         },
     },
-    class Extensions extends GObject.Object {
+    class extends GObject.Object {
         constructor() {
             super();
             this._bindSettings();
