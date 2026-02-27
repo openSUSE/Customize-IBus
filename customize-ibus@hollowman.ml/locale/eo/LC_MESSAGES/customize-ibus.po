@@ -4,7 +4,7 @@
 # phlostically <phlostically@mailinator.com>, 2024.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 92\n"
+"Project-Id-Version: Customize Ibus 93\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-27 16:22+0200\n"
 "PO-Revision-Date: 2024-07-09 20:16+0000\n"
@@ -462,7 +462,7 @@ msgstr ""
 #: prefs.js:1742
 #, javascript-format
 msgid "<span size=\"small\">Source Code: <a href=\"%s\">%s</a></span>"
-msgstr ""
+msgstr "<span size=\"small\">Fontokodo: <a href=\"%s\">%s</a></span>"
 
 #: prefs.js:1754
 #, javascript-format
@@ -633,10 +633,3 @@ msgstr ""
 #: prefs.js:2090
 msgid "This will discard all the current configurations!"
 msgstr ""
-
-#~ msgid ""
-#~ "<span size=\"small\">Source Code: <a href=\"https://github.com/openSUSE/"
-#~ "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
-#~ msgstr ""
-#~ "<span size=\"small\">Fontokodo: <a href=\"https://github.com/openSUSE/"
-#~ "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"

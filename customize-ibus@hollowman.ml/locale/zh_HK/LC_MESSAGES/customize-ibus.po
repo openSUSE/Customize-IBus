@@ -5,7 +5,7 @@
 # ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟 <hollowman@opensuse.org>, 2021.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 92\n"
+"Project-Id-Version: Customize Ibus 93\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-27 16:22+0200\n"
 "PO-Revision-Date: 2024-07-09 20:16+0000\n"
@@ -463,7 +463,7 @@ msgstr ""
 #: prefs.js:1742
 #, javascript-format
 msgid "<span size=\"small\">Source Code: <a href=\"%s\">%s</a></span>"
-msgstr ""
+msgstr "<span size=\"small\">源代碼：<a href=\"%s\">%s</a></span>"
 
 #: prefs.js:1754
 #, fuzzy, javascript-format
@@ -687,14 +687,3 @@ msgstr "是否將所有設置重置為默認值？"
 #: prefs.js:2090
 msgid "This will discard all the current configurations!"
 msgstr "這將丟棄當前的所有配置！"
-
-#~ msgid ""
-#~ "<span size=\"small\">Source Code: <a href=\"https://github.com/openSUSE/"
-#~ "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
-#~ msgstr ""
-#~ "<span size=\"small\">源代碼：<a href=\"https://github.com/openSUSE/"
-#~ "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
-
-#~ msgid ""
-#~ "https://hollowmansblog.wordpress.com/2021/08/21/customize-ibus-user-guide/"
-#~ msgstr "https://blog.csdn.net/qq_18572023/article/details/116331601"

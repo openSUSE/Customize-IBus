@@ -57,7 +57,7 @@ const CustomizeIBus = GObject.registerClass(
         constructor(gsettings, metadata, dir) {
             super({
                 hscrollbar_policy: Gtk.PolicyType.NEVER,
-                vscrollbar_policy: Gtk.PolicyType.AUTOMATIC,
+                vscrollbar_policy: Gtk.PolicyType.NEVER,
             });
             this.gsettings = gsettings;
             this.metadata = metadata;

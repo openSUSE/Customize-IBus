@@ -4,7 +4,7 @@
 # தமிழ்நேரம் <anishprabu.t@gmail.com>, 2025.
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 92\n"
+"Project-Id-Version: Customize Ibus 93\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-27 16:22+0200\n"
 "PO-Revision-Date: 2025-06-29 17:01+0000\n"
@@ -465,7 +465,7 @@ msgstr ""
 #: prefs.js:1742
 #, javascript-format
 msgid "<span size=\"small\">Source Code: <a href=\"%s\">%s</a></span>"
-msgstr ""
+msgstr "<span size=\"small\"> மூல குறியீடு: <a href=\"%s\">%s</a></span>"
 
 #: prefs.js:1754
 #, fuzzy, javascript-format
@@ -710,10 +710,3 @@ msgstr "எல்லா அமைப்புகளையும் இயல்�
 #: prefs.js:2090
 msgid "This will discard all the current configurations!"
 msgstr "இது தற்போதைய அனைத்து உள்ளமைவுகளையும் நிராகரிக்கும்!"
-
-#~ msgid ""
-#~ "<span size=\"small\">Source Code: <a href=\"https://github.com/openSUSE/"
-#~ "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
-#~ msgstr ""
-#~ "<span size=\"small\"> மூல குறியீடு: <a href=\"https://github.com/openSUSE/"
-#~ "Customize-IBus\">https://github.com/openSUSE/Customize-IBus</a></span>"
