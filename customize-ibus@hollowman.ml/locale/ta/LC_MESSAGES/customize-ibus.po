@@ -18,63 +18,63 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.13-dev\n"
 
-#: extension.js:1621
+#: extension.js:1660
 msgid "IBus panel service connected!"
 msgstr "IBUS பேனல் பணி இணைக்கப்பட்டுள்ளது!"
 
-#: extension.js:2230
+#: extension.js:2269
 msgid "loading light user theme for IBus:"
 msgstr "IBUS க்கான ஒளி பயனர் கருப்பொருள் ஏற்றுகிறது:"
 
-#: extension.js:2241
+#: extension.js:2280
 msgid "loading dark user theme for IBus:"
 msgstr "IBUS க்கான இருண்ட பயனர் கருப்பொருள் ஏற்றுகிறது:"
 
-#: extension.js:2247
+#: extension.js:2286
 msgid "loading default theme for IBus"
 msgstr "IBUS க்கான இயல்புநிலை கருப்பொருள் ஏற்றுகிறது"
 
-#: extension.js:2465
+#: extension.js:2504
 msgid "loading background for IBus:"
 msgstr "IBUS க்கான பின்னணியை ஏற்றுகிறது:"
 
-#: extension.js:2478
+#: extension.js:2517
 msgid "remove custom background for IBus"
 msgstr "IBUS க்கான தனிப்பயன் பின்னணியை அகற்று"
 
-#: extension.js:3073
+#: extension.js:3112
 msgid "Starting / Restarting IBus..."
 msgstr "IBUS ஐத் தொடங்க / மறுதொடக்கம் செய்தல் ..."
 
-#: extension.js:3102
+#: extension.js:3141
 msgid "Copy Emoji"
 msgstr "ஈமோசியை நகலெடுக்கவும்"
 
-#: extension.js:3123 prefs.js:1689 prefs.js:2144
+#: extension.js:3162 prefs.js:1689 prefs.js:2144
 msgid "Customize IBus"
 msgstr "தனிப்பயனாக்கு"
 
-#: extension.js:3144 prefs.js:312 prefs.js:555
+#: extension.js:3183 prefs.js:312 prefs.js:555
 msgid "IBus Preferences"
 msgstr "IBES விருப்பத்தேர்வுகள்"
 
-#: extension.js:3165 extension.js:3178 prefs.js:559
+#: extension.js:3204 extension.js:3217 prefs.js:559
 msgid "IBus Version"
 msgstr "Ible பதிப்பு"
 
-#: extension.js:3204
+#: extension.js:3243
 msgid "Restart"
 msgstr "மறுதொடக்கம்"
 
-#: extension.js:3233
+#: extension.js:3272
 msgid "Restarting IBus..."
 msgstr "ஐபி மறுதொடக்கம் ..."
 
-#: extension.js:3252
+#: extension.js:3291
 msgid "Quit"
 msgstr "கைவிடு"
 
-#: extension.js:3266
+#: extension.js:3305
 msgid "Exiting IBus..."
 msgstr "ஐபி வெளியேறுதல் ..."
 

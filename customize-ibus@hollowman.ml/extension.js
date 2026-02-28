@@ -1274,30 +1274,69 @@ const IBusTrayClickSwitch = GObject.registerClass(
             );
         }
 
+        _disconnectClickHandler() {
+            if (
+                this._clickRecognizeID &&
+                InputSourceIndicator?._clickGesture?.disconnect instanceof
+                    Function
+            ) {
+                InputSourceIndicator._clickGesture.disconnect(
+                    this._clickRecognizeID
+                );
+                this._clickRecognizeID = 0;
+            }
+            if (this._buttonPressID) {
+                InputSourceIndicator.disconnect(this._buttonPressID);
+                this._buttonPressID = 0;
+            }
+        }
+
+        _activateInputMode() {
+            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+            InputSourceIndicator.menu.close();
+        }
+
+        _connectClickGesture(keyNum) {
+            const clickGesture = InputSourceIndicator?._clickGesture;
+            if (!clickGesture || !(clickGesture.connect instanceof Function))
+                return false;
+
+            this._clickRecognizeID = clickGesture.connect(
+                'recognize',
+                gesture => {
+                    const button =
+                        gesture.get_button instanceof Function
+                            ? gesture.get_button()
+                            : 0;
+                    const matches =
+                        button === keyNum ||
+                        (keyNum === 2 && (button === 2 || button === 3));
+                    if (matches) this._activateInputMode();
+                }
+            );
+            return true;
+        }
+
         set traysswitchkey(traysswitchkey) {
-            if (this._buttonPressID)
-                (InputSourceIndicator.disconnect(this._buttonPressID),
-                    (this._buttonPressID = 0));
             let keyNum = traysswitchkey === 0 ? 1 : 3;
             if (_isWaylandCompositor()) keyNum = traysswitchkey === 0 ? 1 : 2;
+            this._disconnectClickHandler();
+
+            // GNOME 50+ panel buttons are activated through Clutter.ClickGesture
+            // and may not emit button-press-event reliably.
+            if (this._connectClickGesture(keyNum)) return;
+
             this._buttonPressID = InputSourceIndicator.connect(
                 'button-press-event',
-                function (actor, event) {
-                    if (_eventHasButton(event, keyNum)) {
-                        IBusManager.activateProperty(
-                            INPUTMODE,
-                            IBus.PropState.CHECKED
-                        );
-                        InputSourceIndicator.menu.close();
-                    }
+                (_actor, event) => {
+                    if (_eventHasButton(event, keyNum))
+                        this._activateInputMode();
                 }
             );
         }
 
         destroy() {
-            if (this._buttonPressID)
-                (InputSourceIndicator.disconnect(this._buttonPressID),
-                    (this._buttonPressID = 0));
+            this._disconnectClickHandler();
         }
     }
 );

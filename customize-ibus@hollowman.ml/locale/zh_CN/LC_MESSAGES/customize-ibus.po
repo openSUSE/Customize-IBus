@@ -20,63 +20,63 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Weblate 5.7-dev\n"
 
-#: extension.js:1621
+#: extension.js:1660
 msgid "IBus panel service connected!"
 msgstr "IBus 面板服务连接成功！"
 
-#: extension.js:2230
+#: extension.js:2269
 msgid "loading light user theme for IBus:"
 msgstr "正在为 IBus 加载浅色用户主题:"
 
-#: extension.js:2241
+#: extension.js:2280
 msgid "loading dark user theme for IBus:"
 msgstr "正在为 IBus 加载深色用户主题:"
 
-#: extension.js:2247
+#: extension.js:2286
 msgid "loading default theme for IBus"
 msgstr "正在为 IBus 加载当前系统主题"
 
-#: extension.js:2465
+#: extension.js:2504
 msgid "loading background for IBus:"
 msgstr "正在为 IBus 加载背景:"
 
-#: extension.js:2478
+#: extension.js:2517
 msgid "remove custom background for IBus"
 msgstr "为 IBus 去除自定义背景"
 
-#: extension.js:3073
+#: extension.js:3112
 msgid "Starting / Restarting IBus..."
 msgstr "正在启动 / 重启 IBus..."
 
-#: extension.js:3102
+#: extension.js:3141
 msgid "Copy Emoji"
 msgstr "复制 Emoji"
 
-#: extension.js:3123 prefs.js:1689 prefs.js:2144
+#: extension.js:3162 prefs.js:1689 prefs.js:2144
 msgid "Customize IBus"
 msgstr "自定义 IBus"
 
-#: extension.js:3144 prefs.js:312 prefs.js:555
+#: extension.js:3183 prefs.js:312 prefs.js:555
 msgid "IBus Preferences"
 msgstr "IBus 首选项"
 
-#: extension.js:3165 extension.js:3178 prefs.js:559
+#: extension.js:3204 extension.js:3217 prefs.js:559
 msgid "IBus Version"
 msgstr "IBus 版本"
 
-#: extension.js:3204
+#: extension.js:3243
 msgid "Restart"
 msgstr "重新启动"
 
-#: extension.js:3233
+#: extension.js:3272
 msgid "Restarting IBus..."
 msgstr "正在重启 IBus..."
 
-#: extension.js:3252
+#: extension.js:3291
 msgid "Quit"
 msgstr "退出"
 
-#: extension.js:3266
+#: extension.js:3305
 msgid "Exiting IBus..."
 msgstr "正在退出 IBus..."
 
