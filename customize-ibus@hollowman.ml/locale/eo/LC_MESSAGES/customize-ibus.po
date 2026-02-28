@@ -450,7 +450,7 @@ msgid ""
 msgstr ""
 
 #: prefs.js:1730
-#, fuzzy, javascript-format
+#, javascript-format
 msgid ""
 "<span size=\"small\">Copyleft 🄯 2021-2026 <a href=\"%s\">ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟</a> &lt;"
 "<a href=\"%s\">%s</a>&gt;</span>"
