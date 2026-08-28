@@ -373,7 +373,44 @@ const IBusScroll = GObject.registerClass(
             else this.scroll_page();
         }
 
+        // GNOME Shell 51 moved candidate scrolling from a ::scroll-event class
+        // closure to a Clutter.ScrollController action, which consumes the
+        // event before the signal is emitted. Detect it on the actor itself so
+        // the same code keeps working on older shells.
+        _getBuiltinScrollController() {
+            if (!Clutter.ScrollController) return null;
+            return (
+                CandidateArea.get_actions().find(
+                    action => action instanceof Clutter.ScrollController
+                ) ?? null
+            );
+        }
+
         scroll_page() {
+            if (this._scrollID || this._scrollController) return;
+
+            const builtin = this._getBuiltinScrollController();
+            if (builtin) {
+                this._builtinScrollController = builtin;
+                builtin.enabled = false;
+                this._scrollController = new Clutter.ScrollController({
+                    flags:
+                        Clutter.ScrollControllerFlags.DISCRETE |
+                        Clutter.ScrollControllerFlags.SCROLL_VERTICAL,
+                });
+                this._scrollController.connect(
+                    'scroll',
+                    (_controller, _sprite, _source, _dx, dy) => {
+                        if (dy < 0) CandidateArea.emit('previous-page');
+                        else if (dy > 0) CandidateArea.emit('next-page');
+                    }
+                );
+                CandidateArea.add_action(this._scrollController);
+                return;
+            }
+
+            // GNOME Shell <= 50: the built-in handler is a ::scroll-event class
+            // closure that runs after ours, so undo the cursor move it makes.
             this._scrollID = CandidateArea.connect(
                 'scroll-event',
                 (actor, scrollEvent) => {
@@ -392,6 +429,12 @@ const IBusScroll = GObject.registerClass(
         }
 
         destroy() {
+            if (this._scrollController)
+                (CandidateArea.remove_action(this._scrollController),
+                    (this._scrollController = null));
+            if (this._builtinScrollController)
+                ((this._builtinScrollController.enabled = true),
+                    (this._builtinScrollController = null));
             if (this._scrollID)
                 (CandidateArea.disconnect(this._scrollID),
                     (this._scrollID = 0));
