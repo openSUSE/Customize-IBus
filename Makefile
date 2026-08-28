@@ -81,6 +81,7 @@ _build: $(SCMCPL) $(MSGPOS:.po=.mo)
 	cp -r $(UUID)/* _build
 	-rm -fR _build/locale/*/LC_MESSAGES/*.po
 	-rm -fR _build/locale/*.pot
+	-rm -fR _build/schemas/gschemas.compiled
 	if [ `uname` = "Linux" ]; then \
 		sed -i 's/"version": [[:digit:]]\+/"version": $(VERSION)/' _build/metadata.json; \
 	else \

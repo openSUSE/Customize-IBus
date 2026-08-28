@@ -2159,6 +2159,13 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 (Main.overview.disconnect(this._overviewHiddenID),
                     (this._overviewHiddenID = 0));
             this._destroy_indicator();
+            // _dummyCursor is parented to uiGroup rather than to this actor,
+            // so it has to be destroyed explicitly.
+            if (this._dummyCursor)
+                (this._dummyCursor.destroy(), (this._dummyCursor = null));
+            // Drops the indicator from the top chrome; children such as
+            // _inputIndicatorLabel are destroyed along with it.
+            super.destroy();
         }
     }
 );
@@ -3457,7 +3464,7 @@ export default class CustomizeIBusExtension extends Extension {
     disable() {
         if (this._ext) {
             this._ext.destroy();
-            delete this._ext;
+            this._ext = null;
         }
         if (this._updateIgnoreModesID)
             (InputSourceManager.disconnect(this._updateIgnoreModesID),
@@ -3472,6 +3479,7 @@ export default class CustomizeIBusExtension extends Extension {
         CandidatePopup = null;
         CandidateArea = null;
         CandidateDummyCursor = null;
+        IgnoreModes = [];
         Me = null;
     }
 }
