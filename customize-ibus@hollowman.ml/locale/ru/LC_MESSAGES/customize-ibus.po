@@ -1,0 +1,702 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Customize Ibus package.
+# Xapitonov <sergejharitonov001@gmail.com>, 2026.
+msgid ""
+msgstr ""
+"Project-Id-Version: Customize Ibus 93\n"
+"Report-Msgid-Bugs-To: hollowman@opensuse.org\n"
+"POT-Creation-Date: 2026-02-28 06:32+0200\n"
+"PO-Revision-Date: 2026-04-22 07:09+0000\n"
+"Last-Translator: Xapitonov <sergejharitonov001@gmail.com>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/ibus-customize/"
+"customize-ibus/ru/>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.17.1-dev\n"
+
+#: extension.js:1660
+msgid "IBus panel service connected!"
+msgstr "IBus panel service подключён!"
+
+#: extension.js:2269
+msgid "loading light user theme for IBus:"
+msgstr "Загрузка светлой пользовательской темы для IBus:"
+
+#: extension.js:2280
+msgid "loading dark user theme for IBus:"
+msgstr "Загрузка тёмной пользовательской темы для IBus:"
+
+#: extension.js:2286
+msgid "loading default theme for IBus"
+msgstr "Загрузка темы по умолчанию для IBus"
+
+#: extension.js:2504
+msgid "loading background for IBus:"
+msgstr "Загрузка фона для IBus:"
+
+#: extension.js:2517
+msgid "remove custom background for IBus"
+msgstr "Удаление пользовательского фона для IBus"
+
+#: extension.js:3112
+msgid "Starting / Restarting IBus..."
+msgstr "Запуск / Перезапуск IBus..."
+
+#: extension.js:3141
+msgid "Copy Emoji"
+msgstr "Копировать эмодзи"
+
+#: extension.js:3162 prefs.js:1689 prefs.js:2144
+msgid "Customize IBus"
+msgstr "Настройка IBus"
+
+#: extension.js:3183 prefs.js:312 prefs.js:555
+msgid "IBus Preferences"
+msgstr "Настройки IBus"
+
+#: extension.js:3204 extension.js:3217 prefs.js:559
+msgid "IBus Version"
+msgstr "Версия IBus"
+
+#: extension.js:3243
+msgid "Restart"
+msgstr "Перезапуск"
+
+#: extension.js:3272
+msgid "Restarting IBus..."
+msgstr "Перезапуск IBus..."
+
+#: extension.js:3291
+msgid "Quit"
+msgstr "Выход"
+
+#: extension.js:3305
+msgid "Exiting IBus..."
+msgstr "Выход из IBus..."
+
+#: prefs.js:78
+msgid "Custom IME light theme"
+msgstr "Пользовательская светлая тема IME"
+
+#: prefs.js:81
+msgid "Custom IME dark theme"
+msgstr "Пользовательская тёмная тема IME"
+
+#: prefs.js:84 prefs.js:117
+msgid "Use custom font"
+msgstr "Использовать пользовательский шрифт"
+
+#: prefs.js:87
+msgid "Use custom light background"
+msgstr "Использовать пользовательский светлый фон"
+
+#: prefs.js:90
+msgid "Use custom dark background"
+msgstr "Использовать пользовательский тёмный фон"
+
+#: prefs.js:93
+msgid "Candidates scroll"
+msgstr "Пролистывание кандидатов"
+
+#: prefs.js:96
+msgid "Auto switch ASCII mode"
+msgstr "Автопереключение в режим ASCII"
+
+#: prefs.js:99
+msgid "Candidates orientation"
+msgstr "Ориентация кандидатов"
+
+#: prefs.js:102
+msgid "Candidates popup animation"
+msgstr "Анимация всплывающего окна кандидатов"
+
+#: prefs.js:105
+msgid "Fix candidate box"
+msgstr "Фиксация окна кандидатов"
+
+#: prefs.js:109
+msgid "Directly switch source with click"
+msgstr "Переключение источника по клику"
+
+#: prefs.js:113
+msgid "Candidate box right click"
+msgstr "Клик правой кнопкой по окну кандидатов"
+
+#: prefs.js:122
+msgid "Candidate box opacity"
+msgstr "Прозрачность окна кандидатов"
+
+#: prefs.js:132
+msgid "Start / Restart IBus"
+msgstr "Запуск / Перезапуск IBus"
+
+#: prefs.js:138
+msgid "Restore Default Settings"
+msgstr "Восстановить настройки по умолчанию"
+
+#: prefs.js:144 prefs.js:930
+msgid "Export Current Settings"
+msgstr "Экспорт текущих настроек"
+
+#: prefs.js:150 prefs.js:961
+msgid "Import Settings from File"
+msgstr "Импорт настроек из файла"
+
+#: prefs.js:156
+msgid "Vertical"
+msgstr "Вертикально"
+
+#: prefs.js:157
+msgid "Horizontal"
+msgstr "Горизонтально"
+
+#: prefs.js:161
+msgid "Don't Remember Position"
+msgstr "Не запоминать позицию"
+
+#: prefs.js:162
+msgid "Remember Last Position"
+msgstr "Запоминать последнюю позицию"
+
+#: prefs.js:166
+msgid "Don't Remember State"
+msgstr "Не запоминать состояние"
+
+#: prefs.js:167
+msgid "Remember Input State"
+msgstr "Запоминать состояние ввода"
+
+#: prefs.js:171
+msgid "Change Page"
+msgstr "Смена страницы"
+
+#: prefs.js:172
+msgid "Change Candidate"
+msgstr "Смена кандидата"
+
+#: prefs.js:176
+msgid "On"
+msgstr "Вкл"
+
+#: prefs.js:177
+msgid "Off"
+msgstr "Откл"
+
+#: prefs.js:178
+msgid "Keep"
+msgstr "Сохранять"
+
+#: prefs.js:182
+msgid "Left"
+msgstr "Слева"
+
+#: prefs.js:183
+msgid "Right"
+msgstr "Справа"
+
+#: prefs.js:187
+msgid "Drag to Move"
+msgstr "Перетаскивание для перемещения"
+
+#: prefs.js:188 prefs.js:193
+msgid "Switch Source"
+msgstr "Переключение источника"
+
+#: prefs.js:192
+msgid "Open Menu"
+msgstr "Открыть меню"
+
+#: prefs.js:197
+msgid "Center"
+msgstr "По центру"
+
+#: prefs.js:198
+msgid "Center-Left"
+msgstr "Центр-слева"
+
+#: prefs.js:199
+msgid "Top-Left"
+msgstr "Верх-слева"
+
+#: prefs.js:200
+msgid "Top-Center"
+msgstr "Верх-по центру"
+
+#: prefs.js:201
+msgid "Top-Right"
+msgstr "Верх-справа"
+
+#: prefs.js:202
+msgid "Center-Right"
+msgstr "Центр-справа"
+
+#: prefs.js:203
+msgid "Bottom-Right"
+msgstr "Низ-справа"
+
+#: prefs.js:204
+msgid "Bottom-Center"
+msgstr "Низ-по центру"
+
+#: prefs.js:205
+msgid "Bottom-Left"
+msgstr "Низ-слева"
+
+#: prefs.js:209 prefs.js:215
+msgid "Centered"
+msgstr "По центру"
+
+#: prefs.js:210 prefs.js:216
+msgid "Full"
+msgstr "Полностью"
+
+#: prefs.js:211 prefs.js:217
+msgid "Zoom"
+msgstr "Масштабирование"
+
+#: prefs.js:221 prefs.js:226
+msgid "No repeat"
+msgstr "Без повтора"
+
+#: prefs.js:222 prefs.js:227
+msgid "Repeat"
+msgstr "С повтором"
+
+#: prefs.js:231 prefs.js:238
+msgid "None"
+msgstr "Нет"
+
+#: prefs.js:232 prefs.js:239
+msgid "Slide"
+msgstr "Скольжение"
+
+#: prefs.js:233 prefs.js:240
+msgid "Fade"
+msgstr "Затухание"
+
+#: prefs.js:234 prefs.js:241
+msgid "All"
+msgstr "Все"
+
+#: prefs.js:250 prefs.js:467
+msgid "IBus Version: "
+msgstr "Версия IBus: "
+
+#: prefs.js:252 prefs.js:457
+msgid "unknown (installed ?)"
+msgstr "неизвестно (установлен?)"
+
+#: prefs.js:272
+msgid "Enable indicator left click"
+msgstr "Включить клик левой кнопкой по индикатору"
+
+#: prefs.js:276
+msgid "Indicator opacity"
+msgstr "Прозрачность индикатора"
+
+#: prefs.js:286
+msgid "Enable indicator show delay (unit: seconds)"
+msgstr "Задержка показа индикатора (секунды)"
+
+#: prefs.js:296
+msgid "Enable indicator auto-hide timeout (unit: seconds)"
+msgstr "Таймаут автоскрытия индикатора (секунды)"
+
+#: prefs.js:306
+msgid "GNOME Settings"
+msgstr "Настройки GNOME"
+
+#: prefs.js:329 prefs.js:345
+msgid "Select an Image"
+msgstr "Выбрать изображение"
+
+#: prefs.js:334 prefs.js:350 prefs.js:369 prefs.js:385 prefs.js:399
+#: prefs.js:414 prefs.js:429 prefs.js:444
+msgid "(None)"
+msgstr "(Нет)"
+
+#: prefs.js:364 prefs.js:380
+msgid "Select an IBus Stylesheet"
+msgstr "Выбрать таблицу стилей IBus"
+
+#: prefs.js:476
+msgid "General"
+msgstr "Основные"
+
+#: prefs.js:512
+msgid "Fix IME list order"
+msgstr "Фиксация порядка списка IME"
+
+#: prefs.js:517
+msgid "Enable drag to reposition candidate box"
+msgstr "Включить перетаскивание для перемещения окна кандидатов"
+
+#: prefs.js:522
+msgid "Candidate box page buttons"
+msgstr "Кнопки страниц окна кандидатов"
+
+#: prefs.js:527
+msgid "Tray"
+msgstr "Трей"
+
+#: prefs.js:531
+msgid "Show IBus tray icon"
+msgstr "Показывать иконку IBus в трее"
+
+#: prefs.js:543
+msgid "Add Additional Menu Entries"
+msgstr "Добавить дополнительные пункты меню"
+
+#: prefs.js:547
+msgid "Copying Emoji"
+msgstr "Копирование эмодзи"
+
+#: prefs.js:551
+msgid "This Extension's Preferences"
+msgstr "Настройки этого расширения"
+
+#: prefs.js:563
+msgid "Restarting IBus"
+msgstr "Перезапуск IBus"
+
+#: prefs.js:567
+msgid "Exiting IBus"
+msgstr "Выход из IBus"
+
+#: prefs.js:572
+msgid "Indicator"
+msgstr "Индикатор"
+
+#: prefs.js:574
+msgid "Use input source indicator"
+msgstr "Использовать индикатор источника ввода"
+
+#: prefs.js:579
+msgid "Indicate only when switching input source"
+msgstr "Показывать индикатор только при переключении источника"
+
+#: prefs.js:585
+msgid "Indicate only when using ASCII mode"
+msgstr "Показывать индикатор только в режиме ASCII"
+
+#: prefs.js:591
+msgid "Don't indicate when using single mode IME"
+msgstr "Не показывать индикатор для IME с одним режимом"
+
+#: prefs.js:597
+msgid "Enable right click to close indicator"
+msgstr "Включить правый клик для закрытия индикатора"
+
+#: prefs.js:603
+msgid "Enable scroll to switch input source"
+msgstr "Включить прокрутку для переключения источника"
+
+#: prefs.js:608
+msgid "Indicator popup animation"
+msgstr "Анимация всплывающего индикатора"
+
+#: prefs.js:633
+msgid "Theme"
+msgstr "Тема"
+
+#: prefs.js:648
+msgid "Background"
+msgstr "Фон"
+
+#: prefs.js:666
+msgid "Settings"
+msgstr "Настройки"
+
+#: prefs.js:672
+msgid "Settings for extension"
+msgstr "Настройки расширения"
+
+#: prefs.js:687
+msgid "Other official IBus customization settings"
+msgstr "Другие официальные настройки IBus"
+
+#: prefs.js:935
+msgid "Save"
+msgstr "Сохранить"
+
+#: prefs.js:966
+msgid "Open"
+msgstr "Открыть"
+
+#: prefs.js:1637
+msgid "Help"
+msgstr "Справка"
+
+#: prefs.js:1654
+msgid "About"
+msgstr "О программе"
+
+#: prefs.js:1672
+msgid "unknown (self-build ?)"
+msgstr "неизвестно (самосборка?)"
+
+#: prefs.js:1697
+msgid "Version: "
+msgstr "Версия: "
+
+#: prefs.js:1708
+msgid ""
+"Full customization of appearance, behavior, system tray and input source "
+"indicator for IBus."
+msgstr ""
+"Полная настройка облика, поведения, системного трея и индикатора источника "
+"ввода для IBus."
+
+#: prefs.js:1730
+#, javascript-format
+msgid ""
+"<span size=\"small\">Copyleft 🄯 2021-2026 <a href=\"%s\">ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟</a> &lt;"
+"<a href=\"%s\">%s</a>&gt;</span>"
+msgstr ""
+"<span size=\"small\">Copyleft 🄯 2021-2026 <a href=\"%s\">ℍ𝕠𝕝𝕝𝕠𝕨 𝕄𝕒𝕟</a> "
+"&lt;<a href=\"%s\">%s</a>&gt;</span>"
+
+#: prefs.js:1742
+#, javascript-format
+msgid "<span size=\"small\">Source Code: <a href=\"%s\">%s</a></span>"
+msgstr "<span size=\"small\">Исходный код: <a href=\"%s\">%s</a></span>"
+
+#: prefs.js:1754
+#, javascript-format
+msgid ""
+"<span size=\"small\">Sponsored by <a href=\"%s\">Google Summer of Code 2021</"
+"a> <b><a href=\"%s\">@openSUSE</a></b>.</span>"
+msgstr ""
+"<span size=\"small\">Спонсор: <a href=\"%s\">Google Summer of Code 2021</a> "
+"<b><a href=\"%s\">@openSUSE</a></b>.</span>"
+
+#: prefs.js:1774
+msgid "Current Session"
+msgstr "Текущая сессия"
+
+#: prefs.js:1795
+msgid ""
+"<span size=\"small\">This program comes with ABSOLUTELY NO WARRANTY.</span>"
+msgstr ""
+"<span size=\"small\">Программа поставляется БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ.</span>"
+
+#: prefs.js:1807
+#, javascript-format
+msgid ""
+"<span size=\"small\">See the <a href=\"%s\">GNU General Public License, "
+"version 3 or later</a> for details.</span>"
+msgstr ""
+"<span size=\"small\">Подробности в <a href=\"%s\">GNU General Public License "
+"версии 3 или выше</a>.</span>"
+
+#: prefs.js:1825
+msgid ""
+"Here you can set the IBus input window orientation, animation, right click "
+"to open menu or switch source, scroll to switch among pages or candidates, "
+"fix candidate box to not follow caret position, font, ASCII mode auto-switch "
+"when windows are switched by users, candidate box opacity, fix IME list "
+"order when switching, reposition candidate box by dragging when input, and "
+"also show or hide candidate box page buttons."
+msgstr ""
+"Здесь можно настроить ориентацию окна ввода IBus, анимацию, правый клик для "
+"открытия меню или переключения источника, прокрутку для переключения страниц "
+"или кандидатов, фиксацию окна кандидатов, шрифт, автопереключение режима "
+"ASCII при смене окон, прозрачность окна кандидатов, фиксацию порядка списка "
+"IME, перемещение окна кандидатов перетаскиванием и показ/скрытие кнопок "
+"страниц окна кандидатов."
+
+#: prefs.js:1834
+msgid ""
+"<span size=\"small\"><b>Note:</b> If <b>fix candidate box</b> is enabled, "
+"you can set the candidate box position with 9 options. Recommend to "
+"<b>enable drag to reposition candidate box</b> at the same time so that you "
+"can rearrange the position at any time. Will remember candidate position "
+"forever after reposition if you set to <b>remember last position</b>, and "
+"restore at next login.</span>"
+msgstr ""
+"<span size=\"small\"><b>Примечание:</b> Если включена <b>фиксация окна "
+"кандидатов</b>, можно установить позицию окна одним из 9 вариантов. "
+"Рекомендуется одновременно включить <b>перетаскивание для перемещения окна "
+"кандидатов</b>, чтобы менять позицию в любой момент. При выборе <b>"
+"запоминать последнюю позицию</b> новая позиция сохранится навсегда и "
+"восстановится при следующем входе.</span>"
+
+#: prefs.js:1843
+msgid ""
+"<span size=\"small\"><b>Note:</b> If <b>auto switch ASCII mode</b> is "
+"enabled, and you have set to <b>Remember Input State</b>, every opened APP's "
+"input mode will be remembered if you have switched the input source manually "
+"in the APP's window, and the newly-opened APP will follow the configuration. "
+"APP's Input State will be remembered forever.</span>"
+msgstr ""
+"<span size=\"small\"><b>Примечание:</b> Если включено <b>автопереключение "
+"режима ASCII</b> и <b>запоминать состояние ввода</b>, режим ввода каждого "
+"приложения будет запомнен при ручном переключении источника в окне "
+"приложения. Новые приложения будут следовать этим настройкам. Состояние "
+"ввода сохраняется навсегда.</span>"
+
+#: prefs.js:1852
+msgid ""
+"<span size=\"small\"><b>Note:</b> If you <b>enable drag to reposition "
+"candidate box</b>, and if <b>fix candidate box</b> is enabled, your "
+"rearranged position will last until the end of this session. If not the "
+"rearranged position will only last for the specific input.</span>"
+msgstr ""
+"<span size=\"small\"><b>Примечание:</b> При включенном <b>перетаскивании для "
+"перемещения окна кандидатов</b> и <b>фиксации окна кандидатов</b> новая "
+"позиция сохранится до конца сессии. Без фиксации позиция сохранится только "
+"для текущего ввода.</span>"
+
+#: prefs.js:1866
+msgid ""
+"Here you can set to show IBus tray icon, enable directly switch source with "
+"click, add additional menu entries to IBus input source indicator menu at "
+"system tray to restore the feelings on Non-GNOME desktop environment. You "
+"can also start or restart IBus by pressing the top button."
+msgstr ""
+"Здесь можно включить иконку IBus в трее, прямое переключение источника по "
+"клику, добавить дополнительные пункты меню в индикатор источника ввода в "
+"системном трее для восстановления поведения не-GNOME окружений. Также можно "
+"запустить или перезапустить IBus кнопкой сверху."
+
+#: prefs.js:1876
+msgid ""
+"<span size=\"small\"><b>Note:</b> If <b>Directly switch source with click</"
+"b> is enabled, when the left key is selected, if you click the tray icon "
+"with left key, you will have input source switched, and click right key will "
+"open the menu as normal, vice versa.</span>"
+msgstr ""
+"<span size=\"small\"><b>Примечание:</b> При включенном <b>прямом "
+"переключении источника по клику</b> и выборе левой кнопки: левый клик по "
+"иконке трея переключает источник, правый — открывает меню (и наоборот).</"
+"span>"
+
+#: prefs.js:1890
+msgid ""
+"Here you can set to show input source indicator, default is to show "
+"indicator every time you type, move caret or switch input source. You can "
+"set to show indicator only when switching input source. You can also set to "
+"only notify in ASCII mode (for multi-mode IME), not notify when using single "
+"mode IME, mouse right click to close indicator, scroll to switch input "
+"source, popup animation, font, mouse left click to switch input source or "
+"drag to move indicator, indicator opacity, enable show delay and show "
+"timeout (in seconds), enable auto-hide and auto-hide timeout (in seconds)."
+msgstr ""
+"Здесь можно включить индикатор источника ввода (по умолчанию показывается "
+"при наборе, перемещении курсора или переключении источника). Можно настроить "
+"показ только при переключении источника, только в режиме ASCII (для IME с "
+"несколькими режимами), отключить для IME с одним режимом, правый клик для "
+"закрытия, прокрутку для переключения источника, анимацию всплытия, шрифт, "
+"левый клик для переключения/перемещения, прозрачность, задержку показа и "
+"таймаут скрытия (в секундах), автоскрытие и таймаут автоскрытия."
+
+#: prefs.js:1899
+msgid ""
+"<span size=\"small\"><b>Note:</b> If you choose to enable the show delay, "
+"there won't be a show delay when you switch input source or window.</span>"
+msgstr ""
+"<span size=\"small\"><b>Примечание:</b> При включенной задержке показа она "
+"не применяется при переключении источника или окна.</span>"
+
+#: prefs.js:1913
+#, javascript-format
+msgid ""
+"Support importing stylesheet generated by <a href=\"%s\">IBus Theme Tools</"
+"a> or provided by <a href=\"%s\">IBus Theme Hub</a>."
+msgstr ""
+"Поддержка импорта таблиц стилей от <a href=\"%s\">IBus Theme Tools</a> или "
+"<a href=\"%s\">IBus Theme Hub</a>."
+
+#: prefs.js:1922
+msgid ""
+"When light theme and dark theme are turned on at the same time, the IBus "
+"theme will automatically follow GNOME Night Light mode, use light theme when "
+"off, and use dark theme when on. When only the light theme or dark theme is "
+"turned on, the IBus theme will always use the theme that is turned on."
+msgstr ""
+"При одновременном включении светлой и тёмной темы IBus автоматически следует "
+"режиму GNOME Night Light: светлая тема при выключенном, тёмная — при "
+"включённом. При включении только одной темы она используется всегда."
+
+#: prefs.js:1931
+msgid ""
+"<span size=\"small\"><b><i>Warning:</i> If not for debugging, please DO NOT "
+"add any classes that's not started with <i>.candidate-*</i> into IBus "
+"stylesheet to prevent from corrupting system themes.</b></span>"
+msgstr ""
+"<span size=\"small\"><b><i>Внимание:</i> Для отладки НЕ добавляйте в таблицу "
+"стилей IBus классы, не начинающиеся с <i>.candidate-*</i>, чтобы не "
+"повредить системные темы.</b></span>"
+
+#: prefs.js:1940
+msgid ""
+"<span size=\"small\"><b>Note:</b> Support stylesheets hot reload, CSS "
+"changes reflecting in real-time.</span>"
+msgstr ""
+"<span size=\"small\"><b>Примечание:</b> Поддерживается горячая перезагрузка "
+"таблиц стилей, изменения CSS применяются в реальном времени.</span>"
+
+#: prefs.js:1954
+msgid ""
+"Support customizing your IBus Input window background with a picture. It has "
+"a higher priority than the theme-defined background."
+msgstr ""
+"Поддержка настройки фона окна ввода IBus с помощью изображения (приоритет "
+"выше фона темы)."
+
+#: prefs.js:1963
+msgid ""
+"When light background and dark background are turned on at the same time, "
+"the IBus background will automatically follow GNOME Night Light mode, use "
+"light background when off, and use dark background when on. When only the "
+"light background or dark background is turned on, the IBus background will "
+"always use the background that is turned on."
+msgstr ""
+"При одновременном включении светлого и тёмного фона IBus следует GNOME Night "
+"Light: светлый при выключенном, тёмный при включённом. При включении только "
+"одного фона он используется всегда."
+
+#: prefs.js:1972
+msgid ""
+"<span size=\"small\"><b>Note:</b> Please make sure your background picture "
+"can always be visited. If your pictures are stored in the removable device "
+"and the system doesn't mount it by default, please disable and then enable "
+"the corresponding <b>Use custom background</b> again to make it effective "
+"after manually mounting.</span>"
+msgstr ""
+"<span size=\"small\"><b>Примечание:</b> Убедитесь, что изображение фона "
+"всегда доступно. Если изображения на съёмном устройстве без автоподключения, "
+"отключите и включите <b>использовать пользовательский фон</b> после ручного "
+"подключения.</span>"
+
+#: prefs.js:1986
+msgid ""
+"Here you can reset the settings of this extension to default. You can also "
+"export current settings to an ini file for backup, and then import it when "
+"you need restore. For your information, you may also open the official IBus "
+"customization settings for customizations you can't find in this extension."
+msgstr ""
+"Здесь можно сбросить настройки расширения к значениям по умолчанию, "
+"экспортировать текущие в ini-файл для резервного копирования и импорта при "
+"необходимости. Также доступны официальные настройки кастомизации IBus."
+
+#: prefs.js:2056 prefs.js:2081
+msgid "Cancel"
+msgstr "Отмена"
+
+#: prefs.js:2082
+msgid "OK"
+msgstr "OK"
+
+#: prefs.js:2084
+msgid "Reset All Settings to Default?"
+msgstr "Сбросить все настройки к значениям по умолчанию?"
+
+#: prefs.js:2090
+msgid "This will discard all the current configurations!"
+msgstr "Все текущие конфигурации будут потеряны!"
