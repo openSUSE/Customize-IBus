@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the Customize Ibus package.
+# This file is distributed under the same license as the Customize IBus package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Customize Ibus 93\n"
+"Project-Id-Version: Customize IBus 94\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-28 06:32+0200\n"
+"POT-Creation-Date: 2026-08-28 14:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,63 +17,63 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:1660
+#: extension.js:1703
 msgid "IBus panel service connected!"
 msgstr ""
 
-#: extension.js:2269
+#: extension.js:2312
 msgid "loading light user theme for IBus:"
 msgstr ""
 
-#: extension.js:2280
+#: extension.js:2323
 msgid "loading dark user theme for IBus:"
 msgstr ""
 
-#: extension.js:2286
+#: extension.js:2329
 msgid "loading default theme for IBus"
 msgstr ""
 
-#: extension.js:2504
+#: extension.js:2547
 msgid "loading background for IBus:"
 msgstr ""
 
-#: extension.js:2517
+#: extension.js:2560
 msgid "remove custom background for IBus"
 msgstr ""
 
-#: extension.js:3112
+#: extension.js:3155
 msgid "Starting / Restarting IBus..."
 msgstr ""
 
-#: extension.js:3141
+#: extension.js:3184
 msgid "Copy Emoji"
 msgstr ""
 
-#: extension.js:3162 prefs.js:1689 prefs.js:2144
+#: extension.js:3205 prefs.js:1689 prefs.js:2144
 msgid "Customize IBus"
 msgstr ""
 
-#: extension.js:3183 prefs.js:312 prefs.js:555
+#: extension.js:3226 prefs.js:312 prefs.js:555
 msgid "IBus Preferences"
 msgstr ""
 
-#: extension.js:3204 extension.js:3217 prefs.js:559
+#: extension.js:3247 extension.js:3260 prefs.js:559
 msgid "IBus Version"
 msgstr ""
 
-#: extension.js:3243
+#: extension.js:3286
 msgid "Restart"
 msgstr ""
 
-#: extension.js:3272
+#: extension.js:3315
 msgid "Restarting IBus..."
 msgstr ""
 
-#: extension.js:3291
+#: extension.js:3334
 msgid "Quit"
 msgstr ""
 
-#: extension.js:3305
+#: extension.js:3348
 msgid "Exiting IBus..."
 msgstr ""
 
