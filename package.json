@@ -9,7 +9,7 @@
         "eslint-plugin-prettier": "^5.5.6",
         "husky": "^9.1.7",
         "lint-staged": "^17.4.1",
-        "prettier": "^3.9.6"
+        "prettier": "^3.9.9"
     },
     "scripts": {
         "lint": "eslint .",
