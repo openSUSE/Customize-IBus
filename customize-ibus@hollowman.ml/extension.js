@@ -2761,6 +2761,11 @@ const Extensions = GObject.registerClass(
     class _Extensions extends GObject.Object {
         constructor() {
             super();
+            // A stored request is history, not a command to replay on enable.
+            this._lastIBusRestartRequest = gsettings.get_string(
+                Fields.IBUSRESTTIME
+            );
+            this._restartRequestsActive = true;
             this._bindSettings();
         }
 
@@ -3142,7 +3147,14 @@ const Extensions = GObject.registerClass(
         /* Tray */
         // Start/Restart IBus
         set ibusresttime(ibusresttime) {
-            if (this._not_extension_first_start) {
+            if (
+                this._restartRequestsActive &&
+                /^[1-9]\d*$/.test(ibusresttime) &&
+                Number.isSafeInteger(Number(ibusresttime)) &&
+                ibusresttime !== this._lastIBusRestartRequest
+            ) {
+                // Consume before restarting: settings can be synchronised again.
+                this._lastIBusRestartRequest = ibusresttime;
                 IBusManager.restartDaemon();
                 if (IBusManager._ibusSystemdServiceExists)
                     IBusManager._ibusSystemdServiceExists().then(result => {
@@ -3168,13 +3180,10 @@ const Extensions = GObject.registerClass(
                 let notification = new MessageTray.Notification({
                     source,
                     title,
-                    datetime: GLib.DateTime.new_from_unix_local(
-                        parseInt(ibusresttime)
-                    ),
+                    datetime: GLib.DateTime.new_now_local(),
                 });
                 source.addNotification(notification);
             }
-            this._not_extension_first_start = true;
         }
 
         // Show IBus tray icon
@@ -3367,6 +3376,8 @@ const Extensions = GObject.registerClass(
         }
 
         destroy() {
+            this._restartRequestsActive = false;
+            Gio.Settings.unbind(this, 'ibusresttime');
             this.bg = false;
             this.bgdark = false;
             this.font = false;
@@ -3391,7 +3402,6 @@ const Extensions = GObject.registerClass(
             this.menuibusver = false;
             this.menuibusrest = false;
             this.menuibusexit = false;
-            this._not_extension_first_start = false;
             if (this._useFontChangeID)
                 (IBusSettings.disconnect(this._useFontChangeID),
                     (this._useFontChangeID = 0));
