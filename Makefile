@@ -41,6 +41,10 @@ MSGAIM = $(MSGDIR)/$(NAME).mo
 
 all: _build
 
+.PHONY: test
+test:
+	bash tests/run.sh
+
 clean:
 	-rm -fR _build
 	-rm -fR *.zip

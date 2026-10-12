@@ -11,6 +11,14 @@ on:
     branches: [ main ]
 
 jobs:
+  restart-requests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install test dependencies
+        run: sudo apt-get update && sudo apt-get install -y gjs libglib2.0-bin
+      - run: make test
+
   lint:
     runs-on: ubuntu-latest
     steps:
