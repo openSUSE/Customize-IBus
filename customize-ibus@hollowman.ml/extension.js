@@ -61,19 +61,14 @@ const BGMODESACTIONS = {
     Zoom: 'cover',
 };
 
+const PRIMARY_BUTTON = Clutter.BUTTON_PRIMARY ?? 1;
+const SECONDARY_BUTTON = Clutter.BUTTON_SECONDARY ?? 3;
+
 let IgnoreModes = [];
 let IBusSettings = null;
 let ngsettings = null;
 let opacityStyle = '';
 let fontStyle = '';
-
-function _isWaylandCompositor() {
-    if (Meta.is_wayland_compositor instanceof Function)
-        return Meta.is_wayland_compositor();
-    if (global.display?.is_wayland_compositor instanceof Function)
-        return global.display.is_wayland_compositor();
-    return GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
-}
 
 function _setGlobalCursor(cursorName) {
     if (
@@ -94,11 +89,34 @@ function _setGlobalCursor(cursorName) {
 }
 
 function _eventHasButton(event, buttonNum) {
-    const eventButton =
-        event.get_button instanceof Function ? event.get_button() : 0;
-    if (eventButton === buttonNum) return true;
-    const mask = Clutter.ModifierType['BUTTON' + buttonNum + '_MASK'];
-    return (event.get_state() & mask) !== 0;
+    return event?.get_button instanceof Function
+        ? event.get_button() === buttonNum
+        : false;
+}
+
+/**
+ * Compute the vertical drag offset adjustment when a BoxPointer flips arrow
+ * sides during drag-repositioning.
+ *
+ * @param {BoxPointer.BoxPointer} actor BoxPointer actor whose arrow side flipped.
+ * @returns {number} Vertical offset delta to apply to the drag origin.
+ */
+function _getArrowFlipOffsetY(actor) {
+    const themeNode = actor.get_theme_node();
+    const gap = themeNode.get_length('-boxpointer-gap');
+    const padding = themeNode.get_length('-arrow-rise');
+    const [, , , natHeight] = actor.get_preferred_size();
+    const sourceTopLeftY = actor._sourceExtents
+        ? actor._sourceExtents.get_top_left().y
+        : 0;
+    const sourceBottomRightY = actor._sourceExtents
+        ? actor._sourceExtents.get_bottom_right().y
+        : 0;
+    const delta =
+        natHeight + 2 * gap - sourceTopLeftY + sourceBottomRightY + padding;
+    if (actor._arrowSide === St.Side.TOP) return delta;
+    if (actor._arrowSide === St.Side.BOTTOM) return -delta;
+    return 0;
 }
 
 /* General */
@@ -262,8 +280,7 @@ const IBusClickSwitch = GObject.registerClass(
             this._buttonPressID = CandidatePopup.connect(
                 'button-press-event',
                 (actor, event) => {
-                    const rightButtonNum = _isWaylandCompositor() ? 2 : 3;
-                    if (_eventHasButton(event, rightButtonNum)) {
+                    if (_eventHasButton(event, SECONDARY_BUTTON)) {
                         let shouldPressReturn =
                             !this._mouseInCandidate || !this._clickSwitch;
                         if (shouldPressReturn) {
@@ -398,7 +415,7 @@ const IBusScroll = GObject.registerClass(
                         Clutter.ScrollControllerFlags.DISCRETE |
                         Clutter.ScrollControllerFlags.SCROLL_VERTICAL,
                 });
-                this._scrollController.connect(
+                this._scrollControllerID = this._scrollController.connect(
                     'scroll',
                     (_controller, _sprite, _source, _dx, dy) => {
                         if (dy < 0) CandidateArea.emit('previous-page');
@@ -429,9 +446,15 @@ const IBusScroll = GObject.registerClass(
         }
 
         destroy() {
-            if (this._scrollController)
-                (CandidateArea.remove_action(this._scrollController),
-                    (this._scrollController = null));
+            if (this._scrollController) {
+                if (this._scrollControllerID) {
+                    this._scrollController.disconnect(this._scrollControllerID);
+                    this._scrollControllerID = 0;
+                }
+                if (this._scrollController.get_actor?.() === CandidateArea)
+                    CandidateArea.remove_action(this._scrollController);
+                this._scrollController = null;
+            }
             if (this._builtinScrollController)
                 ((this._builtinScrollController.enabled = true),
                     (this._builtinScrollController = null));
@@ -1164,15 +1187,26 @@ const IBusReposition = GObject.registerClass(
     class _IBusReposition extends GObject.Object {
         constructor() {
             super();
+            this._dragging = false;
+            this._location_handler = 0;
             CandidatePopup.reactive = true;
             this._buttonPressID = CandidatePopup.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (_eventHasButton(event, 1) && !this._mouseInCandidate) {
+                    if (
+                        _eventHasButton(event, PRIMARY_BUTTON) &&
+                        !this._mouseInCandidate
+                    ) {
                         let [boxX, boxY] = CandidateDummyCursor.get_position();
                         let [mouseX, mouseY] = event.get_coords();
+                        if (
+                            ![boxX, boxY, mouseX, mouseY].every(Number.isFinite)
+                        )
+                            return;
+                        this._stopDrag();
                         CandidatePopup._relativePosX = mouseX - boxX;
                         CandidatePopup._relativePosY = mouseY - boxY;
+                        this._dragging = true;
                         _setGlobalCursor('MOVE');
                         this._location_handler = GLib.timeout_add(
                             GLib.PRIORITY_DEFAULT,
@@ -1195,52 +1229,69 @@ const IBusReposition = GObject.registerClass(
                     this._mouseInCandidate = false;
                 }
             );
+            this._popupHideID = CandidatePopup.connect('hide', () =>
+                this._stopDrag()
+            );
             this._sideChangeID = CandidatePopup.connect(
                 'arrow-side-changed',
                 () => {
-                    let themeNode = CandidatePopup.get_theme_node();
-                    let gap = themeNode.get_length('-boxpointer-gap');
-                    let padding = themeNode.get_length('-arrow-rise');
-                    let [, , , natHeight] = CandidatePopup.get_preferred_size();
-                    let sourceTopLeft = 0;
-                    let sourceBottomRight = 0;
-                    if (CandidatePopup._sourceExtents) {
-                        sourceTopLeft =
-                            CandidatePopup._sourceExtents.get_top_left();
-                        sourceBottomRight =
-                            CandidatePopup._sourceExtents.get_bottom_right();
-                    }
-                    if (CandidatePopup._relativePosY) {
-                        switch (CandidatePopup._arrowSide) {
-                            case St.Side.TOP:
-                                CandidatePopup._relativePosY +=
-                                    natHeight +
-                                    2 * gap -
-                                    sourceTopLeft.y +
-                                    sourceBottomRight.y +
-                                    padding;
-                                break;
-                            case St.Side.BOTTOM:
-                                CandidatePopup._relativePosY -=
-                                    natHeight +
-                                    2 * gap -
-                                    sourceTopLeft.y +
-                                    sourceBottomRight.y +
-                                    padding;
-                                break;
-                        }
-                        this._updatePos();
-                        CandidatePopup._border.queue_repaint();
-                    }
+                    if (
+                        !this._dragging ||
+                        !Number.isFinite(CandidatePopup._relativePosX) ||
+                        !Number.isFinite(CandidatePopup._relativePosY)
+                    )
+                        return;
+                    CandidatePopup._relativePosY +=
+                        _getArrowFlipOffsetY(CandidatePopup);
+                    let [mouseX, mouseY] = global.get_pointer();
+                    this._move(mouseX, mouseY);
+                    CandidatePopup._border.queue_repaint();
                 }
             );
         }
 
+        _stopDrag() {
+            const wasDragging = Boolean(
+                this._dragging || this._location_handler
+            );
+            this._dragging = false;
+            if (this._location_handler) {
+                GLib.source_remove(this._location_handler);
+                this._location_handler = 0;
+            }
+            if (wasDragging) _setGlobalCursor('DEFAULT');
+            CandidatePopup._relativePosX = null;
+            CandidatePopup._relativePosY = null;
+        }
+
         _move(x, y) {
-            CandidateDummyCursor.set_position(
-                Math.round(x - CandidatePopup._relativePosX),
+            if (
+                !Number.isFinite(CandidatePopup._relativePosX) ||
+                !Number.isFinite(CandidatePopup._relativePosY)
+            )
+                return;
+            let posX = Math.max(
+                0,
+                Math.round(x - CandidatePopup._relativePosX)
+            );
+            let posY = Math.max(
+                0,
                 Math.round(y - CandidatePopup._relativePosY)
             );
+            if (!Number.isFinite(posX) || !Number.isFinite(posY)) return;
+            const maxX =
+                global.stage?.width > 0
+                    ? global.stage.width
+                    : global.screen_width;
+            const maxY =
+                global.stage?.height > 0
+                    ? global.stage.height
+                    : global.screen_height;
+            if (Number.isFinite(maxX) && maxX > 0)
+                posX = Math.min(posX, Math.round(maxX));
+            if (Number.isFinite(maxY) && maxY > 0)
+                posY = Math.min(posY, Math.round(maxY));
+            CandidateDummyCursor.set_position(posX, posY);
             CandidatePopup.setPosition(CandidateDummyCursor, 0);
         }
 
@@ -1249,16 +1300,16 @@ const IBusReposition = GObject.registerClass(
             this._move(mouse_x, mouse_y);
             mask &= Clutter.ModifierType.BUTTON1_MASK;
             if (mask) return GLib.SOURCE_CONTINUE;
-            this._location_handler = null;
-            _setGlobalCursor('DEFAULT');
+            this._location_handler = 0;
+            this._stopDrag();
             let state = new Map(
                 Object.entries(
                     gsettings.get_value(Fields.CANDBOXPOS).deep_unpack()
                 )
             );
             let [boxX, boxY] = CandidateDummyCursor.get_position();
-            state.set('x', boxX);
-            state.set('y', boxY);
+            state.set('x', Math.max(0, Math.round(boxX)));
+            state.set('y', Math.max(0, Math.round(boxY)));
             gsettings.set_value(
                 Fields.CANDBOXPOS,
                 new GLib.Variant('a{su}', Object.fromEntries(state))
@@ -1267,25 +1318,22 @@ const IBusReposition = GObject.registerClass(
         }
 
         destroy() {
+            this._stopDrag();
+            if (this._popupHideID)
+                (CandidatePopup.disconnect(this._popupHideID),
+                    (this._popupHideID = 0));
             if (this._buttonPressID)
                 (CandidatePopup.disconnect(this._buttonPressID),
                     (this._buttonPressID = 0));
             if (this._sideChangeID)
                 (CandidatePopup.disconnect(this._sideChangeID),
                     (this._sideChangeID = 0));
-            if (this._location_handler) {
-                _setGlobalCursor('DEFAULT');
-                (GLib.source_remove(this._location_handler),
-                    (this._location_handler = 0));
-            }
             if (this._mouseCandidateEnterID)
                 (CandidateArea.disconnect(this._mouseCandidateEnterID),
                     (this._mouseCandidateEnterID = 0));
             if (this._mouseCandidateLeaveID)
                 (CandidateArea.disconnect(this._mouseCandidateLeaveID),
                     (this._mouseCandidateLeaveID = 0));
-            CandidatePopup._relativePosX = null;
-            CandidatePopup._relativePosY = null;
         }
     }
 );
@@ -1351,18 +1399,15 @@ const IBusTrayClickSwitch = GObject.registerClass(
                         gesture.get_button instanceof Function
                             ? gesture.get_button()
                             : 0;
-                    const matches =
-                        button === keyNum ||
-                        (keyNum === 2 && (button === 2 || button === 3));
-                    if (matches) this._activateInputMode();
+                    if (button === keyNum) this._activateInputMode();
                 }
             );
             return true;
         }
 
         set traysswitchkey(traysswitchkey) {
-            let keyNum = traysswitchkey === 0 ? 1 : 3;
-            if (_isWaylandCompositor()) keyNum = traysswitchkey === 0 ? 1 : 2;
+            const keyNum =
+                traysswitchkey === 0 ? PRIMARY_BUTTON : SECONDARY_BUTTON;
             this._disconnectClickHandler();
 
             // GNOME 50+ panel buttons are activated through Clutter.ClickGesture
@@ -1519,6 +1564,13 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this.font_style = '';
             this.opacity_style = '';
             this.visible = false;
+            this._dragging = false;
+            this._location_handler = 0;
+            this._relativePosX = null;
+            this._relativePosY = null;
+            this._hideSignalID = this.connect('hide', () => {
+                this._stopDrag();
+            });
             this._justSwitchedWindow = false;
             this.style_class = 'candidate-popup-boxpointer';
             this._dummyCursor = new Clutter.Actor({opacity: 0});
@@ -1741,8 +1793,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 this._buttonRightPressID = this.connect(
                     'button-press-event',
                     (actor, event) => {
-                        const rightButtonNum = _isWaylandCompositor() ? 2 : 3;
-                        if (_eventHasButton(event, rightButtonNum)) {
+                        if (_eventHasButton(event, SECONDARY_BUTTON)) {
                             this.close(
                                 BoxPointer.PopupAnimation[this.animation]
                             );
@@ -1842,7 +1893,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._buttonPressID = this.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (_eventHasButton(event, 1)) {
+                    if (_eventHasButton(event, PRIMARY_BUTTON)) {
                         IBusManager.activateProperty(
                             INPUTMODE,
                             IBus.PropState.CHECKED
@@ -1857,85 +1908,91 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._buttonPressID = this.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (_eventHasButton(event, 1)) {
-                        let [boxX, boxY] = this._dummyCursor.get_position();
-                        let [mouseX, mouseY] = event.get_coords();
-                        this._relativePosX = mouseX - boxX;
-                        this._relativePosY = mouseY - boxY;
-                        _setGlobalCursor('MOVE');
-                        this._location_handler = GLib.timeout_add(
-                            GLib.PRIORITY_DEFAULT,
-                            10,
-                            this._updatePos.bind(this)
-                        );
-                    }
+                    if (
+                        !this._dummyCursor ||
+                        !_eventHasButton(event, PRIMARY_BUTTON)
+                    )
+                        return;
+                    let [boxX, boxY] = this._dummyCursor.get_position();
+                    let [mouseX, mouseY] = event.get_coords();
+                    if (![boxX, boxY, mouseX, mouseY].every(Number.isFinite))
+                        return;
+                    this._stopDrag();
+                    this._relativePosX = mouseX - boxX;
+                    this._relativePosY = mouseY - boxY;
+                    this._dragging = true;
+                    _setGlobalCursor('MOVE');
+                    this._location_handler = GLib.timeout_add(
+                        GLib.PRIORITY_DEFAULT,
+                        10,
+                        this._updatePos.bind(this)
+                    );
                 }
             );
             this._sideChangeID = this.connect('arrow-side-changed', () => {
-                let themeNode = this.get_theme_node();
-                let gap = themeNode.get_length('-boxpointer-gap');
-                let padding = themeNode.get_length('-arrow-rise');
-                let [, , , natHeight] = this.get_preferred_size();
-                let sourceTopLeft = 0;
-                let sourceBottomRight = 0;
-                if (this._sourceExtents) {
-                    sourceTopLeft = this._sourceExtents.get_top_left();
-                    sourceBottomRight = this._sourceExtents.get_bottom_right();
-                }
-                switch (this._arrowSide) {
-                    case St.Side.TOP:
-                        this._relativePosY +=
-                            natHeight +
-                            2 * gap -
-                            sourceTopLeft.y +
-                            sourceBottomRight.y +
-                            padding;
-                        break;
-                    case St.Side.BOTTOM:
-                        this._relativePosY -=
-                            natHeight +
-                            2 * gap -
-                            sourceTopLeft.y +
-                            sourceBottomRight.y +
-                            padding;
-                        break;
-                }
-                this._updatePos();
+                if (
+                    !this._dragging ||
+                    !Number.isFinite(this._relativePosX) ||
+                    !Number.isFinite(this._relativePosY)
+                )
+                    return;
+                this._relativePosY += _getArrowFlipOffsetY(this);
+                let [mouseX, mouseY] = global.get_pointer();
+                this._move(mouseX, mouseY);
                 this._border.queue_repaint();
             });
         }
 
-        _move(x, y) {
-            this._dummyCursor.set_position(
-                Math.round(x - this._relativePosX),
-                Math.round(y - this._relativePosY)
+        _stopDrag() {
+            const wasDragging = Boolean(
+                this._dragging || this._location_handler
             );
+            this._dragging = false;
+            if (this._location_handler) {
+                GLib.source_remove(this._location_handler);
+                this._location_handler = 0;
+            }
+            if (wasDragging) _setGlobalCursor('DEFAULT');
+            this._relativePosX = null;
+            this._relativePosY = null;
+        }
+
+        _move(x, y) {
+            if (
+                !this._dummyCursor ||
+                !Number.isFinite(this._relativePosX) ||
+                !Number.isFinite(this._relativePosY)
+            )
+                return;
+            const posX = Math.round(x - this._relativePosX);
+            const posY = Math.round(y - this._relativePosY);
+            if (!Number.isFinite(posX) || !Number.isFinite(posY)) return;
+            this._dummyCursor.set_position(posX, posY);
             this.setPosition(this._dummyCursor, 0);
         }
 
         _updatePos() {
+            if (!this._dummyCursor) {
+                this._location_handler = 0;
+                this._stopDrag();
+                return GLib.SOURCE_REMOVE;
+            }
             let [mouse_x, mouse_y, mask] = global.get_pointer();
             this._move(mouse_x, mouse_y);
             mask &= Clutter.ModifierType.BUTTON1_MASK;
             if (mask) return GLib.SOURCE_CONTINUE;
-            this._location_handler = null;
-            _setGlobalCursor('DEFAULT');
+            this._location_handler = 0;
+            this._stopDrag();
             return GLib.SOURCE_REMOVE;
         }
 
         _destroy_lclick() {
+            this._stopDrag();
             if (this._buttonPressID)
                 (this.disconnect(this._buttonPressID),
                     (this._buttonPressID = 0));
             if (this._sideChangeID)
                 (this.disconnect(this._sideChangeID), (this._sideChangeID = 0));
-            if (this._location_handler) {
-                _setGlobalCursor('DEFAULT');
-                (GLib.source_remove(this._location_handler),
-                    (this._location_handler = 0));
-            }
-            this._relativePosX = null;
-            this._relativePosY = null;
         }
 
         // Indicator Opacity
@@ -2115,6 +2172,10 @@ const IBusInputSourceIndicator = GObject.registerClass(
         _destroy_indicator() {
             this.close(BoxPointer.PopupAnimation[this.animation]);
             this._destroy_lclick();
+            if (this._hideSignalID) {
+                this.disconnect(this._hideSignalID);
+                this._hideSignalID = 0;
+            }
             if (this._buttonRightPressID)
                 (this.disconnect(this._buttonRightPressID),
                     (this._buttonRightPressID = 0));
