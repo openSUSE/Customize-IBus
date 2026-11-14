@@ -10,6 +10,7 @@ import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
+import Mtk from 'gi://Mtk';
 import Shell from 'gi://Shell';
 import IBus from 'gi://IBus';
 import Pango from 'gi://Pango';
@@ -36,7 +37,6 @@ import * as BoxPointer from 'resource:///org/gnome/shell/ui/boxpointer.js';
 import * as keyboard from 'resource:///org/gnome/shell/ui/status/keyboard.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 const InputSourcePopup = keyboard.InputSourcePopup;
-const InputSourceIndicator = Main.panel.statusArea.keyboard;
 import * as IBusManagerImported from 'resource:///org/gnome/shell/misc/ibusManager.js';
 
 let Me = null;
@@ -61,19 +61,14 @@ const BGMODESACTIONS = {
     Zoom: 'cover',
 };
 
+const PRIMARY_BUTTON = Clutter.BUTTON_PRIMARY ?? 1;
+const SECONDARY_BUTTON = Clutter.BUTTON_SECONDARY ?? 3;
+
 let IgnoreModes = [];
 let IBusSettings = null;
 let ngsettings = null;
 let opacityStyle = '';
 let fontStyle = '';
-
-function _isWaylandCompositor() {
-    if (Meta.is_wayland_compositor instanceof Function)
-        return Meta.is_wayland_compositor();
-    if (global.display?.is_wayland_compositor instanceof Function)
-        return global.display.is_wayland_compositor();
-    return GLib.getenv('XDG_SESSION_TYPE') === 'wayland';
-}
 
 function _setGlobalCursor(cursorName) {
     if (
@@ -94,11 +89,190 @@ function _setGlobalCursor(cursorName) {
 }
 
 function _eventHasButton(event, buttonNum) {
-    const eventButton =
-        event.get_button instanceof Function ? event.get_button() : 0;
-    if (eventButton === buttonNum) return true;
-    const mask = Clutter.ModifierType['BUTTON' + buttonNum + '_MASK'];
-    return (event.get_state() & mask) !== 0;
+    return event?.get_button instanceof Function
+        ? event.get_button() === buttonNum
+        : false;
+}
+
+function _getInputSourceIndicator() {
+    return Main.panel?.statusArea?.keyboard ?? null;
+}
+
+function _activateInputMode() {
+    if (IBusManager?._panelService)
+        IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+}
+
+function _isValidInputModeText(text, indicator) {
+    if (!text) return false;
+    const count =
+        indicator?._getGraphemeClusters instanceof Function
+            ? indicator._getGraphemeClusters(text).length
+            : text.length;
+    return count > 0 && count < 3;
+}
+
+function _getInputModeFromProperties(props, indicator) {
+    if (typeof props?.get !== 'function') return '';
+    for (let i = 0; ; ++i) {
+        const prop = props.get(i);
+        if (!prop) break;
+        if (!prop.get_visible()) continue;
+        if (prop.get_key() === INPUTMODE) {
+            const text =
+                prop.get_symbol?.()?.get_text?.() ??
+                prop.get_label?.()?.get_text?.() ??
+                '';
+            if (_isValidInputModeText(text, indicator)) return text;
+        }
+        if (prop.get_prop_type() === IBus.PropType.MENU) {
+            const nested = _getInputModeFromProperties(
+                prop.get_sub_props(),
+                indicator
+            );
+            if (nested) return nested;
+        }
+    }
+    return '';
+}
+
+/**
+ * Resolve the active input source indicator text across GNOME Shell 48-51,
+ * accounting for external keyboard layouts, null startup states, and
+ * destroyed panel indicators during teardown.
+ *
+ * @returns {string} Active input source label text, or empty string if unavailable.
+ */
+function _getCurrentInputLabel() {
+    if (InputSourceManager.keyboardManager?.isExternal?.())
+        return InputSourceManager.keyboardManager.shortName ?? '';
+    const source = InputSourceManager.currentSource;
+    if (!source) return '';
+    const indicator = _getInputSourceIndicator();
+    const activeIndicator =
+        indicator &&
+        (!('_inputSourceManager' in indicator) || indicator._inputSourceManager)
+            ? indicator
+            : null;
+    return (
+        _getInputModeFromProperties(source.properties, activeIndicator) ||
+        activeIndicator?._indicatorLabels?.[source.index]?.get_text?.() ||
+        source.shortName ||
+        ''
+    );
+}
+
+function _watchPanelIndicator(
+    onIndicatorChanged,
+    {onCurrentSourceChanged, onKeymapChanged} = {}
+) {
+    let destroyed = false;
+    let currentIndicator = null;
+    let indicatorDestroyID = 0;
+    let syncIdleID = 0;
+
+    function clearIndicatorDestroy() {
+        if (indicatorDestroyID && currentIndicator)
+            currentIndicator.disconnect(indicatorDestroyID);
+        indicatorDestroyID = 0;
+    }
+
+    function scheduleSync() {
+        if (destroyed || syncIdleID) return;
+        syncIdleID = GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+            syncIdleID = 0;
+            if (!destroyed) sync();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    function sync() {
+        if (destroyed) return null;
+        const nextIndicator = _getInputSourceIndicator();
+        if (nextIndicator === currentIndicator) return currentIndicator;
+        clearIndicatorDestroy();
+        currentIndicator = nextIndicator;
+        if (currentIndicator && currentIndicator.connect instanceof Function) {
+            const tracked = currentIndicator;
+            indicatorDestroyID = tracked.connect('destroy', () => {
+                if (destroyed || currentIndicator !== tracked) return;
+                currentIndicator = null;
+                indicatorDestroyID = 0;
+                onIndicatorChanged(null);
+                scheduleSync();
+            });
+        }
+        onIndicatorChanged(currentIndicator);
+        return currentIndicator;
+    }
+
+    const handleEvent = extraHandler => {
+        if (destroyed) return;
+        extraHandler?.();
+        sync();
+        scheduleSync();
+    };
+
+    const sourcesChangedID = InputSourceManager.connect('sources-changed', () =>
+        handleEvent()
+    );
+    const currentSourceChangedID = InputSourceManager.connect(
+        'current-source-changed',
+        () => handleEvent(onCurrentSourceChanged)
+    );
+    const keymapChangedID = InputSourceManager.connect('keymap-changed', () =>
+        handleEvent(onKeymapChanged)
+    );
+    const sessionModeUpdatedID =
+        Main.sessionMode?.connect instanceof Function
+            ? Main.sessionMode.connect('updated', () => handleEvent())
+            : 0;
+
+    sync();
+
+    return {
+        sync,
+        destroy() {
+            if (destroyed) return;
+            destroyed = true;
+            if (syncIdleID) {
+                GLib.source_remove(syncIdleID);
+                syncIdleID = 0;
+            }
+            InputSourceManager.disconnect(sourcesChangedID);
+            InputSourceManager.disconnect(currentSourceChangedID);
+            InputSourceManager.disconnect(keymapChangedID);
+            if (sessionModeUpdatedID && Main.sessionMode)
+                Main.sessionMode.disconnect(sessionModeUpdatedID);
+            clearIndicatorDestroy();
+            currentIndicator = null;
+        },
+    };
+}
+
+/**
+ * Compute the vertical drag offset adjustment when a BoxPointer flips arrow
+ * sides during drag-repositioning.
+ *
+ * @param {BoxPointer.BoxPointer} actor BoxPointer actor whose arrow side flipped.
+ * @returns {number} Vertical offset delta to apply to the drag origin.
+ */
+function _getArrowFlipOffsetY(actor) {
+    const themeNode = actor.get_theme_node();
+    const gap = themeNode.get_length('-boxpointer-gap');
+    const padding = themeNode.get_length('-arrow-rise');
+    const [, , , natHeight] = actor.get_preferred_size();
+    const sourceTopLeftY = actor._sourceExtents
+        ? actor._sourceExtents.get_top_left().y
+        : 0;
+    const sourceBottomRightY = actor._sourceExtents
+        ? actor._sourceExtents.get_bottom_right().y
+        : 0;
+    const delta =
+        natHeight + 2 * gap - sourceTopLeftY + sourceBottomRightY + padding;
+    if (actor._arrowSide === St.Side.TOP) return delta;
+    if (actor._arrowSide === St.Side.BOTTOM) return -delta;
+    return 0;
 }
 
 /* General */
@@ -262,8 +436,7 @@ const IBusClickSwitch = GObject.registerClass(
             this._buttonPressID = CandidatePopup.connect(
                 'button-press-event',
                 (actor, event) => {
-                    const rightButtonNum = _isWaylandCompositor() ? 2 : 3;
-                    if (_eventHasButton(event, rightButtonNum)) {
+                    if (_eventHasButton(event, SECONDARY_BUTTON)) {
                         let shouldPressReturn =
                             !this._mouseInCandidate || !this._clickSwitch;
                         if (shouldPressReturn) {
@@ -287,16 +460,28 @@ const IBusClickSwitch = GObject.registerClass(
                                         BoxPointer.PopupAnimation.NONE
                                     );
                                 if (this._clickSwitch) {
-                                    IBusManager.activateProperty(
-                                        INPUTMODE,
-                                        IBus.PropState.CHECKED
-                                    );
+                                    _activateInputMode();
                                 } else {
-                                    InputSourceIndicator.menu.open(
-                                        InputSourceIndicator.menu.activeMenu
-                                            ? BoxPointer.PopupAnimation.FADE
-                                            : BoxPointer.PopupAnimation.FULL
+                                    const indicator =
+                                        _getInputSourceIndicator();
+                                    const fadeOnly = Boolean(
+                                        Main.panel.menuManager?.activeMenu
                                     );
+                                    if (
+                                        indicator?.menu
+                                            ?._getPopupAnimationFromParams instanceof
+                                        Function
+                                    ) {
+                                        indicator.menu.open({
+                                            fadeOnly,
+                                        });
+                                    } else if (indicator?.menu) {
+                                        indicator.menu.open(
+                                            fadeOnly
+                                                ? BoxPointer.PopupAnimation.FADE
+                                                : BoxPointer.PopupAnimation.FULL
+                                        );
+                                    }
                                     if (
                                         Main.panel.menuManager
                                             ?.ignoreRelease instanceof Function
@@ -398,7 +583,7 @@ const IBusScroll = GObject.registerClass(
                         Clutter.ScrollControllerFlags.DISCRETE |
                         Clutter.ScrollControllerFlags.SCROLL_VERTICAL,
                 });
-                this._scrollController.connect(
+                this._scrollControllerID = this._scrollController.connect(
                     'scroll',
                     (_controller, _sprite, _source, _dx, dy) => {
                         if (dy < 0) CandidateArea.emit('previous-page');
@@ -429,9 +614,15 @@ const IBusScroll = GObject.registerClass(
         }
 
         destroy() {
-            if (this._scrollController)
-                (CandidateArea.remove_action(this._scrollController),
-                    (this._scrollController = null));
+            if (this._scrollController) {
+                if (this._scrollControllerID) {
+                    this._scrollController.disconnect(this._scrollControllerID);
+                    this._scrollControllerID = 0;
+                }
+                if (this._scrollController.get_actor?.() === CandidateArea)
+                    CandidateArea.remove_action(this._scrollController);
+                this._scrollController = null;
+            }
             if (this._builtinScrollController)
                 ((this._builtinScrollController.enabled = true),
                     (this._builtinScrollController = null));
@@ -694,11 +885,8 @@ const IBusAutoSwitch = GObject.registerClass(
         }
 
         get _state() {
-            const text =
-                InputSourceIndicator._indicatorLabels[
-                    InputSourceManager.currentSource.index
-                ].get_text();
-            return ASCIIMODES.includes(text);
+            const label = _getCurrentInputLabel();
+            return label ? ASCIIMODES.includes(label) : null;
         }
 
         get _toggle() {
@@ -712,6 +900,7 @@ const IBusAutoSwitch = GObject.registerClass(
                 return false;
             }
             let state = this._state;
+            if (state === null) return false;
             let stateConf;
             if (this._remember) {
                 let store = this._states.get(this._tmpWindow);
@@ -1164,15 +1353,26 @@ const IBusReposition = GObject.registerClass(
     class _IBusReposition extends GObject.Object {
         constructor() {
             super();
+            this._dragging = false;
+            this._location_handler = 0;
             CandidatePopup.reactive = true;
             this._buttonPressID = CandidatePopup.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (_eventHasButton(event, 1) && !this._mouseInCandidate) {
+                    if (
+                        _eventHasButton(event, PRIMARY_BUTTON) &&
+                        !this._mouseInCandidate
+                    ) {
                         let [boxX, boxY] = CandidateDummyCursor.get_position();
                         let [mouseX, mouseY] = event.get_coords();
+                        if (
+                            ![boxX, boxY, mouseX, mouseY].every(Number.isFinite)
+                        )
+                            return;
+                        this._stopDrag();
                         CandidatePopup._relativePosX = mouseX - boxX;
                         CandidatePopup._relativePosY = mouseY - boxY;
+                        this._dragging = true;
                         _setGlobalCursor('MOVE');
                         this._location_handler = GLib.timeout_add(
                             GLib.PRIORITY_DEFAULT,
@@ -1195,52 +1395,69 @@ const IBusReposition = GObject.registerClass(
                     this._mouseInCandidate = false;
                 }
             );
+            this._popupHideID = CandidatePopup.connect('hide', () =>
+                this._stopDrag()
+            );
             this._sideChangeID = CandidatePopup.connect(
                 'arrow-side-changed',
                 () => {
-                    let themeNode = CandidatePopup.get_theme_node();
-                    let gap = themeNode.get_length('-boxpointer-gap');
-                    let padding = themeNode.get_length('-arrow-rise');
-                    let [, , , natHeight] = CandidatePopup.get_preferred_size();
-                    let sourceTopLeft = 0;
-                    let sourceBottomRight = 0;
-                    if (CandidatePopup._sourceExtents) {
-                        sourceTopLeft =
-                            CandidatePopup._sourceExtents.get_top_left();
-                        sourceBottomRight =
-                            CandidatePopup._sourceExtents.get_bottom_right();
-                    }
-                    if (CandidatePopup._relativePosY) {
-                        switch (CandidatePopup._arrowSide) {
-                            case St.Side.TOP:
-                                CandidatePopup._relativePosY +=
-                                    natHeight +
-                                    2 * gap -
-                                    sourceTopLeft.y +
-                                    sourceBottomRight.y +
-                                    padding;
-                                break;
-                            case St.Side.BOTTOM:
-                                CandidatePopup._relativePosY -=
-                                    natHeight +
-                                    2 * gap -
-                                    sourceTopLeft.y +
-                                    sourceBottomRight.y +
-                                    padding;
-                                break;
-                        }
-                        this._updatePos();
-                        CandidatePopup._border.queue_repaint();
-                    }
+                    if (
+                        !this._dragging ||
+                        !Number.isFinite(CandidatePopup._relativePosX) ||
+                        !Number.isFinite(CandidatePopup._relativePosY)
+                    )
+                        return;
+                    CandidatePopup._relativePosY +=
+                        _getArrowFlipOffsetY(CandidatePopup);
+                    let [mouseX, mouseY] = global.get_pointer();
+                    this._move(mouseX, mouseY);
+                    CandidatePopup._border.queue_repaint();
                 }
             );
         }
 
+        _stopDrag() {
+            const wasDragging = Boolean(
+                this._dragging || this._location_handler
+            );
+            this._dragging = false;
+            if (this._location_handler) {
+                GLib.source_remove(this._location_handler);
+                this._location_handler = 0;
+            }
+            if (wasDragging) _setGlobalCursor('DEFAULT');
+            CandidatePopup._relativePosX = null;
+            CandidatePopup._relativePosY = null;
+        }
+
         _move(x, y) {
-            CandidateDummyCursor.set_position(
-                Math.round(x - CandidatePopup._relativePosX),
+            if (
+                !Number.isFinite(CandidatePopup._relativePosX) ||
+                !Number.isFinite(CandidatePopup._relativePosY)
+            )
+                return;
+            let posX = Math.max(
+                0,
+                Math.round(x - CandidatePopup._relativePosX)
+            );
+            let posY = Math.max(
+                0,
                 Math.round(y - CandidatePopup._relativePosY)
             );
+            if (!Number.isFinite(posX) || !Number.isFinite(posY)) return;
+            const maxX =
+                global.stage?.width > 0
+                    ? global.stage.width
+                    : global.screen_width;
+            const maxY =
+                global.stage?.height > 0
+                    ? global.stage.height
+                    : global.screen_height;
+            if (Number.isFinite(maxX) && maxX > 0)
+                posX = Math.min(posX, Math.round(maxX));
+            if (Number.isFinite(maxY) && maxY > 0)
+                posY = Math.min(posY, Math.round(maxY));
+            CandidateDummyCursor.set_position(posX, posY);
             CandidatePopup.setPosition(CandidateDummyCursor, 0);
         }
 
@@ -1249,16 +1466,16 @@ const IBusReposition = GObject.registerClass(
             this._move(mouse_x, mouse_y);
             mask &= Clutter.ModifierType.BUTTON1_MASK;
             if (mask) return GLib.SOURCE_CONTINUE;
-            this._location_handler = null;
-            _setGlobalCursor('DEFAULT');
+            this._location_handler = 0;
+            this._stopDrag();
             let state = new Map(
                 Object.entries(
                     gsettings.get_value(Fields.CANDBOXPOS).deep_unpack()
                 )
             );
             let [boxX, boxY] = CandidateDummyCursor.get_position();
-            state.set('x', boxX);
-            state.set('y', boxY);
+            state.set('x', Math.max(0, Math.round(boxX)));
+            state.set('y', Math.max(0, Math.round(boxY)));
             gsettings.set_value(
                 Fields.CANDBOXPOS,
                 new GLib.Variant('a{su}', Object.fromEntries(state))
@@ -1267,25 +1484,22 @@ const IBusReposition = GObject.registerClass(
         }
 
         destroy() {
+            this._stopDrag();
+            if (this._popupHideID)
+                (CandidatePopup.disconnect(this._popupHideID),
+                    (this._popupHideID = 0));
             if (this._buttonPressID)
                 (CandidatePopup.disconnect(this._buttonPressID),
                     (this._buttonPressID = 0));
             if (this._sideChangeID)
                 (CandidatePopup.disconnect(this._sideChangeID),
                     (this._sideChangeID = 0));
-            if (this._location_handler) {
-                _setGlobalCursor('DEFAULT');
-                (GLib.source_remove(this._location_handler),
-                    (this._location_handler = 0));
-            }
             if (this._mouseCandidateEnterID)
                 (CandidateArea.disconnect(this._mouseCandidateEnterID),
                     (this._mouseCandidateEnterID = 0));
             if (this._mouseCandidateLeaveID)
                 (CandidateArea.disconnect(this._mouseCandidateLeaveID),
                     (this._mouseCandidateLeaveID = 0));
-            CandidatePopup._relativePosX = null;
-            CandidatePopup._relativePosY = null;
         }
     }
 );
@@ -1309,6 +1523,13 @@ const IBusTrayClickSwitch = GObject.registerClass(
     class _IBusTrayClickSwitch extends GObject.Object {
         constructor() {
             super();
+            this._keyNum = PRIMARY_BUTTON;
+            this._connectedIndicator = null;
+            this._clickRecognizeID = 0;
+            this._buttonPressID = 0;
+            this._panelWatcher = _watchPanelIndicator(indicator =>
+                this._connectIndicator(indicator)
+            );
             gsettings.bind(
                 Fields.TRAYSSWITCHKEY,
                 this,
@@ -1318,29 +1539,26 @@ const IBusTrayClickSwitch = GObject.registerClass(
         }
 
         _disconnectClickHandler() {
+            const indicator = this._connectedIndicator;
+            this._connectedIndicator = null;
             if (
                 this._clickRecognizeID &&
-                InputSourceIndicator?._clickGesture?.disconnect instanceof
-                    Function
-            ) {
-                InputSourceIndicator._clickGesture.disconnect(
-                    this._clickRecognizeID
-                );
-                this._clickRecognizeID = 0;
-            }
-            if (this._buttonPressID) {
-                InputSourceIndicator.disconnect(this._buttonPressID);
-                this._buttonPressID = 0;
-            }
+                indicator?._clickGesture?.disconnect instanceof Function
+            )
+                indicator._clickGesture.disconnect(this._clickRecognizeID);
+            this._clickRecognizeID = 0;
+            if (this._buttonPressID && indicator)
+                indicator.disconnect(this._buttonPressID);
+            this._buttonPressID = 0;
         }
 
         _activateInputMode() {
-            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-            InputSourceIndicator.menu.close();
+            _activateInputMode();
+            _getInputSourceIndicator()?.menu?.close();
         }
 
-        _connectClickGesture(keyNum) {
-            const clickGesture = InputSourceIndicator?._clickGesture;
+        _connectClickGesture(indicator, keyNum) {
+            const clickGesture = indicator?._clickGesture;
             if (!clickGesture || !(clickGesture.connect instanceof Function))
                 return false;
 
@@ -1351,40 +1569,52 @@ const IBusTrayClickSwitch = GObject.registerClass(
                         gesture.get_button instanceof Function
                             ? gesture.get_button()
                             : 0;
-                    const matches =
-                        button === keyNum ||
-                        (keyNum === 2 && (button === 2 || button === 3));
-                    if (matches) this._activateInputMode();
+                    if (button === keyNum) this._activateInputMode();
                 }
             );
             return true;
         }
 
-        set traysswitchkey(traysswitchkey) {
-            let keyNum = traysswitchkey === 0 ? 1 : 3;
-            if (_isWaylandCompositor()) keyNum = traysswitchkey === 0 ? 1 : 2;
+        _connectIndicator(indicator) {
             this._disconnectClickHandler();
+            if (!indicator) return;
+
+            this._connectedIndicator = indicator;
 
             // GNOME 50+ panel buttons are activated through Clutter.ClickGesture
             // and may not emit button-press-event reliably.
-            if (this._connectClickGesture(keyNum)) return;
+            if (this._connectClickGesture(indicator, this._keyNum)) return;
 
-            this._buttonPressID = InputSourceIndicator.connect(
+            this._buttonPressID = indicator.connect(
                 'button-press-event',
                 (_actor, event) => {
-                    if (_eventHasButton(event, keyNum))
+                    if (_eventHasButton(event, this._keyNum))
                         this._activateInputMode();
                 }
             );
         }
 
+        set traysswitchkey(traysswitchkey) {
+            this._keyNum =
+                traysswitchkey === 0 ? PRIMARY_BUTTON : SECONDARY_BUTTON;
+            const indicator =
+                this._panelWatcher?.sync() ?? _getInputSourceIndicator();
+            this._connectIndicator(indicator);
+        }
+
         destroy() {
+            this._panelWatcher?.destroy();
+            this._panelWatcher = null;
             this._disconnectClickHandler();
         }
     }
 );
 
 /* Indicator */
+const TOGGLE_GRACE_US = 200_000;
+const TOGGLE_PROTECTION_TIMEOUT_US = 400_000;
+const MAX_RELAYOUT_ATTEMPTS = 3;
+
 const IBusInputSourceIndicator = GObject.registerClass(
     {
         Properties: {
@@ -1516,22 +1746,74 @@ const IBusInputSourceIndicator = GObject.registerClass(
         /* Main */
         constructor() {
             super(St.Side.TOP);
+            // BoxPointer versions with mapped/destroy unredirect cleanup
+            // (GS 50.6+, 51.1+) connect a base 'destroy' handler before ours.
+            this._hasBaseDestroyHandler =
+                typeof GObject.signal_handler_find === 'function' &&
+                GObject.signal_handler_find(this, {signalId: 'destroy'}) !== 0;
             this.font_style = '';
             this.opacity_style = '';
             this.visible = false;
-            this._justSwitchedWindow = false;
+            this._panelService = null;
+            this._panelWatcher = null;
+            this._hasCursorPos = false;
+            this._lastToggleTimeUs = 0;
+            this._toggleProtectionDeadlineUs = 0;
+            this._pendingCandidateToggle = false;
+            this._lastWindow =
+                InputSourceManager?._getCurrentWindow?.() ?? null;
+            this._showDelayId = 0;
+            this._autoHideId = 0;
+            this._graceTimerID = 0;
+            this._graceReason = null;
+            this._candidateHideIdleID = 0;
+            this._relayoutIdleID = 0;
+            this._relayoutAttempts = 0;
+            this._isClosing = false;
+            this._dragging = false;
+            this._location_handler = 0;
+            this._relativePosX = null;
+            this._relativePosY = null;
+            this._destroyed = false;
+            this._hideSignalID = this.connect('hide', () => {
+                this._isClosing = false;
+                this._stopDrag();
+                this._clearSource('_relayoutIdleID');
+                this._relayoutAttempts = 0;
+            });
+            this._destroySignalID = this.connect('destroy', () => {
+                this._onDestroy(true);
+            });
             this.style_class = 'candidate-popup-boxpointer';
+            const rawInputPanelGroup =
+                global.compositor?.get_input_panel_group instanceof Function
+                    ? global.compositor.get_input_panel_group()
+                    : null;
+            const inputPanelGroup = rawInputPanelGroup?.get_parent?.()
+                ? rawInputPanelGroup
+                : null;
             this._dummyCursor = new Clutter.Actor({opacity: 0});
-            Main.layoutManager.uiGroup.add_child(this._dummyCursor);
-            Main.layoutManager.addTopChrome(this);
+            this._dummyCursor.connect('destroy', () => {
+                this._dummyCursor = null;
+            });
+            if (inputPanelGroup) {
+                inputPanelGroup.add_child(this._dummyCursor);
+                inputPanelGroup.add_child(this);
+            } else {
+                Main.layoutManager.uiGroup.add_child(this._dummyCursor);
+                Main.layoutManager.addTopChrome(this);
+            }
             let box = new St.BoxLayout({
                 style_class: 'candidate-popup-content',
-                vertical: true,
+                orientation: Clutter.Orientation.VERTICAL,
             });
             this.bin.set_child(box);
             this._inputIndicatorLabel = new St.Label({
                 style_class: 'candidate-popup-text',
                 visible: true,
+            });
+            this._inputIndicatorLabel.connect('destroy', () => {
+                this._inputIndicatorLabel = null;
             });
             box.add_child(this._inputIndicatorLabel);
 
@@ -1541,9 +1823,42 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 this._child_opacity.push(candidate_child[i].get_opacity());
             }
 
+            if (Clutter.ScrollController) {
+                this._scrollController = new Clutter.ScrollController({
+                    flags:
+                        Clutter.ScrollControllerFlags.DISCRETE |
+                        Clutter.ScrollControllerFlags.SCROLL_VERTICAL,
+                });
+                this._scrollControllerID = this._scrollController.connect(
+                    'scroll',
+                    (_controller, _sprite, _source, _dx, dy) => {
+                        if (!this._destroyed && this.use_scroll && dy !== 0)
+                            _activateInputMode();
+                    }
+                );
+                this.add_action(this._scrollController);
+            }
+
             this._bindSettings();
 
-            this._panelService = null;
+            this._ibusReadyID = IBusManager.connect('ready', () => {
+                this._syncPanelService();
+            });
+            this._panelWatcher = _watchPanelIndicator(
+                () => {
+                    if (!this._destroyed && this._inputIndicatorLabel) {
+                        this._inputIndicatorLabel.text =
+                            _getCurrentInputLabel();
+                        if (this.visible && !this._isInputLabelAllowed())
+                            this._updateVisibility();
+                    }
+                },
+                {
+                    onCurrentSourceChanged: () =>
+                        this._onCurrentSourceChanged(),
+                    onKeymapChanged: () => this._onKeymapChanged(),
+                }
+            );
             this._overviewHiddenID = Main.overview.connect(
                 'hidden',
                 this._onWindowChanged.bind(this)
@@ -1556,30 +1871,286 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 'notify::focus-window',
                 this._onWindowChanged.bind(this)
             );
+            this._candidateVisibleChangedID =
+                CandidatePopup?.connect instanceof Function
+                    ? CandidatePopup.connect('notify::visible', () => {
+                          this._onCandidatePopupVisibleChanged();
+                      })
+                    : 0;
+
+            this._syncPanelService();
+            if (!this._panelService && this._inputIndicatorLabel)
+                this._inputIndicatorLabel.text = _getCurrentInputLabel();
+        }
+
+        _onCurrentSourceChanged() {
+            if (this._destroyed || !this._inputIndicatorLabel) return;
+            this._syncCurrentWindowState();
+            this._inputIndicatorLabel.text = _getCurrentInputLabel();
+            this._updateVisibility(true);
+        }
+
+        _onKeymapChanged() {
+            if (this._destroyed || !this._inputIndicatorLabel) return;
+            const prevLabel = this._inputIndicatorLabel.text;
+            const nextLabel = _getCurrentInputLabel();
+            this._inputIndicatorLabel.text = nextLabel;
+            const labelChanged = Boolean(prevLabel && nextLabel !== prevLabel);
+            if (labelChanged) this._syncCurrentWindowState();
+            if (labelChanged || !this._isInputLabelAllowed())
+                this._updateVisibility(labelChanged);
+        }
+
+        _clearSource(prop) {
+            if (this[prop]) {
+                GLib.source_remove(this[prop]);
+                this[prop] = 0;
+            }
+        }
+
+        _armToggleProtection() {
+            this._toggleProtectionDeadlineUs =
+                GLib.get_monotonic_time() + TOGGLE_PROTECTION_TIMEOUT_US;
+        }
+
+        _clearToggleProtection() {
+            this._toggleProtectionDeadlineUs = 0;
+        }
+
+        _hasToggleProtection() {
+            if (!this._toggleProtectionDeadlineUs) return false;
+            if (GLib.get_monotonic_time() <= this._toggleProtectionDeadlineUs)
+                return true;
+            this._toggleProtectionDeadlineUs = 0;
+            return false;
+        }
+
+        _consumePendingCandidateToggle() {
+            if (!this._pendingCandidateToggle || CandidatePopup?.visible)
+                return false;
+            this._clearSource('_candidateHideIdleID');
+            this._pendingCandidateToggle = false;
+            return true;
+        }
+
+        _clearGraceTimer(onlyReason = null) {
+            if (onlyReason && this._graceReason !== onlyReason) return;
+            this._clearSource('_graceTimerID');
+            this._graceReason = null;
+        }
+
+        _scheduleGraceTimer(reason, graceMs) {
+            if (reason === 'cursor' && this._graceReason === 'focus') return;
+            if (this._graceTimerID && this._graceReason === reason) return;
+            this._clearGraceTimer();
+            this._graceReason = reason;
+            this._graceTimerID = GLib.timeout_add(
+                GLib.PRIORITY_DEFAULT,
+                graceMs,
+                () => {
+                    this._graceTimerID = 0;
+                    this._graceReason = null;
+                    if (this._destroyed) return GLib.SOURCE_REMOVE;
+                    if (reason === 'focus') this._finalizeFocusOut();
+                    else if (this._dummyCursor) this._applyZeroCursorLocation();
+                    return GLib.SOURCE_REMOVE;
+                }
+            );
+        }
+
+        _resetDummyCursor() {
+            this._hasCursorPos = false;
+            if (this._dummyCursor) {
+                this._dummyCursor.set_position(0, 0);
+                this._dummyCursor.set_size(0, 0);
+            }
+        }
+
+        _resetFocusAndCursorState({clearLastToggle = false} = {}) {
+            this._clearGraceTimer();
+            this._clearToggleProtection();
+            this._pendingCandidateToggle = false;
+            this._clearSource('_candidateHideIdleID');
+            if (clearLastToggle) this._lastToggleTimeUs = 0;
+            this._resetDummyCursor();
+        }
+
+        _clearPendingFocusState(closeIfVisible = false) {
+            this._resetFocusAndCursorState({clearLastToggle: true});
+            if (closeIfVisible && !this._destroyed && this.visible)
+                this._closeIndicator(BoxPointer.PopupAnimation.NONE);
+        }
+
+        _syncCurrentWindowState() {
+            const currentWindow =
+                InputSourceManager?._getCurrentWindow?.() ?? null;
+            if (currentWindow !== this._lastWindow) {
+                this._lastWindow = currentWindow;
+                this._resetFocusAndCursorState();
+            }
+            return currentWindow;
+        }
+
+        _getRemainingToggleGraceMs() {
+            if (!this._lastToggleTimeUs) return 0;
+            const elapsedUs =
+                GLib.get_monotonic_time() - this._lastToggleTimeUs;
+            if (elapsedUs < 0 || elapsedUs >= TOGGLE_GRACE_US) return 0;
+            return Math.max(
+                50,
+                Math.ceil((TOGGLE_GRACE_US - elapsedUs) / 1000)
+            );
+        }
+
+        _onCandidatePopupVisibleChanged() {
+            if (this._destroyed) return;
+            if (CandidatePopup?.visible) {
+                this._clearSource('_candidateHideIdleID');
+                this._clearSource('_showDelayId');
+                if (this._hasToggleProtection()) {
+                    this._pendingCandidateToggle = true;
+                    this._clearToggleProtection();
+                }
+                if (this.visible)
+                    this._closeIndicator(BoxPointer.PopupAnimation.NONE);
+                return;
+            }
+            if (
+                (this._pendingCandidateToggle ||
+                    (!this.onlyOnToggle && this._hasCursorPos)) &&
+                !this._candidateHideIdleID
+            ) {
+                // Defer past synchronous panelService::focus-out dispatch since
+                // CandidatePopup hides before our focus-out handler executes.
+                this._candidateHideIdleID = GLib.idle_add(
+                    GLib.PRIORITY_DEFAULT,
+                    () => {
+                        this._candidateHideIdleID = 0;
+                        if (
+                            this._destroyed ||
+                            CandidatePopup?.visible ||
+                            this._graceReason === 'focus'
+                        )
+                            return GLib.SOURCE_REMOVE;
+                        const wasToggle = this._consumePendingCandidateToggle();
+                        if (
+                            wasToggle ||
+                            (!this.onlyOnToggle && this._hasCursorPos)
+                        )
+                            this._updateVisibility(false, wasToggle);
+                        return GLib.SOURCE_REMOVE;
+                    }
+                );
+            }
+        }
+
+        _finalizeFocusOut() {
+            this._resetFocusAndCursorState();
+            this._closeIndicator();
+        }
+
+        _resetPanelServiceRefs(disconnect) {
+            const panelService = this._panelService;
+            this._panelService = null;
+            const signalIds = [
+                '_panelServiceDestroyID',
+                '_setCursorLocationID',
+                '_setCursorLocationRelativeID',
+                '_focusInID',
+                '_focusOutID',
+            ];
+            for (const prop of signalIds) {
+                const id = this[prop];
+                if (disconnect && id && panelService)
+                    panelService.disconnect(id);
+                this[prop] = 0;
+            }
+        }
+
+        _disconnectPanelService() {
+            const hadPanelService = Boolean(this._panelService);
+            this._resetPanelServiceRefs(true);
+            if (hadPanelService) this._clearPendingFocusState(true);
+        }
+
+        _syncPanelService() {
+            if (this._destroyed) return;
+            if (IBusManager._panelService !== this._panelService) {
+                this._connectPanelService(IBusManager._panelService);
+                if (this._panelService)
+                    console.log(_('IBus panel service connected!'));
+                if (this._inputIndicatorLabel)
+                    this._inputIndicatorLabel.text = _getCurrentInputLabel();
+            }
         }
 
         _connectPanelService(panelService) {
+            this._disconnectPanelService();
+            if (this._destroyed) return;
             this._panelService = panelService;
             if (!panelService) return;
 
+            this._panelServiceDestroyID = panelService.connect(
+                'destroy',
+                () => {
+                    if (this._panelService !== panelService) return;
+                    this._resetPanelServiceRefs(false);
+                    this._clearPendingFocusState(true);
+                }
+            );
             this._setCursorLocationID = panelService.connect(
                 'set-cursor-location',
                 (ps, x, y, w, h) => {
-                    this._setDummyCursorGeometry(x, y, w, h);
+                    if (this._destroyed || !this._dummyCursor) return;
+                    const focusWindow = global.display.focus_window;
+                    let rect = new Mtk.Rectangle({x, y, width: w, height: h});
+                    if (
+                        !global.stage.key_focus &&
+                        focusWindow?.protocol_to_stage_rect instanceof Function
+                    )
+                        rect = focusWindow.protocol_to_stage_rect(rect);
+                    this._setDummyCursorGeometry(
+                        rect.x,
+                        rect.y,
+                        rect.width,
+                        rect.height
+                    );
                 }
             );
             try {
                 this._setCursorLocationRelativeID = panelService.connect(
                     'set-cursor-location-relative',
                     (ps, x, y, w, h) => {
-                        if (!global.display.focus_window) return;
-                        let window =
-                            global.display.focus_window.get_compositor_private();
+                        if (this._destroyed || !this._dummyCursor) return;
+                        const focusWindow = global.display.focus_window;
+                        if (!focusWindow) return;
+                        const windowActor =
+                            focusWindow.get_compositor_private();
+                        if (!windowActor) return;
+                        let rect = new Mtk.Rectangle({
+                            x,
+                            y,
+                            width: w,
+                            height: h,
+                        });
+                        if (
+                            focusWindow.protocol_to_stage_rect instanceof
+                            Function
+                        )
+                            rect = focusWindow.protocol_to_stage_rect(rect);
+                        const rawScale =
+                            windowActor.get_resource_scale instanceof Function
+                                ? windowActor.get_resource_scale()
+                                : 1;
+                        const scale =
+                            Number.isFinite(rawScale) && rawScale > 0
+                                ? rawScale
+                                : 1;
                         this._setDummyCursorGeometry(
-                            window.x + x,
-                            window.y + y,
-                            w,
-                            h
+                            windowActor.x + rect.x / scale,
+                            windowActor.y + rect.y / scale,
+                            rect.width / scale,
+                            rect.height / scale
                         );
                     }
                 );
@@ -1590,186 +2161,394 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 // signal's absence.
                 console.log(e);
             }
-            this._focusOutID = panelService.connect('focus-out', () => {
-                this.close(BoxPointer.PopupAnimation[this.animation]);
-            });
-            this._updatePropertyID = panelService.connect(
-                'update-property',
-                (engineName, prop) => {
-                    if (prop.get_key() === INPUTMODE) {
-                        this._inputIndicatorLabel.text = this._getInputLabel();
-                        this._updateVisibility(true);
+            this._focusInID = panelService.connect('focus-in', () => {
+                if (this._destroyed) return;
+                this._clearGraceTimer();
+                if (!CandidatePopup?.visible) {
+                    const wasToggle = this._consumePendingCandidateToggle();
+                    if (
+                        wasToggle ||
+                        (!this.onlyOnToggle &&
+                            this._hasCursorPos &&
+                            (!this.visible || this._isClosing) &&
+                            !this._showDelayId)
+                    ) {
+                        this._clearSource('_candidateHideIdleID');
+                        this._updateVisibility(false, wasToggle);
                     }
                 }
-            );
-            this._currentSourceChangedID = InputSourceManager.connect(
-                'current-source-changed',
-                () => {
-                    this._inputIndicatorLabel.text = this._getInputLabel();
-                    this._justSwitchedWindow = true;
-                    this._updateVisibility(true);
+            });
+            this._focusOutID = panelService.connect('focus-out', () => {
+                if (this._destroyed) return;
+                this._clearSource('_candidateHideIdleID');
+                const graceMs = this._getRemainingToggleGraceMs();
+                if (graceMs > 0 && this._graceReason !== 'focus') {
+                    // Wait out transient focus-out from switcher/menu grabs,
+                    // closing if focus never returns within the grace period.
+                    this._scheduleGraceTimer('focus', graceMs);
+                    return;
                 }
-            );
-            this._registerPropertyID = panelService.connect(
-                'register-properties',
-                () => {
-                    this._inputIndicatorLabel.text = this._getInputLabel();
-                }
-            );
+                if (this._graceReason !== 'focus') this._finalizeFocusOut();
+            });
         }
 
-        _setDummyCursorGeometry(x, y, w, h) {
-            this._dummyCursor.set_position(Math.round(x), Math.round(y));
-            this._dummyCursor.set_size(Math.round(w), Math.round(h));
-            this.setPosition(this._dummyCursor, 0);
+        _applyZeroCursorLocation() {
+            this._clearGraceTimer('cursor');
+            this._resetDummyCursor();
             this._updateVisibility();
         }
 
-        _showIndicator() {
-            this.open(BoxPointer.PopupAnimation[this.animation]);
-            // We shouldn't be above some components like the screenshot UI,
-            // so don't raise to the top.
-            // The on-screen keyboard is expected to be above any entries,
-            // so just above the keyboard gets us to the right layer.
-            const {keyboardBox} = Main.layoutManager;
-            this.get_parent().set_child_above_sibling(this, keyboardBox);
-            if (this.enableAutoHide)
-                this._lastTimeOut = GLib.timeout_add_seconds(
-                    GLib.PRIORITY_DEFAULT,
-                    this.hideTime,
-                    () => {
-                        this.close(BoxPointer.PopupAnimation[this.animation]);
-                        this._lastTimeOut = null;
-                        return GLib.SOURCE_REMOVE;
-                    }
-                );
+        _matchesCursorGeometry(x, y, w, h) {
+            if (!this._hasCursorPos || !this._dummyCursor) return false;
+            const [prevX, prevY] = this._dummyCursor.get_position();
+            const [prevW, prevH] = this._dummyCursor.get_size();
+            return prevX === x && prevY === y && prevW === w && prevH === h;
         }
 
-        _updateVisibility(sourceToggle = false) {
-            this.visible = !CandidatePopup.visible;
-            if (this.onlyOnToggle) this.visible = sourceToggle;
-            if (this.onlyASCII)
-                if (!ASCIIMODES.includes(this._inputIndicatorLabel.text))
-                    this.visible = false;
-            if (this.ignoreSingleModeIME)
-                if (IgnoreModes.includes(this._inputIndicatorLabel.text))
-                    this.visible = false;
-            if (this.visible && !sourceToggle) {
-                let position = this._dummyCursor.get_position();
-                if (
-                    Math.round(position[0]) === 0 &&
-                    Math.round(position[1]) === 0
-                )
-                    this.visible = false;
-            }
-            if (this._lastTimeOut) {
-                GLib.source_remove(this._lastTimeOut);
-                this._lastTimeOut = null;
-            }
-            if (this._lastTimeIn) {
-                GLib.source_remove(this._lastTimeIn);
-                this._lastTimeIn = null;
-            }
-            if (this.visible) {
-                this.setPosition(this._dummyCursor, 0);
-                if (
-                    this.enableShowDelay &&
-                    !sourceToggle &&
-                    !this._justSwitchedWindow
-                ) {
-                    this.close(BoxPointer.PopupAnimation.NONE);
-                    this._lastTimeIn = GLib.timeout_add_seconds(
-                        GLib.PRIORITY_DEFAULT,
-                        this.showTime,
-                        () => {
-                            this._lastTimeIn = null;
-                            this._showIndicator();
-                            return GLib.SOURCE_REMOVE;
-                        }
-                    );
-                } else {
-                    if (this.enableShowDelay && !sourceToggle)
-                        this._justSwitchedWindow = false;
-                    this._showIndicator();
+        _setDummyCursorGeometry(x, y, w, h) {
+            if (this._destroyed || !this._dummyCursor) return;
+            if (![x, y, w, h].every(Number.isFinite)) return;
+            const posX = Math.round(x);
+            const posY = Math.round(y);
+            const width = Math.max(0, Math.round(w));
+            const height = Math.max(0, Math.round(h));
+            const hasCursorPos = [posX, posY, width, height].some(Boolean);
+
+            if (!hasCursorPos) {
+                // InputMethod.vfunc_focus_out() sends set_cursor_location(0, 0)
+                // via _fullReset() before focus_out(); hold briefly during the
+                // toggle grace window so transient focus swaps preserve coords.
+                const graceMs = this._getRemainingToggleGraceMs();
+                if (graceMs > 0 || this._graceReason === 'focus') {
+                    this._scheduleGraceTimer('cursor', graceMs);
+                    return;
                 }
-            } else {
-                this.close(BoxPointer.PopupAnimation[this.animation]);
+                this._applyZeroCursorLocation();
+                return;
             }
+
+            const sameGeometry = this._matchesCursorGeometry(
+                posX,
+                posY,
+                width,
+                height
+            );
+            this._clearGraceTimer('cursor');
+            this._hasCursorPos = true;
+            this._dummyCursor.set_position(posX, posY);
+            this._dummyCursor.set_size(width, height);
+            const restoreToggle = this._consumePendingCandidateToggle();
+            const inToggleWindow = restoreToggle || this._hasToggleProtection();
+            if (this.onlyOnToggle && !inToggleWindow) {
+                if (this.visible && !this._isClosing)
+                    this.setPosition(this._dummyCursor, 0);
+                return;
+            }
+            if (
+                sameGeometry &&
+                !inToggleWindow &&
+                ((this.visible && !this._isClosing) || this._showDelayId)
+            )
+                return;
+            this._updateVisibility(false, restoreToggle);
+        }
+
+        _closeIndicator(animation = BoxPointer.PopupAnimation[this.animation]) {
+            if (this._destroyed) return;
+            this._stopDrag();
+            this._clearSource('_autoHideId');
+            this._clearSource('_showDelayId');
+            this._clearSource('_relayoutIdleID');
+            this._relayoutAttempts = 0;
+            if (
+                this.visible &&
+                (!this._isClosing ||
+                    animation === BoxPointer.PopupAnimation.NONE)
+            ) {
+                this._isClosing = true;
+                this.close(animation);
+                if (!this.visible) this._isClosing = false;
+            } else if (!this.visible) {
+                this._isClosing = false;
+            }
+        }
+
+        _scheduleAutoHide() {
+            this._clearSource('_autoHideId');
+            if (!this.enableAutoHide) return;
+            this._autoHideId = GLib.timeout_add_seconds(
+                GLib.PRIORITY_DEFAULT,
+                this.hideTime,
+                () => {
+                    this._autoHideId = 0;
+                    if (!this._destroyed)
+                        this._closeIndicator(
+                            BoxPointer.PopupAnimation[this.animation]
+                        );
+                    return GLib.SOURCE_REMOVE;
+                }
+            );
+        }
+
+        _showIndicator() {
+            if (this._destroyed) return;
+            const shouldOpen = !this.visible || this._isClosing;
+            this._isClosing = false;
+            this._relayoutAttempts = 0;
+            this._clearSource('_relayoutIdleID');
+            if (this._dummyCursor && this._hasCursorPos)
+                this.setPosition(this._dummyCursor, 0);
+            // Keep dummyCursor ahead of the indicator immediately above the
+            // on-screen keyboard when they share the same container, so
+            // ClutterFixedLayout allocates the cursor anchor before the popup
+            // while staying below screenshot UI in GS 48-50.
+            const {keyboardBox} = Main.layoutManager;
+            const parent = this.get_parent();
+            if (
+                parent &&
+                keyboardBox &&
+                keyboardBox.get_parent() === parent &&
+                this._dummyCursor?.get_parent() === parent
+            ) {
+                parent.set_child_above_sibling(this._dummyCursor, keyboardBox);
+                parent.set_child_above_sibling(this, this._dummyCursor);
+            }
+            if (shouldOpen)
+                this.open(BoxPointer.PopupAnimation[this.animation]);
+            this._scheduleAutoHide();
+        }
+
+        _canShowIndicator() {
+            const layoutManager = Main.layoutManager;
+            if (!layoutManager || layoutManager._startingUp) return false;
+            if (!layoutManager.monitors?.length) return false;
+            const stage = global?.stage;
+            return Boolean(stage && stage.width > 0 && stage.height > 0);
+        }
+
+        _isInputLabelAllowed() {
+            const text = this._inputIndicatorLabel?.text;
+            if (!text) return false;
+            if (this.onlyASCII && !ASCIIMODES.includes(text)) return false;
+            if (this.ignoreSingleModeIME && IgnoreModes.includes(text))
+                return false;
+            return true;
+        }
+
+        _scheduleRelayout() {
+            if (
+                this._destroyed ||
+                this._relayoutIdleID ||
+                this._relayoutAttempts >= MAX_RELAYOUT_ATTEMPTS
+            )
+                return;
+            this._relayoutAttempts++;
+            this._relayoutIdleID = GLib.idle_add(
+                GLib.PRIORITY_DEFAULT_IDLE,
+                () => {
+                    this._relayoutIdleID = 0;
+                    if (!this._destroyed && this.visible) this.queue_relayout();
+                    return GLib.SOURCE_REMOVE;
+                }
+            );
+        }
+
+        vfunc_allocate(box) {
+            if (this._sourceActor?.mapped) {
+                const extents = this._sourceActor.get_transformed_extents();
+                const hasFiniteExtents =
+                    extents &&
+                    [
+                        extents.origin.x,
+                        extents.origin.y,
+                        extents.size.width,
+                        extents.size.height,
+                    ].every(Number.isFinite);
+                if (!hasFiniteExtents) {
+                    // Stage projection may be uninitialized on the first
+                    // allocation frame, yielding NaN source extents; skip
+                    // _reposition on this pass rather than passing NaN boxes.
+                    const sourceActor = this._sourceActor;
+                    this._sourceActor = null;
+                    try {
+                        super.vfunc_allocate(box);
+                    } finally {
+                        this._sourceActor = sourceActor;
+                    }
+                    this._scheduleRelayout();
+                    return;
+                }
+                this._relayoutAttempts = 0;
+            }
+            super.vfunc_allocate(box);
+        }
+
+        _resetBlockedVisibility() {
+            this._clearToggleProtection();
+            this._pendingCandidateToggle = false;
+            this._clearSource('_candidateHideIdleID');
+            this._closeIndicator(
+                Main.layoutManager?._startingUp
+                    ? BoxPointer.PopupAnimation.NONE
+                    : BoxPointer.PopupAnimation[this.animation]
+            );
+        }
+
+        _deferShowUntilCursor(isToggle, restoreToggle = false) {
+            if (!isToggle) {
+                if (restoreToggle) this._pendingCandidateToggle = true;
+                this._closeIndicator(BoxPointer.PopupAnimation[this.animation]);
+                return;
+            }
+            this._lastToggleTimeUs = GLib.get_monotonic_time();
+            this._armToggleProtection();
+            if (this.visible)
+                this._closeIndicator(BoxPointer.PopupAnimation[this.animation]);
+        }
+
+        _scheduleShowDelay() {
+            this._closeIndicator(BoxPointer.PopupAnimation.NONE);
+            this._showDelayId = GLib.timeout_add_seconds(
+                GLib.PRIORITY_DEFAULT,
+                this.showTime,
+                () => {
+                    this._showDelayId = 0;
+                    if (
+                        !this._destroyed &&
+                        !this.onlyOnToggle &&
+                        this.enableShowDelay &&
+                        this._hasCursorPos &&
+                        this._canShowIndicator() &&
+                        !CandidatePopup?.visible &&
+                        this._isInputLabelAllowed()
+                    )
+                        this._showIndicator();
+                    return GLib.SOURCE_REMOVE;
+                }
+            );
+        }
+
+        _updateVisibility(isToggle = false, restoreToggle = false) {
+            if (
+                this._destroyed ||
+                !this._inputIndicatorLabel ||
+                !this._dummyCursor
+            )
+                return;
+            if (!this._canShowIndicator() || !this._isInputLabelAllowed()) {
+                this._resetBlockedVisibility();
+                return;
+            }
+            if (CandidatePopup?.visible) {
+                if (isToggle) {
+                    this._lastToggleTimeUs = GLib.get_monotonic_time();
+                    this._clearToggleProtection();
+                    this._pendingCandidateToggle = true;
+                }
+                this._closeIndicator(BoxPointer.PopupAnimation[this.animation]);
+                return;
+            }
+            if (!this._hasCursorPos) {
+                this._deferShowUntilCursor(isToggle, restoreToggle);
+                return;
+            }
+            const inToggleWindow =
+                isToggle || restoreToggle || this._hasToggleProtection();
+            if (this.onlyOnToggle && !inToggleWindow) return;
+            if (isToggle) {
+                this._armToggleProtection();
+                this._pendingCandidateToggle = false;
+                this._lastToggleTimeUs = GLib.get_monotonic_time();
+            }
+            this._clearSource('_autoHideId');
+            this._clearSource('_showDelayId');
+            if (this.enableShowDelay && !inToggleWindow)
+                this._scheduleShowDelay();
+            else this._showIndicator();
         }
 
         _onWindowChanged() {
-            if (IBusManager._panelService !== this._panelService) {
-                this._connectPanelService(IBusManager._panelService);
-                console.log(_('IBus panel service connected!'));
-                this._inputIndicatorLabel.text = this._getInputLabel();
-            }
-            if (
-                InputSourceManager._getCurrentWindow() &&
-                IBusManager._panelService
-            ) {
-                this._inputIndicatorLabel.text = this._getInputLabel();
-                this._justSwitchedWindow = true;
+            if (this._destroyed || !this._inputIndicatorLabel) return;
+            this._syncPanelService();
+            this._panelWatcher?.sync();
+            this._inputIndicatorLabel.text = _getCurrentInputLabel();
+            const currentWindow = this._syncCurrentWindowState();
+            if (currentWindow) {
                 this._updateVisibility(true);
+            } else {
+                this._clearToggleProtection();
+                this._pendingCandidateToggle = false;
+                this._closeIndicator();
             }
-        }
-
-        _getInputLabel() {
-            const labels = InputSourceIndicator._indicatorLabels;
-            return labels[InputSourceManager.currentSource.index].get_text();
         }
 
         /* Settings */
         // Indicate only when switching input source
         set inputindtog(inputindtog) {
             this.onlyOnToggle = inputindtog;
+            if (inputindtog) this._clearSource('_showDelayId');
         }
 
         // Indicate only when using ASCII mode
         set inputindASCII(inputindASCII) {
             this.onlyASCII = inputindASCII;
+            if (!this._destroyed && !this._isInputLabelAllowed())
+                this._updateVisibility();
         }
 
         // Don't indicate when using single mode IME
         set inputindsingle(inputindsingle) {
             this.ignoreSingleModeIME = inputindsingle;
+            if (!this._destroyed && !this._isInputLabelAllowed())
+                this._updateVisibility();
+        }
+
+        _updateReactive() {
+            if (this._destroyed) return;
+            this.reactive = Boolean(
+                this._buttonRightPressID ||
+                this.use_scroll ||
+                this.enableLeftClick
+            );
         }
 
         // Enable right click to close indicator
         set inputindrigc(inputindrigc) {
+            if (this._buttonRightPressID)
+                (this.disconnect(this._buttonRightPressID),
+                    (this._buttonRightPressID = 0));
             if (inputindrigc) {
-                this.reactive = true;
                 this._buttonRightPressID = this.connect(
                     'button-press-event',
-                    (actor, event) => {
-                        const rightButtonNum = _isWaylandCompositor() ? 2 : 3;
-                        if (_eventHasButton(event, rightButtonNum)) {
-                            this.close(
+                    (_actor, event) => {
+                        if (_eventHasButton(event, SECONDARY_BUTTON)) {
+                            this._clearToggleProtection();
+                            this._pendingCandidateToggle = false;
+                            this._clearSource('_candidateHideIdleID');
+                            this._closeIndicator(
                                 BoxPointer.PopupAnimation[this.animation]
                             );
                         }
                     }
                 );
-            } else {
-                if (this._buttonRightPressID)
-                    (this.disconnect(this._buttonRightPressID),
-                        (this._buttonRightPressID = 0));
             }
+            this._updateReactive();
         }
 
         // Enable scroll to switch input source
         set inputindscroll(inputindscroll) {
             this.use_scroll = inputindscroll;
+            if (this._scrollController)
+                this._scrollController.enabled = Boolean(inputindscroll);
+            this._updateReactive();
         }
 
         vfunc_scroll_event(event) {
-            if (this.use_scroll)
+            if (!this._scrollController && this.use_scroll)
                 switch (event.get_scroll_direction()) {
                     case Clutter.ScrollDirection.UP:
                     case Clutter.ScrollDirection.DOWN:
-                        IBusManager.activateProperty(
-                            INPUTMODE,
-                            IBus.PropState.CHECKED
-                        );
+                        _activateInputMode();
                         break;
                 }
             return Clutter.EVENT_PROPAGATE;
@@ -1835,107 +2614,111 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 } else {
                     this._use_move();
                 }
+            this._updateReactive();
         }
 
         _use_switch() {
-            this.reactive = true;
             this._buttonPressID = this.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (_eventHasButton(event, 1)) {
-                        IBusManager.activateProperty(
-                            INPUTMODE,
-                            IBus.PropState.CHECKED
-                        );
-                    }
+                    if (_eventHasButton(event, PRIMARY_BUTTON))
+                        _activateInputMode();
                 }
             );
         }
 
         _use_move() {
-            this.reactive = true;
             this._buttonPressID = this.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (_eventHasButton(event, 1)) {
-                        let [boxX, boxY] = this._dummyCursor.get_position();
-                        let [mouseX, mouseY] = event.get_coords();
-                        this._relativePosX = mouseX - boxX;
-                        this._relativePosY = mouseY - boxY;
-                        _setGlobalCursor('MOVE');
-                        this._location_handler = GLib.timeout_add(
-                            GLib.PRIORITY_DEFAULT,
-                            10,
-                            this._updatePos.bind(this)
-                        );
-                    }
+                    if (
+                        this._destroyed ||
+                        !this._dummyCursor ||
+                        !_eventHasButton(event, PRIMARY_BUTTON)
+                    )
+                        return;
+                    let [boxX, boxY] = this._dummyCursor.get_position();
+                    let [mouseX, mouseY] = event.get_coords();
+                    if (![boxX, boxY, mouseX, mouseY].every(Number.isFinite))
+                        return;
+                    this._stopDrag();
+                    this._relativePosX = mouseX - boxX;
+                    this._relativePosY = mouseY - boxY;
+                    this._dragging = true;
+                    _setGlobalCursor('MOVE');
+                    this._location_handler = GLib.timeout_add(
+                        GLib.PRIORITY_DEFAULT,
+                        10,
+                        this._updatePos.bind(this)
+                    );
                 }
             );
             this._sideChangeID = this.connect('arrow-side-changed', () => {
-                let themeNode = this.get_theme_node();
-                let gap = themeNode.get_length('-boxpointer-gap');
-                let padding = themeNode.get_length('-arrow-rise');
-                let [, , , natHeight] = this.get_preferred_size();
-                let sourceTopLeft = 0;
-                let sourceBottomRight = 0;
-                if (this._sourceExtents) {
-                    sourceTopLeft = this._sourceExtents.get_top_left();
-                    sourceBottomRight = this._sourceExtents.get_bottom_right();
-                }
-                switch (this._arrowSide) {
-                    case St.Side.TOP:
-                        this._relativePosY +=
-                            natHeight +
-                            2 * gap -
-                            sourceTopLeft.y +
-                            sourceBottomRight.y +
-                            padding;
-                        break;
-                    case St.Side.BOTTOM:
-                        this._relativePosY -=
-                            natHeight +
-                            2 * gap -
-                            sourceTopLeft.y +
-                            sourceBottomRight.y +
-                            padding;
-                        break;
-                }
-                this._updatePos();
+                if (
+                    this._destroyed ||
+                    !this._dragging ||
+                    !Number.isFinite(this._relativePosX) ||
+                    !Number.isFinite(this._relativePosY)
+                )
+                    return;
+                this._relativePosY += _getArrowFlipOffsetY(this);
+                let [mouseX, mouseY] = global.get_pointer();
+                this._move(mouseX, mouseY);
                 this._border.queue_repaint();
             });
         }
 
-        _move(x, y) {
-            this._dummyCursor.set_position(
-                Math.round(x - this._relativePosX),
-                Math.round(y - this._relativePosY)
+        _stopDrag() {
+            const wasDragging = Boolean(
+                this._dragging || this._location_handler
             );
+            this._dragging = false;
+            if (this._location_handler) {
+                GLib.source_remove(this._location_handler);
+                this._location_handler = 0;
+            }
+            if (wasDragging) _setGlobalCursor('DEFAULT');
+            this._relativePosX = null;
+            this._relativePosY = null;
+        }
+
+        _move(x, y) {
+            if (
+                this._destroyed ||
+                !this._dummyCursor ||
+                !Number.isFinite(this._relativePosX) ||
+                !Number.isFinite(this._relativePosY)
+            )
+                return;
+            const posX = Math.round(x - this._relativePosX);
+            const posY = Math.round(y - this._relativePosY);
+            if (!Number.isFinite(posX) || !Number.isFinite(posY)) return;
+            this._dummyCursor.set_position(posX, posY);
             this.setPosition(this._dummyCursor, 0);
         }
 
         _updatePos() {
+            if (this._destroyed || !this._dummyCursor) {
+                this._location_handler = 0;
+                this._stopDrag();
+                return GLib.SOURCE_REMOVE;
+            }
             let [mouse_x, mouse_y, mask] = global.get_pointer();
             this._move(mouse_x, mouse_y);
             mask &= Clutter.ModifierType.BUTTON1_MASK;
             if (mask) return GLib.SOURCE_CONTINUE;
-            this._location_handler = null;
-            _setGlobalCursor('DEFAULT');
+            this._location_handler = 0;
+            this._stopDrag();
             return GLib.SOURCE_REMOVE;
         }
 
         _destroy_lclick() {
+            this._stopDrag();
             if (this._buttonPressID)
                 (this.disconnect(this._buttonPressID),
                     (this._buttonPressID = 0));
             if (this._sideChangeID)
                 (this.disconnect(this._sideChangeID), (this._sideChangeID = 0));
-            if (this._location_handler) {
-                _setGlobalCursor('DEFAULT');
-                (GLib.source_remove(this._location_handler),
-                    (this._location_handler = 0));
-            }
-            this._relativePosX = null;
-            this._relativePosY = null;
         }
 
         // Indicator Opacity
@@ -1950,6 +2733,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
         }
 
         _update_opacity() {
+            if (this._destroyed) return;
             if (this._themeContextChangedID)
                 (this._themeContext.disconnect(this._themeContextChangedID),
                     (this._themeContextChangedID = 0));
@@ -1992,25 +2776,49 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
                 this.opacity_style = '';
                 this.set_style(this.opacity_style + this.font_style);
+                this._themeContext = null;
             }
         }
 
         // Enable indicator show delay
         set useindshowd(useindshowd) {
             this.enableShowDelay = useindshowd;
+            if (!useindshowd) {
+                const hadShowDelay = Boolean(this._showDelayId);
+                this._clearSource('_showDelayId');
+                if (hadShowDelay && !this._destroyed) this._updateVisibility();
+            }
         }
 
         set inputindshow(inputindshow) {
             this.showTime = inputindshow;
+            if (this._showDelayId && !this._destroyed) this._updateVisibility();
         }
 
         // Enable indicator auto-hide timeout
         set useindautohid(useindautohid) {
             this.enableAutoHide = useindautohid;
+            if (!useindautohid) {
+                this._clearSource('_autoHideId');
+            } else if (
+                !this._destroyed &&
+                this.visible &&
+                !this._isClosing &&
+                !this._autoHideId
+            ) {
+                this._scheduleAutoHide();
+            }
         }
 
         set inputindhid(inputindhid) {
             this.hideTime = inputindhid;
+            if (
+                this._autoHideId &&
+                !this._destroyed &&
+                this.visible &&
+                !this._isClosing
+            )
+                this._scheduleAutoHide();
         }
 
         _bindSettings() {
@@ -2113,58 +2921,94 @@ const IBusInputSourceIndicator = GObject.registerClass(
         }
 
         _destroy_indicator() {
-            this.close(BoxPointer.PopupAnimation[this.animation]);
             this._destroy_lclick();
-            if (this._buttonRightPressID)
-                (this.disconnect(this._buttonRightPressID),
-                    (this._buttonRightPressID = 0));
-            if (this._setCursorLocationID)
-                (this._panelService.disconnect(this._setCursorLocationID),
-                    (this._setCursorLocationID = 0));
-            if (this._setCursorLocationRelativeID)
-                (this._panelService.disconnect(
-                    this._setCursorLocationRelativeID
-                ),
-                    (this._setCursorLocationRelativeID = 0));
-            if (this._focusOutID)
-                (this._panelService.disconnect(this._focusOutID),
-                    (this._focusOutID = 0));
-            if (this._updatePropertyID)
-                (this._panelService.disconnect(this._updatePropertyID),
-                    (this._updatePropertyID = 0));
-            if (this._registerPropertyID)
-                (this._panelService.disconnect(this._registerPropertyID),
-                    (this._registerPropertyID = 0));
-            if (this._currentSourceChangedID)
-                (InputSourceManager.disconnect(this._currentSourceChangedID),
-                    (this._currentSourceChangedID = 0));
-            if (this._lastTimeOut) {
-                GLib.source_remove(this._lastTimeOut);
-                this._lastTimeOut = null;
+            if (this._scrollController) {
+                if (this._scrollControllerID) {
+                    this._scrollController.disconnect(this._scrollControllerID);
+                    this._scrollControllerID = 0;
+                }
+                if (this._scrollController.get_actor?.() === this)
+                    this.remove_action(this._scrollController);
+                this._scrollController = null;
             }
-            if (this._lastTimeIn) {
-                GLib.source_remove(this._lastTimeIn);
-                this._lastTimeIn = null;
+            if (this._hideSignalID) {
+                this.disconnect(this._hideSignalID);
+                this._hideSignalID = 0;
+            }
+            if (this._candidateVisibleChangedID && CandidatePopup) {
+                CandidatePopup.disconnect(this._candidateVisibleChangedID);
+                this._candidateVisibleChangedID = 0;
+            }
+            if (this._buttonRightPressID) {
+                this.disconnect(this._buttonRightPressID);
+                this._buttonRightPressID = 0;
+            }
+            if (this._themeContextChangedID && this._themeContext) {
+                this._themeContext.disconnect(this._themeContextChangedID);
+                this._themeContextChangedID = 0;
+            }
+            this._themeContext = null;
+            this._disconnectPanelService();
+            if (this._ibusReadyID) {
+                IBusManager.disconnect(this._ibusReadyID);
+                this._ibusReadyID = 0;
+            }
+            this._panelWatcher?.destroy();
+            this._panelWatcher = null;
+            this._clearSource('_autoHideId');
+            this._clearSource('_showDelayId');
+            this._clearSource('_relayoutIdleID');
+            this._clearPendingFocusState(false);
+        }
+
+        _onDestroy(fromDestroySignal = false) {
+            if (this._destroyed) return;
+            // BoxPointer versions without the upstream notify::mapped / destroy
+            // unredirect fixes rely on notify::visible, which is frozen during
+            // Clutter actor disposal.
+            if (!fromDestroySignal && this.visible)
+                this._closeIndicator(BoxPointer.PopupAnimation.NONE);
+            else if (
+                fromDestroySignal &&
+                this.visible &&
+                !this._hasBaseDestroyHandler
+            )
+                global.compositor?.enable_unredirect?.();
+            this._destroyed = true;
+            if (fromDestroySignal) {
+                this._destroySignalID = 0;
+            } else if (this._destroySignalID) {
+                this.disconnect(this._destroySignalID);
+                this._destroySignalID = 0;
+            }
+            if (this._onWindowChangedID) {
+                global.display.disconnect(this._onWindowChangedID);
+                this._onWindowChangedID = 0;
+            }
+            if (this._overviewShowingID) {
+                Main.overview.disconnect(this._overviewShowingID);
+                this._overviewShowingID = 0;
+            }
+            if (this._overviewHiddenID) {
+                Main.overview.disconnect(this._overviewHiddenID);
+                this._overviewHiddenID = 0;
+            }
+            this._destroy_indicator();
+            // _dummyCursor is parented to inputPanelGroup or uiGroup rather than
+            // to this actor, so it has to be destroyed explicitly unless the
+            // parent container has already destroyed it.
+            if (this._dummyCursor) {
+                const dummyCursor = this._dummyCursor;
+                this._dummyCursor = null;
+                dummyCursor.destroy();
             }
         }
 
         destroy() {
-            if (this._onWindowChangedID)
-                (global.display.disconnect(this._onWindowChangedID),
-                    (this._onWindowChangedID = 0));
-            if (this._overviewShowingID)
-                (Main.overview.disconnect(this._overviewShowingID),
-                    (this._overviewShowingID = 0));
-            if (this._overviewHiddenID)
-                (Main.overview.disconnect(this._overviewHiddenID),
-                    (this._overviewHiddenID = 0));
-            this._destroy_indicator();
-            // _dummyCursor is parented to uiGroup rather than to this actor,
-            // so it has to be destroyed explicitly.
-            if (this._dummyCursor)
-                (this._dummyCursor.destroy(), (this._dummyCursor = null));
-            // Drops the indicator from the top chrome; children such as
-            // _inputIndicatorLabel are destroyed along with it.
+            if (this._destroyed) return;
+            this._onDestroy(false);
+            // Destroying the actor removes it from its parent container
+            // (inputPanelGroup or uiGroup chrome) and its child label.
             super.destroy();
         }
     }
@@ -2761,6 +3605,12 @@ const Extensions = GObject.registerClass(
     class _Extensions extends GObject.Object {
         constructor() {
             super();
+            this._usetray = true;
+            this._menuStates = {};
+            this._panelIndicator = null;
+            this._panelWatcher = _watchPanelIndicator(indicator =>
+                this._onPanelIndicatorChanged(indicator)
+            );
             this._bindSettings();
         }
 
@@ -3179,24 +4029,74 @@ const Extensions = GObject.registerClass(
 
         // Show IBus tray icon
         set usetray(usetray) {
-            InputSourceIndicator.container.visible = usetray;
+            this._usetray = usetray;
+            const indicator =
+                this._panelWatcher?.sync() ?? _getInputSourceIndicator();
+            if (indicator?.container) indicator.container.visible = usetray;
+        }
+
+        _getMenuItemSpecs() {
+            return [
+                ['_menuibusemoji', _('Copy Emoji'), this._MenuIBusEmoji],
+                ['_menuextpref', _('Customize IBus'), this._MenuExtPref],
+                ['_menuibuspref', _('IBus Preferences'), this._menuIBusPref],
+                ['_menuibusver', _('IBus Version'), this._MenuIBusVer],
+                ['_menuibusrest', _('Restart'), this._MenuIBusRest],
+                ['_menuibusexit', _('Quit'), this._MenuIBusExit],
+            ];
+        }
+
+        _destroyMenuItem(prop) {
+            const item = this[prop];
+            if (!item) return;
+            delete this[prop];
+            item.destroy?.();
+        }
+
+        _clearMenuItems() {
+            for (const [prop] of this._getMenuItemSpecs())
+                this._destroyMenuItem(prop);
+        }
+
+        _createMenuItem(indicator, prop, label, handler) {
+            if (this[prop] || !indicator?.menu) return;
+            const item = indicator.menu.addAction(label, handler);
+            if (!item) return;
+            this[prop] = item;
+            item.connect?.('destroy', () => {
+                if (this[prop] === item) delete this[prop];
+            });
+        }
+
+        _onPanelIndicatorChanged(indicator) {
+            if (indicator === this._panelIndicator) return;
+            this._clearMenuItems();
+            this._panelIndicator = indicator ?? null;
+            if (!indicator) return;
+            if (indicator.container)
+                indicator.container.visible = this._usetray;
+            for (const [prop, label, handler] of this._getMenuItemSpecs()) {
+                if (this._menuStates[prop])
+                    this._createMenuItem(indicator, prop, label, handler);
+            }
+        }
+
+        _updateMenuItem(prop, enabled) {
+            this._menuStates[prop] = Boolean(enabled);
+            if (!enabled) {
+                this._destroyMenuItem(prop);
+                return;
+            }
+            const indicator =
+                this._panelWatcher?.sync() ?? _getInputSourceIndicator();
+            const spec = this._getMenuItemSpecs().find(([key]) => key === prop);
+            if (indicator && spec) this._createMenuItem(indicator, ...spec);
         }
 
         // Add Additional Menu Entries
         // Copying Emoji
         set menuibusemoji(menuibusemoji) {
-            if (menuibusemoji) {
-                if (this._menuibusemoji) return;
-                this._menuibusemoji = InputSourceIndicator.menu.addAction(
-                    _('Copy Emoji'),
-                    this._MenuIBusEmoji.bind(InputSourceIndicator)
-                );
-                this._menuibusemoji.visible = true;
-            } else {
-                if (!this._menuibusemoji) return;
-                this._menuibusemoji.visible = false;
-                delete this._menuibusemoji;
-            }
+            this._updateMenuItem('_menuibusemoji', menuibusemoji);
         }
 
         _MenuIBusEmoji() {
@@ -3206,18 +4106,7 @@ const Extensions = GObject.registerClass(
 
         // This Extension's Preferences
         set menuextpref(menuextpref) {
-            if (menuextpref) {
-                if (this._menuextpref) return;
-                this._menuextpref = InputSourceIndicator.menu.addAction(
-                    _('Customize IBus'),
-                    this._MenuExtPref.bind(InputSourceIndicator)
-                );
-                this._menuextpref.visible = true;
-            } else {
-                if (!this._menuextpref) return;
-                this._menuextpref.visible = false;
-                delete this._menuextpref;
-            }
+            this._updateMenuItem('_menuextpref', menuextpref);
         }
 
         _MenuExtPref() {
@@ -3227,18 +4116,7 @@ const Extensions = GObject.registerClass(
 
         // IBus Preferences
         set menuibuspref(menuibuspref) {
-            if (menuibuspref) {
-                if (this._menuibuspref) return;
-                this._menuibuspref = InputSourceIndicator.menu.addAction(
-                    _('IBus Preferences'),
-                    this._menuIBusPref.bind(InputSourceIndicator)
-                );
-                this._menuibuspref.visible = true;
-            } else {
-                if (!this._menuibuspref) return;
-                this._menuibuspref.visible = false;
-                delete this._menuibuspref;
-            }
+            this._updateMenuItem('_menuibuspref', menuibuspref);
         }
 
         _menuIBusPref() {
@@ -3248,18 +4126,7 @@ const Extensions = GObject.registerClass(
 
         // IBus Version
         set menuibusver(menuibusver) {
-            if (menuibusver) {
-                if (this._menuibusver) return;
-                this._menuibusver = InputSourceIndicator.menu.addAction(
-                    _('IBus Version'),
-                    this._MenuIBusVer.bind(InputSourceIndicator)
-                );
-                this._menuibusver.visible = true;
-            } else {
-                if (!this._menuibusver) return;
-                this._menuibusver.visible = false;
-                delete this._menuibusver;
-            }
+            this._updateMenuItem('_menuibusver', menuibusver);
         }
 
         _MenuIBusVer() {
@@ -3287,18 +4154,7 @@ const Extensions = GObject.registerClass(
 
         // Restarting IBus
         set menuibusrest(menuibusrest) {
-            if (menuibusrest) {
-                if (this._menuibusrest) return;
-                this._menuibusrest = InputSourceIndicator.menu.addAction(
-                    _('Restart'),
-                    this._MenuIBusRest.bind(InputSourceIndicator)
-                );
-                this._menuibusrest.visible = true;
-            } else {
-                if (!this._menuibusrest) return;
-                this._menuibusrest.visible = false;
-                delete this._menuibusrest;
-            }
+            this._updateMenuItem('_menuibusrest', menuibusrest);
         }
 
         _MenuIBusRest() {
@@ -3335,18 +4191,7 @@ const Extensions = GObject.registerClass(
 
         // Exiting IBus
         set menuibusexit(menuibusexit) {
-            if (menuibusexit) {
-                if (this._menuibusexit) return;
-                this._menuibusexit = InputSourceIndicator.menu.addAction(
-                    _('Quit'),
-                    this._MenuIBusExit.bind(InputSourceIndicator)
-                );
-                this._menuibusexit.visible = true;
-            } else {
-                if (!this._menuibusexit) return;
-                this._menuibusexit.visible = false;
-                delete this._menuibusexit;
-            }
+            this._updateMenuItem('_menuibusexit', menuibusexit);
         }
 
         _MenuIBusExit() {
@@ -3367,6 +4212,8 @@ const Extensions = GObject.registerClass(
         }
 
         destroy() {
+            this._panelWatcher?.destroy();
+            this._panelWatcher = null;
             this.bg = false;
             this.bgdark = false;
             this.font = false;
@@ -3391,6 +4238,8 @@ const Extensions = GObject.registerClass(
             this.menuibusver = false;
             this.menuibusrest = false;
             this.menuibusexit = false;
+            this._clearMenuItems();
+            this._panelIndicator = null;
             this._not_extension_first_start = false;
             if (this._useFontChangeID)
                 (IBusSettings.disconnect(this._useFontChangeID),
@@ -3422,6 +4271,9 @@ export default class CustomizeIBusExtension extends Extension {
         for (let i in InputSourceManager.inputSources) {
             IgnoreModes.push(InputSourceManager.inputSources[i].shortName);
         }
+        const keyboardManager = InputSourceManager?.keyboardManager;
+        if (keyboardManager?.isExternal?.() && keyboardManager.shortName)
+            IgnoreModes.push(keyboardManager.shortName);
     }
 
     /**
@@ -3451,6 +4303,10 @@ export default class CustomizeIBusExtension extends Extension {
             'sources-changed',
             this.updateIgnoreModes.bind(this)
         );
+        this._keymapIgnoreModesID = InputSourceManager.connect(
+            'keymap-changed',
+            this.updateIgnoreModes.bind(this)
+        );
         this._ext = new Extensions();
     }
 
@@ -3469,6 +4325,9 @@ export default class CustomizeIBusExtension extends Extension {
         if (this._updateIgnoreModesID)
             (InputSourceManager.disconnect(this._updateIgnoreModesID),
                 (this._updateIgnoreModesID = 0));
+        if (this._keymapIgnoreModesID)
+            (InputSourceManager.disconnect(this._keymapIgnoreModesID),
+                (this._keymapIgnoreModesID = 0));
         IBusSettings = null;
         gsettings = null;
         ngsettings = null;
