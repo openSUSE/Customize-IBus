@@ -10,6 +10,7 @@ import GObject from 'gi://GObject';
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import Meta from 'gi://Meta';
+import Mtk from 'gi://Mtk';
 import Shell from 'gi://Shell';
 import IBus from 'gi://IBus';
 import Pango from 'gi://Pango';
@@ -1610,6 +1611,8 @@ const IBusTrayClickSwitch = GObject.registerClass(
 );
 
 /* Indicator */
+const MAX_RELAYOUT_ATTEMPTS = 3;
+
 const IBusInputSourceIndicator = GObject.registerClass(
     {
         Properties: {
@@ -1741,29 +1744,63 @@ const IBusInputSourceIndicator = GObject.registerClass(
         /* Main */
         constructor() {
             super(St.Side.TOP);
+            // BoxPointer versions with mapped/destroy unredirect cleanup
+            // (GS 50.6+, 51.1+) connect a base 'destroy' handler before ours.
+            this._hasBaseDestroyHandler =
+                typeof GObject.signal_handler_find === 'function' &&
+                GObject.signal_handler_find(this, {signalId: 'destroy'}) !== 0;
             this.font_style = '';
             this.opacity_style = '';
             this.visible = false;
+            this._justSwitchedWindow = false;
+            this._relayoutIdleID = 0;
+            this._relayoutAttempts = 0;
             this._dragging = false;
             this._location_handler = 0;
             this._relativePosX = null;
             this._relativePosY = null;
+            this._destroyed = false;
             this._hideSignalID = this.connect('hide', () => {
                 this._stopDrag();
+                if (this._relayoutIdleID) {
+                    GLib.source_remove(this._relayoutIdleID);
+                    this._relayoutIdleID = 0;
+                }
+                this._relayoutAttempts = 0;
             });
-            this._justSwitchedWindow = false;
+            this._destroySignalID = this.connect('destroy', () => {
+                this._onDestroy(true);
+            });
             this.style_class = 'candidate-popup-boxpointer';
+            const rawInputPanelGroup =
+                global.compositor?.get_input_panel_group instanceof Function
+                    ? global.compositor.get_input_panel_group()
+                    : null;
+            const inputPanelGroup = rawInputPanelGroup?.get_parent?.()
+                ? rawInputPanelGroup
+                : null;
             this._dummyCursor = new Clutter.Actor({opacity: 0});
-            Main.layoutManager.uiGroup.add_child(this._dummyCursor);
-            Main.layoutManager.addTopChrome(this);
+            this._dummyCursor.connect('destroy', () => {
+                this._dummyCursor = null;
+            });
+            if (inputPanelGroup) {
+                inputPanelGroup.add_child(this._dummyCursor);
+                inputPanelGroup.add_child(this);
+            } else {
+                Main.layoutManager.uiGroup.add_child(this._dummyCursor);
+                Main.layoutManager.addTopChrome(this);
+            }
             let box = new St.BoxLayout({
                 style_class: 'candidate-popup-content',
-                vertical: true,
+                orientation: Clutter.Orientation.VERTICAL,
             });
             this.bin.set_child(box);
             this._inputIndicatorLabel = new St.Label({
                 style_class: 'candidate-popup-text',
                 visible: true,
+            });
+            this._inputIndicatorLabel.connect('destroy', () => {
+                this._inputIndicatorLabel = null;
             });
             box.add_child(this._inputIndicatorLabel);
 
@@ -1771,6 +1808,22 @@ const IBusInputSourceIndicator = GObject.registerClass(
             let candidate_child = this.bin.get_children();
             for (let i in candidate_child) {
                 this._child_opacity.push(candidate_child[i].get_opacity());
+            }
+
+            if (Clutter.ScrollController) {
+                this._scrollController = new Clutter.ScrollController({
+                    flags:
+                        Clutter.ScrollControllerFlags.DISCRETE |
+                        Clutter.ScrollControllerFlags.SCROLL_VERTICAL,
+                });
+                this._scrollControllerID = this._scrollController.connect(
+                    'scroll',
+                    (_controller, _sprite, _source, _dx, dy) => {
+                        if (!this._destroyed && this.use_scroll && dy !== 0)
+                            _activateInputMode();
+                    }
+                );
+                this.add_action(this._scrollController);
             }
 
             this._bindSettings();
@@ -1797,21 +1850,56 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._setCursorLocationID = panelService.connect(
                 'set-cursor-location',
                 (ps, x, y, w, h) => {
-                    this._setDummyCursorGeometry(x, y, w, h);
+                    if (this._destroyed || !this._dummyCursor) return;
+                    const focusWindow = global.display.focus_window;
+                    let rect = new Mtk.Rectangle({x, y, width: w, height: h});
+                    if (
+                        !global.stage.key_focus &&
+                        focusWindow?.protocol_to_stage_rect instanceof Function
+                    )
+                        rect = focusWindow.protocol_to_stage_rect(rect);
+                    this._setDummyCursorGeometry(
+                        rect.x,
+                        rect.y,
+                        rect.width,
+                        rect.height
+                    );
                 }
             );
             try {
                 this._setCursorLocationRelativeID = panelService.connect(
                     'set-cursor-location-relative',
                     (ps, x, y, w, h) => {
-                        if (!global.display.focus_window) return;
-                        let window =
-                            global.display.focus_window.get_compositor_private();
+                        if (this._destroyed || !this._dummyCursor) return;
+                        const focusWindow = global.display.focus_window;
+                        if (!focusWindow) return;
+                        const windowActor =
+                            focusWindow.get_compositor_private();
+                        if (!windowActor) return;
+                        let rect = new Mtk.Rectangle({
+                            x,
+                            y,
+                            width: w,
+                            height: h,
+                        });
+                        if (
+                            focusWindow.protocol_to_stage_rect instanceof
+                            Function
+                        )
+                            rect = focusWindow.protocol_to_stage_rect(rect);
+                        const rawScale =
+                            windowActor.get_resource_scale instanceof Function
+                                ? windowActor.get_resource_scale()
+                                : 1;
+                        const scale =
+                            Number.isFinite(rawScale) && rawScale > 0
+                                ? rawScale
+                                : 1;
                         this._setDummyCursorGeometry(
-                            window.x + x,
-                            window.y + y,
-                            w,
-                            h
+                            windowActor.x + rect.x / scale,
+                            windowActor.y + rect.y / scale,
+                            rect.width / scale,
+                            rect.height / scale
                         );
                     }
                 );
@@ -1858,14 +1946,76 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._updateVisibility();
         }
 
+        _scheduleRelayout() {
+            if (
+                this._destroyed ||
+                this._relayoutIdleID ||
+                this._relayoutAttempts >= MAX_RELAYOUT_ATTEMPTS
+            )
+                return;
+            this._relayoutAttempts++;
+            this._relayoutIdleID = GLib.idle_add(
+                GLib.PRIORITY_DEFAULT_IDLE,
+                () => {
+                    this._relayoutIdleID = 0;
+                    if (!this._destroyed && this.visible) this.queue_relayout();
+                    return GLib.SOURCE_REMOVE;
+                }
+            );
+        }
+
+        vfunc_allocate(box) {
+            if (this._sourceActor?.mapped) {
+                const extents = this._sourceActor.get_transformed_extents();
+                const hasFiniteExtents =
+                    extents &&
+                    [
+                        extents.origin.x,
+                        extents.origin.y,
+                        extents.size.width,
+                        extents.size.height,
+                    ].every(Number.isFinite);
+                if (!hasFiniteExtents) {
+                    // Stage projection may be uninitialized on the first
+                    // allocation frame, yielding NaN source extents; skip
+                    // _reposition on this pass rather than passing NaN boxes.
+                    const sourceActor = this._sourceActor;
+                    this._sourceActor = null;
+                    try {
+                        super.vfunc_allocate(box);
+                    } finally {
+                        this._sourceActor = sourceActor;
+                    }
+                    this._scheduleRelayout();
+                    return;
+                }
+                this._relayoutAttempts = 0;
+            }
+            super.vfunc_allocate(box);
+        }
+
         _showIndicator() {
+            this._relayoutAttempts = 0;
+            if (this._relayoutIdleID) {
+                GLib.source_remove(this._relayoutIdleID);
+                this._relayoutIdleID = 0;
+            }
             this.open(BoxPointer.PopupAnimation[this.animation]);
-            // We shouldn't be above some components like the screenshot UI,
-            // so don't raise to the top.
-            // The on-screen keyboard is expected to be above any entries,
-            // so just above the keyboard gets us to the right layer.
+            // Keep dummyCursor ahead of the indicator immediately above the
+            // on-screen keyboard when they share the same container, so
+            // ClutterFixedLayout allocates the cursor anchor before the popup
+            // while staying below screenshot UI in GS 48-50.
             const {keyboardBox} = Main.layoutManager;
-            this.get_parent().set_child_above_sibling(this, keyboardBox);
+            const parent = this.get_parent();
+            if (
+                parent &&
+                keyboardBox &&
+                keyboardBox.get_parent() === parent &&
+                this._dummyCursor?.get_parent() === parent
+            ) {
+                parent.set_child_above_sibling(this._dummyCursor, keyboardBox);
+                parent.set_child_above_sibling(this, this._dummyCursor);
+            }
             if (this.enableAutoHide)
                 this._lastTimeOut = GLib.timeout_add_seconds(
                     GLib.PRIORITY_DEFAULT,
@@ -1962,13 +2112,24 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this.ignoreSingleModeIME = inputindsingle;
         }
 
+        _updateReactive() {
+            if (this._destroyed) return;
+            this.reactive = Boolean(
+                this._buttonRightPressID ||
+                this.use_scroll ||
+                this.enableLeftClick
+            );
+        }
+
         // Enable right click to close indicator
         set inputindrigc(inputindrigc) {
+            if (this._buttonRightPressID)
+                (this.disconnect(this._buttonRightPressID),
+                    (this._buttonRightPressID = 0));
             if (inputindrigc) {
-                this.reactive = true;
                 this._buttonRightPressID = this.connect(
                     'button-press-event',
-                    (actor, event) => {
+                    (_actor, event) => {
                         if (_eventHasButton(event, SECONDARY_BUTTON)) {
                             this.close(
                                 BoxPointer.PopupAnimation[this.animation]
@@ -1976,27 +2137,24 @@ const IBusInputSourceIndicator = GObject.registerClass(
                         }
                     }
                 );
-            } else {
-                if (this._buttonRightPressID)
-                    (this.disconnect(this._buttonRightPressID),
-                        (this._buttonRightPressID = 0));
             }
+            this._updateReactive();
         }
 
         // Enable scroll to switch input source
         set inputindscroll(inputindscroll) {
             this.use_scroll = inputindscroll;
+            if (this._scrollController)
+                this._scrollController.enabled = Boolean(inputindscroll);
+            this._updateReactive();
         }
 
         vfunc_scroll_event(event) {
-            if (this.use_scroll)
+            if (!this._scrollController && this.use_scroll)
                 switch (event.get_scroll_direction()) {
                     case Clutter.ScrollDirection.UP:
                     case Clutter.ScrollDirection.DOWN:
-                        IBusManager.activateProperty(
-                            INPUTMODE,
-                            IBus.PropState.CHECKED
-                        );
+                        _activateInputMode();
                         break;
                 }
             return Clutter.EVENT_PROPAGATE;
@@ -2062,29 +2220,25 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 } else {
                     this._use_move();
                 }
+            this._updateReactive();
         }
 
         _use_switch() {
-            this.reactive = true;
             this._buttonPressID = this.connect(
                 'button-press-event',
                 (actor, event) => {
-                    if (_eventHasButton(event, PRIMARY_BUTTON)) {
-                        IBusManager.activateProperty(
-                            INPUTMODE,
-                            IBus.PropState.CHECKED
-                        );
-                    }
+                    if (_eventHasButton(event, PRIMARY_BUTTON))
+                        _activateInputMode();
                 }
             );
         }
 
         _use_move() {
-            this.reactive = true;
             this._buttonPressID = this.connect(
                 'button-press-event',
                 (actor, event) => {
                     if (
+                        this._destroyed ||
                         !this._dummyCursor ||
                         !_eventHasButton(event, PRIMARY_BUTTON)
                     )
@@ -2107,6 +2261,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             );
             this._sideChangeID = this.connect('arrow-side-changed', () => {
                 if (
+                    this._destroyed ||
                     !this._dragging ||
                     !Number.isFinite(this._relativePosX) ||
                     !Number.isFinite(this._relativePosY)
@@ -2135,6 +2290,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
         _move(x, y) {
             if (
+                this._destroyed ||
                 !this._dummyCursor ||
                 !Number.isFinite(this._relativePosX) ||
                 !Number.isFinite(this._relativePosY)
@@ -2148,7 +2304,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
         }
 
         _updatePos() {
-            if (!this._dummyCursor) {
+            if (this._destroyed || !this._dummyCursor) {
                 this._location_handler = 0;
                 this._stopDrag();
                 return GLib.SOURCE_REMOVE;
@@ -2183,6 +2339,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
         }
 
         _update_opacity() {
+            if (this._destroyed) return;
             if (this._themeContextChangedID)
                 (this._themeContext.disconnect(this._themeContextChangedID),
                     (this._themeContextChangedID = 0));
@@ -2225,6 +2382,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
 
                 this.opacity_style = '';
                 this.set_style(this.opacity_style + this.font_style);
+                this._themeContext = null;
             }
         }
 
@@ -2346,8 +2504,16 @@ const IBusInputSourceIndicator = GObject.registerClass(
         }
 
         _destroy_indicator() {
-            this.close(BoxPointer.PopupAnimation[this.animation]);
             this._destroy_lclick();
+            if (this._scrollController) {
+                if (this._scrollControllerID) {
+                    this._scrollController.disconnect(this._scrollControllerID);
+                    this._scrollControllerID = 0;
+                }
+                if (this._scrollController.get_actor?.() === this)
+                    this.remove_action(this._scrollController);
+                this._scrollController = null;
+            }
             if (this._hideSignalID) {
                 this.disconnect(this._hideSignalID);
                 this._hideSignalID = 0;
@@ -2355,26 +2521,29 @@ const IBusInputSourceIndicator = GObject.registerClass(
             if (this._buttonRightPressID)
                 (this.disconnect(this._buttonRightPressID),
                     (this._buttonRightPressID = 0));
-            if (this._setCursorLocationID)
-                (this._panelService.disconnect(this._setCursorLocationID),
-                    (this._setCursorLocationID = 0));
-            if (this._setCursorLocationRelativeID)
-                (this._panelService.disconnect(
-                    this._setCursorLocationRelativeID
-                ),
-                    (this._setCursorLocationRelativeID = 0));
-            if (this._focusOutID)
-                (this._panelService.disconnect(this._focusOutID),
-                    (this._focusOutID = 0));
-            if (this._updatePropertyID)
-                (this._panelService.disconnect(this._updatePropertyID),
-                    (this._updatePropertyID = 0));
-            if (this._registerPropertyID)
-                (this._panelService.disconnect(this._registerPropertyID),
-                    (this._registerPropertyID = 0));
+            if (this._themeContextChangedID && this._themeContext) {
+                this._themeContext.disconnect(this._themeContextChangedID);
+                this._themeContextChangedID = 0;
+            }
+            this._themeContext = null;
+            for (const prop of [
+                '_setCursorLocationID',
+                '_setCursorLocationRelativeID',
+                '_focusOutID',
+                '_updatePropertyID',
+                '_registerPropertyID',
+            ]) {
+                if (this[prop] && this._panelService)
+                    this._panelService.disconnect(this[prop]);
+                this[prop] = 0;
+            }
             if (this._currentSourceChangedID)
                 (InputSourceManager.disconnect(this._currentSourceChangedID),
                     (this._currentSourceChangedID = 0));
+            if (this._relayoutIdleID) {
+                GLib.source_remove(this._relayoutIdleID);
+                this._relayoutIdleID = 0;
+            }
             if (this._lastTimeOut) {
                 GLib.source_remove(this._lastTimeOut);
                 this._lastTimeOut = null;
@@ -2385,7 +2554,26 @@ const IBusInputSourceIndicator = GObject.registerClass(
             }
         }
 
-        destroy() {
+        _onDestroy(fromDestroySignal = false) {
+            if (this._destroyed) return;
+            // BoxPointer versions without the upstream notify::mapped / destroy
+            // unredirect fixes rely on notify::visible, which is frozen during
+            // Clutter actor disposal.
+            if (!fromDestroySignal && this.visible)
+                this.close(BoxPointer.PopupAnimation.NONE);
+            else if (
+                fromDestroySignal &&
+                this.visible &&
+                !this._hasBaseDestroyHandler
+            )
+                global.compositor?.enable_unredirect?.();
+            this._destroyed = true;
+            if (fromDestroySignal) {
+                this._destroySignalID = 0;
+            } else if (this._destroySignalID) {
+                this.disconnect(this._destroySignalID);
+                this._destroySignalID = 0;
+            }
             if (this._onWindowChangedID)
                 (global.display.disconnect(this._onWindowChangedID),
                     (this._onWindowChangedID = 0));
@@ -2396,18 +2584,26 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 (Main.overview.disconnect(this._overviewHiddenID),
                     (this._overviewHiddenID = 0));
             this._destroy_indicator();
-            // _dummyCursor is parented to uiGroup rather than to this actor,
-            // so it has to be destroyed explicitly.
-            if (this._dummyCursor)
-                (this._dummyCursor.destroy(), (this._dummyCursor = null));
-            // Drops the indicator from the top chrome; children such as
-            // _inputIndicatorLabel are destroyed along with it.
+            // _dummyCursor is parented to inputPanelGroup or uiGroup rather than
+            // to this actor, so it has to be destroyed explicitly unless the
+            // parent container has already destroyed it.
+            if (this._dummyCursor) {
+                const dummyCursor = this._dummyCursor;
+                this._dummyCursor = null;
+                dummyCursor.destroy();
+            }
+        }
+
+        destroy() {
+            if (this._destroyed) return;
+            this._onDestroy(false);
+            // Destroying the actor removes it from its parent container
+            // (inputPanelGroup or uiGroup chrome) and its child label.
             super.destroy();
         }
     }
 );
 
-/* Theme */
 const IBusThemeManager = GObject.registerClass(
     {
         Properties: {
