@@ -36,7 +36,6 @@ import * as BoxPointer from 'resource:///org/gnome/shell/ui/boxpointer.js';
 import * as keyboard from 'resource:///org/gnome/shell/ui/status/keyboard.js';
 import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 const InputSourcePopup = keyboard.InputSourcePopup;
-const InputSourceIndicator = Main.panel.statusArea.keyboard;
 import * as IBusManagerImported from 'resource:///org/gnome/shell/misc/ibusManager.js';
 
 let Me = null;
@@ -92,6 +91,162 @@ function _eventHasButton(event, buttonNum) {
     return event?.get_button instanceof Function
         ? event.get_button() === buttonNum
         : false;
+}
+
+function _getInputSourceIndicator() {
+    return Main.panel?.statusArea?.keyboard ?? null;
+}
+
+function _activateInputMode() {
+    if (IBusManager?._panelService)
+        IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
+}
+
+function _isValidInputModeText(text, indicator) {
+    if (!text) return false;
+    const count =
+        indicator?._getGraphemeClusters instanceof Function
+            ? indicator._getGraphemeClusters(text).length
+            : text.length;
+    return count > 0 && count < 3;
+}
+
+function _getInputModeFromProperties(props, indicator) {
+    if (typeof props?.get !== 'function') return '';
+    for (let i = 0; ; ++i) {
+        const prop = props.get(i);
+        if (!prop) break;
+        if (!prop.get_visible()) continue;
+        if (prop.get_key() === INPUTMODE) {
+            const text =
+                prop.get_symbol?.()?.get_text?.() ??
+                prop.get_label?.()?.get_text?.() ??
+                '';
+            if (_isValidInputModeText(text, indicator)) return text;
+        }
+        if (prop.get_prop_type() === IBus.PropType.MENU) {
+            const nested = _getInputModeFromProperties(
+                prop.get_sub_props(),
+                indicator
+            );
+            if (nested) return nested;
+        }
+    }
+    return '';
+}
+
+/**
+ * Resolve the active input source indicator text across GNOME Shell 48-51,
+ * accounting for external keyboard layouts, null startup states, and
+ * destroyed panel indicators during teardown.
+ *
+ * @returns {string} Active input source label text, or empty string if unavailable.
+ */
+function _getCurrentInputLabel() {
+    if (InputSourceManager.keyboardManager?.isExternal?.())
+        return InputSourceManager.keyboardManager.shortName ?? '';
+    const source = InputSourceManager.currentSource;
+    if (!source) return '';
+    const indicator = _getInputSourceIndicator();
+    const activeIndicator =
+        indicator &&
+        (!('_inputSourceManager' in indicator) || indicator._inputSourceManager)
+            ? indicator
+            : null;
+    return (
+        _getInputModeFromProperties(source.properties, activeIndicator) ||
+        activeIndicator?._indicatorLabels?.[source.index]?.get_text?.() ||
+        source.shortName ||
+        ''
+    );
+}
+
+function _watchPanelIndicator(
+    onIndicatorChanged,
+    {onCurrentSourceChanged, onKeymapChanged} = {}
+) {
+    let destroyed = false;
+    let currentIndicator = null;
+    let indicatorDestroyID = 0;
+    let syncIdleID = 0;
+
+    function clearIndicatorDestroy() {
+        if (indicatorDestroyID && currentIndicator)
+            currentIndicator.disconnect(indicatorDestroyID);
+        indicatorDestroyID = 0;
+    }
+
+    function scheduleSync() {
+        if (destroyed || syncIdleID) return;
+        syncIdleID = GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+            syncIdleID = 0;
+            if (!destroyed) sync();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    function sync() {
+        if (destroyed) return null;
+        const nextIndicator = _getInputSourceIndicator();
+        if (nextIndicator === currentIndicator) return currentIndicator;
+        clearIndicatorDestroy();
+        currentIndicator = nextIndicator;
+        if (currentIndicator && currentIndicator.connect instanceof Function) {
+            const tracked = currentIndicator;
+            indicatorDestroyID = tracked.connect('destroy', () => {
+                if (destroyed || currentIndicator !== tracked) return;
+                currentIndicator = null;
+                indicatorDestroyID = 0;
+                onIndicatorChanged(null);
+                scheduleSync();
+            });
+        }
+        onIndicatorChanged(currentIndicator);
+        return currentIndicator;
+    }
+
+    const handleEvent = extraHandler => {
+        if (destroyed) return;
+        extraHandler?.();
+        sync();
+        scheduleSync();
+    };
+
+    const sourcesChangedID = InputSourceManager.connect('sources-changed', () =>
+        handleEvent()
+    );
+    const currentSourceChangedID = InputSourceManager.connect(
+        'current-source-changed',
+        () => handleEvent(onCurrentSourceChanged)
+    );
+    const keymapChangedID = InputSourceManager.connect('keymap-changed', () =>
+        handleEvent(onKeymapChanged)
+    );
+    const sessionModeUpdatedID =
+        Main.sessionMode?.connect instanceof Function
+            ? Main.sessionMode.connect('updated', () => handleEvent())
+            : 0;
+
+    sync();
+
+    return {
+        sync,
+        destroy() {
+            if (destroyed) return;
+            destroyed = true;
+            if (syncIdleID) {
+                GLib.source_remove(syncIdleID);
+                syncIdleID = 0;
+            }
+            InputSourceManager.disconnect(sourcesChangedID);
+            InputSourceManager.disconnect(currentSourceChangedID);
+            InputSourceManager.disconnect(keymapChangedID);
+            if (sessionModeUpdatedID && Main.sessionMode)
+                Main.sessionMode.disconnect(sessionModeUpdatedID);
+            clearIndicatorDestroy();
+            currentIndicator = null;
+        },
+    };
 }
 
 /**
@@ -304,16 +459,28 @@ const IBusClickSwitch = GObject.registerClass(
                                         BoxPointer.PopupAnimation.NONE
                                     );
                                 if (this._clickSwitch) {
-                                    IBusManager.activateProperty(
-                                        INPUTMODE,
-                                        IBus.PropState.CHECKED
-                                    );
+                                    _activateInputMode();
                                 } else {
-                                    InputSourceIndicator.menu.open(
-                                        InputSourceIndicator.menu.activeMenu
-                                            ? BoxPointer.PopupAnimation.FADE
-                                            : BoxPointer.PopupAnimation.FULL
+                                    const indicator =
+                                        _getInputSourceIndicator();
+                                    const fadeOnly = Boolean(
+                                        Main.panel.menuManager?.activeMenu
                                     );
+                                    if (
+                                        indicator?.menu
+                                            ?._getPopupAnimationFromParams instanceof
+                                        Function
+                                    ) {
+                                        indicator.menu.open({
+                                            fadeOnly,
+                                        });
+                                    } else if (indicator?.menu) {
+                                        indicator.menu.open(
+                                            fadeOnly
+                                                ? BoxPointer.PopupAnimation.FADE
+                                                : BoxPointer.PopupAnimation.FULL
+                                        );
+                                    }
                                     if (
                                         Main.panel.menuManager
                                             ?.ignoreRelease instanceof Function
@@ -717,11 +884,8 @@ const IBusAutoSwitch = GObject.registerClass(
         }
 
         get _state() {
-            const text =
-                InputSourceIndicator._indicatorLabels[
-                    InputSourceManager.currentSource.index
-                ].get_text();
-            return ASCIIMODES.includes(text);
+            const label = _getCurrentInputLabel();
+            return label ? ASCIIMODES.includes(label) : null;
         }
 
         get _toggle() {
@@ -735,6 +899,7 @@ const IBusAutoSwitch = GObject.registerClass(
                 return false;
             }
             let state = this._state;
+            if (state === null) return false;
             let stateConf;
             if (this._remember) {
                 let store = this._states.get(this._tmpWindow);
@@ -1357,6 +1522,13 @@ const IBusTrayClickSwitch = GObject.registerClass(
     class _IBusTrayClickSwitch extends GObject.Object {
         constructor() {
             super();
+            this._keyNum = PRIMARY_BUTTON;
+            this._connectedIndicator = null;
+            this._clickRecognizeID = 0;
+            this._buttonPressID = 0;
+            this._panelWatcher = _watchPanelIndicator(indicator =>
+                this._connectIndicator(indicator)
+            );
             gsettings.bind(
                 Fields.TRAYSSWITCHKEY,
                 this,
@@ -1366,29 +1538,26 @@ const IBusTrayClickSwitch = GObject.registerClass(
         }
 
         _disconnectClickHandler() {
+            const indicator = this._connectedIndicator;
+            this._connectedIndicator = null;
             if (
                 this._clickRecognizeID &&
-                InputSourceIndicator?._clickGesture?.disconnect instanceof
-                    Function
-            ) {
-                InputSourceIndicator._clickGesture.disconnect(
-                    this._clickRecognizeID
-                );
-                this._clickRecognizeID = 0;
-            }
-            if (this._buttonPressID) {
-                InputSourceIndicator.disconnect(this._buttonPressID);
-                this._buttonPressID = 0;
-            }
+                indicator?._clickGesture?.disconnect instanceof Function
+            )
+                indicator._clickGesture.disconnect(this._clickRecognizeID);
+            this._clickRecognizeID = 0;
+            if (this._buttonPressID && indicator)
+                indicator.disconnect(this._buttonPressID);
+            this._buttonPressID = 0;
         }
 
         _activateInputMode() {
-            IBusManager.activateProperty(INPUTMODE, IBus.PropState.CHECKED);
-            InputSourceIndicator.menu.close();
+            _activateInputMode();
+            _getInputSourceIndicator()?.menu?.close();
         }
 
-        _connectClickGesture(keyNum) {
-            const clickGesture = InputSourceIndicator?._clickGesture;
+        _connectClickGesture(indicator, keyNum) {
+            const clickGesture = indicator?._clickGesture;
             if (!clickGesture || !(clickGesture.connect instanceof Function))
                 return false;
 
@@ -1405,25 +1574,36 @@ const IBusTrayClickSwitch = GObject.registerClass(
             return true;
         }
 
-        set traysswitchkey(traysswitchkey) {
-            const keyNum =
-                traysswitchkey === 0 ? PRIMARY_BUTTON : SECONDARY_BUTTON;
+        _connectIndicator(indicator) {
             this._disconnectClickHandler();
+            if (!indicator) return;
+
+            this._connectedIndicator = indicator;
 
             // GNOME 50+ panel buttons are activated through Clutter.ClickGesture
             // and may not emit button-press-event reliably.
-            if (this._connectClickGesture(keyNum)) return;
+            if (this._connectClickGesture(indicator, this._keyNum)) return;
 
-            this._buttonPressID = InputSourceIndicator.connect(
+            this._buttonPressID = indicator.connect(
                 'button-press-event',
                 (_actor, event) => {
-                    if (_eventHasButton(event, keyNum))
+                    if (_eventHasButton(event, this._keyNum))
                         this._activateInputMode();
                 }
             );
         }
 
+        set traysswitchkey(traysswitchkey) {
+            this._keyNum =
+                traysswitchkey === 0 ? PRIMARY_BUTTON : SECONDARY_BUTTON;
+            const indicator =
+                this._panelWatcher?.sync() ?? _getInputSourceIndicator();
+            this._connectIndicator(indicator);
+        }
+
         destroy() {
+            this._panelWatcher?.destroy();
+            this._panelWatcher = null;
             this._disconnectClickHandler();
         }
     }
@@ -1649,7 +1829,8 @@ const IBusInputSourceIndicator = GObject.registerClass(
                 'update-property',
                 (engineName, prop) => {
                     if (prop.get_key() === INPUTMODE) {
-                        this._inputIndicatorLabel.text = this._getInputLabel();
+                        this._inputIndicatorLabel.text =
+                            _getCurrentInputLabel();
                         this._updateVisibility(true);
                     }
                 }
@@ -1657,7 +1838,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._currentSourceChangedID = InputSourceManager.connect(
                 'current-source-changed',
                 () => {
-                    this._inputIndicatorLabel.text = this._getInputLabel();
+                    this._inputIndicatorLabel.text = _getCurrentInputLabel();
                     this._justSwitchedWindow = true;
                     this._updateVisibility(true);
                 }
@@ -1665,7 +1846,7 @@ const IBusInputSourceIndicator = GObject.registerClass(
             this._registerPropertyID = panelService.connect(
                 'register-properties',
                 () => {
-                    this._inputIndicatorLabel.text = this._getInputLabel();
+                    this._inputIndicatorLabel.text = _getCurrentInputLabel();
                 }
             );
         }
@@ -1753,21 +1934,16 @@ const IBusInputSourceIndicator = GObject.registerClass(
             if (IBusManager._panelService !== this._panelService) {
                 this._connectPanelService(IBusManager._panelService);
                 console.log(_('IBus panel service connected!'));
-                this._inputIndicatorLabel.text = this._getInputLabel();
+                this._inputIndicatorLabel.text = _getCurrentInputLabel();
             }
             if (
                 InputSourceManager._getCurrentWindow() &&
                 IBusManager._panelService
             ) {
-                this._inputIndicatorLabel.text = this._getInputLabel();
+                this._inputIndicatorLabel.text = _getCurrentInputLabel();
                 this._justSwitchedWindow = true;
                 this._updateVisibility(true);
             }
-        }
-
-        _getInputLabel() {
-            const labels = InputSourceIndicator._indicatorLabels;
-            return labels[InputSourceManager.currentSource.index].get_text();
         }
 
         /* Settings */
@@ -2822,6 +2998,12 @@ const Extensions = GObject.registerClass(
     class _Extensions extends GObject.Object {
         constructor() {
             super();
+            this._usetray = true;
+            this._menuStates = {};
+            this._panelIndicator = null;
+            this._panelWatcher = _watchPanelIndicator(indicator =>
+                this._onPanelIndicatorChanged(indicator)
+            );
             this._bindSettings();
         }
 
@@ -3240,24 +3422,74 @@ const Extensions = GObject.registerClass(
 
         // Show IBus tray icon
         set usetray(usetray) {
-            InputSourceIndicator.container.visible = usetray;
+            this._usetray = usetray;
+            const indicator =
+                this._panelWatcher?.sync() ?? _getInputSourceIndicator();
+            if (indicator?.container) indicator.container.visible = usetray;
+        }
+
+        _getMenuItemSpecs() {
+            return [
+                ['_menuibusemoji', _('Copy Emoji'), this._MenuIBusEmoji],
+                ['_menuextpref', _('Customize IBus'), this._MenuExtPref],
+                ['_menuibuspref', _('IBus Preferences'), this._menuIBusPref],
+                ['_menuibusver', _('IBus Version'), this._MenuIBusVer],
+                ['_menuibusrest', _('Restart'), this._MenuIBusRest],
+                ['_menuibusexit', _('Quit'), this._MenuIBusExit],
+            ];
+        }
+
+        _destroyMenuItem(prop) {
+            const item = this[prop];
+            if (!item) return;
+            delete this[prop];
+            item.destroy?.();
+        }
+
+        _clearMenuItems() {
+            for (const [prop] of this._getMenuItemSpecs())
+                this._destroyMenuItem(prop);
+        }
+
+        _createMenuItem(indicator, prop, label, handler) {
+            if (this[prop] || !indicator?.menu) return;
+            const item = indicator.menu.addAction(label, handler);
+            if (!item) return;
+            this[prop] = item;
+            item.connect?.('destroy', () => {
+                if (this[prop] === item) delete this[prop];
+            });
+        }
+
+        _onPanelIndicatorChanged(indicator) {
+            if (indicator === this._panelIndicator) return;
+            this._clearMenuItems();
+            this._panelIndicator = indicator ?? null;
+            if (!indicator) return;
+            if (indicator.container)
+                indicator.container.visible = this._usetray;
+            for (const [prop, label, handler] of this._getMenuItemSpecs()) {
+                if (this._menuStates[prop])
+                    this._createMenuItem(indicator, prop, label, handler);
+            }
+        }
+
+        _updateMenuItem(prop, enabled) {
+            this._menuStates[prop] = Boolean(enabled);
+            if (!enabled) {
+                this._destroyMenuItem(prop);
+                return;
+            }
+            const indicator =
+                this._panelWatcher?.sync() ?? _getInputSourceIndicator();
+            const spec = this._getMenuItemSpecs().find(([key]) => key === prop);
+            if (indicator && spec) this._createMenuItem(indicator, ...spec);
         }
 
         // Add Additional Menu Entries
         // Copying Emoji
         set menuibusemoji(menuibusemoji) {
-            if (menuibusemoji) {
-                if (this._menuibusemoji) return;
-                this._menuibusemoji = InputSourceIndicator.menu.addAction(
-                    _('Copy Emoji'),
-                    this._MenuIBusEmoji.bind(InputSourceIndicator)
-                );
-                this._menuibusemoji.visible = true;
-            } else {
-                if (!this._menuibusemoji) return;
-                this._menuibusemoji.visible = false;
-                delete this._menuibusemoji;
-            }
+            this._updateMenuItem('_menuibusemoji', menuibusemoji);
         }
 
         _MenuIBusEmoji() {
@@ -3267,18 +3499,7 @@ const Extensions = GObject.registerClass(
 
         // This Extension's Preferences
         set menuextpref(menuextpref) {
-            if (menuextpref) {
-                if (this._menuextpref) return;
-                this._menuextpref = InputSourceIndicator.menu.addAction(
-                    _('Customize IBus'),
-                    this._MenuExtPref.bind(InputSourceIndicator)
-                );
-                this._menuextpref.visible = true;
-            } else {
-                if (!this._menuextpref) return;
-                this._menuextpref.visible = false;
-                delete this._menuextpref;
-            }
+            this._updateMenuItem('_menuextpref', menuextpref);
         }
 
         _MenuExtPref() {
@@ -3288,18 +3509,7 @@ const Extensions = GObject.registerClass(
 
         // IBus Preferences
         set menuibuspref(menuibuspref) {
-            if (menuibuspref) {
-                if (this._menuibuspref) return;
-                this._menuibuspref = InputSourceIndicator.menu.addAction(
-                    _('IBus Preferences'),
-                    this._menuIBusPref.bind(InputSourceIndicator)
-                );
-                this._menuibuspref.visible = true;
-            } else {
-                if (!this._menuibuspref) return;
-                this._menuibuspref.visible = false;
-                delete this._menuibuspref;
-            }
+            this._updateMenuItem('_menuibuspref', menuibuspref);
         }
 
         _menuIBusPref() {
@@ -3309,18 +3519,7 @@ const Extensions = GObject.registerClass(
 
         // IBus Version
         set menuibusver(menuibusver) {
-            if (menuibusver) {
-                if (this._menuibusver) return;
-                this._menuibusver = InputSourceIndicator.menu.addAction(
-                    _('IBus Version'),
-                    this._MenuIBusVer.bind(InputSourceIndicator)
-                );
-                this._menuibusver.visible = true;
-            } else {
-                if (!this._menuibusver) return;
-                this._menuibusver.visible = false;
-                delete this._menuibusver;
-            }
+            this._updateMenuItem('_menuibusver', menuibusver);
         }
 
         _MenuIBusVer() {
@@ -3348,18 +3547,7 @@ const Extensions = GObject.registerClass(
 
         // Restarting IBus
         set menuibusrest(menuibusrest) {
-            if (menuibusrest) {
-                if (this._menuibusrest) return;
-                this._menuibusrest = InputSourceIndicator.menu.addAction(
-                    _('Restart'),
-                    this._MenuIBusRest.bind(InputSourceIndicator)
-                );
-                this._menuibusrest.visible = true;
-            } else {
-                if (!this._menuibusrest) return;
-                this._menuibusrest.visible = false;
-                delete this._menuibusrest;
-            }
+            this._updateMenuItem('_menuibusrest', menuibusrest);
         }
 
         _MenuIBusRest() {
@@ -3396,18 +3584,7 @@ const Extensions = GObject.registerClass(
 
         // Exiting IBus
         set menuibusexit(menuibusexit) {
-            if (menuibusexit) {
-                if (this._menuibusexit) return;
-                this._menuibusexit = InputSourceIndicator.menu.addAction(
-                    _('Quit'),
-                    this._MenuIBusExit.bind(InputSourceIndicator)
-                );
-                this._menuibusexit.visible = true;
-            } else {
-                if (!this._menuibusexit) return;
-                this._menuibusexit.visible = false;
-                delete this._menuibusexit;
-            }
+            this._updateMenuItem('_menuibusexit', menuibusexit);
         }
 
         _MenuIBusExit() {
@@ -3428,6 +3605,8 @@ const Extensions = GObject.registerClass(
         }
 
         destroy() {
+            this._panelWatcher?.destroy();
+            this._panelWatcher = null;
             this.bg = false;
             this.bgdark = false;
             this.font = false;
@@ -3452,6 +3631,8 @@ const Extensions = GObject.registerClass(
             this.menuibusver = false;
             this.menuibusrest = false;
             this.menuibusexit = false;
+            this._clearMenuItems();
+            this._panelIndicator = null;
             this._not_extension_first_start = false;
             if (this._useFontChangeID)
                 (IBusSettings.disconnect(this._useFontChangeID),
@@ -3483,6 +3664,9 @@ export default class CustomizeIBusExtension extends Extension {
         for (let i in InputSourceManager.inputSources) {
             IgnoreModes.push(InputSourceManager.inputSources[i].shortName);
         }
+        const keyboardManager = InputSourceManager?.keyboardManager;
+        if (keyboardManager?.isExternal?.() && keyboardManager.shortName)
+            IgnoreModes.push(keyboardManager.shortName);
     }
 
     /**
@@ -3512,6 +3696,10 @@ export default class CustomizeIBusExtension extends Extension {
             'sources-changed',
             this.updateIgnoreModes.bind(this)
         );
+        this._keymapIgnoreModesID = InputSourceManager.connect(
+            'keymap-changed',
+            this.updateIgnoreModes.bind(this)
+        );
         this._ext = new Extensions();
     }
 
@@ -3530,6 +3718,9 @@ export default class CustomizeIBusExtension extends Extension {
         if (this._updateIgnoreModesID)
             (InputSourceManager.disconnect(this._updateIgnoreModesID),
                 (this._updateIgnoreModesID = 0));
+        if (this._keymapIgnoreModesID)
+            (InputSourceManager.disconnect(this._keymapIgnoreModesID),
+                (this._keymapIgnoreModesID = 0));
         IBusSettings = null;
         gsettings = null;
         ngsettings = null;
